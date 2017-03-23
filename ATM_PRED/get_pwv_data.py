@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
-
+#
 #    This file is part of the ATM_PRED module.
 #
-#    The ATM_PRED module is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
+#    The ATM_PRED module is free software: you can redistribute it and/or
+#    modify it under the terms of the GNU General Public License as published
+#    by the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 #
 #    The ATM_PRED module is distributed in the hope that it will be useful,
@@ -13,8 +13,8 @@
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
-#    You should have received a copy of the GNU General Public License
-#    along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+#    You should have received a copy of the GNU General Public License along
+#    with the ATM_PRED module. If not, see <http://www.gnu.org/licenses/>.
 
 """This code downloads the most recently available data from SuomiNet. It can
 also return information about PWV measurements available on the local machine.
@@ -164,8 +164,8 @@ def _create_pwv_table(year, overwrite=True):
     fpath = os.path.join(PWV_TABLES, 'pwv_{0}.fits')
 
     # For each SuomiNet data file, add data to an astropy table
-    # Note that an astropy table cannot be ampty, so we create it
-    # with a single row that will be deleted later
+    #   Note that an astropy table cannot be empty, so we create it
+    #   with a single row that will be deleted later
     if not os.path.isfile(fpath.format(year)) or overwrite:
         data_table = Table([[0]], names=['date'], dtype=[(str_, 16)])
 

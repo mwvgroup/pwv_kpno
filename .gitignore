@@ -1,3 +1,9 @@
 
-ATM_PRED/suomi_data/*2017.plot
-*.ipynb
+
+ATM_PRED/__pycache__/*
+
+*.plot
+
+ATM_PRED/predicting_pwv_jess.ipynb
+
+*checkpoint.ipynb

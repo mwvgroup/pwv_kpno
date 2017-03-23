@@ -28,23 +28,6 @@ from datetime_to_spectra import date_to_spectra
 __version__ = '1.0.0'
 __license__ = 'GPL V3'
 __status__ = 'Development'
- 
-# Check if there is any missing data from SuomiNet
-SUOMI_DIR = './suomi_data'
-
-available_data_years = set()
-files = [f for f in _listdir(SUOMI_DIR)]
-
-for file in files:
-    if file.endswith('.plot'):
-        available_data_years.add(int(file[-9:-5]))
-
-missing_data = set(range(2010, _datetime.now().year)) - available_data_years
-
-if missing_data:
-    _warn('No downloaded SuomiNet data for years ' + str(missing_data) +
-          '. Run update_date to update the local data from SuomiNet.')
-
 
 # -- Developer notes --
 # create_atm_model.py:
@@ -65,5 +48,5 @@ if missing_data:
 # Todo (distribution):
 #    Approval for classifiers and keywords / finish setup.py
 #    Update ReadMe
-
-# know what releigh scattering is
+#       Make note that user needs permission to update files within the package when updating pwv data
+#       Comment on releigh scattering
