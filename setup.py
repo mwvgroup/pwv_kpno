@@ -1,9 +1,10 @@
 from distutils.core import setup
 
+
 def long_description():
-	return 'Long description'
-    #with open('README.txt') as ofile:
-    #    return ofile.read()
+    return 'Long description'
+    # with open('README.txt') as ofile:
+    #     return ofile.read()
 
 setup(name='ATM_PRED',
       version='1.0.0',
@@ -32,4 +33,4 @@ setup(name='ATM_PRED',
           'scipy',
           'astropy',
           ]
-      )
+    )
