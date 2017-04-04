@@ -2,8 +2,13 @@
 
 ATM_PRED/__pycache__/*
 
-*.plot
+.ipynb_checkpoints/*
+
+ATM_PRED/.ipynb_checkpoints/*
+
 
 ATM_PRED/predicting_pwv_jess.ipynb
 
-*checkpoint.ipynb
+
+*2017.plot
+
