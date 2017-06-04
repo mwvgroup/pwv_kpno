@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
-#    This file is part of the pwv_kpno package.
+#    This file is part of the pwv_kpno software package.
 #
 #    The pwv_kpno package is free software: you can redistribute it and/or
 #    modify it under the terms of the GNU General Public License as published
@@ -51,7 +51,14 @@ def available_data():
     Return a set of years for which SuomiNet data has been downloaded to the
     local machine. Note that this function includes years for which any amount
     of data has been downloaded. It does not indicate if additional data has
-    been released by SuomiNet."""
+    been released by SuomiNet.
+
+    Args:
+        None
+
+    Returns:
+        years (set): A set of years with locally available SuomiNet data
+    """
 
     with open('../CONFIG.txt', 'rb') as ofile:
         return pickle.load(ofile)
@@ -93,7 +100,7 @@ def update_models(year=None):
 
 
 def measured_pwv(year=None, month=None, day=None, hour=None):
-    """Return an astropy table of PWV measurements for a given year
+    """Return an astropy table of PWV measurements taken by SuomiNet
 
     Return an astropy table of precipitable water vapor (PWV) measurements
     taken by the SuomiNet project. The first column is named 'date' and
@@ -262,7 +269,6 @@ def transmission(date, airmass):
 
     Returns:
         trans_func (astropy.table.Table): The modeled transmission function
-
     """
 
     if not isinstance(date, datetime):

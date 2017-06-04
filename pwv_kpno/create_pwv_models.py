@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
-#    This file is part of the pwv_kpno package.
+#    This file is part of the pwv_kpno software package.
 #
 #    The pwv_kpno package is free software: you can redistribute it and/or
 #    modify it under the terms of the GNU General Public License as published
@@ -248,4 +248,5 @@ def _update_pwv_model():
 
     # Write results to file
     out = Table([pwv_data['date'], sup_data], names=['date', 'pwv'])
+    out = out[np.where(out['pwv']>0)[0]]
     out.write(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'), overwrite=True)

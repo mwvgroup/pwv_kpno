@@ -1,2 +1,2 @@
 include LICENSE.txt
-recursive-include pwv *.csv *.fits *.txt *.plot
+recursive-include pwv *.csv *.txt *.plot *.md
