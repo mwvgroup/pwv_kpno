@@ -23,15 +23,15 @@ level at nearby locations to the PWV level at Kitt Peak. The resulting
 polynomials are then used to supplement the PWV measurements taken at
 Kitt Peak for times when no Kitt Peak data is available.
 
-The supplemented PWV values are stored in csv files with one column for the
-datetime (in UNIX format) and one column for the supplemented PWV (in mm). One
-csv file is produced for each year. This code only considers dates for years
-from 2010 onward.
+Data downloaded from SuomiNet is added to a master table located at
+PWV_TAB_DIR/measured.csv. Supplemented PWV values are stored in a master table
+located at PWV_TAB_DIR/modeled.csv. All datetimes are recorded in UNIX format
+and PWV measurements are represented in units of millimeters.
 
-PWV measurements are downloaded from the receivers located at Kitt Peak (KITT),
-Amado (AZAM), Sahuarita (P014), Tucson (SA46), and Tohono O'odham Community
-College (SA48). For more details on the SuomiNet project see
-http://www.suominet.ucar.edu/overview.html.
+This code only considers data taken from 2010 onward and uses data taken by
+GPS receivers located at Kitt Peak (KITT), Amado (AZAM), Sahuarita (P014),
+Tucson (SA46), and Tohono O'odham Community College (SA48). For more details
+on the SuomiNet project see http://www.suominet.ucar.edu/overview.html.
 """
 
 import os
@@ -50,22 +50,21 @@ __license__ = 'GPL V3'
 __status__ = 'Development'
 
 SUOMI_IDS = ['KITT', 'AZAM', 'P014', 'SA46', 'SA48']  # SuomiNet receiver IDs
-PWV_TAB_DIR = './pwv_tables/'  # Where to write un-supplemented PWV data
+PWV_TAB_DIR = './pwv_tables/'  # Where to write PWV data tables
 SUOMI_DIR = './suomi_data'  # Location of raw SuomiNet data files
-DIST_YEAR = 2017  # First year of SuomiNet data not included with package
+STRT_YEAR = 2017  # First year of SuomiNet data not included with package
 
 
-def _download_suomi_data(year, overwrite=True):
+def _download_suomi_data(year):
     """Download SuomiNet data for a given year
 
     For a given year, download the relevant SuomiNet data for each GPS
     receiver listed in SUOMI_IDS. Files are downloaded by using the urllib
-    module to access http://www.suominet.ucar.edu/data/staYrHr/. Existing
-    data files are only overwritten if the overwrite argument is True.
+    module to access http://www.suominet.ucar.edu/data/staYrHr/. Any existing
+    data files are overwritten.
 
     Args:
         year       (int): A year to download data for
-        overwrite (bool): Whether existing files should be overwritten
 
     Returns:
         new_paths (list): List containing file paths of the downloaded data
@@ -86,24 +85,23 @@ def _download_suomi_data(year, overwrite=True):
 
     # Download data for each GPS receiver
     for loc in SUOMI_IDS:
-        if overwrite or not os.path.isfile(fpath.format(loc, year)):
-            try:
-                path = fpath.format(loc, year)
-                urlretrieve(url.format(loc, year), path)
-                new_paths.append(path)
+        try:
+            path = fpath.format(loc, year)
+            urlretrieve(url.format(loc, year), path)
+            new_paths.append(path)
 
-            except HTTPError as err:
-                if err.code != 404:
-                    raise Exception('Error connecting to ' + url + '. Code ' +
-                                    str(err.code) + ', ' + err.reason)
+        except HTTPError as err:
+            if err.code != 404:
+                raise Exception('Error connecting to ' + url + '. Code ' +
+                                 str(err.code) + ', ' + err.reason)
 
-            except ContentTooShortError:
-                raise Exception('Downloaded data is less than expected.' +
-                                ' Download from SuomiNet was interrupted.')
+        except ContentTooShortError:
+            raise Exception('Downloaded data is less than expected - ' +
+                            ' Download from SuomiNet was interrupted.')
 
-            except URLError as err:
-                raise Exception('Could not connect to SuomiNet Server. ' +
-                                'No error code available.')
+        except URLError as err:
+            raise Exception('Could not connect to SuomiNet Server. ' +
+                            'No HTTP response code available.')
 
     return new_paths
 
@@ -113,26 +111,30 @@ def _read_file(path):
 
     Expects data files from http://www.suominet.ucar.edu/data.html under the
     "Specific station - All year hourly" section. The returned astropy table
-    one column for dates (named 'date') and one for PWV measurements (named
-    using the id code of the relevant gaps receiver). Dates are expressed as
-    UNIX timestamps and PWV is measured in millimeters.
+    has one column with datetimes named 'date', and one with PWV measurements
+    named using the id code for the relevant GPS receiver. Datetimes are
+    expressed as UNIX timestamps and PWV is measured in millimeters.
 
     Data is removed from the array for dates where the PWV level is negative.
     This condition is equivalent to checking for dates when a GPS receiver is
-    offline. Data is also removed for dates with duplicate, unequal entries.
-    Note that this may result in an empty array being returned.
+    offline. Data is also removed for dates with multiple, unequal entries.
+    Note that this may result in an empty table being returned.
 
     Args:
         path (str): File path to be read
 
     Returns:
-        out_table (astropy.table.Table): Astropy Table with data from file
+        out_table (astropy.table.Table): Astropy Table with data from path
     """
 
     # Read data from file
     data = np.genfromtxt(path, usecols=[1, 2],
                          names=['date', 'pwv'],
                          dtype=[(np.str_, 16), float])
+
+    # We remove duplicate, contradicting, and unphysical values.
+    # SuomiNet uses unphysical entries to indicate offline GPS receivers.
+    # Credit goes to Jessica Kroboth for identifying these conditions.
 
     data = data[data['pwv'] > 0]  # Remove data with PWV < 0
     data = np.unique(data)  # Sometimes SuomiNet records duplicate entries
@@ -156,21 +158,22 @@ def _update_suomi_data(year=None):
 
     If a year is provided, download SuomiNet data for that year to SUOMI_DIR.
     If not, download all available data not included with the release of this
-    package. Use this data to update the master table of PWV measurements
-    located at PWV_TAB_DIR/measured_pwv.csv.
+    package version. Use this data to update the master table of PWV
+    measurements located at PWV_TAB_DIR/measured_pwv.csv.
+
     Args:
-        years (list): List of years as integers from 2010 onward
+        year (int): The year to update data for
 
     Returns:
         updated_years (list): A list of years for which data was updated
     """
 
-    # Get any data that has already been downloaded
-    l_data = Table.read(os.path.join(PWV_TAB_DIR, 'measured_pwv.csv'))
+    # Get any local data that has already been downloaded
+    loc_data = Table.read(os.path.join(PWV_TAB_DIR, 'measured_pwv.csv'))
 
     # Create a set of years that need to be downloaded
     if year is None:
-        years = set(range(DIST_YEAR, datetime.now().year + 1))
+        years = set(range(STRT_YEAR, datetime.now().year + 1))
 
     else:
         years = set([year])
@@ -188,11 +191,11 @@ def _update_suomi_data(year=None):
             if new_data:
                 data = join(data, new_data, join_type='outer', keys=['date'])
 
-        l_data = unique(vstack([l_data, data]), keys=['date'])
+        loc_data = unique(vstack([loc_data, data]), keys=['date'])
         updated_years.append(yr)
 
     # Write updated data to file
-    l_data.write(os.path.join(PWV_TAB_DIR, 'measured_pwv.csv'), overwrite=True)
+    loc_data.write(os.path.join(PWV_TAB_DIR, 'measured_pwv.csv'), overwrite=True)
 
     # Update config.txt
     with open('../CONFIG.txt', 'rb') as ofile:
@@ -206,15 +209,15 @@ def _update_suomi_data(year=None):
 
 
 def _update_pwv_model():
-    """Create a model for the PWV level at Kitt Peak
+    """Create a new model for the PWV level at Kitt Peak
 
-    Create a collection of first order polynomials relating the PWV measured
-    by GPS receivers near Kitt Peak to the PWV measured at Kitt Peak (one fit
-    per receiver). Use these polynomials to supplement PWV measurements taken
-    at Kitt Peak for times when no Kitt Peak data is available. Write the
-    supplemented PWV values to a csv file at PWV_TAB_DIR/year.csv. The
-    resulting file contains the columns 'date' and 'pwv', where dates are
-    represented as UNIX timestamps and PWV values are measured in millimeters.
+    Create first order polynomials relating the PWV measured by GPS receivers
+    near Kitt Peak to the PWV measured at Kitt Peak (one per receiver). Use
+    these polynomials to supplement PWV measurements taken at Kitt Peak for
+    times when no Kitt Peak data is available. Write the supplemented PWV
+    data to a csv file at PWV_TAB_DIR/measured.csv. The resulting file contains
+    the columns 'date' and 'pwv', where dates are represented as UNIX timestamps
+    and PWV values are measured in millimeters.
 
     Args:
         None
@@ -222,6 +225,9 @@ def _update_pwv_model():
     Returns:
         None
     """
+
+    # Credit belongs to Jessica Kroboth for suggesting the use of a linear fit
+    # to supplement PWV measurements when no Kitt Peak data is available.
 
     # Read the local PWV data from file
     pwv_data = Table.read(os.path.join(PWV_TAB_DIR, 'measured_pwv.csv'))
@@ -249,4 +255,4 @@ def _update_pwv_model():
     # Write results to file
     out = Table([pwv_data['date'], sup_data], names=['date', 'pwv'])
     out = out[np.where(out['pwv']>0)[0]]
-    out.write(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'), overwrite=True)
+    out.write(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'))

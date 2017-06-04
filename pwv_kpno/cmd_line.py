@@ -35,12 +35,14 @@ __license__ = 'GPL V3'
 __status__ = 'Development'
 
 
-def available_data_wrapper(cli_args):
-    """A wrapper function that passes command line arguments to available_data
+# We create wrapper functions that pass command line arguments to functions
+# imported from pwv_kpno/end_user_functions.py. For more information on these
+# functions documentation is included in pwv_kpno/end_user_functions.py and
+# also in README.MD
 
-    The available_data function returns a set of years for which SuomiNet data
-    For more information on the available_data function see end_user_functions.py.
-    
+def available_data_wrapper(cli_args):
+    """Print a set of years for which SuomiNet data is locally available
+
     args:
         cli_args (argparse.Namespace): Arguments from the command line
 
@@ -51,11 +53,7 @@ def available_data_wrapper(cli_args):
     print('Found data for: {0}\n'.format(available_data()))
 
 def update_models_wrapper(cli_args):
-    """A wrapper function that passes command line arguments to update_models
-
-    The update_models function updates the locally stored SUomiNet data by
-    downloading new data from SuomiNet's website. For more information on the
-    update_models function see end_user_functions.py.
+    """Update the local SuomiNet data with new data from SuomiNet's website
 
     args:
         cli_args (argparse.Namespace): Arguments from the command line
@@ -73,11 +71,7 @@ def update_models_wrapper(cli_args):
 
 
 def measured_pwv_wrapper(cli_args):
-    """A wrapper function that passes command line arguments to measured_pwv
-
-    The measured_pwv function returns an astropy table of PWV measurements
-    taken by SuomiNet. For more information on the nearest_value function,
-    see get_pwv_data.py.
+    """Write a copy of the local SuomiNet data to a .csv file
 
     args:
         cli_args (argparse.Namespace): Arguments from the command line
@@ -97,7 +91,7 @@ def measured_pwv_wrapper(cli_args):
 
 
 def modeled_pwv_wrapper(cli_args):
-    """A wrapper function that passes command line arguments to modeled_pwv
+    """Write a copy of the PWV model for Kitt Peak to a .csv file
 
     args:
         cli_args (argparse.Namespace): Arguments from the command line
@@ -117,12 +111,7 @@ def modeled_pwv_wrapper(cli_args):
 
 
 def transmission_wrapper(cli_args):
-    """A wrapper function that passes command line arguments to transmission
-
-    Format command line arguments and pass them to the date_to_spectra
-    function, which returns the modeled atmospheric transmission spectrum for a
-    given date date and airmass. For more information on date_to_spectra, see
-    datetime_to_spectra.py.
+    """Write to file the modeled transmission due to PWV for a given datetime
 
     args:
         cli_args (argparse.Namespace): Arguments from the command line
@@ -132,7 +121,8 @@ def transmission_wrapper(cli_args):
     """
 
     date = datetime(year=cli_args.year, month=cli_args.month,
-                    day=cli_args.day, hour=cli_args.hour)
+                    day=cli_args.day, hour=cli_args.hour,
+                    minute=cli_args.minute)
 
     transmission = date_to_spectra(date, cli_args.airmass)
     if cli_args.output.endswith('.csv'):
@@ -154,8 +144,8 @@ AVDATA_PRSR = SUBPARSERS.add_parser('available_data', description=AVDATA_DESC)
 AVDATA_PRSR.set_defaults(func=available_data_wrapper)
 
 # Create a command line subparser for the update_models_wrapper
-UPDATE_DESC = 'Update the local SuomiNet data and atmospheric models.'
-UPDATE_YHLP = ('The year to update local data for. If unspecified,' +
+UPDATE_DESC = 'Update the local SuomiNet data and PWV models.'
+UPDATE_YHLP = ('The year to download local data for. If unspecified,' +
                ' data is updated for all available years.')
 
 UPDATE_PRSR = SUBPARSERS.add_parser('update_models', description=UPDATE_DESC)
@@ -164,11 +154,11 @@ UPDATE_PRSR.add_argument('-y', '--year', type=int, default=None, help=UPDATE_YHL
 
 # Create a command line subparser for the measured_pwv_wrapper function
 MEASUR_DESC = 'Write a copy of the local SuomiNet data to a .csv file.'
-MEASUR_OHLP = 'The desired output file path,'
-MEASUR_YHLP = 'Include only measurments taken durring a specified year.'
-MEASUR_MHLP = 'Include only measurments taken durring a specified month.'
-MEASUR_DHLP = 'Include only measurments taken durring a specified day.'
-MEASUR_THLP = 'Include only measurments taken durring a specified hour.'
+MEASUR_OHLP = 'The desired output file path'
+MEASUR_YHLP = 'Include only measurements taken during a specified year'
+MEASUR_MHLP = 'Include only measurements taken during a specified month'
+MEASUR_DHLP = 'Include only measurements taken during a specified day'
+MEASUR_HHLP = 'Include only measurements taken during a specified hour'
 
 MEASUR_PRSR = SUBPARSERS.add_parser('measured_pwv', description=MEASUR_DESC)
 MEASUR_PRSR.set_defaults(func=measured_pwv_wrapper)
@@ -176,29 +166,43 @@ MEASUR_PRSR.add_argument('-o', '--output', type=str, help=MEASUR_OHLP)
 MEASUR_PRSR.add_argument('-y', '--year', type=int, default=None, help=MEASUR_YHLP)
 MEASUR_PRSR.add_argument('-m', '--month', type=int, default=None, help=MEASUR_MHLP)
 MEASUR_PRSR.add_argument('-d', '--day', type=int, default=None, help=MEASUR_DHLP)
-MEASUR_PRSR.add_argument('-t', '--hour', type=int, default=None, help=MEASUR_THLP)
+MEASUR_PRSR.add_argument('-H', '--hour', type=int, default=None, help=MEASUR_HHLP)
 
 # Create a command line subparser for the modeled_pwv_wrapper function
-MEASUR_PRSR = SUBPARSERS.add_parser('modeled_pwv', description=MEASUR_DESC)
-MEASUR_PRSR.set_defaults(func=modeled_pwv_wrapper)
-MEASUR_PRSR.add_argument('-o', '--output', type=str, help=MEASUR_OHLP)
-MEASUR_PRSR.add_argument('-y', '--year', type=int, default=None, help=MEASUR_YHLP)
-MEASUR_PRSR.add_argument('-m', '--month', type=int, default=None, help=MEASUR_MHLP)
-MEASUR_PRSR.add_argument('-d', '--day', type=int, default=None, help=MEASUR_DHLP)
-MEASUR_PRSR.add_argument('-t', '--hour', type=int, default=None, help=MEASUR_THLP)
+MODLED_DESC = 'Write a copy of the PWV model for Kitt Peak to a .csv file.'
+MODLED_OHLP = 'The desired output file path'
+MODLED_YHLP = 'Restrict the model to a specified year'
+MODLED_MHLP = 'Restrict the model to a specified month'
+MODLED_DHLP = 'Restrict the model to a specified day'
+MODLED_HHLP = 'Restrict the model to a specified hour'
+
+MODLED_PRSR = SUBPARSERS.add_parser('modeled_pwv', description=MODLED_DESC)
+MODLED_PRSR.set_defaults(func=modeled_pwv_wrapper)
+MODLED_PRSR.add_argument('-o', '--output', type=str, help=MODLED_OHLP)
+MODLED_PRSR.add_argument('-y', '--year', type=int, default=None, help=MODLED_YHLP)
+MODLED_PRSR.add_argument('-m', '--month', type=int, default=None, help=MODLED_MHLP)
+MODLED_PRSR.add_argument('-d', '--day', type=int, default=None, help=MODLED_DHLP)
+MODLED_PRSR.add_argument('-H', '--hour', type=int, default=None, help=MODLED_HHLP)
 
 # Create command line subparser for the transmission_wrapper function
 TRANSM_DESC = ('Get the modeled atmospheric transmission spectrum for' +
                ' a given date and airmass.')
-TRANSM_AHLP = 'The airmass for the desired model spectrum.'
+TRANSM_AHLP = 'The airmass of the desired model spectrum'
+TRANSM_OHLP = 'The desired output file path'
+TRANSM_YHLP = 'The year of the desired model spectrum'
+TRANSM_MHLP = 'The month of the desired model spectrum'
+TRANSM_DHLP = 'The day of the desired model spectrum'
+TRANSM_HHLP = 'The hour of the desired model spectrum'
+TRANSM_MIHLP = 'The minute of the desired model spectrum'
 
-TRANSM_PRSR = SUBPARSERS.add_parser('atm_spectra', description=ATMSPC_DESC)
-TRANSM_PRSR.set_defaults(func=date_to_spectra_wrapper)
-TRANSM_PRSR.add_argument('-o', '--output', type=str, help=MEASUR_OHLP)
-TRANSM_PRSR.add_argument('-y', '--year', type=int, default=None, help=MEASUR_YHLP)
-TRANSM_PRSR.add_argument('-m', '--month', type=int, default=None, help=MEASUR_MHLP)
-TRANSM_PRSR.add_argument('-d', '--day', type=int, default=None, help=MEASUR_DHLP)
-TRANSM_PRSR.add_argument('-t', '--hour', type=int, default=None, help=MEASUR_THLP)
+TRANSM_PRSR = SUBPARSERS.add_parser('transmission', description=TRANSM_DESC)
+TRANSM_PRSR.set_defaults(func=transmission_wrapper)
+TRANSM_PRSR.add_argument('-o', '--output', type=str, help=TRANSM_OHLP)
+TRANSM_PRSR.add_argument('-y', '--year', type=int, default=None, help=TRANSM_YHLP)
+TRANSM_PRSR.add_argument('-m', '--month', type=int, default=None, help=TRANSM_MHLP)
+TRANSM_PRSR.add_argument('-d', '--day', type=int, default=None, help=TRANSM_DHLP)
+TRANSM_PRSR.add_argument('-H', '--hour', type=int, default=None, help=MEASUR_HHLP)
+TRANSM_PRSR.add_argument('-M', '--minute', type=int, default=None, help=TRANSM_MIHLP)
 TRANSM_PRSR.add_argument('-a', '--airmass', type=float, help=TRANSM_AHLP)
 
 if __name__ == '__main__':

@@ -42,7 +42,7 @@ __status__ = 'Development'
 
 # Define necessary directory paths
 ATM_MOD_DIR = './atm_models'  # Location of atmospheric models
-PWV_TAB_DIR = './pwv_tables/'  # Where to write un-supplemented PWV data
+PWV_TAB_DIR = './pwv_tables/' # Where to write PWV data tables
 
 
 def available_data():
@@ -51,7 +51,7 @@ def available_data():
     Return a set of years for which SuomiNet data has been downloaded to the
     local machine. Note that this function includes years for which any amount
     of data has been downloaded. It does not indicate if additional data has
-    been released by SuomiNet.
+    been released by SuomiNet for a given year that is not locally available.
 
     Args:
         None
@@ -106,15 +106,15 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
     taken by the SuomiNet project. The first column is named 'date' and
     contains the UTC datetime of each measurement. Successive columns are
     named using the SuomiNet IDs for different locations and contain PWV
-    measurements for that location in millimeters. By default he returned
+    measurements for that location in millimeters. By default the returned
     table contains all locally available SuomiNet data. Results can be
-    refined by year, month, day, and hour by using the key word arguments.
+    refined by year, month, day, and hour by using the keyword arguments.
 
     Args:
         year  (int): The year of the desired PWV data
         month (int): The month of the desired PWV data
         day   (int): The day of the desired PWV data
-        hour  (int): The hour of the desired PWV data
+        hour  (int): The hour of the desired PWV data in 24-hour format
 
     Returns:
         pwv_data (astropy.table.Table): A table of measured PWV values in mm
@@ -136,7 +136,7 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
         raise ValueError(msg)
 
     if not (isinstance(day, int) or day is None):
-        raise TypeError("Argument 'day' (pos 2) must be an integer.")
+        raise TypeError("Argument 'day' (pos 3) must be an integer.")
 
     elif day is None and hour is not None:
         msg = "Argument 'hour' (pos 4) specified without 'day' (pos 3)."
@@ -180,14 +180,14 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
 
 
 def modeled_pwv(year=None, month=None, day=None, hour=None):
-    """Return an astropy table of the modeled PWV a given year
+    """Return an astropy table of the modeled PWV at Kitt Peak
 
-    Return an astropy table of the modeled precipitable water vapor (PWV) value
-    at. The first column is named 'date' and contains the UTC datetime of each
-    modeled value. The second column is named 'pwv', and contains PWV values in
-    millimeters. By default he returned table contains all locally available
-    SuomiNet data. Results can be refined by year, month, day, and hour by
-    using the key word arguments.
+    Return a model for the precipitable water vapor level at Kitt Peak as an
+    astropy table. The first column of the table is named 'date' and contains
+    the UTC datetime of each modeled value. The second column is named 'pwv',
+    and contains PWV values in millimeters. By default this function returns
+    modeled values from 2010 onward. Results can be restricted to a specific
+    year, month, day, and hour by using the key word arguments.
 
     Args:
         year  (int): The year of the desired PWV data
@@ -215,7 +215,7 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
         raise ValueError(msg)
 
     if not (isinstance(day, int) or day is None):
-        raise TypeError("Argument 'day' (pos 2) must be an integer.")
+        raise TypeError("Argument 'day' (pos 3) must be an integer.")
 
     elif day is None and hour is not None:
         msg = "Argument 'hour' (pos 4) specified without 'day' (pos 3)."
@@ -261,7 +261,7 @@ def transmission(date, airmass):
     transmission function due to precipitable water vapor (PWV) at Kitt Peak.
     The modeled transmission is returned as an astropy table with the columns
     'wavelength' and 'transmission'. Wavelength values range from 7000 to
-    10,000 angstroms in x angstrom increments.
+    10,000 angstroms.
 
     Args:
         date (datetime.datetime): The datetime of the desired model

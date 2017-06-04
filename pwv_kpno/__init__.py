@@ -63,6 +63,21 @@ Help information and docstring is provided within the package's source code.
 To view help information for a particular function, use the standard python
 `help` function. 
 
+    available_data()
+        Return a set of years for which SuomiNet data has been downloaded
+
+        Return a set of years for which SuomiNet data has been downloaded to the
+        local machine. Note that this function includes years for which any amount
+        of data has been downloaded. It does not indicate if additional data has
+        been released by SuomiNet for a given year that is not locally available.
+
+        Args:
+            None
+
+        Returns:
+            years (set): A set of years with locally available SuomiNet data
+
+
     update_models(year=None):
         Download data from SuomiNet and update the locally stored PWV model
 
@@ -81,35 +96,35 @@ To view help information for a particular function, use the standard python
 
 
     measured_pwv(year=None, month=None, day=None, hour=None):
-        Return an astropy table of PWV measurements for a given year
+        Return an astropy table of PWV measurements taken by SuomiNet
 
         Return an astropy table of precipitable water vapor (PWV) measurements
         taken by the SuomiNet project. The first column is named 'date' and
         contains the UTC datetime of each measurement. Successive columns are
         named using the SuomiNet IDs for different locations and contain PWV
-        measurements for that location in millimeters. By default he returned
+        measurements for that location in millimeters. By default the returned
         table contains all locally available SuomiNet data. Results can be
-        refined by year, month, day, and hour by using the key word arguments.
+        refined by year, month, day, and hour by using the keyword arguments.
 
         Args:
             year  (int): The year of the desired PWV data
             month (int): The month of the desired PWV data
             day   (int): The day of the desired PWV data
-            hour  (int): The hour of the desired PWV data
+            hour  (int): The hour of the desired PWV data in 24-hour format
 
         Returns:
             pwv_data (astropy.table.Table): A table of measured PWV values in mm
 
 
     modeled_pwv(year=None, month=None, day=None, hour=None):
-        Return an astropy table of the modeled PWV a given year
+        Return an astropy table of the modeled PWV at Kitt Peak
 
-        Return an astropy table of the modeled precipitable water vapor (PWV) value
-        at. The first column is named 'date' and contains the UTC datetime of each
-        modeled value. The second column is named 'pwv', and contains PWV values in
-        millimeters. By default he returned table contains all locally available
-        SuomiNet data. Results can be refined by year, month, day, and hour by
-        using the key word arguments.
+        Return a model for the precipitable water vapor level at Kitt Peak as an
+        astropy table. The first column of the table is named 'date' and contains
+        the UTC datetime of each modeled value. The second column is named 'pwv',
+        and contains PWV values in millimeters. By default this function returns
+        modeled values from 2010 onward. Results can be restricted to a specific
+        year, month, day, and hour by using the key word arguments.
 
         Args:
             year  (int): The year of the desired PWV data
@@ -128,7 +143,7 @@ To view help information for a particular function, use the standard python
         transmission function due to precipitable water vapor (PWV) at Kitt Peak.
         The modeled transmission is returned as an astropy table with the columns
         'wavelength' and 'transmission'. Wavelength values range from 7000 to
-        10,000 angstroms in x angstrom increments.
+        10,000 angstroms.
 
         Args:
             date (datetime.datetime): The datetime of the desired model
@@ -191,27 +206,3 @@ __email__ = 'djperrefort@gmail.com'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
 __license__ = 'GPL V3'
 __status__ = 'Development'
-
-# -- Developer notes --
-
-# Proof read documentation
-# create readme ("transmission function due to PWV" )
-# Institute check for nearby PWV
-
-# finish setup.py
-# email Dick Joyce about pressure flatline
-# compatibility with python 2
-# atm model has wavlengths at unequal increments
-# make sure models for atmosphere are actually correct
-
-
-#next steps:
-# Get transmission binned for certain wavelengths
-
-# spectral energy distribution? a convenience function to estimate error you would make
-#    in calibration of image is tricky - relative to stars used to calibrate in that field
-#    assuming i calibrated with a star of this color, using some library, what error
-#    did i make for something in z that i didn't take account for pwv absorption (if all stars 
-#    have exact same sed, doesn't matter; stars are actually a range of colors, should have some
-#    differential effect in delta magnitude in z band which is function of color of star) use
-#    blackbody seds, after this is developed, can look at stellar seds (6500 redward is when you care about pwv)    
