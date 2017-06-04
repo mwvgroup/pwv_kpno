@@ -1,14 +1,6 @@
 
 
-ATM_PRED/__pycache__/*
+pwv_kpno/__pycache__/*
 
-.ipynb_checkpoints/*
-
-ATM_PRED/.ipynb_checkpoints/*
-
-
-ATM_PRED/predicting_pwv_jess.ipynb
-
-
-*2017.plot
+*.ipynb
 

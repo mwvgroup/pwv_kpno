@@ -6,7 +6,7 @@ def long_description():
     # with open('README.txt') as ofile:
     #     return ofile.read()
 
-setup(name='ATM_PRED',
+setup(name='pwv_kpno',
       version='1.0.0',
       description='Corrects NIR spectra taken at KPNO using atmospheric models',
       long_description=long_description(),
@@ -24,13 +24,12 @@ setup(name='ATM_PRED',
 
       keywords=['KPNO', 'atmosphere', 'atmospheric correction'],
       url='noUrl',
-      author='noAuthor',
-      author_email='noEmail',
-      license='noLicense',
-      packages=['PWV'],
+      author='Daniel Perrefort',
+      author_email='djp81@pitt.edu',
+      license='GPL v3',
+      packages=['pwv_kpno'],
       install_requires=[
           'numpy',
-          'scipy',
           'astropy',
           ]
     )
