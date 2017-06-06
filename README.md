@@ -137,9 +137,9 @@ To view help information for a particular function, use the standard python
 
 #### ToDo:
 
-- Proof read documentation
-- Finish ReadMe (add examples)
+- Finish ReadMe (add examples and format)
 - Email Dick Joyce about pressure flatline
+
 - Institute check for nearby PWV measurements when interpolating models
 - Update setup.py and double check MANIFIEST.in
 - Ensure Compatibility with python 2

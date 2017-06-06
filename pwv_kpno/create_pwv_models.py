@@ -93,7 +93,7 @@ def _download_suomi_data(year):
         except HTTPError as err:
             if err.code != 404:
                 raise Exception('Error connecting to ' + url + '. Code ' +
-                                 str(err.code) + ', ' + err.reason)
+                                str(err.code) + ', ' + err.reason)
 
         except ContentTooShortError:
             raise Exception('Downloaded data is less than expected - ' +
@@ -254,5 +254,5 @@ def _update_pwv_model():
 
     # Write results to file
     out = Table([pwv_data['date'], sup_data], names=['date', 'pwv'])
-    out = out[np.where(out['pwv']>0)[0]]
+    out = out[np.where(out['pwv'] > 0)[0]]
     out.write(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'))
