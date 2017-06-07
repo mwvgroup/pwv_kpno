@@ -1,20 +1,36 @@
-# pwv_kpno module
+<h1 align="center">
+  <br>
+  pwv_kpno
+  <br>
+</h1>
 
-#### Package Description
+<h4 align="center">Python package for modeling the atmospheric transmission function at Kitt Peak National Observatory.</h4>
 
-This package models the transmission function due to precipitable water vapor
-(PWV) at Kitt Peak for years 2010 and later. Models are created using PWV
-measurements provided by the SuomiNet Project. SuomiNet measures PWV values
-by relating the delay in GPS signals to PWV levels in the atmosphere. This
-package uses measurements taken by GPS receivers located at Kitt Peak AZ,
-Amado AZ, Sahuarita AZ, Tucson AZ, and Tohono O'odham Community College.
+## Table of contents
 
-For more details on the correlation between GPS signals and PWV levels see
-Blake and Shaw, 2011. For more details on the SuomiNet project see
-http://www.suominet.ucar.edu/overview.html .
+- [Package Description](#package-description)
+- [Installation](#installation)
+    - [Install](#install)
+    - [Setup](#setup)
+- [Functions](functions)
+    - [Documentation](#documentation)
+    - [Examples](#examples)
+
+## Package Description
+
+This package models the transmission function due to precipitable water vapor (PWV) at Kitt Peak for years 2010 and later. Models are created using PWV measurements provided by the SuomiNet Project. SuomiNet measures PWV values by relating the delay in GPS signals to PWV levels in the atmosphere. This package uses measurements taken by GPS receivers located at Kitt Peak AZ, Amado AZ, Sahuarita AZ, Tucson AZ, and Tohono O'odham Community College.
+
+For more details on the correlation between GPS signals and PWV levels see [Blake and Shaw, 2011](https://arxiv.org/abs/1109.6703). For more details on the SuomiNet project see http://www.suominet.ucar.edu/overview.html .
 
 
-#### Package Setup
+## Installation
+### Install
+
+To install the package use the setup.py file
+
+    python setup.py install --user
+
+### Setup
 
 This package relies on PWV measurements taken by the SuomiNet project. In
 order to model the PWV transmission function for a given date, SuomiNet
@@ -33,14 +49,13 @@ function:
 The `update_models` function can also be used to download SuomiNet data for
 a specific year:
 
-    >>> import pwv_kpno
     >>> pwv_kpno.update_models(year=2017)
 
 Note that the update_models function requires the user to have permission
 to write and modify files within the package directory.
 
 
-#### Functions / Documentation
+## Functions
 
 Help information and docstring is provided within the package's source code.
 To view help information for a particular function, use the standard python
@@ -250,7 +265,7 @@ To view help information for a particular function, use the standard python
 - Return transmission binned for certain wavelengths
 - When working with SED's, if I calibrated with a star of a certain color, what error did I make in z that didn't take account for pwv absorption
 
-#### Notes for future developers:
+## Notes for developers:
 
 - atm models can also model additional info - necessary code is commented out
 - wavelength range in interpolate function needs to be changed if you change the range of the models
