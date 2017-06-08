@@ -10,20 +10,20 @@
 
 - [1 Package Description](#1-package-description)
 - [2 Installation](#2-installation)
-    - [2.1 Install](#2.1-install)
-    - [2.2 Setup](#2.2-setup)
+    - [2.1 Install](#21-install)
+    - [2.2 Setup](#22-setup)
 - [3 Package Use](#3-package-use)
-    - [3.1 Documentation](#3.1-documentation)
-    - [3.2 Examples](#3.2-examples)
+    - [3.1 Documentation](#31-documentation)
+    - [3.2 Examples](#32-examples)
 
-## 1 Package Description
+## 1) Package Description
 
 This package models the transmission function due to precipitable water vapor (PWV) at Kitt Peak for years 2010 and later. Models are created using PWV measurements provided by the SuomiNet Project. SuomiNet measures PWV values by relating the delay in GPS signals to PWV levels in the atmosphere. This package uses measurements taken by GPS receivers located at Kitt Peak AZ, Amado AZ, Sahuarita AZ, Tucson AZ, and Tohono O'odham Community College.
 
 For more details on the correlation between GPS signals and PWV levels see [Blake and Shaw, 2011](https://arxiv.org/abs/1109.6703). For more details on the SuomiNet project see http://www.suominet.ucar.edu/overview.html .
 
 
-## 2 Installation
+## 2) Installation
 ### 2.1 Install
 
 To install the package use the setup.py file
@@ -55,7 +55,7 @@ Note that the update_models function requires the user to have permission
 to write and modify files within the package directory.
 
 
-## 3 Package Use
+## 3) Package Use
 ### 3.1 Documentation
 
 Help information and docstring is provided within the package's source code.
@@ -251,29 +251,13 @@ To view help information for a particular function, use the standard python
         7001.00033344 0.993783855758
         7002.00066689 0.999867137883
                   ...            ...
-        
-#### ToDo:
+
+## Things to do before beta testing:
 
 - Format README.md
 - Email Dick Joyce about pressure flatline
-
 - Institute check for nearby PWV measurements when interpolating models
 - Update setup.py and double check MANIFIEST.in
 - Ensure Compatibility with python 2
 - Atm model has wavlengths at unequal increments - why?
 - Check the assumed PWV value in ModTran models
-
-#### Future work:
-
-- Return transmission binned for certain wavelengths
-- When working with SED's, if I calibrated with a star of a certain color, what error did I make in z that didn't take account for pwv absorption
-
-## Notes for developers:
-
-- atm models can also model additional info - necessary code is commented out
-- wavelength range in interpolate function needs to be changed if you change the range of the models
-- user needs permission to update files within the package when updating pwv data
-- dev notes - Make sure config.txt and local data are present - there are no checks
-- before dist: reset config file, overwrite suomi data, and change DIST_YEAR variable in create_pwv_models.py
-- when releasing new version change STRT_YEAR in create_pwv_models.py
-- also update the update_models description to indicate what years are included by default
