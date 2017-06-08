@@ -8,29 +8,29 @@
 
 ## Table of contents
 
-- [Package Description](#package-description)
-- [Installation](#installation)
-    - [Install](#install)
-    - [Setup](#setup)
-- [Functions](functions)
-    - [Documentation](#documentation)
-    - [Examples](#examples)
+- [1 Package Description](#1-package-description)
+- [2 Installation](#2-installation)
+    - [2.1 Install](#2.1-install)
+    - [2.2 Setup](#2.2-setup)
+- [3 Package Use](#3-package-use)
+    - [3.1 Documentation](#3.1-documentation)
+    - [3.2 Examples](#3.2-examples)
 
-## Package Description
+## 1 Package Description
 
 This package models the transmission function due to precipitable water vapor (PWV) at Kitt Peak for years 2010 and later. Models are created using PWV measurements provided by the SuomiNet Project. SuomiNet measures PWV values by relating the delay in GPS signals to PWV levels in the atmosphere. This package uses measurements taken by GPS receivers located at Kitt Peak AZ, Amado AZ, Sahuarita AZ, Tucson AZ, and Tohono O'odham Community College.
 
 For more details on the correlation between GPS signals and PWV levels see [Blake and Shaw, 2011](https://arxiv.org/abs/1109.6703). For more details on the SuomiNet project see http://www.suominet.ucar.edu/overview.html .
 
 
-## Installation
-### Install
+## 2 Installation
+### 2.1 Install
 
 To install the package use the setup.py file
 
     python setup.py install --user
 
-### Setup
+### 2.2 Setup
 
 This package relies on PWV measurements taken by the SuomiNet project. In
 order to model the PWV transmission function for a given date, SuomiNet
@@ -55,7 +55,8 @@ Note that the update_models function requires the user to have permission
 to write and modify files within the package directory.
 
 
-## Functions
+## 3 Package Use
+### 3.1 Documentation
 
 Help information and docstring is provided within the package's source code.
 To view help information for a particular function, use the standard python
@@ -75,13 +76,6 @@ To view help information for a particular function, use the standard python
         Returns:
             years (set): A set of years with locally available SuomiNet data
 
-    Examples:
-        >>> import pwv_kpno
-        >>> available = pwv_kpno.available_data()
-        >>> available
-
-        {2010, 2011, 2012, 2013, 2014, 2015, 2016}
-
 
     update_models(year=None):
         Download data from SuomiNet and update the locally stored PWV model
@@ -97,19 +91,6 @@ To view help information for a particular function, use the standard python
 
         Returns:
             updated_years (list): A list of years for which models where updated
-
-    Examples:
-        >>> # Download all available data from 2017 onward
-        >>> updated_years = pwv_kpno.update_models()
-        >>> updated_years
-
-        [2017]
-
-
-        >>> # Download data for a specific year
-        >>> pwv_kpno.update_models(2010)
-
-        [2010]
 
 
     measured_pwv(year=None, month=None, day=None, hour=None):
@@ -132,6 +113,65 @@ To view help information for a particular function, use the standard python
         Returns:
             pwv_data (astropy.table.Table): A table of measured PWV values in mm
 
+
+    modeled_pwv(year=None, month=None, day=None, hour=None):
+        Return an astropy table of the modeled PWV at Kitt Peak
+
+        Return a model for the precipitable water vapor level at Kitt Peak as an
+        astropy table. The first column of the table is named 'date' and contains
+        the UTC datetime of each modeled value. The second column is named 'pwv',
+        and contains PWV values in millimeters. By default this function returns
+        modeled values from 2010 onward. Results can be restricted to a specific
+        year, month, day, and hour by using the key word arguments.
+
+        Args:
+            year  (int): The year of the desired PWV data
+            month (int): The month of the desired PWV data
+            day   (int): The day of the desired PWV data
+            hour  (int): The hour of the desired PWV data in 24-hour format
+
+        Returns:
+            pwv_data (astropy.table.Table): A table of modeled PWV values in mm
+
+
+    transmission(date, airmass):
+        Return a model for the atmospheric transmission function due to PWV
+
+        For a given datetime and airmass, return a model for the atmospheric
+        transmission function due to precipitable water vapor (PWV) at Kitt Peak.
+        The modeled transmission is returned as an astropy table with the columns
+        'wavelength' and 'transmission'. Wavelength values range from 7000 to
+        10,000 angstroms.
+
+        Args:
+            date (datetime.datetime): The datetime of the desired model
+            airmass          (float): The airmass of the desired model
+
+        Returns:
+            trans_func (astropy.table.Table): The modeled transmission function
+
+### 3.2 Examples
+
+    Examples:
+        >>> import pwv_kpno
+        >>> available = pwv_kpno.available_data()
+        >>> available
+
+        {2010, 2011, 2012, 2013, 2014, 2015, 2016}
+        
+    Examples:
+        >>> # Download all available data from 2017 onward
+        >>> updated_years = pwv_kpno.update_models()
+        >>> updated_years
+
+        [2017]
+
+
+        >>> # Download data for a specific year
+        >>> pwv_kpno.update_models(2010)
+
+        [2010]
+        
     Examples:
         >>> # Return a table of all locally available SuomiNet data
         >>> measured_data = pwv_kpno.measured_pwv()
@@ -164,26 +204,6 @@ To view help information for a particular function, use the standard python
         >>> len(pwv_data)
 
         0
-
-
-    modeled_pwv(year=None, month=None, day=None, hour=None):
-        Return an astropy table of the modeled PWV at Kitt Peak
-
-        Return a model for the precipitable water vapor level at Kitt Peak as an
-        astropy table. The first column of the table is named 'date' and contains
-        the UTC datetime of each modeled value. The second column is named 'pwv',
-        and contains PWV values in millimeters. By default this function returns
-        modeled values from 2010 onward. Results can be restricted to a specific
-        year, month, day, and hour by using the key word arguments.
-
-        Args:
-            year  (int): The year of the desired PWV data
-            month (int): The month of the desired PWV data
-            day   (int): The day of the desired PWV data
-            hour  (int): The hour of the desired PWV data in 24-hour format
-
-        Returns:
-            pwv_data (astropy.table.Table): A table of modeled PWV values in mm
 
     Examples:
         >>> # Return the entire model as an astropy table
@@ -219,23 +239,6 @@ To view help information for a particular function, use the standard python
 
         0
 
-
-    transmission(date, airmass):
-        Return a model for the atmospheric transmission function due to PWV
-
-        For a given datetime and airmass, return a model for the atmospheric
-        transmission function due to precipitable water vapor (PWV) at Kitt Peak.
-        The modeled transmission is returned as an astropy table with the columns
-        'wavelength' and 'transmission'. Wavelength values range from 7000 to
-        10,000 angstroms.
-
-        Args:
-            date (datetime.datetime): The datetime of the desired model
-            airmass          (float): The airmass of the desired model
-
-        Returns:
-            trans_func (astropy.table.Table): The modeled transmission function
-
     Examples:
         >>> # Return the atmospheric transmission function for 2013-12-15 05:35:00
         >>> obsv_date = datetime.datetime(year=2013, month=12, day=15, hour=5, minute=35)
@@ -248,7 +251,7 @@ To view help information for a particular function, use the standard python
         7001.00033344 0.993783855758
         7002.00066689 0.999867137883
                   ...            ...
-
+        
 #### ToDo:
 
 - Format README.md
