@@ -1,6 +1,5 @@
 <p align="center">
-    <img src="https://rawgit.com/djperrefort/pwv_kpno/readme/LOGO.svg"
-         height="130">
+    <img src="https://rawgit.com/djperrefort/pwv_kpno/master/LOGO.svg" height="120">
 </p>
 <h1 align="center">
   <br>
@@ -291,7 +290,6 @@ notes and instructions is maintained in [DEVNOTES.md](DEVNOTES.md).
 
 ## Things to do before beta testing:
 
-- Format README.md
 - Email Dick Joyce about pressure flatline
 - Institute check for nearby PWV measurements when interpolating models
 - Update setup.py and double check MANIFIEST.in
