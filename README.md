@@ -1,13 +1,14 @@
 <p align="center">
-    <img src="https://rawgit.com/djperrefort/pwv_kpno/master/LOGO.svg" height="120">
+    <img src="LOGO.png" height="140">
 </p>
 <h1 align="center">
-  <br>
   pwv_kpno
   <br>
 </h1>
 
 <h4 align="center">Python package for modeling the atmospheric transmission function at Kitt Peak National Observatory.</h4>
+
+
 
 ## Table of contents
 
