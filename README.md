@@ -2,11 +2,11 @@
     <img src="LOGO.png" height="140">
 </p>
 <h1 align="center">
-  
+  pwv_kpno
   <br>
 </h1>
 
-<h4 align="center">pwv_kpno: Python package for modeling the atmospheric transmission function at Kitt Peak National Observatory.</h4>
+<h4 align="center">A Python package for modeling the atmospheric transmission function at Kitt Peak National Observatory.</h4>
 
 
 
