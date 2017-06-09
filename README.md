@@ -287,7 +287,7 @@ airmass of 1.2, the transmission function at 2013-12-15 05:35:00 is given by:
 ## 4) Future Development
 
 For those interested in modifying or updating this package, a collection of
-notes and instructions is maintained in [DEVNOTES.md](DEVNOTES.md).
+informal notes and instructions is maintained in [DEVNOTES.md](DEVNOTES.md).
 
 ## Things to do before beta testing:
 

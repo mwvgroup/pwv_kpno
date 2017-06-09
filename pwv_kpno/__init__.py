@@ -289,7 +289,7 @@ Generating an atmospheric transmission function
 ---------------------
 
 For those interested in modifying or updating this package, a collection of
-notes and instructions is maintained in DEVNOTES.md.
+informal notes and instructions is maintained in DEVNOTES.md.
 """
 
 from end_user_functions import update_models
