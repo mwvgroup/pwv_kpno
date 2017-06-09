@@ -6,7 +6,7 @@
   <br>
 </h1>
 
-<h4 align="center">A Python package for modeling the atmospheric transmission function at Kitt Peak National Observatory.</h4>
+<h4 align="center">Models the atmospheric transmission function due to precipitable water vapor at Kitt Peak National Observatory.</h4>
 
 
 
@@ -23,17 +23,17 @@
 
 ## 1) Package Description
 
-This package models the transmission function due to precipitable water vapor
-(PWV) at the Kitt Peak National Observatory for years 2010 and later. Models
-are created using PWV measurements provided by the SuomiNet Project. SuomiNet
-measures PWV values by relating the delay in GPS signals to PWV levels in the
-atmosphere. This package uses measurements taken by GPS receivers located at
-Kitt Peak AZ, Amado AZ, Sahuarita AZ, Tucson AZ, and Tohono O'odham Community
-College.
+pwv_kpno is a Python package that models the atmospheric transmission function
+due to precipitable water vapor (PWV) at the Kitt Peak National Observatory for
+years 2010 onward. Models are created using PWV measurements provided by the
+SuomiNet Project. SuomiNet measures PWV values by relating the delay in GPS
+signals to PWV levels in the atmosphere. This package uses measurements taken
+by GPS receivers located at Kitt Peak AZ, Amado AZ, Sahuarita AZ, Tucson AZ,
+and Tohono O'odham Community College.
 
 For more details on the correlation between GPS signals and PWV levels see
 [Blake and Shaw, 2011](https://arxiv.org/abs/1109.6703). For more details on the SuomiNet project see
-http://www.suominet.ucar.edu/overview.html .
+[http://www.suominet.ucar.edu/overview.html](http://www.suominet.ucar.edu/overview.html).
 
 
 ## 2) Installation

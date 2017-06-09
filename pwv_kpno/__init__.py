@@ -20,13 +20,13 @@
 1) Package Description
 ----------------------
 
-This package models the transmission function due to precipitable water vapor
-(PWV) at the Kitt Peak National Observatory for years 2010 and later. Models
-are created using PWV measurements provided by the SuomiNet Project. SuomiNet
-measures PWV values by relating the delay in GPS signals to PWV levels in the
-atmosphere. This package uses measurements taken by GPS receivers located at
-Kitt Peak AZ, Amado AZ, Sahuarita AZ, Tucson AZ, and Tohono O'odham Community
-College.
+pwv_kpno is a Python package that models the atmospheric transmission function
+due to precipitable water vapor (PWV) at the Kitt Peak National Observatory for
+years 2010 onward. Models are created using PWV measurements provided by the
+SuomiNet Project. SuomiNet measures PWV values by relating the delay in GPS
+signals to PWV levels in the atmosphere. This package uses measurements taken
+by GPS receivers located at Kitt Peak AZ, Amado AZ, Sahuarita AZ, Tucson AZ,
+and Tohono O'odham Community College.
 
 For more details on the correlation between GPS signals and PWV levels see
 Blake and Shaw, 2011. For more details on the SuomiNet project see
@@ -189,7 +189,7 @@ Updating local SuomiNet data
       >>> pwv_kpno.update_models(2010)
 
       [2010]
-        
+
 Retrieving local SuomiNet data
 
   To retrieve an astropy table of SuomiNet available on the local machine,
@@ -270,9 +270,9 @@ Generating an atmospheric transmission function
 
   To return a model for the atmospheric transmission function for a specific
   datetime, first create a datetime object. That object is then passed to the
-  `transmission` function along with an airmass value. For example, for an 
+  `transmission` function along with an airmass value. For example, for an
   airmass of 1.2, the transmission function at 2013-12-15 05:35:00 is given by:
- 
+
       >>> from datetime import datetime
       >>> obsv_date = datetime(year=2013, month=12, day=15, hour=5, minute=35)
       >>> trans = pwv_kpno.transmission(date=obsv_date, airmass=1.2)
