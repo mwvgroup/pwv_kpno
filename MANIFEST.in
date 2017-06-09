@@ -1,2 +1,1 @@
-include LICENSE.txt
-recursive-include pwv *.csv *.txt *.plot *.md
+include *.csv *.txt *.plot *.md *.png

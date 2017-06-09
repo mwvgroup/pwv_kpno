@@ -42,7 +42,7 @@ __status__ = 'Development'
 
 # Define necessary directory paths
 ATM_MOD_DIR = './atm_models'  # Location of atmospheric models
-PWV_TAB_DIR = './pwv_tables/' # Where to write PWV data tables
+PWV_TAB_DIR = './pwv_tables/'  # Where to write PWV data tables
 
 
 def available_data():
@@ -123,23 +123,11 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
     if not (isinstance(year, int) or year is None):
         raise TypeError("Argument 'year' (pos 1) must be an integer.")
 
-    elif year is None and month is not None:
-        msg = "Argument 'month' (pos 2) specified without 'year' (pos 1)."
-        raise ValueError(msg)
-
     if not (isinstance(month, int) or month is None):
         raise TypeError("Argument 'month' (pos 2) must be an integer.")
 
-    elif month is None and day is not None:
-        msg = "Argument 'day' (pos 3) specified without 'month' (pos 2)."
-        raise ValueError(msg)
-
     if not (isinstance(day, int) or day is None):
         raise TypeError("Argument 'day' (pos 3) must be an integer.")
-
-    elif day is None and hour is not None:
-        msg = "Argument 'hour' (pos 4) specified without 'day' (pos 3)."
-        raise ValueError(msg)
 
     if not (isinstance(hour, int) or hour is None):
         raise TypeError("Argument 'hour' (pos 4) must be an integer.")
@@ -156,12 +144,15 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
         if colname != 'date':
             pwv_data[colname].unit = 'mm'
 
-    # Refine results to only include datetimes indicated by kwargs
-    if year:
-        indx = np.vectorize(lambda x: x.year == year)(pwv_data['date'])
-
-    else:
+    # If no kwargs were user specified, return data
+    if not all([year, month, day, hour]):
         return pwv_data
+
+    # Refine results to only include datetimes indicated by kwargs
+    indx = [True for i in pwv_data['date']]
+    if year:
+        test_func = np.vectorize(lambda x: x.year == year)
+        indx = np.logical_and(indx, test_func(pwv_data['date']))
 
     if month:
         test_func = np.vectorize(lambda x: x.month == month)
@@ -174,7 +165,7 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
     if hour:
         test_func = np.vectorize(lambda x: x.hour == hour)
         indx = np.logical_and(indx, test_func(pwv_data['date']))
-
+    print('search finished')
     return pwv_data[np.where(indx)[0]]
 
 
@@ -202,23 +193,11 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
     if not (isinstance(year, int) or year is None):
         raise TypeError("Argument 'year' (pos 1) must be an integer.")
 
-    elif year is None and month is not None:
-        msg = "Argument 'month' (pos 2) specified without 'year' (pos 1)."
-        raise ValueError(msg)
-
     if not (isinstance(month, int) or month is None):
         raise TypeError("Argument 'month' (pos 2) must be an integer.")
 
-    elif month is None and day is not None:
-        msg = "Argument 'day' (pos 3) specified without 'month' (pos 2)."
-        raise ValueError(msg)
-
     if not (isinstance(day, int) or day is None):
         raise TypeError("Argument 'day' (pos 3) must be an integer.")
-
-    elif day is None and hour is not None:
-        msg = "Argument 'hour' (pos 4) specified without 'day' (pos 3)."
-        raise ValueError(msg)
 
     if not (isinstance(hour, int) or hour is None):
         raise TypeError("Argument 'hour' (pos 4) must be an integer.")
@@ -231,12 +210,15 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
     pwv_data['date'].unit = 'UTC'
     pwv_data['pwv'].unit = 'mm'
 
-    # Refine results to only include datetimes indicated by kwargs
-    if year:
-        indx = np.vectorize(lambda x: x.year == year)(pwv_data['date'])
-
-    else:
+    # If no kwargs were user specified, return data
+    if not all([year, month, day, hour]):
         return pwv_data
+
+    # Refine results to only include datetimes indicated by kwargs
+    indx = [True for i in pwv_data['date']]
+    if year:
+        test_func = np.vectorize(lambda x: x.year == year)
+        indx = np.logical_and(indx, test_func(pwv_data['date']))
 
     if month:
         test_func = np.vectorize(lambda x: x.month == month)
@@ -277,8 +259,17 @@ def transmission(date, airmass):
         msg = "Argument 'airmass' (pos 2) should be a float instance"
         raise TypeError(msg)
 
-    # Determine the PWV level at zenith for the specified datetime
+    if date < datetime(2010, 6, 25, 0, 15):
+        msg = 'Cannot model transmission prior to 2010-06-25 00:15:00'
+        raise ValueError(msg)
+
     pwv_model = Table.read(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'))
+    cutoff = datetime.fromtimestamp(max(pwv_model['date']))
+    if date > cutoff:
+        msg = 'No local SuomiNet data found for datetimes after {0}.'
+        raise ValueError(msg.format(cutoff))
+
+    # Determine the PWV level at zenith for the specified datetime
     pwv_z = np.interp(date.timestamp(), pwv_model['date'], pwv_model['pwv'])
 
     # Determine the PWV level along line of sight
