@@ -1,4 +1,7 @@
-![logo.svn](https://rawgit.com/djperrefort/pwv_kpno/readme/LOGO.svg)
+<p align="center">
+    <img src="https://rawgit.com/djperrefort/pwv_kpno/readme/LOGO.svg"
+         height="130">
+</p>
 <h1 align="center">
   <br>
   pwv_kpno
