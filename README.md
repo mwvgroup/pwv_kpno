@@ -8,7 +8,10 @@
 
 <h4 align="center">Models the atmospheric transmission function due to precipitable water vapor at Kitt Peak National Observatory</h4>
 
-
+<!-- [![pypi](https://img.shields.io/badge/pypi%20package-1.0.0-blue.svg)]() -->
+[![build](https://img.shields.io/badge/build-not%20tested-yellow.svg)]()
+[![code climate](https://img.shields.io/badge/code%climate-not%20tested-yellow.svg)]()
+[![license](https://img.shields.io/badge/license-GPL%20v3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 ## Table of contents
 
@@ -39,9 +42,9 @@ For more details on the correlation between GPS signals and PWV levels see
 ## 2) Installation
 ### 2.1 Install
 
-This package is pip installable
+<!-- This package is pip installable
 
-    $ pip install pwv_kpno
+    $ pip install pwv_kpno -->
 
 Alternatively, one can use the setup.py file
 
