@@ -102,7 +102,7 @@ Help information for each function can be accesed using the standard python
         the SuomiNet website. Use this data to create an updated model for the PWV
         level at Kitt Peak. If a year is provided, only update data for that year.
         If not, download all available data from 2017 onward. Data for years from
-        2010 through 2016 is included with this package version 1.0.0 by default.
+        2010 through 2016 is included with this package version by default.
 
         Args:
             year (int): A Year from 2010 onward
