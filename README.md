@@ -1,8 +1,5 @@
-<p align="center">
-    <img src="LOGO.png" height="140">
-</p>
 <h1 align="center">
-  pwv_kpno
+  <img src="LOGO.png" height="140">
   <br>
 </h1>
 
