@@ -6,16 +6,6 @@
 <h4 align="center">Models the atmospheric transmission function due to precipitable water vapor at Kitt Peak National Observatory</h4>
 
 <!-- [![pypi](https://img.shields.io/badge/pypi%20package-1.0.0-blue.svg)]() -->
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[![version](https://img.shields.io/badge/version-0.9.0-blue.svg)]()
-[![python](https://img.shields.io/badge/python-3.6-blue.svg)]()
-[![build](https://img.shields.io/badge/build-not%20tested-yellow.svg)]()
-[![code climate](https://img.shields.io/badge/code%20climate-not%20tested-yellow.svg)]()
-[![license](https://img.shields.io/badge/license-GPL%20v3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-
-
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
