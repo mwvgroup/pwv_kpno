@@ -9,12 +9,21 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;
 [![version](https://img.shields.io/badge/version-0.9.0-blue.svg)]()
+[![python](https://img.shields.io/badge/python-3.6-blue.svg)]()
 [![build](https://img.shields.io/badge/build-not%20tested-yellow.svg)]()
 [![code climate](https://img.shields.io/badge/code%20climate-not%20tested-yellow.svg)]()
 [![license](https://img.shields.io/badge/license-GPL%20v3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+[![version](https://img.shields.io/badge/version-0.9.0-blue.svg)]()
+[![python](https://img.shields.io/badge/python-3.6-blue.svg)]()
+[![build](https://img.shields.io/badge/build-not%20tested-yellow.svg)]()
+[![code climate](https://img.shields.io/badge/code%20climate-not%20tested-yellow.svg)]()
+[![license](https://img.shields.io/badge/license-GPL%20v3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 ## Table of contents
 
 - [1 Package Description](#1-package-description)
@@ -293,12 +302,3 @@ airmass of 1.2, the transmission function at 2013-12-15 05:35:00 is given by:
 
 For those interested in modifying or updating this package, a collection of
 informal notes and instructions is maintained in [DEVNOTES.md](DEVNOTES.md).
-
-## Things to do before beta testing:
-
-- Email Dick Joyce about pressure flatline
-- Institute check for nearby PWV measurements when interpolating models
-- Update setup.py and double check MANIFIEST.in
-- Ensure Compatibility with python 2
-- Atm model has wavelengths at unequal increments - why?
-- Check the assumed PWV value in ModTran models
