@@ -119,7 +119,7 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
         pwv_data (astropy.table.Table): A table of measured PWV values in mm
     """
 
-    # Check for valid args
+    # Check for valid arg types
     if not (isinstance(year, int) or year is None):
         raise TypeError("Argument 'year' (pos 1) must be an integer.")
 
@@ -189,7 +189,7 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
         pwv_data (astropy.table.Table): A table of modeled PWV values in mm
     """
 
-    # Check for valid args
+    # Check for valid arg types
     if not (isinstance(year, int) or year is None):
         raise TypeError("Argument 'year' (pos 1) must be an integer.")
 
@@ -252,6 +252,7 @@ def transmission(date, airmass):
         trans_func (astropy.table.Table): The modeled transmission function
     """
 
+    # Check for valid arg types
     if not isinstance(date, datetime):
         raise TypeError("Argument 'date' (pos 1) must be a datetime instance")
 
@@ -259,20 +260,28 @@ def transmission(date, airmass):
         msg = "Argument 'airmass' (pos 2) should be a float instance"
         raise TypeError(msg)
 
+    # No SuomiNet data is available with the package prior to 2010-06-25
     if date < datetime(2010, 6, 25, 0, 15):
         msg = 'Cannot model transmission prior to 2010-06-25 00:15:00'
         raise ValueError(msg)
 
+    # Check that local SuomiNet data is available up to the specified date
     pwv_model = Table.read(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'))
     cutoff = datetime.fromtimestamp(max(pwv_model['date']))
     if date > cutoff:
         msg = 'No local SuomiNet data found for datetimes after {0}.'
         raise ValueError(msg.format(cutoff))
 
-    # Determine the PWV level at zenith for the specified datetime
-    pwv_z = np.interp(date.timestamp(), pwv_model['date'], pwv_model['pwv'])
-
+    # Check that there is SuomiNet data available near the specified date
+    diff = pwv_model['date'] - tdate.timestamp()
+    if min(diff[diff > 0]) - max(diff[diff < 0]) > 259200:
+        msg = ('Cannot model transmission. Specified datetime falls within an' +
+               ' interval of missing SuomiNet data larger than 3 days ({0}' +
+               ' interval found).')
+        raise ValueError(msg.format(timedelta(seconds=interval)))
+    
     # Determine the PWV level along line of sight
+    pwv_z = np.interp(date.timestamp(), pwv_model['date'], pwv_model['pwv'])
     pwv_los = pwv_z * airmass
 
     # Read in the atmospheric models from file
