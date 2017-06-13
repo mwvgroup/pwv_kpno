@@ -1,1 +1,3 @@
-include *.csv *.txt *.plot *.md *.png
+include *.csv *.txt *.plot *.md *.png *.py
+prune .git
+prune *.ipynb *.gitignore
