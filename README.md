@@ -8,8 +8,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[![version](https://img.shields.io/badge/version-0.9.0-blue.svg)]()
-[![python](https://img.shields.io/badge/python-3.6-blue.svg)]()
+[![version](https://img.shields.io/badge/version-0.9.1-blue.svg)]()
+[![python](https://img.shields.io/badge/python-2.7,%203.6-blue.svg)]()
 [![build](https://img.shields.io/badge/build-not%20tested-yellow.svg)]()
 [![code climate](https://img.shields.io/badge/code%20climate-not%20tested-yellow.svg)]()
 [![license](https://img.shields.io/badge/license-GPL%20v3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)

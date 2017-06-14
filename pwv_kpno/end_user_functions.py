@@ -46,9 +46,9 @@ PWV_TAB_DIR = './pwv_tables/'  # Where to write PWV data tables
 
 
 def available_data():
-    """Return a set of years for which SuomiNet data has been downloaded
+    """Return a list of years for which SuomiNet data has been downloaded
 
-    Return a set of years for which SuomiNet data has been downloaded to the
+    Return a list of years for which SuomiNet data has been downloaded to the
     local machine. Note that this function includes years for which any amount
     of data has been downloaded. It does not indicate if additional data has
     been released by SuomiNet for a given year that is not locally available.
@@ -57,11 +57,13 @@ def available_data():
         None
 
     Returns:
-        years (set): A set of years with locally available SuomiNet data
+        years (list): A list of years with locally available SuomiNet data
     """
 
     with open('../CONFIG.txt', 'rb') as ofile:
-        return pickle.load(ofile)
+        years = list(pickle.load(ofile))
+        years.sort()
+        return years
 
 
 def update_models(year=None):
@@ -136,7 +138,7 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
     pwv_data = Table.read(os.path.join(PWV_TAB_DIR, 'measured_pwv.csv'))
 
     # Convert UNIX timestamps to UTC
-    pwv_data['date'] = np.vectorize(datetime.fromtimestamp)(pwv_data['date'])
+    pwv_data['date'] = np.vectorize(datetime.utcfromtimestamp)(pwv_data['date'])
     pwv_data['date'].unit = 'UTC'
 
     # Assign units to the remaining columns
@@ -145,7 +147,7 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
             pwv_data[colname].unit = 'mm'
 
     # If no kwargs were user specified, return data
-    if not all([year, month, day, hour]):
+    if not year and not month and not day and not hour:
         return pwv_data
 
     # Refine results to only include datetimes indicated by kwargs
@@ -206,12 +208,12 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
     pwv_data = Table.read(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'))
 
     # Convert UNIX timestamps to UTC
-    pwv_data['date'] = np.vectorize(datetime.fromtimestamp)(pwv_data['date'])
+    pwv_data['date'] = np.vectorize(datetime.utcfromtimestamp)(pwv_data['date'])
     pwv_data['date'].unit = 'UTC'
     pwv_data['pwv'].unit = 'mm'
 
     # If no kwargs were user specified, return data
-    if not all([year, month, day, hour]):
+    if not year and not month and not day and not hour:
         return pwv_data
 
     # Refine results to only include datetimes indicated by kwargs
@@ -267,13 +269,13 @@ def transmission(date, airmass):
 
     # Check that local SuomiNet data is available up to the specified date
     pwv_model = Table.read(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'))
-    cutoff = datetime.fromtimestamp(max(pwv_model['date']))
+    cutoff = datetime.utcfromtimestamp(max(pwv_model['date']))
     if date > cutoff:
         msg = 'No local SuomiNet data found for datetimes after {0}.'
         raise ValueError(msg.format(cutoff))
 
     # Check that there is SuomiNet data available near the specified date
-    diff = pwv_model['date'] - tdate.timestamp()
+    diff = pwv_model['date'] - (date - datetime(1970, 1, 1)).total_seconds()
     if min(diff[diff > 0]) - max(diff[diff < 0]) > 259200:
         msg = ('Cannot model transmission. Specified datetime falls within an' +
                ' interval of missing SuomiNet data larger than 3 days ({0}' +
@@ -281,7 +283,8 @@ def transmission(date, airmass):
         raise ValueError(msg.format(timedelta(seconds=interval)))
     
     # Determine the PWV level along line of sight
-    pwv_z = np.interp(date.timestamp(), pwv_model['date'], pwv_model['pwv'])
+    timestamp = (date - datetime(1970, 1, 1)).total_seconds()
+    pwv_z = np.interp(timestamp, pwv_model['date'], pwv_model['pwv'])
     pwv_los = pwv_z * airmass
 
     # Read in the atmospheric models from file

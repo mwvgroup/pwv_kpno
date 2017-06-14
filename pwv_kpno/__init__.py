@@ -182,7 +182,7 @@ Help information for each function can be accesed using the standard python
 
 Updating local SuomiNet data
 
-  Version 1.0.0 of this package is distributed with all the necessary Suominet
+  Version 0.9.1 of this package is distributed with all the necessary Suominet
   data from 2010 through 2016. To download any SuomiNet data published after
   2016 use the `update_models` function:
 
@@ -301,12 +301,13 @@ For those interested in modifying or updating this package, a collection of
 informal notes and instructions is maintained in DEVNOTES.md.
 """
 
+from end_user_functions import available_data
 from end_user_functions import update_models
 from end_user_functions import modeled_pwv
 from end_user_functions import measured_pwv
 from end_user_functions import transmission
 
-__version__ = '1.0.0'
+__version__ = '0.9.1'
 __author__ = 'Daniel Perrefort'
 __email__ = 'djperrefort@gmail.com'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'

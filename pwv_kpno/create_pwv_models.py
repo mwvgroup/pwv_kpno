@@ -35,11 +35,11 @@ on the SuomiNet project see http://www.suominet.ucar.edu/overview.html.
 """
 
 import os
+import sys
 import pickle
+import requests
 from collections import Counter
 from datetime import datetime
-from urllib.request import urlretrieve
-from urllib.error import HTTPError, ContentTooShortError, URLError
 
 import numpy as np
 from astropy.table import Table, join, vstack, unique
@@ -86,25 +86,38 @@ def _download_suomi_data(year):
     # Download data for each GPS receiver
     for loc in SUOMI_IDS:
         try:
+            response = requests.get(url.format(loc, year))
+            response.raise_for_status()
+            
             path = fpath.format(loc, year)
-            urlretrieve(url.format(loc, year), path)
+            with open(path, 'wb') as f:
+                f.write(response.content)
+
             new_paths.append(path)
+            
+        except requests.exceptions.HTTPError as err:
+            if response.status_code != 404:
+                raise Exception(err)
 
-        except HTTPError as err:
-            if err.code != 404:
-                raise Exception('Error connecting to ' + url + '. Code ' +
-                                str(err.code) + ', ' + err.reason)
-
-        except ContentTooShortError:
-            raise Exception('Downloaded data is less than expected - ' +
-                            ' Download from SuomiNet was interrupted.')
-
-        except URLError as err:
-            raise Exception('Could not connect to SuomiNet Server. ' +
-                            'No HTTP response code available.')
+    if not new_paths:
+        warn('No data files downloaded from SuomiNet', RuntimeWarning)
 
     return new_paths
 
+
+def _epoch_seconds(date_str):
+    """Returns seconds since epoch of a datetime in %Y-%m-%dT%H:%M format
+
+    This function provides compatability for Python 2.7, for which
+    datetime.timestamp method was not yet available.
+
+    Args:
+        date_str (str): Datetime as string in %Y-%m-%dT%H:%M format
+    """
+
+    date = datetime.strptime(date_str, '%Y-%m-%dT%H:%M')
+    timestamp = (date - datetime(1970, 1, 1)).total_seconds()
+    return timestamp
 
 def _read_file(path):
     """Returns PWV measurements from a SuomiNet data file as an astropy table
@@ -142,14 +155,12 @@ def _read_file(path):
     # Remove any remaining entries with duplicate dates but different data
     dup_dates = (Counter(data['date']) - Counter(set(data['date']))).keys()
     ind = [(x not in dup_dates) for x in data['date']]
-    data = np.extract(ind, data)
+    out_table = Table(np.extract(ind, data), names=['date', path[-17:-13]])
 
     # Convert dates to UNIX timestamp
-    unix = [(datetime.strptime(value[0], '%Y-%m-%dT%H:%M').timestamp(),
-             value[1]) for value in data]
-    data = np.array(unix, dtype=[('date', float), (path[-17:-13], float)])
-    out_table = Table(data)
-
+    if out_table:
+        out_table['date'] = np.vectorize(_epoch_seconds)(out_table['date'])
+        
     return out_table
 
 
@@ -203,7 +214,7 @@ def _update_suomi_data(year=None):
         available_years.update(updated_years)
 
     with open('../CONFIG.txt', 'wb') as ofile:
-        pickle.dump(available_years, ofile)
+        pickle.dump(available_years, ofile, protocol=2)
 
     return updated_years
 
@@ -255,4 +266,4 @@ def _update_pwv_model():
     # Write results to file
     out = Table([pwv_data['date'], sup_data], names=['date', 'pwv'])
     out = out[np.where(out['pwv'] > 0)[0]]
-    out.write(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'))
+    out.write(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'), overwrite=True)
