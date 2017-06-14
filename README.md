@@ -56,7 +56,7 @@ the SuomiNet project see [http://www.suominet.ucar.edu/overview.html](http://www
 
     $ pip install pwv_kpno -->
 
-Alternatively, one can use the setup.py file
+<!-- Alternatively, one can --> Use the setup.py file
 
     $ python setup.py install --user
 
