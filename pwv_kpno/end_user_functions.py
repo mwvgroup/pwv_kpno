@@ -100,6 +100,81 @@ def update_models(year=None):
     return updated_years
 
 
+def _raise_arg_types(year, month, day, hour):
+    """This function provides argument type and value checking
+
+    This function provides argument type and value checking for the functions
+    `measured_pwv` and `modeled_pwv`.
+
+    Args:
+        year  (int): An integer value betwean 2010 and the current year
+        month (int): An integer value betwean 0 and 12
+        day   (int): An integer value betwean 0 and 31
+        hour  (int): An integer value betwean 0 and 24
+
+    Returns:
+        None
+    """
+
+    # Check the year argument
+    if not (isinstance(year, int) or year is None):
+        raise TypeError("Argument 'year' (pos 1) must be an integer.")
+
+    elif isinstance(year, int) and year < 2010:
+        raise ValueError('pwv_kpno does not provide data years prior to 2010')
+
+    elif isinstance(year, int) and year > datetime.now().year:
+        raise ValueError("Argument 'year' (pos 1) is larger than current year")
+
+    # Check the month argument
+    if not (isinstance(month, int) or month is None):
+        raise TypeError("Argument 'month' (pos 2) must be an integer.")
+
+    elif isinstance(month, int) and (month < 0 or month > 12):
+        raise ValueError('Invalid value for month: ' + str(month))
+
+    # Check the day argument
+    if not (isinstance(day, int) or day is None):
+        raise TypeError("Argument 'day' (pos 3) must be an integer.")
+
+    elif isinstance(day, int) and (day < 0 or day > 31):
+        raise ValueError('Invalid value for day: ' + str(day))
+
+    # Check the hour argument
+    if not (isinstance(hour, int) or hour is None):
+        raise TypeError("Argument 'hour' (pos 4) must be an integer.")
+
+    elif isinstance(hour, int) and (hour < 0 or hour > 24):
+        raise ValueError('Invalid value for hour: ' + str(hour))
+
+
+def _search_dt_table(data_tab, **params):
+    """Search an astropy table
+
+    Given an astropy table with column 'date', return all entries in the table
+    for which there is an object in date with attributes matching the values
+    specified in params
+
+    Args:
+        data_tab (astropy.table.Table): An astropy table to search
+        **params (): The parameters to search data_tab for
+
+    Returns:
+        Entries from data_tab that match search parameters
+    """
+
+    # Credit for this function belongs to Alexander Afanasyev
+    # https://codereview.stackexchange.com/questions/165811
+
+    def vectorize_callable(item):
+        return all(getattr(item, param_name) == param_value
+                   for param_name, param_value in params.items()
+                   if param_value is not None)
+
+    indexing_func = np.vectorize(vectorize_callable)
+    return data_tab[np.where(indexing_func(data_tab['date']))[0]]
+
+
 def measured_pwv(year=None, month=None, day=None, hour=None):
     """Return an astropy table of PWV measurements taken by SuomiNet
 
@@ -118,57 +193,26 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
         hour  (int): The hour of the desired PWV data in 24-hour format
 
     Returns:
-        pwv_data (astropy.table.Table): A table of measured PWV values in mm
+        data (astropy.table.Table): A table of measured PWV values in mm
     """
 
     # Check for valid arg types
-    if not (isinstance(year, int) or year is None):
-        raise TypeError("Argument 'year' (pos 1) must be an integer.")
-
-    if not (isinstance(month, int) or month is None):
-        raise TypeError("Argument 'month' (pos 2) must be an integer.")
-
-    if not (isinstance(day, int) or day is None):
-        raise TypeError("Argument 'day' (pos 3) must be an integer.")
-
-    if not (isinstance(hour, int) or hour is None):
-        raise TypeError("Argument 'hour' (pos 4) must be an integer.")
+    _raise_arg_types(year, month, day, hour)
 
     # Read in SuomiNet measurements from the master table
-    pwv_data = Table.read(os.path.join(PWV_TAB_DIR, 'measured_pwv.csv'))
+    data = Table.read(os.path.join(PWV_TAB_DIR, 'measured_pwv.csv'))
 
     # Convert UNIX timestamps to UTC
-    pwv_data['date'] = np.vectorize(datetime.utcfromtimestamp)(pwv_data['date'])
-    pwv_data['date'].unit = 'UTC'
+    data['date'] = np.vectorize(datetime.utcfromtimestamp)(data['date'])
+    data['date'].unit = 'UTC'
 
     # Assign units to the remaining columns
-    for colname in pwv_data.colnames:
+    for colname in data.colnames:
         if colname != 'date':
-            pwv_data[colname].unit = 'mm'
-
-    # If no kwargs were user specified, return data
-    if not year and not month and not day and not hour:
-        return pwv_data
+            data[colname].unit = 'mm'
 
     # Refine results to only include datetimes indicated by kwargs
-    indx = [True for i in pwv_data['date']]
-    if year:
-        test_func = np.vectorize(lambda x: x.year == year)
-        indx = np.logical_and(indx, test_func(pwv_data['date']))
-
-    if month:
-        test_func = np.vectorize(lambda x: x.month == month)
-        indx = np.logical_and(indx, test_func(pwv_data['date']))
-
-    if day:
-        test_func = np.vectorize(lambda x: x.day == day)
-        indx = np.logical_and(indx, test_func(pwv_data['date']))
-
-    if hour:
-        test_func = np.vectorize(lambda x: x.hour == hour)
-        indx = np.logical_and(indx, test_func(pwv_data['date']))
-    print('search finished')
-    return pwv_data[np.where(indx)[0]]
+    return _search_dt_table(data, year=year, month=month, day=day, hour=hour)
 
 
 def modeled_pwv(year=None, month=None, day=None, hour=None):
@@ -188,53 +232,22 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
         hour  (int): The hour of the desired PWV data in 24-hour format
 
     Returns:
-        pwv_data (astropy.table.Table): A table of modeled PWV values in mm
+        data (astropy.table.Table): A table of modeled PWV values in mm
     """
 
     # Check for valid arg types
-    if not (isinstance(year, int) or year is None):
-        raise TypeError("Argument 'year' (pos 1) must be an integer.")
-
-    if not (isinstance(month, int) or month is None):
-        raise TypeError("Argument 'month' (pos 2) must be an integer.")
-
-    if not (isinstance(day, int) or day is None):
-        raise TypeError("Argument 'day' (pos 3) must be an integer.")
-
-    if not (isinstance(hour, int) or hour is None):
-        raise TypeError("Argument 'hour' (pos 4) must be an integer.")
+    _raise_arg_types(year, month, day, hour)
 
     # Read in SuomiNet measurements from the master table
-    pwv_data = Table.read(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'))
+    data = Table.read(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'))
 
     # Convert UNIX timestamps to UTC
-    pwv_data['date'] = np.vectorize(datetime.utcfromtimestamp)(pwv_data['date'])
-    pwv_data['date'].unit = 'UTC'
-    pwv_data['pwv'].unit = 'mm'
-
-    # If no kwargs were user specified, return data
-    if not year and not month and not day and not hour:
-        return pwv_data
+    data['date'] = np.vectorize(datetime.utcfromtimestamp)(pwv_data['date'])
+    data['date'].unit = 'UTC'
+    data['pwv'].unit = 'mm'
 
     # Refine results to only include datetimes indicated by kwargs
-    indx = [True for i in pwv_data['date']]
-    if year:
-        test_func = np.vectorize(lambda x: x.year == year)
-        indx = np.logical_and(indx, test_func(pwv_data['date']))
-
-    if month:
-        test_func = np.vectorize(lambda x: x.month == month)
-        indx = np.logical_and(indx, test_func(pwv_data['date']))
-
-    if day:
-        test_func = np.vectorize(lambda x: x.day == day)
-        indx = np.logical_and(indx, test_func(pwv_data['date']))
-
-    if hour:
-        test_func = np.vectorize(lambda x: x.hour == hour)
-        indx = np.logical_and(indx, test_func(pwv_data['date']))
-
-    return pwv_data[np.where(indx)[0]]
+    return _search_dt_table(data, year=year, month=month, day=day, hour=hour)
 
 
 def transmission(date, airmass):
@@ -281,7 +294,7 @@ def transmission(date, airmass):
                ' interval of missing SuomiNet data larger than 3 days ({0}' +
                ' interval found).')
         raise ValueError(msg.format(timedelta(seconds=interval)))
-    
+
     # Determine the PWV level along line of sight
     timestamp = (date - datetime(1970, 1, 1)).total_seconds()
     pwv_z = np.interp(timestamp, pwv_model['date'], pwv_model['pwv'])

@@ -88,13 +88,13 @@ def _download_suomi_data(year):
         try:
             response = requests.get(url.format(loc, year))
             response.raise_for_status()
-            
+
             path = fpath.format(loc, year)
             with open(path, 'wb') as f:
                 f.write(response.content)
 
             new_paths.append(path)
-            
+
         except requests.exceptions.HTTPError as err:
             if response.status_code != 404:
                 raise Exception(err)
@@ -118,6 +118,7 @@ def _epoch_seconds(date_str):
     date = datetime.strptime(date_str, '%Y-%m-%dT%H:%M')
     timestamp = (date - datetime(1970, 1, 1)).total_seconds()
     return timestamp
+
 
 def _read_file(path):
     """Returns PWV measurements from a SuomiNet data file as an astropy table
@@ -160,7 +161,7 @@ def _read_file(path):
     # Convert dates to UNIX timestamp
     if out_table:
         out_table['date'] = np.vectorize(_epoch_seconds)(out_table['date'])
-        
+
     return out_table
 
 
@@ -206,7 +207,8 @@ def _update_suomi_data(year=None):
         updated_years.append(yr)
 
     # Write updated data to file
-    loc_data.write(os.path.join(PWV_TAB_DIR, 'measured_pwv.csv'), overwrite=True)
+    out_path = os.path.join(PWV_TAB_DIR, 'measured_pwv.csv')
+    loc_data.write(out_path, overwrite=True)
 
     # Update config.txt
     with open('../CONFIG.txt', 'rb') as ofile:
@@ -227,8 +229,8 @@ def _update_pwv_model():
     these polynomials to supplement PWV measurements taken at Kitt Peak for
     times when no Kitt Peak data is available. Write the supplemented PWV
     data to a csv file at PWV_TAB_DIR/measured.csv. The resulting file contains
-    the columns 'date' and 'pwv', where dates are represented as UNIX timestamps
-    and PWV values are measured in millimeters.
+    the columns 'date' and 'pwv', where dates are represented as UNIX
+    timestamps and PWV values are measured in millimeters.
 
     Args:
         None

@@ -23,5 +23,5 @@ setup(name='pwv_kpno',
       license='GPL v3',
       packages=['pwv_kpno'],
       python_requires='>=2.7',
-      install_requires=['numpy', 'astropy', 'scipy', 'requests>=2.9]
+      install_requires=['numpy', 'astropy', 'scipy', 'requests']
     )
