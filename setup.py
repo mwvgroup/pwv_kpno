@@ -3,7 +3,7 @@ from distutils.core import setup
 
 setup(name='pwv_kpno',
       version='0.9.0',
-      description='Corrects NIR spectra taken at KPNO using atmospheric models',
+      description='Models the atmospheric transmission function for KPNO',
       long_description=open('README.md').read()[917:],
       classifiers=['Development Status :: 3 - Alpha',
                    'Intended Audience :: Science/Research',
@@ -24,4 +24,4 @@ setup(name='pwv_kpno',
       packages=['pwv_kpno'],
       python_requires='>=2.7',
       install_requires=['numpy', 'astropy', 'scipy', 'requests']
-    )
+      )

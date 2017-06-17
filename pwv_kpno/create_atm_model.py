@@ -32,15 +32,16 @@ from astropy.table import Table
 import scipy.interpolate as interpolate
 
 __author__ = 'Azalee Bostroem'
-__editor__ = 'Daniel Perrefort'
-__email__ = 'abostroem@gmail.com'
 __copyright__ = 'Copyright 2016, Azalee Bostroem'
-__license__ = 'GPL v3'
+__editor__ = 'Daniel Perrefort'
+
+__license__ = 'GPL V3'
+__email__ = 'abostroem@gmail.com'
 __status__ = 'Development'
 
 # Define necessary directory paths
 PHOSIM_DATA = './sims_phosim/data/atmosphere'
-ATM_MODELS = './atm_models' # Where to write the atmospheric models
+ATM_MODELS = './atm_models'  # Where to write the atmospheric models
 
 
 def _load_cross_section(filename, x_fine):
@@ -116,15 +117,16 @@ def _calculate_atm(atm_list, x_fine, xlf_dict, pint_list):
 
     # X O3 transmission
     o3_len = len(xlf_dict['o3'])
-    tau_aero_o2_o3 = tau_aero_o2 + (-atm_list[1, :, 1] * pint_list[1] *
-                                    xlf_dict['o3'].reshape((1, o3_len, 1, 1, 1, 1)))
+    tau_aero_o3 = (-atm_list[1, :, 1] * pint_list[1] *
+                   xlf_dict['o3'].reshape((1, o3_len, 1, 1, 1, 1)))
+    tau_aero_o2_o3 = tau_aero_o2 + tau_aero_o3
 
     # X H2o transmission
     h2o_len = len(xlf_dict['h2o'])
-    tau_aero_o2_o3_h2o = tau_aero_o2_o3 + (-atm_list[0, :, 1] * pint_list[0] *
-                         xlf_dict['h2o'].reshape((h2o_len, 1, 1, 1, 1, 1)))
+    tau_aero_h2o = (-atm_list[0, :, 1] * pint_list[0] *
+                    xlf_dict['h2o'].reshape((h2o_len, 1, 1, 1, 1, 1)))
+    tau_aero_o2_o3_h2o = tau_aero_o2_o3 + tau_aero_h2o
     """
-    
 
     # X H2o transmission
     h2o_len = len(xlf_dict['h2o'])
@@ -201,7 +203,7 @@ def write_atm_models(output_dir):
 
 
 def main():
-    """Generate atmospheric models and write them to the directory ATM_MODELS"""
+    """Generate atmospheric models and write them to the ATM_MODELS"""
     write_atm_models(ATM_MODELS)
 
 if __name__ == "__main__":

@@ -35,23 +35,26 @@ on the SuomiNet project see http://www.suominet.ucar.edu/overview.html.
 """
 
 import os
-import sys
 import pickle
-import requests
-from collections import Counter
+from warnings import warn
 from datetime import datetime
+from collections import Counter
 
+import requests
 import numpy as np
 from astropy.table import Table, join, vstack, unique
 
-__authors__ = 'Daniel Perrefort, Jessica Kroboth'
-__copyright__ = 'Copyright 2016, Daniel Perrefort and Jessica Kroboth'
+__authors__ = 'Daniel Perrefort'
+__copyright__ = 'Copyright 2016, Daniel Perrefort'
+__credits__ = 'Jessica Kroboth'
+
 __license__ = 'GPL V3'
+__email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'
 
 SUOMI_IDS = ['KITT', 'AZAM', 'P014', 'SA46', 'SA48']  # SuomiNet receiver IDs
 PWV_TAB_DIR = './pwv_tables/'  # Where to write PWV data tables
-SUOMI_DIR = './suomi_data'  # Location of raw SuomiNet data files
+SUOMI_DIR = './suomi_data'  # Where to write of raw SuomiNet data files
 STRT_YEAR = 2017  # First year of SuomiNet data not included with package
 
 
@@ -90,8 +93,8 @@ def _download_suomi_data(year):
             response.raise_for_status()
 
             path = fpath.format(loc, year)
-            with open(path, 'wb') as f:
-                f.write(response.content)
+            with open(path, 'wb') as ofile:
+                ofile.write(response.content)
 
             new_paths.append(path)
 
@@ -214,8 +217,7 @@ def _update_suomi_data(year=None):
     with open('../CONFIG.txt', 'rb') as ofile:
         available_years = pickle.load(ofile)
         available_years.update(updated_years)
-
-    with open('../CONFIG.txt', 'wb') as ofile:
+        ofile.seek(0)
         pickle.dump(available_years, ofile, protocol=2)
 
     return updated_years

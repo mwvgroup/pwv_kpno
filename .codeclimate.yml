@@ -1,0 +1,31 @@
+engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - python:
+    checks:
+      Similar code:
+        enabled: false
+
+  markdownlint:
+    enabled: true
+    checks:
+      MD002: # Requires first header to be top level
+        enabled: false
+      MD033: # Checks for inline HTML
+        enabled: false
+
+  fixme:
+    enabled: true
+
+  pep8:
+    enabled: true
+
+  radon:
+    enabled: true
+
+ratings:
+  paths:
+  - "**.md"    
+  - "**.py"

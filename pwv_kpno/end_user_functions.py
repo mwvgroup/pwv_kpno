@@ -26,7 +26,7 @@ and `transmission`.
 
 import os
 import pickle
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import numpy as np
 from astropy.table import Table
@@ -36,7 +36,10 @@ from create_pwv_models import _update_pwv_model
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
+__credits__ = 'Alexander Afanasyev'
+
 __license__ = 'GPL V3'
+__email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'
 
 
@@ -46,10 +49,10 @@ PWV_TAB_DIR = './pwv_tables/'  # Where to write PWV data tables
 
 
 def available_data():
-    """Return a list of years for which SuomiNet data has been downloaded
+    """Returns a list of years for which SuomiNet data has been downloaded
 
-    Return a list of years for which SuomiNet data has been downloaded to the
-    local machine. Note that this function includes years for which any amount
+    Returns a list of years for which SuomiNet data has been downloaded to the
+    local machine. Note that this list includes years for which any amount
     of data has been downloaded. It does not indicate if additional data has
     been released by SuomiNet for a given year that is not locally available.
 
@@ -84,14 +87,15 @@ def update_models(year=None):
 
     # Check for valid args
     if not (isinstance(year, int) or year is None):
-        raise TypeError("Argument 'year' must be an integer.")
+        raise TypeError("Argument 'year' must be an integer")
 
-    if isinstance(year, int) and year < 2010:
-        raise ValueError('Cannot update models for years prior to 2010')
+    if isinstance(year, int):
+        if year < 2010:
+            raise ValueError('Cannot update models for years prior to 2010')
 
-    if isinstance(year, int) and year > datetime.now().year:
-        msg = 'Cannot update models for years greater than current year'
-        raise ValueError(msg)
+        elif year > datetime.now().year:
+            msg = 'Cannot update models for years greater than current year'
+            raise ValueError(msg)
 
     # Update the local SuomiData and PWV models
     updated_years = _update_suomi_data(year)
@@ -118,7 +122,7 @@ def _raise_arg_types(year, month, day, hour):
 
     # Check the year argument
     if not (isinstance(year, int) or year is None):
-        raise TypeError("Argument 'year' (pos 1) must be an integer.")
+        raise TypeError("Argument 'year' (pos 1) must be an integer")
 
     elif isinstance(year, int) and year < 2010:
         raise ValueError('pwv_kpno does not provide data years prior to 2010')
@@ -128,21 +132,21 @@ def _raise_arg_types(year, month, day, hour):
 
     # Check the month argument
     if not (isinstance(month, int) or month is None):
-        raise TypeError("Argument 'month' (pos 2) must be an integer.")
+        raise TypeError("Argument 'month' (pos 2) must be an integer")
 
     elif isinstance(month, int) and (month < 0 or month > 12):
         raise ValueError('Invalid value for month: ' + str(month))
 
     # Check the day argument
     if not (isinstance(day, int) or day is None):
-        raise TypeError("Argument 'day' (pos 3) must be an integer.")
+        raise TypeError("Argument 'day' (pos 3) must be an integer")
 
     elif isinstance(day, int) and (day < 0 or day > 31):
         raise ValueError('Invalid value for day: ' + str(day))
 
     # Check the hour argument
     if not (isinstance(hour, int) or hour is None):
-        raise TypeError("Argument 'hour' (pos 4) must be an integer.")
+        raise TypeError("Argument 'hour' (pos 4) must be an integer")
 
     elif isinstance(hour, int) and (hour < 0 or hour > 24):
         raise ValueError('Invalid value for hour: ' + str(hour))
@@ -167,6 +171,7 @@ def _search_dt_table(data_tab, **params):
     # https://codereview.stackexchange.com/questions/165811
 
     def vectorize_callable(item):
+        """Checking if datetime attributes match specified values"""
         return all(getattr(item, param_name) == param_value
                    for param_name, param_value in params.items()
                    if param_value is not None)
@@ -242,7 +247,7 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
     data = Table.read(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'))
 
     # Convert UNIX timestamps to UTC
-    data['date'] = np.vectorize(datetime.utcfromtimestamp)(pwv_data['date'])
+    data['date'] = np.vectorize(datetime.utcfromtimestamp)(data['date'])
     data['date'].unit = 'UTC'
     data['pwv'].unit = 'mm'
 
@@ -272,7 +277,7 @@ def transmission(date, airmass):
         raise TypeError("Argument 'date' (pos 1) must be a datetime instance")
 
     if not isinstance(airmass, (float, int)):
-        msg = "Argument 'airmass' (pos 2) should be a float instance"
+        msg = "Argument 'airmass' (pos 2) should be an int or float instance"
         raise TypeError(msg)
 
     # No SuomiNet data is available with the package prior to 2010-06-25
@@ -284,16 +289,16 @@ def transmission(date, airmass):
     pwv_model = Table.read(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'))
     cutoff = datetime.utcfromtimestamp(max(pwv_model['date']))
     if date > cutoff:
-        msg = 'No local SuomiNet data found for datetimes after {0}.'
+        msg = 'No local SuomiNet data found for datetimes after {0}'
         raise ValueError(msg.format(cutoff))
 
     # Check that there is SuomiNet data available near the specified date
     diff = pwv_model['date'] - (date - datetime(1970, 1, 1)).total_seconds()
     if min(diff[diff > 0]) - max(diff[diff < 0]) > 259200:
-        msg = ('Cannot model transmission. Specified datetime falls within an' +
-               ' interval of missing SuomiNet data larger than 3 days ({0}' +
-               ' interval found).')
-        raise ValueError(msg.format(timedelta(seconds=interval)))
+        msg = ('Cannot model transmission. Specified datetime falls within' +
+               ' an interval of missing SuomiNet data larger than 3 days' +
+               ' ({0} interval found).')
+        raise ValueError(msg.format(timedelta(seconds=diff)))
 
     # Determine the PWV level along line of sight
     timestamp = (date - datetime(1970, 1, 1)).total_seconds()

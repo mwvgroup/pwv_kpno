@@ -3,7 +3,10 @@
   <br>
 </h1>
 
-<h4 align="center">Models the atmospheric transmission function due to precipitable water vapor at Kitt Peak National Observatory</h4>
+<h4 align="center">
+Models the atmospheric transmission function due to precipitable water vapor at
+Kitt Peak National Observatory
+</h4>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -18,24 +21,23 @@
 
 - [1 Package Description](#1-package-description)
 - [2 Installation](#2-installation)
-    - [2.1 Install](#21-install)
-    - [2.2 Setup](#22-setup)
+  - [2.1 Install](#21-install)
+  - [2.2 Setup](#22-setup)
 - [3 Package Use](#3-package-use)
-    - [3.1 Documentation](#31-documentation)
-    - [3.2 Examples](#32-examples)
+  - [3.1 Documentation](#31-documentation)
+  - [3.2 Examples](#32-examples)
 - [4 Future Development](#4-future-development)
 
 ## 1) Package Description
 
-pwv_kpno is a Python package for modeling the atmospheric transmission function
-at the Kitt Peak National Observatory. It is capable of providing models in
-the optical and near-infrared (7000 to 11000 <span>&#8491;</span>) for years
+pwv_kpno is a Python package for modeling the atmospheric transmission
+function at the Kitt Peak National Observatory. It is capable of providing
+models in the optical and near-infrared (7000 to 11000 Angstroms) for years
 2010 onward. Knowing the atmospheric transmission function is important when
 correcting ground based astronomical observations for atmospheric effects.
 Observed spectra are typically corrected using observations of a telluric
 standard star. pwv_kpno provides an alternative method that does not require
 dedicated observation time, and that can be run at the observers convenience.
-
 
 When working in the optical and near-infrared, the atmospheric transmission
 function is highly dependent on the amount of precipitable water vapor (PWV)
@@ -45,11 +47,11 @@ relating the delay in GPS signals to PWV levels in the atmosphere. This
 package uses measurements taken by GPS receivers located at Kitt Peak AZ,
 Amado AZ, Sahuarita AZ, Tucson AZ, and Tohono O'odham Community College. For
 more details on the correlation between GPS signals and PWV levels see
-[ Blake and Shaw, 2011](https://arxiv.org/abs/1109.6703). For more details on
+[Blake and Shaw, 2011](https://arxiv.org/abs/1109.6703). For more details on
 the SuomiNet project see [http://www.suominet.ucar.edu/overview.html](http://www.suominet.ucar.edu/overview.html).
 
-
 ## 2) Installation
+
 ### 2.1 Install
 
 <!-- This package is pip installable
@@ -63,11 +65,11 @@ the SuomiNet project see [http://www.suominet.ucar.edu/overview.html](http://www
 ### 2.2 Setup
 
 This package relies on PWV measurements taken by the SuomiNet project. In
-order to model the PWV transmission function for a given date, SuomiNet
-data for that date must be available on the host machine. By default this
-package contains all necessary SuomiNet data from 2010 through the end of
-2016. It is recommended to update the local SuomiNet data after installing
-or updating the package, and periodically as necessary.
+order to model the PWV transmission function for a given date, SuomiNet data
+for that date must be available on the host machine. By default this package
+contains all necessary SuomiNet data from 2010 through the end of 2016. It is
+recommended to update the local SuomiNet data after installing or updating the
+package, and periodically as necessary.
 
 To download any SuomiNet data not included with this version of the pwv_kpno
 package and update the locally stored PWV models, use the `update_models`
@@ -84,8 +86,8 @@ a specific year:
 Note that the update_models function requires the user to have permission
 to write and modify files within the package directory.
 
-
 ## 3) Package Use
+
 ### 3.1 Documentation
 
 The pwv_kpno package currently provides five functions: `available_data`
@@ -94,9 +96,9 @@ Help information for each function can be accesed using the standard python
 `help` function.
 
     available_data()
-        Return a set of years for which SuomiNet data has been downloaded
+        Return a list of years for which SuomiNet data has been downloaded
 
-        Return a set of years for which SuomiNet data has been downloaded to the
+        Return a list of years for which SuomiNet data has been downloaded to the
         local machine. Note that this function includes years for which any amount
         of data has been downloaded. It does not indicate if additional data has
         been released by SuomiNet for a given year that is not locally available.
@@ -105,7 +107,7 @@ Help information for each function can be accesed using the standard python
             None
 
         Returns:
-            years (set): A set of years with locally available SuomiNet data
+            years (list): A list of years with locally available SuomiNet data
 
 
     update_models(year=None):
@@ -142,7 +144,7 @@ Help information for each function can be accesed using the standard python
             hour  (int): The hour of the desired PWV data in 24-hour format
 
         Returns:
-            pwv_data (astropy.table.Table): A table of measured PWV values in mm
+            data (astropy.table.Table): A table of measured PWV values in mm
 
 
     modeled_pwv(year=None, month=None, day=None, hour=None):
@@ -162,7 +164,7 @@ Help information for each function can be accesed using the standard python
             hour  (int): The hour of the desired PWV data in 24-hour format
 
         Returns:
-            pwv_data (astropy.table.Table): A table of modeled PWV values in mm
+            data (astropy.table.Table): A table of modeled PWV values in mm
 
 
     transmission(date, airmass):
@@ -181,11 +183,9 @@ Help information for each function can be accesed using the standard python
         Returns:
             trans_func (astropy.table.Table): The modeled transmission function
 
-### 3.2 Examples
-
 #### Updating local SuomiNet data
 
-Version 1.0.0 of this package is distributed with all the necessary Suominet
+Version 0.9.3 of this package is distributed with all the necessary Suominet
 data from 2010 through 2016. To download any SuomiNet data published after
 2016 use the `update_models` function:
 
@@ -201,7 +201,7 @@ downloaded. Data can also be used to update data for a specific year:
     >>> pwv_kpno.update_models(2010)
 
     [2010]
-        
+
 #### Retrieving local SuomiNet data
 
 To retrieve an astropy table of SuomiNet available on the local machine,
@@ -282,9 +282,9 @@ means that for some datetimes the returned table will be empty.
 
 To return a model for the atmospheric transmission function for a specific
 datetime, first create a datetime object. That object is then passed to the
-`transmission` function along with an airmass value. For example, for an 
+`transmission` function along with an airmass value. For example, for an
 airmass of 1.2, the transmission function at 2013-12-15 05:35:00 is given by:
- 
+
     >>> from datetime import datetime
     >>> obsv_date = datetime(year=2013, month=12, day=15, hour=5, minute=35)
     >>> trans = pwv_kpno.transmission(date=obsv_date, airmass=1.2)
