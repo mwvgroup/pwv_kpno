@@ -90,9 +90,9 @@ Help information for each function can be accesed using the standard python
 `help` function.
 
   available_data()
-    Returns a list of years for which SuomiNet data has been downloaded
+    Return a list of years for which SuomiNet data has been downloaded
 
-    Returns a list of years for which SuomiNet data has been downloaded to the
+    Return a list of years for which SuomiNet data has been downloaded to the
     local machine. Note that this list includes years for which any amount
     of data has been downloaded. It does not indicate if additional data has
     been released by SuomiNet for a given year that is not locally available.

@@ -214,7 +214,7 @@ def _update_suomi_data(year=None):
     loc_data.write(out_path, overwrite=True)
 
     # Update config.txt
-    with open('../CONFIG.txt', 'rb') as ofile:
+    with open('../CONFIG.txt', 'r+b') as ofile:
         available_years = pickle.load(ofile)
         available_years.update(updated_years)
         ofile.seek(0)

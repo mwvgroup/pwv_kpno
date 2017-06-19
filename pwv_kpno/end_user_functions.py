@@ -25,6 +25,7 @@ and `transmission`.
 """
 
 import os
+import glob
 import pickle
 from datetime import datetime, timedelta
 
@@ -49,9 +50,9 @@ PWV_TAB_DIR = './pwv_tables/'  # Where to write PWV data tables
 
 
 def available_data():
-    """Returns a list of years for which SuomiNet data has been downloaded
+    """Return a list of years for which SuomiNet data has been downloaded
 
-    Returns a list of years for which SuomiNet data has been downloaded to the
+    Return a list of years for which SuomiNet data has been downloaded to the
     local machine. Note that this list includes years for which any amount
     of data has been downloaded. It does not indicate if additional data has
     been released by SuomiNet for a given year that is not locally available.
@@ -171,7 +172,7 @@ def _search_dt_table(data_tab, **params):
     # https://codereview.stackexchange.com/questions/165811
 
     def vectorize_callable(item):
-        """Checking if datetime attributes match specified values"""
+        """Checks if datetime attributes match specified values"""
         return all(getattr(item, param_name) == param_value
                    for param_name, param_value in params.items()
                    if param_value is not None)
@@ -277,53 +278,46 @@ def transmission(date, airmass):
         raise TypeError("Argument 'date' (pos 1) must be a datetime instance")
 
     if not isinstance(airmass, (float, int)):
-        msg = "Argument 'airmass' (pos 2) should be an int or float instance"
-        raise TypeError(msg)
+        raise TypeError("Argument 'airmass' (pos 2) must be an int or float")
 
-    # No SuomiNet data is available with the package prior to 2010-06-25
-    if date < datetime(2010, 6, 25, 0, 15):
+    pwv_model = Table.read(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'))
+    timestamp = (date - datetime(1970, 1, 1)).total_seconds()
+    diff = pwv_model['date'] - timestamp
+
+    # Check that there is SuomiNet data available near the specified date
+    if timestamp < 1277424900:
         msg = 'Cannot model transmission prior to 2010-06-25 00:15:00'
         raise ValueError(msg)
 
-    # Check that local SuomiNet data is available up to the specified date
-    pwv_model = Table.read(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'))
-    cutoff = datetime.utcfromtimestamp(max(pwv_model['date']))
-    if date > cutoff:
+    if max(pwv_model['date']) < timestamp:
+        max_date = datetime.utcfromtimestamp(max(pwv_model['date']))
         msg = 'No local SuomiNet data found for datetimes after {0}'
-        raise ValueError(msg.format(cutoff))
+        raise ValueError(msg.format(max_date))
 
-    # Check that there is SuomiNet data available near the specified date
-    diff = pwv_model['date'] - (date - datetime(1970, 1, 1)).total_seconds()
-    if min(diff[diff > 0]) - max(diff[diff < 0]) > 259200:
-        msg = ('Cannot model transmission. Specified datetime falls within' +
-               ' an interval of missing SuomiNet data larger than 3 days' +
-               ' ({0} interval found).')
-        raise ValueError(msg.format(timedelta(seconds=diff)))
+    interval = min(diff[diff > 0]) - max(diff[diff < 0])
+    if  259200 < interval:
+        msg = ('Specified datetime falls within interval of missing SuomiNet' +
+               ' data larger than 3 days ({0} interval found).')
+        raise ValueError(msg.format(timedelta(seconds=interval)))
 
     # Determine the PWV level along line of sight
-    timestamp = (date - datetime(1970, 1, 1)).total_seconds()
-    pwv_z = np.interp(timestamp, pwv_model['date'], pwv_model['pwv'])
-    pwv_los = pwv_z * airmass
+    pwv = np.interp(timestamp, pwv_model['date'], pwv_model['pwv']) * airmass
 
     # Read in the atmospheric models from file
-    atm_mods = {}
-    for file in os.listdir(ATM_MOD_DIR):
-        if file.endswith('.csv'):
-            pwv_value = float(os.path.basename(file).split("_")[3])
-            file_path = os.path.join(ATM_MOD_DIR, file)
-            atm_mods[pwv_value] = Table.read(file_path)
+    models = {float(os.path.basename(path).split("_")[3]): Table.read(path)
+              for path in glob.glob(os.path.join(ATM_MOD_DIR,'*.csv'))}
 
     # Create a table to store the transmission function
-    wavelengths = atm_mods[min(atm_mods.keys())]['wavelength']
+    wavelengths = models[min(models.keys())]['wavelength']
     trans_func = Table(names=['wavelength', 'transmission'])
 
     # Calculate the transmission function
     for i, wvlngth in enumerate(wavelengths):
         # Get a list of the modeled transmission for each pwv level
-        trans = [atm_mods[pwv]['transmission'][i] for pwv in atm_mods]
+        trans = [models[pwv]['transmission'][i] for pwv in models]
 
-        # Interpolate to find the transmission for pwv_los
-        interp_trans = np.interp(pwv_los, list(atm_mods.keys()), trans)
+        # Interpolate to find the transmission
+        interp_trans = np.interp(pwv, list(models.keys()), trans)
         trans_func.add_row([wvlngth, interp_trans])
 
     return trans_func
