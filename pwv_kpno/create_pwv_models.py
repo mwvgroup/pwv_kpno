@@ -109,9 +109,9 @@ def _download_suomi_data(year):
 
 
 def _epoch_seconds(date_str):
-    """Returns seconds since epoch of a datetime in %Y-%m-%dT%H:%M format
+    """Returns seconds since epoch of a UTC datetime in %Y-%m-%dT%H:%M format
 
-    This function provides compatability for Python 2.7, for which
+    This function provides compatability for Python 2.7, for which the
     datetime.timestamp method was not yet available.
 
     Args:

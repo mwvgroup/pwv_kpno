@@ -164,7 +164,7 @@ Help information for each function can be accesed using the standard python
   transmission(date, airmass):
     Return a model for the atmospheric transmission function due to PWV
 
-    For a given datetime and airmass, return a model for the atmospheric
+    For a given UTC datetime and airmass, return a model for the atmospheric
     transmission function due to precipitable water vapor (PWV) at Kitt Peak.
     The modeled transmission is returned as an astropy table with the columns
     'wavelength' and 'transmission'. Wavelength values range from 7000 to

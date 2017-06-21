@@ -259,7 +259,7 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
 def transmission(date, airmass):
     """Return a model for the atmospheric transmission function due to PWV
 
-    For a given datetime and airmass, return a model for the atmospheric
+    For a given UTC datetime and airmass, return a model for the atmospheric
     transmission function due to precipitable water vapor (PWV) at Kitt Peak.
     The modeled transmission is returned as an astropy table with the columns
     'wavelength' and 'transmission'. Wavelength values range from 7000 to
@@ -280,11 +280,9 @@ def transmission(date, airmass):
     if not isinstance(airmass, (float, int)):
         raise TypeError("Argument 'airmass' (pos 2) must be an int or float")
 
+    # Check the specified datetime falls within the range of available PWV data
     pwv_model = Table.read(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'))
     timestamp = (date - datetime(1970, 1, 1)).total_seconds()
-    diff = pwv_model['date'] - timestamp
-
-    # Check that there is SuomiNet data available near the specified date
     if timestamp < 1277424900:
         msg = 'Cannot model transmission prior to 2010-06-25 00:15:00'
         raise ValueError(msg)
@@ -294,18 +292,20 @@ def transmission(date, airmass):
         msg = 'No local SuomiNet data found for datetimes after {0}'
         raise ValueError(msg.format(max_date))
 
+    # Check that there is SuomiNet data available near the specified date
+    diff = pwv_model['date'] - timestamp
     interval = min(diff[diff > 0]) - max(diff[diff < 0])
-    if  259200 < interval:
+    if 259200 < interval:
         msg = ('Specified datetime falls within interval of missing SuomiNet' +
                ' data larger than 3 days ({0} interval found).')
         raise ValueError(msg.format(timedelta(seconds=interval)))
 
-    # Determine the PWV level along line of sight
+    # Determine the PWV level along line of sight as pwv @ zenith * airmass
     pwv = np.interp(timestamp, pwv_model['date'], pwv_model['pwv']) * airmass
 
-    # Read in the atmospheric models from file
+    # Read atmospheric models from file {pwv value (int), data table (astropy)}
     models = {float(os.path.basename(path).split("_")[3]): Table.read(path)
-              for path in glob.glob(os.path.join(ATM_MOD_DIR,'*.csv'))}
+              for path in glob.glob(os.path.join(ATM_MOD_DIR, '*.csv'))}
 
     # Create a table to store the transmission function
     wavelengths = models[min(models.keys())]['wavelength']

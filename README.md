@@ -99,7 +99,7 @@ Help information for each function can be accesed using the standard python
         Return a list of years for which SuomiNet data has been downloaded
 
         Return a list of years for which SuomiNet data has been downloaded to the
-        local machine. Note that this function includes years for which any amount
+        local machine. Note that this list includes years for which any amount
         of data has been downloaded. It does not indicate if additional data has
         been released by SuomiNet for a given year that is not locally available.
 
@@ -170,7 +170,7 @@ Help information for each function can be accesed using the standard python
     transmission(date, airmass):
         Return a model for the atmospheric transmission function due to PWV
 
-        For a given datetime and airmass, return a model for the atmospheric
+        For a given UTC datetime and airmass, return a model for the atmospheric
         transmission function due to precipitable water vapor (PWV) at Kitt Peak.
         The modeled transmission is returned as an astropy table with the columns
         'wavelength' and 'transmission'. Wavelength values range from 7000 to
@@ -182,6 +182,8 @@ Help information for each function can be accesed using the standard python
 
         Returns:
             trans_func (astropy.table.Table): The modeled transmission function
+
+### 3.2 Examples
 
 #### Updating local SuomiNet data
 
