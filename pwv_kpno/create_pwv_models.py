@@ -58,6 +58,21 @@ SUOMI_DIR = './suomi_data'  # Where to write of raw SuomiNet data files
 STRT_YEAR = 2017  # First year of SuomiNet data not included with package
 
 
+def _str_to_timestamp(date_str):
+    """Returns seconds since epoch of a UTC datetime in %Y-%m-%dT%H:%M format
+
+    This function provides compatability for Python 2.7, for which the
+    datetime.timestamp method was not yet available.
+
+    Args:
+        date_str (str): Datetime as string in %Y-%m-%dT%H:%M format
+    """
+
+    date = datetime.strptime(date_str, '%Y-%m-%dT%H:%M')
+    timestamp = (date - datetime(1970, 1, 1)).total_seconds()
+    return timestamp
+
+
 def _download_suomi_data(year):
     """Download SuomiNet data for a given year
 
@@ -108,21 +123,6 @@ def _download_suomi_data(year):
     return new_paths
 
 
-def _epoch_seconds(date_str):
-    """Returns seconds since epoch of a UTC datetime in %Y-%m-%dT%H:%M format
-
-    This function provides compatability for Python 2.7, for which the
-    datetime.timestamp method was not yet available.
-
-    Args:
-        date_str (str): Datetime as string in %Y-%m-%dT%H:%M format
-    """
-
-    date = datetime.strptime(date_str, '%Y-%m-%dT%H:%M')
-    timestamp = (date - datetime(1970, 1, 1)).total_seconds()
-    return timestamp
-
-
 def _read_file(path):
     """Returns PWV measurements from a SuomiNet data file as an astropy table
 
@@ -163,7 +163,7 @@ def _read_file(path):
 
     # Convert dates to UNIX timestamp
     if out_table:
-        out_table['date'] = np.vectorize(_epoch_seconds)(out_table['date'])
+        out_table['date'] = np.vectorize(_str_to_timestamp)(out_table['date'])
 
     return out_table
 

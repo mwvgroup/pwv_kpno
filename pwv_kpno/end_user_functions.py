@@ -49,6 +49,21 @@ ATM_MOD_DIR = './atm_models'  # Location of atmospheric models
 PWV_TAB_DIR = './pwv_tables/'  # Where to write PWV data tables
 
 
+def _timestamp(date):
+    """Returns seconds since epoch of a UTC datetime in %Y-%m-%dT%H:%M format
+
+    This function provides compatability for Python 2.7, for which the
+    datetime.timestamp method was not yet available.
+
+    Args:
+        date_str (str): Datetime as string in %Y-%m-%dT%H:%M format
+    """
+
+    unix_epoch = datetime(1970, 1, 1)
+    timestamp = (date - unix_epoch).total_seconds()
+    return timestamp
+
+
 def available_data():
     """Return a list of years for which SuomiNet data has been downloaded
 
@@ -105,7 +120,7 @@ def update_models(year=None):
     return updated_years
 
 
-def _raise_arg_types(year, month, day, hour):
+def _check_search_args(year, month, day, hour):
     """This function provides argument type and value checking
 
     This function provides argument type and value checking for the functions
@@ -202,8 +217,8 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
         data (astropy.table.Table): A table of measured PWV values in mm
     """
 
-    # Check for valid arg types
-    _raise_arg_types(year, month, day, hour)
+    # Check for valid arguments
+    _check_search_args(year, month, day, hour)
 
     # Read in SuomiNet measurements from the master table
     data = Table.read(os.path.join(PWV_TAB_DIR, 'measured_pwv.csv'))
@@ -242,7 +257,7 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
     """
 
     # Check for valid arg types
-    _raise_arg_types(year, month, day, hour)
+    _check_search_args(year, month, day, hour)
 
     # Read in SuomiNet measurements from the master table
     data = Table.read(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'))
@@ -254,6 +269,40 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
 
     # Refine results to only include datetimes indicated by kwargs
     return _search_dt_table(data, year=year, month=month, day=day, hour=hour)
+
+
+def _check_transmission_args(date, airmass, model):
+
+    # Check argument types
+    if not isinstance(date, datetime):
+        raise TypeError("Argument 'date' (pos 1) must be a datetime instance")
+
+    if not isinstance(airmass, (float, int)):
+        raise TypeError("Argument 'airmass' (pos 2) must be an int or float")
+
+    # Check date falls within the range of available PWV data
+    timestamp = _timestamp(date)
+    w_data_in_range, = np.where(model['date'] < timestamp)
+    if len(w_data_in_range) < 1:
+        min_date = datetime.utcfromtimestamp(min(model['date']))
+        msg = 'No local SuomiNet data found for datetimes before {0}'
+        raise ValueError(msg.format(min_date))
+
+    w_data_in_range, = np.where(timestamp < model['date'])
+    if len(w_data_in_range) < 1:
+        max_date = datetime.utcfromtimestamp(max(model['date']))
+        msg = 'No local SuomiNet data found for datetimes after {0}'
+        raise ValueError(msg.format(max_date))
+
+    # Check for SuomiNet data available near date
+    diff = model['date'] - timestamp
+    interval = min(diff[diff > 0]) - max(diff[diff < 0])
+    three_days_in_seconds = 24 * 60 * 60
+
+    if three_days_in_seconds < interval:
+        msg = ('Specified datetime falls within interval of missing SuomiNet' +
+               ' data larger than 3 days ({0} interval found).')
+        raise ValueError(msg.format(timedelta(seconds=interval)))
 
 
 def transmission(date, airmass):
@@ -273,37 +322,16 @@ def transmission(date, airmass):
         trans_func (astropy.table.Table): The modeled transmission function
     """
 
-    # Check for valid arg types
-    if not isinstance(date, datetime):
-        raise TypeError("Argument 'date' (pos 1) must be a datetime instance")
-
-    if not isinstance(airmass, (float, int)):
-        raise TypeError("Argument 'airmass' (pos 2) must be an int or float")
-
-    # Check the specified datetime falls within the range of available PWV data
+    # Check for valid arguments
     pwv_model = Table.read(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'))
-    timestamp = (date - datetime(1970, 1, 1)).total_seconds()
-    if timestamp < 1277424900:
-        msg = 'Cannot model transmission prior to 2010-06-25 00:15:00'
-        raise ValueError(msg)
+    _check_transmission_args(date, airmass, pwv_model)
 
-    if max(pwv_model['date']) < timestamp:
-        max_date = datetime.utcfromtimestamp(max(pwv_model['date']))
-        msg = 'No local SuomiNet data found for datetimes after {0}'
-        raise ValueError(msg.format(max_date))
-
-    # Check that there is SuomiNet data available near the specified date
-    diff = pwv_model['date'] - timestamp
-    interval = min(diff[diff > 0]) - max(diff[diff < 0])
-    if 259200 < interval:
-        msg = ('Specified datetime falls within interval of missing SuomiNet' +
-               ' data larger than 3 days ({0} interval found).')
-        raise ValueError(msg.format(timedelta(seconds=interval)))
-
-    # Determine the PWV level along line of sight as pwv @ zenith * airmass
+    # Determine the PWV level along line of sight as pwv(zenith) * airmass
+    timestamp = _timestamp(date)
     pwv = np.interp(timestamp, pwv_model['date'], pwv_model['pwv']) * airmass
 
-    # Read atmospheric models from file {pwv value (int), data table (astropy)}
+    # Read in the atmospheric models from ATM_MOD_DIR
+    # Models stored as {pwv value (int), data table (astropy.table.Table)}
     models = {float(os.path.basename(path).split("_")[3]): Table.read(path)
               for path in glob.glob(os.path.join(ATM_MOD_DIR, '*.csv'))}
 

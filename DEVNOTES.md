@@ -11,7 +11,7 @@ for those intent on understanding the how the pwv_kpno source code works.
 - Include an option or function to return atmospheric transmission functions
   binned for certain wavelengths
 - When working with SED's, if I calibrated with a star of a certain color,
-  determine what error did I make in z that didn't account for PWV absorption
+  determine what error I made in z that didn't account for PWV absorption
 
 ## Notes for Developers
 
