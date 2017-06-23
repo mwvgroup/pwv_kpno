@@ -30,6 +30,7 @@ import pickle
 from datetime import datetime, timedelta
 
 import numpy as np
+from scipy.interpolate import interpn
 from astropy.table import Table
 
 from create_pwv_models import _update_suomi_data
@@ -330,22 +331,31 @@ def transmission(date, airmass):
     timestamp = _timestamp(date)
     pwv = np.interp(timestamp, pwv_model['date'], pwv_model['pwv']) * airmass
 
-    # Read in the atmospheric models from ATM_MOD_DIR
-    # Models stored as {pwv value (int), data table (astropy.table.Table)}
-    models = {float(os.path.basename(path).split("_")[3]): Table.read(path)
-              for path in glob.glob(os.path.join(ATM_MOD_DIR, '*.csv'))}
+    # Read the first file to get an table of the considered wavelengths
+    atm_model_files = glob.glob(os.path.join(ATM_MOD_DIR, '*.csv'))
+    wavelength = Table.read(atm_model_files[0])['wavelength']
 
-    # Create a table to store the transmission function
-    wavelengths = models[min(models.keys())]['wavelength']
-    trans_func = Table(names=['wavelength', 'transmission'])
+    # Read the astmospheric models into a 3D array
+    pwv_values = []
+    array_shape = (len(atm_model_files), len(wavelength))
+    transmission_models = np.zeros(array_shape, dtype=np.float)
+    for i, model_file in enumerate(atm_model_files):
+        model_pwv = float(os.path.basename(model_file).split("_")[3])
+        pwv_values.append(model_pwv)
 
-    # Calculate the transmission function
-    for i, wvlngth in enumerate(wavelengths):
-        # Get a list of the modeled transmission for each pwv level
-        trans = [models[pwv]['transmission'][i] for pwv in models]
+        this_pwv_model = Table.read(model_file)
+        transmission_models[i, :] = this_pwv_model['transmission']
 
-        # Interpolate to find the transmission
-        interp_trans = np.interp(pwv, list(models.keys()), trans)
-        trans_func.add_row([wvlngth, interp_trans])
+    # Interpolate to find the transmission function
+    interp_trans = interpn(points=(pwv_values, wavelength),
+                           values=transmission_models,
+                           xi=np.array([[pwv, x] for x in wavelength]))
 
+    # Create a table to store the modeled transmission function
+    trans_func = Table([wavelength, interp_trans],
+                       names=['wavelength', 'transmission'],
+                       dtype=[float, float])
+
+    trans_func['wavelength'].unit = 'angstrom'
+    trans_func['transmission'].unit = 'percent'
     return trans_func
