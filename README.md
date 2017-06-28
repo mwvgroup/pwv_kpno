@@ -13,7 +13,7 @@ Kitt Peak National Observatory
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;
-[![release](https://img.shields.io/badge/version-0.9.2-blue.svg)]()
+[![release](https://img.shields.io/badge/version-0.9.6-blue.svg)]()
 [![python](https://img.shields.io/badge/python-2.7,%203.6-blue.svg)]()
 [![code climate](https://img.shields.io/badge/code%20climate-not%20tested-yellow.svg)]()
 [![license](https://img.shields.io/badge/license-GPL%20v3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
@@ -171,7 +171,7 @@ Help information for each function can be accesed using the standard python
     transmission(date, airmass):
         Return a model for the atmospheric transmission function due to PWV
 
-        For a given UTC datetime and airmass, return a model for the atmospheric
+        For a given datetime and airmass, return a model for the atmospheric
         transmission function due to precipitable water vapor (PWV) at Kitt Peak.
         The modeled transmission is returned as an astropy table with the columns
         'wavelength' and 'transmission'. Wavelength values range from 7000 to
@@ -188,7 +188,7 @@ Help information for each function can be accesed using the standard python
 
 #### Updating local SuomiNet data
 
-Version 0.9.5 of this package is distributed with all the necessary Suominet
+Version 0.9.6 of this package is distributed with all the necessary Suominet
 data from 2010 through 2016. To download any SuomiNet data published after
 2016 use the `update_models` function:
 
@@ -288,17 +288,19 @@ datetime, first create a datetime object. That object is then passed to the
 `transmission` function along with an airmass value. For example, for an
 airmass of 1.2, the transmission function at 2013-12-15 05:35:00 is given by:
 
-    >>> from datetime import datetime
-    >>> obsv_date = datetime(year=2013, month=12, day=15, hour=5, minute=35)
+    >>> from datetime import datetime, timezone
+    >>> obsv_date = datetime(year=2013, month=12, day=15, hour=5,
+    >>>                      minute=35, tzinfo=timezone.utc)
+    >>>
     >>> trans = pwv_kpno.transmission(date=obsv_date, airmass=1.2)
     >>> print(trans)
 
         wavelength   transmission
         ------------- --------------
-               7000.0 0.996573011501
+             7000.0 0.996573011501
         7001.00033344 0.993783855758
         7002.00066689 0.999867137883
-                  ...            ...
+              ...        ...
 
 ## 4) Future Development
 

@@ -27,7 +27,7 @@ and `transmission`.
 import os
 import glob
 import pickle
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import numpy as np
 from scipy.interpolate import interpn
@@ -38,7 +38,7 @@ from create_pwv_models import _update_pwv_model
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
-__credits__ = 'Alexander Afanasyev'
+__credits__ = ['Alexander Afanasyev', 'Micahel Wood-Vasey']
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@gmail.com'
@@ -60,8 +60,9 @@ def _timestamp(date):
         date_str (str): Datetime as string in %Y-%m-%dT%H:%M format
     """
 
-    unix_epoch = datetime(1970, 1, 1)
-    timestamp = (date - unix_epoch).total_seconds()
+    unix_epoch = datetime(1970, 1, 1, tzinfo=timezone.utc)
+    utc_date = date.astimezone(timezone.utc)
+    timestamp = (utc_date - unix_epoch).total_seconds()
     return timestamp
 
 
@@ -273,10 +274,28 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
 
 
 def _check_transmission_args(date, airmass, model):
+    """Check arguments for the function `transmission`
+
+    This function provides argument checks for the `transmission` function. It
+    checks argument types, if a datetime falls within the range of the locally
+    available SuomiNet data, and if SuomiNet data is available near that
+    datetime.
+
+    Args:
+        date    (datetime.datetime): A datetime value
+        airmass             (float): An airmass value
+        model (astropy.table.Table): A model for the PWV level at KPNO
+
+    Returns:
+        None
+    """
 
     # Check argument types
     if not isinstance(date, datetime):
         raise TypeError("Argument 'date' (pos 1) must be a datetime instance")
+
+    if date.tzinfo is None:
+        raise ValueError("Argument 'date' (pos 1) has no timezone information.")
 
     if not isinstance(airmass, (float, int)):
         raise TypeError("Argument 'airmass' (pos 2) must be an int or float")
@@ -309,7 +328,7 @@ def _check_transmission_args(date, airmass, model):
 def transmission(date, airmass):
     """Return a model for the atmospheric transmission function due to PWV
 
-    For a given UTC datetime and airmass, return a model for the atmospheric
+    For a given datetime and airmass, return a model for the atmospheric
     transmission function due to precipitable water vapor (PWV) at Kitt Peak.
     The modeled transmission is returned as an astropy table with the columns
     'wavelength' and 'transmission'. Wavelength values range from 7000 to

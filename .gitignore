@@ -4,3 +4,5 @@ pwv_kpno/__pycache__/*
 *.ipynb
 
 *.pyc
+
+pwv_kpno/spect_20150708_matheson/*

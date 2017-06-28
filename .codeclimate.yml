@@ -22,8 +22,10 @@ engines:
   pep8:
     enabled: true
 
-  radon:
+  radon: 
     enabled: true
+    config: 
+      threshold: "C"
 
 ratings:
   paths:
