@@ -138,7 +138,6 @@ def _check_search_args(year, month, day, hour):
         None
     """
 
-    # Check the year argument
     if not (isinstance(year, int) or year is None):
         raise TypeError("Argument 'year' (pos 1) must be an integer")
 
@@ -148,26 +147,19 @@ def _check_search_args(year, month, day, hour):
     elif isinstance(year, int) and year > datetime.now().year:
         raise ValueError("Argument 'year' (pos 1) is larger than current year")
 
-    # Check the month argument
-    if not (isinstance(month, int) or month is None):
-        raise TypeError("Argument 'month' (pos 2) must be an integer")
+    def check_type(arg, value, pos, bound):
+        """Check an argument is of an appropriate type and value"""
 
-    elif isinstance(month, int) and (month < 0 or month > 12):
-        raise ValueError('Invalid value for month: ' + str(month))
+        if not (isinstance(value, int) or value is None):
+            msg = "Argument '{0}' (pos {1}) must be an integer"
+            raise TypeError(msg.format(arg, pos))
 
-    # Check the day argument
-    if not (isinstance(day, int) or day is None):
-        raise TypeError("Argument 'day' (pos 3) must be an integer")
+        if isinstance(value, int) and not (0 < value < bound):
+            raise TypeError('Invalid value for {0}: {1}'.format(arg, value))
 
-    elif isinstance(day, int) and (day < 0 or day > 31):
-        raise ValueError('Invalid value for day: ' + str(day))
-
-    # Check the hour argument
-    if not (isinstance(hour, int) or hour is None):
-        raise TypeError("Argument 'hour' (pos 4) must be an integer")
-
-    elif isinstance(hour, int) and (hour < 0 or hour > 24):
-        raise ValueError('Invalid value for hour: ' + str(hour))
+    check_type('month', month, 2, 13)
+    check_type('day', day, 3, 32)
+    check_type('hour', hour, 4, 25)
 
 
 def _search_dt_table(data_tab, **params):
