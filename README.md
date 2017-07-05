@@ -18,6 +18,16 @@ Kitt Peak National Observatory
 [![code climate](https://img.shields.io/badge/code%20climate-not%20tested-yellow.svg)]()
 [![license](https://img.shields.io/badge/license-GPL%20v3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;
+[![release](https://img.shields.io/badge/version-0.9.7-blue.svg)]()
+[![python](https://img.shields.io/badge/python-2.7,%203.6-blue.svg)]()
+[![license](https://img.shields.io/badge/license-GPL%20v3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+[![Code Climate](https://img.shields.io/codeclimate/github/mwvgroup/pwv_kpno.svg)](https://codeclimate.com/github/mwvgroup/pwv_kpno)
+
 ## Table of contents
 
 - [1 Package Description](#1-package-description)
