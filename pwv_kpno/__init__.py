@@ -312,7 +312,8 @@ from end_user_functions import transmission
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
-__credits__ = ['Michael Wood-Vasey', 'Jessica Kroboth', 'Alexander Afanasyev']
+__credits__ = ['Azalee Bostroem', 'Michael Wood-Vasey',
+               'Jessica Kroboth', 'Alexander Afanasyev']
 
 __license__ = 'GPL V3'
 __version__ = '0.9.7'
