@@ -181,7 +181,7 @@ Help information for each function can be accesed using the standard python
 
 Updating local SuomiNet data
 
-  Version 0.9.6 of this package is distributed with all the necessary Suominet
+  Version 0.9.7 of this package is distributed with all the necessary Suominet
   data from 2010 through 2016. To download any SuomiNet data published after
   2016 use the `update_models` function:
 
@@ -281,9 +281,11 @@ Generating an atmospheric transmission function
   `transmission` function along with an airmass value. For example, for an
   airmass of 1.2, the transmission function at 2013-12-15 05:35:00 is given by:
 
-    >>> from datetime import datetime, timezone
-    >>> obsv_date = datetime(year=2013, month=12, day=15, hour=5,
-    >>>                      minute=35, tzinfo=timezone.utc)
+    >>> from datetime import datetime
+    >>> import pytz
+    >>>
+    >>> obsv_date = datetime(year=2013, month=12, day=15, hour=5, minute=35,
+    >>>                      tzinfo=pytz.utc)
     >>>
     >>> trans = pwv_kpno.transmission(date=obsv_date, airmass=1.2)
     >>> print(trans)
@@ -313,6 +315,6 @@ __copyright__ = 'Copyright 2017, Daniel Perrefort'
 __credits__ = ['Michael Wood-Vasey', 'Jessica Kroboth', 'Alexander Afanasyev']
 
 __license__ = 'GPL V3'
-__version__ = '0.9.6'
+__version__ = '0.9.7'
 __email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'

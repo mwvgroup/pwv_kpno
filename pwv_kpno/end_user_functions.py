@@ -27,11 +27,12 @@ and `transmission`.
 import os
 import glob
 import pickle
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
 import numpy as np
-from scipy.interpolate import interpn
+from pytz import utc
 from astropy.table import Table
+from scipy.interpolate import interpn
 
 from create_pwv_models import _update_suomi_data
 from create_pwv_models import _update_pwv_model
@@ -60,8 +61,8 @@ def _timestamp(date):
         date_str (str): Datetime as string in %Y-%m-%dT%H:%M format
     """
 
-    unix_epoch = datetime(1970, 1, 1, tzinfo=timezone.utc)
-    utc_date = date.astimezone(timezone.utc)
+    unix_epoch = datetime(1970, 1, 1, tzinfo=utc)
+    utc_date = date.astimezone(utc)
     timestamp = (utc_date - unix_epoch).total_seconds()
     return timestamp
 

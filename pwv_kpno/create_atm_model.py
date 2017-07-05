@@ -195,11 +195,12 @@ def write_atm_models(output_dir):
         temp_table = Table(data=[wl, atm_trans[model_num, 0, 0, 0, 0, :]],
                            names=['wavelength', 'transmission'])
 
-        output_filename = 'atm_trans_mod_{:2.1f}_pwv.csv'
-        output_filename = output_filename.format(model / NA *
-                                                 (18.0152 * 0.99997 * 10))
+        pwv_level = model / NA * (18.0152 * 0.99997 * 10)
+        pwv_as_str = '{:.1f}'.format(pwv_level).zfill(4)
+        output_filename = 'atm_trans_mod_{0}_pwv.csv'.format(pwv_as_str)
 
-        temp_table.write(os.path.join(output_dir, output_filename))
+        temp_table.write(os.path.join(output_dir, output_filename),
+                         overwrite=True)
 
 
 def main():

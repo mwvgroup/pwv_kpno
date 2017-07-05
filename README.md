@@ -13,7 +13,7 @@ Kitt Peak National Observatory
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;
-[![release](https://img.shields.io/badge/version-0.9.6-blue.svg)]()
+[![release](https://img.shields.io/badge/version-0.9.7-blue.svg)]()
 [![python](https://img.shields.io/badge/python-2.7,%203.6-blue.svg)]()
 [![code climate](https://img.shields.io/badge/code%20climate-not%20tested-yellow.svg)]()
 [![license](https://img.shields.io/badge/license-GPL%20v3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
@@ -188,7 +188,7 @@ Help information for each function can be accesed using the standard python
 
 #### Updating local SuomiNet data
 
-Version 0.9.6 of this package is distributed with all the necessary Suominet
+Version 0.9.7 of this package is distributed with all the necessary Suominet
 data from 2010 through 2016. To download any SuomiNet data published after
 2016 use the `update_models` function:
 
@@ -288,12 +288,15 @@ datetime, first create a datetime object. That object is then passed to the
 `transmission` function along with an airmass value. For example, for an
 airmass of 1.2, the transmission function at 2013-12-15 05:35:00 is given by:
 
-    >>> from datetime import datetime, timezone
-    >>> obsv_date = datetime(year=2013, month=12, day=15, hour=5,
-    >>>                      minute=35, tzinfo=timezone.utc)
+    >>> from datetime import datetime
+    >>> import pytz
+    >>>
+    >>> obsv_date = datetime(year=2013, month=12, day=15, hour=5, minute=35,
+    >>>                      tzinfo=pytz.utc)
     >>>
     >>> trans = pwv_kpno.transmission(date=obsv_date, airmass=1.2)
     >>> print(trans)
+
 
         wavelength   transmission
         ------------- --------------

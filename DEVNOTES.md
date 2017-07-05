@@ -39,4 +39,4 @@ for those intent on understanding the how the pwv_kpno source code works.
     data are included with the current package version.
 4)  Update README.md and __init__.py to indicate what years of SuomiNet data
     are included with the current package version.
-5)  Update version number in README.md and __init__.py
+5)  Update version number in README.md, __init__.py, and setup.py
