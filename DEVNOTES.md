@@ -24,7 +24,7 @@ for those intent on understanding the how the pwv_kpno source code works.
   SuomiNet data should be included for the year that the new version is
   released.
 - The code assumes that config.txt and measured_pwv.csv files already exist.
-  There are no checks in place to determine if the files are present and if they
+  There are no checks in place to determine if the files exist of if they
   need to be created. Make sure these files are present and that they only include
   data for the years you want to include with the current package version.
 
