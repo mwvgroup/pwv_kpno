@@ -52,9 +52,13 @@ __license__ = 'GPL V3'
 __email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'
 
+# Define necessary directory paths
+FILE_DIR = os.path.dirname(os.path.realpath(__file__))
+ATM_MOD_DIR = os.path.join(FILE_DIR, 'atm_models') # atmospheric models
+PWV_TAB_DIR = os.path.join(FILE_DIR, 'pwv_tables') # PWV data tables
+
+# Define parameters that define what data to download
 SUOMI_IDS = ['KITT', 'AZAM', 'P014', 'SA46', 'SA48']  # SuomiNet receiver IDs
-PWV_TAB_DIR = './pwv_tables/'  # Where to write PWV data tables
-SUOMI_DIR = './suomi_data'  # Where to write of raw SuomiNet data files
 STRT_YEAR = 2017  # First year of SuomiNet data not included with package
 
 
@@ -214,7 +218,8 @@ def _update_suomi_data(year=None):
     loc_data.write(out_path, overwrite=True)
 
     # Update config.txt
-    with open('../CONFIG.txt', 'r+b') as ofile:
+    config_path = os.path.join(FILE_DIR, '../CONFIG.txt')
+    with open(config_path, 'r+b') as ofile:
         available_years = pickle.load(ofile)
         available_years.update(updated_years)
         ofile.seek(0)
