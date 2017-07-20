@@ -22,11 +22,11 @@ import argparse
 from datetime import datetime
 
 from __init__ import __version__ as VERSION
-from end_user_functions import available_data
-from end_user_functions import update_models
-from end_user_functions import measured_pwv
-from end_user_functions import modeled_pwv
-from end_user_functions import transmission
+from .end_user_functions import available_data
+from .end_user_functions import update_models
+from .end_user_functions import measured_pwv
+from .end_user_functions import modeled_pwv
+from .end_user_functions import transmission
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'

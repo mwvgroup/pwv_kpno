@@ -34,8 +34,8 @@ from pytz import utc
 from astropy.table import Table
 from scipy.interpolate import interpn
 
-from create_pwv_models import _update_suomi_data
-from create_pwv_models import _update_pwv_model
+from .create_pwv_models import _update_suomi_data
+from .create_pwv_models import _update_pwv_model
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
