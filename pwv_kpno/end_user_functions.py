@@ -48,8 +48,8 @@ __status__ = 'Development'
 
 # Define necessary directory paths
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
-ATM_MOD_DIR = os.path.join(FILE_DIR, 'atm_models') # atmospheric models
-PWV_TAB_DIR = os.path.join(FILE_DIR, 'pwv_tables') # PWV data tables
+ATM_MOD_DIR = os.path.join(FILE_DIR, 'atm_models')  # atmospheric models
+PWV_TAB_DIR = os.path.join(FILE_DIR, 'pwv_tables')  # PWV data tables
 
 
 def _timestamp(date):
@@ -290,7 +290,8 @@ def _check_transmission_args(date, airmass, model):
         raise TypeError("Argument 'date' (pos 1) must be a datetime instance")
 
     if date.tzinfo is None:
-        raise ValueError("Argument 'date' (pos 1) has no timezone information.")
+        msg = "Argument 'date' (pos 1) has no timezone information."
+        raise ValueError(msg)
 
     if not isinstance(airmass, (float, int)):
         raise TypeError("Argument 'airmass' (pos 2) must be an int or float")

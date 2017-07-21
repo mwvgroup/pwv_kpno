@@ -161,7 +161,7 @@ def _generate_atm_model(wl_start, wl_end, dispersion, pint_list, xlf_dict):
 def write_atm_models(output_dir):
     """Uses the function _generate_atm_model to create an atmospheric
     model, and writes the results to disk as csv files in the directory
-    output_dir. CSV files are named 'atm_trans_mod_XXX_pwv' where XXX
+    output_dir. CSV files are named 'atm_trans_mod_VAL_pwv' where VAL
     is the PWV value in mm.
 
     Args:

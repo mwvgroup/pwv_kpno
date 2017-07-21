@@ -54,8 +54,8 @@ __status__ = 'Development'
 
 # Define necessary directory paths
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
-ATM_MOD_DIR = os.path.join(FILE_DIR, 'atm_models') # atmospheric models
-PWV_TAB_DIR = os.path.join(FILE_DIR, 'pwv_tables') # PWV data tables
+ATM_MOD_DIR = os.path.join(FILE_DIR, 'atm_models')  # atmospheric models
+PWV_TAB_DIR = os.path.join(FILE_DIR, 'pwv_tables')  # PWV data tables
 
 # Define parameters that define what data to download
 SUOMI_IDS = ['KITT', 'AZAM', 'P014', 'SA46', 'SA48']  # SuomiNet receiver IDs
