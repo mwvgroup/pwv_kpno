@@ -55,13 +55,13 @@ the SuomiNet project see [http://www.suominet.ucar.edu/overview.html](http://www
 
 ### 2.1 Install
 
-<!-- This package is pip installable
-
-    $ pip install pwv_kpno -->
-
-<!-- Alternatively, one can --> Use the setup.py file
+This package isn't pip installable yet. Instead use the setup.py file
 
     $ python setup.py install --user
+
+If you have issues with the install, ensure the following dependancies
+are installed in your Python environment: 'numpy', 'astropy', 'requests',
+'pytz', 'scipy'
 
 ### 2.2 Setup
 
