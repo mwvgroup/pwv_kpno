@@ -13,7 +13,7 @@ Kitt Peak National Observatory
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;
-[![release](https://img.shields.io/badge/version-0.9.8-blue.svg)]()
+[![release](https://img.shields.io/badge/version-0.9.9-blue.svg)]()
 [![python](https://img.shields.io/badge/python-2.7,%203.6-blue.svg)]()
 [![license](https://img.shields.io/badge/license-GPL%20v3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![Code Climate](https://img.shields.io/codeclimate/github/mwvgroup/pwv_kpno.svg)](https://codeclimate.com/github/mwvgroup/pwv_kpno)
@@ -188,7 +188,7 @@ Help information for each function can be accesed using the standard python
 
 #### Updating local SuomiNet data
 
-Version 0.9.8 of this package is distributed with all the necessary Suominet
+Version 0.9.9 of this package is distributed with all the necessary Suominet
 data from 2010 through 2016. To download any SuomiNet data published after
 2016 use the `update_models` function:
 

@@ -1,3 +1,5 @@
+include DEVNOTES.md
+include LICENSE.txt
 graft pwv_kpno/atm_models
 graft pwv_kpno/pwv_tables
 graft pwv_kpno/sims_phosim
