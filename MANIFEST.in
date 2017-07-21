@@ -1,1 +1,4 @@
-recursive-include ./ *.csv *.txt *.plot *.md *.png *.py
+graft pwv_kpno/atm_models
+graft pwv_kpno/pwv_tables
+graft pwv_kpno/sims_phosim
+graft pwv_kpno/suomi_data
