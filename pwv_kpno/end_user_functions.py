@@ -83,7 +83,7 @@ def available_data():
         years (list): A list of years with locally available SuomiNet data
     """
 
-    config_path = os.path.join(FILE_DIR, '../CONFIG.txt')
+    config_path = os.path.join(FILE_DIR, 'CONFIG.txt')
     with open(config_path, 'rb') as ofile:
         years = list(pickle.load(ofile))
         years.sort()
