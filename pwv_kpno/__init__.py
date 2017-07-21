@@ -21,7 +21,7 @@
 ----------------------
 
 pwv_kpno is a Python package for modeling the atmospheric transmission
-function at the Kitt Peak National Observatory. It is capable of providing
+function at Kitt Peak National Observatory. It is capable of providing
 models in the optical and near-infrared (7000 to 11000 Angstroms) for years
 2010 onward. Knowing the atmospheric transmission function is important when
 correcting ground based astronomical observations for atmospheric effects.

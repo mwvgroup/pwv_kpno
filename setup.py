@@ -3,6 +3,19 @@ import os
 import re
 from setuptools import setup
 
+def long_description():
+    with open('README.md') as ofile:
+        readme = ofile.read()
+
+        # Get the Package Description section
+        description = readme.split('## 1) Package Description')[-1]
+        description = description.split('#')[0]
+
+        # Remove markdown links
+        description = re.sub("\]\(([\s\S]*?)\)", "", description).strip('\n')
+        description = description.replace('[', '').replace(']', '')
+        return description
+
 
 def add_data_files(file_list, directory, ext_tuple):
     """List the contents of a directory
@@ -34,9 +47,9 @@ add_data_files(DATA_FILES, 'suomi_data', ('.plot',))
 setup(name='pwv_kpno',
       version='0.9.8',
       packages=['pwv_kpno'],
-      description='Models the atmospheric transmission function for KPNO',
       keywords='KPNO atmospheric transmission PWV precipitable water vapor',
-      long_description=open('README.md').read()[917:],
+      description='Models the atmospheric transmission function for KPNO',
+      long_description=long_description(),
       classifiers=['Development Status :: 4 - Beta',
                    'Intended Audience :: Science/Research',
                    'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
@@ -49,10 +62,11 @@ setup(name='pwv_kpno',
                    'Topic :: Scientific/Engineering :: Atmospheric Science',
                    'Topic :: Scientific/Engineering :: Physics'],
 
-      url='https://github.com/mwvgroup/pwv_kpno',
       author='Daniel Perrefort',
       author_email='djperrefort@pitt.edu',
+      url='https://github.com/mwvgroup/pwv_kpno',
       license='GPL v3',
+
       python_requires='>=2.7',
       install_requires=['numpy', 'astropy', 'requests', 'pytz', 'scipy'],
       package_data={'pwv_kpno': DATA_FILES},

@@ -6,3 +6,11 @@ pwv_kpno/__pycache__/*
 *.pyc
 
 pwv_kpno/spect_20150708_matheson/*
+
+build/*
+
+pwv_kpno.egg-info/*
+
+dist/*
+
+LOGO2.png
