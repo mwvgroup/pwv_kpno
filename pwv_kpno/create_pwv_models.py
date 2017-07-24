@@ -56,6 +56,7 @@ __status__ = 'Development'
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
 ATM_MOD_DIR = os.path.join(FILE_DIR, 'atm_models')  # atmospheric models
 PWV_TAB_DIR = os.path.join(FILE_DIR, 'pwv_tables')  # PWV data tables
+SUOMI_DIR = os.path.join(FILE_DIR, 'suomi_data')  # SuomiNet data files
 
 # Define parameters that define what data to download
 SUOMI_IDS = ['KITT', 'AZAM', 'P014', 'SA46', 'SA48']  # SuomiNet receiver IDs
@@ -165,6 +166,11 @@ def _read_file(path):
     ind = [(x not in dup_dates) for x in data['date']]
     out_table = Table(np.extract(ind, data), names=['date', path[-17:-13]])
 
+    # Remove data from faulty reciever at Kitt Peak (Jan 2016 through Mar 2016)
+    if path[-17:-5] == 'KITTnrt_2016':
+        march_2016_begins = 1459468800.0
+        out_table = out_table[march_2016_begins < out_table['date']]
+
     # Convert dates to UNIX timestamp
     if out_table:
         out_table['date'] = np.vectorize(_str_to_timestamp)(out_table['date'])
@@ -218,7 +224,7 @@ def _update_suomi_data(year=None):
     loc_data.write(out_path, overwrite=True)
 
     # Update config.txt
-    config_path = os.path.join(FILE_DIR, '../CONFIG.txt')
+    config_path = os.path.join(FILE_DIR, 'CONFIG.txt')
     with open(config_path, 'r+b') as ofile:
         available_years = pickle.load(ofile)
         available_years.update(updated_years)

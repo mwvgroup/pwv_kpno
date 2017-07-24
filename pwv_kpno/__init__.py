@@ -181,7 +181,7 @@ Help information for each function can be accesed using the standard python
 
 Updating local SuomiNet data
 
-  Version 0.9.9 of this package is distributed with all the necessary Suominet
+  Version 0.9.10 of this package is distributed with all the necessary Suominet
   data from 2010 through 2016. To download any SuomiNet data published after
   2016 use the `update_models` function:
 
@@ -316,6 +316,6 @@ __credits__ = ['Azalee Bostroem', 'Jessica Kroboth',
                'Michael Wood-Vasey', 'Alexander Afanasyev']
 
 __license__ = 'GPL V3'
-__version__ = '0.9.9'
+__version__ = '0.9.10'
 __email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'

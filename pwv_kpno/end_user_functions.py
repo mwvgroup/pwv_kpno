@@ -298,19 +298,19 @@ def _check_transmission_args(date, airmass, model):
 
     # Check date falls within the range of available PWV data
     timestamp = _timestamp(date)
-    w_data_in_range, = np.where(model['date'] < timestamp)
-    if len(w_data_in_range) < 1:
+    w_data_less_than = np.where(model['date'] < timestamp)
+    if len(w_data_less_than) < 1:
         min_date = datetime.utcfromtimestamp(min(model['date']))
         msg = 'No local SuomiNet data found for datetimes before {0}'
         raise ValueError(msg.format(min_date))
 
-    w_data_in_range, = np.where(timestamp < model['date'])
-    if len(w_data_in_range) < 1:
+    w_data_greater_than = np.where(timestamp < model['date'])
+    if len(w_data_greater_than) < 1:
         max_date = datetime.utcfromtimestamp(max(model['date']))
         msg = 'No local SuomiNet data found for datetimes after {0}'
         raise ValueError(msg.format(max_date))
 
-    # Check for SuomiNet data available near date
+    # Check for SuomiNet data available near the given date
     diff = model['date'] - timestamp
     interval = min(diff[diff > 0]) - max(diff[diff < 0])
     three_days_in_seconds = 24 * 60 * 60
