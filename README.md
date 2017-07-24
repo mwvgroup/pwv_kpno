@@ -55,13 +55,17 @@ For more details on the correlation between GPS signals and PWV levels see
 
 ### 2.1 Install
 
-This package isn't pip installable yet. Instead use the setup.py file
+This package can be installed using pip 
+
+    $ pip install pwv_kpno --user
+
+Alternativly, you use the `setup.py` file
 
     $ python setup.py install --user
 
-If you have issues with the install, ensure the following dependancies
-are installed in your Python environment: 'numpy', 'astropy', 'requests',
-'pytz', 'scipy'
+If you have issues installing the package with either method, ensure the
+following dependancies are installed in your Python environment: `'numpy',
+'astropy', 'requests', 'pytz', 'scipy'`.
 
 ### 2.2 Setup
 
