@@ -32,11 +32,11 @@ dedicated observation time, and that can be run at the observers convenience.
 When working in the optical and near-infrared, the atmospheric transmission
 function is highly dependent on the amount of precipitable water vapor (PWV)
 in the atmosphere. pwv_kpno models the atmospheric transmission using PWV
-measurements provided by the SuomiNet Project. SuomiNet measures PWV values by
-relating the delay in GPS signals to PWV levels in the atmosphere. This
+measurements provided by the SuomiNet Project. SuomiNet measures PWV values
+by relating the delay in GPS signals to PWV levels in the atmosphere. This
 package uses measurements taken by GPS receivers located at Kitt Peak AZ,
-Amado AZ, Sahuarita AZ, Tucson AZ, and Tohono O'odham Community College. For
-more details on the correlation between GPS signals and PWV levels see
+Amado AZ, Sahuarita AZ, Tucson AZ, and Tohono O'odham Community College.
+For more details on the correlation between GPS signals and PWV levels see
 Blake and Shaw, 2011 (https://arxiv.org/abs/1109.6703). For more details on
 the SuomiNet project see http://www.suominet.ucar.edu/overview.html.
 
@@ -46,13 +46,18 @@ the SuomiNet project see http://www.suominet.ucar.edu/overview.html.
 
 2.1 Install
 
-This package is pip installable
+This package can be installed using pip 
 
     $ pip install pwv_kpno
 
-Alternatively, one can use the setup.py file
+Alternativly, you use the `setup.py` file
 
     $ python setup.py install --user
+
+If you have issues installing the package with either method, ensure the
+following dependancies are installed in your Python environment: `'numpy',
+'astropy', 'requests', 'pytz', 'scipy'`.
+
 
 2.2 Setup
 
