@@ -46,7 +46,7 @@ add_data_files(DATA_FILES, 'sims_phosim/data/atmosphere', ('.txt.',))
 add_data_files(DATA_FILES, 'suomi_data', ('.plot',))
 
 setup(name='pwv_kpno',
-      version='0.9.10',
+      version='0.9.11',
       packages=['pwv_kpno'],
       keywords='KPNO atmospheric transmission PWV precipitable water vapor',
       description='Models the atmospheric transmission function for KPNO',

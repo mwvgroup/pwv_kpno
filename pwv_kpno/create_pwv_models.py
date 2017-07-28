@@ -168,8 +168,8 @@ def _read_file(path):
 
     # Remove data from faulty reciever at Kitt Peak (Jan 2016 through Mar 2016)
     if path[-17:-5] == 'KITTnrt_2016':
-        march_2016_begins = 1459468800.0
-        out_table = out_table[march_2016_begins < out_table['date']]
+        april_2016_begins = 1459468800.0
+        out_table = out_table[april_2016_begins < out_table['date']]
 
     # Convert dates to UNIX timestamp
     if out_table:

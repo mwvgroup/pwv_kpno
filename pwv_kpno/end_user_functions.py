@@ -158,7 +158,7 @@ def _check_search_args(year, month, day, hour):
             raise TypeError(msg.format(arg, pos))
 
         if isinstance(value, int) and not (0 < value < bound):
-            raise TypeError('Invalid value for {0}: {1}'.format(arg, value))
+            raise ValueError('Invalid value for {0}: {1}'.format(arg, value))
 
     check_type('month', month, 2, 13)
     check_type('day', day, 3, 32)
@@ -298,13 +298,13 @@ def _check_transmission_args(date, airmass, model):
 
     # Check date falls within the range of available PWV data
     timestamp = _timestamp(date)
-    w_data_less_than = np.where(model['date'] < timestamp)
+    w_data_less_than = np.where(model['date'] < timestamp)[0]
     if len(w_data_less_than) < 1:
         min_date = datetime.utcfromtimestamp(min(model['date']))
         msg = 'No local SuomiNet data found for datetimes before {0}'
         raise ValueError(msg.format(min_date))
 
-    w_data_greater_than = np.where(timestamp < model['date'])
+    w_data_greater_than = np.where(timestamp < model['date'])[0]
     if len(w_data_greater_than) < 1:
         max_date = datetime.utcfromtimestamp(max(model['date']))
         msg = 'No local SuomiNet data found for datetimes after {0}'
