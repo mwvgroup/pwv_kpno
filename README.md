@@ -32,13 +32,13 @@ Kitt Peak National Observatory
 ## 1) Package Description
 
 pwv_kpno is a Python package for modeling the atmospheric transmission
-function at Kitt Peak National Observatory. It is capable of providing
-models in the optical and near-infrared (7000 to 11000 Angstroms) for years
-2010 onward. Knowing the atmospheric transmission function is important when
+function at Kitt Peak National Observatory. It provides atmospheric models
+in the optical and near-infrared (7000 to 11000 Angstroms) for years 2010
+onward. Knowing the atmospheric transmission function is important when
 correcting ground based astronomical observations for atmospheric effects.
 Observed spectra are typically corrected using observations of a telluric
 standard star. pwv_kpno provides an alternative method that does not require
-dedicated observation time, and that can be run at the observers convenience.
+dedicated observation time, and that can be run at the observer's convenience.
 
 When working in the optical and near-infrared, the atmospheric transmission
 function is highly dependent on the amount of precipitable water vapor (PWV)
@@ -55,23 +55,23 @@ For more details on the correlation between GPS signals and PWV levels see
 
 ### 2.1 Install
 
-This package can be installed using pip 
+This package can be installed using pip
 
     $ pip install pwv_kpno
 
-Alternativly, you use the `setup.py` file
+Alternatively, you use the `setup.py` file
 
     $ python setup.py install --user
 
 If you have issues installing the package with either method, ensure the
-following dependancies are installed in your Python environment: `'numpy',
+following dependencies are installed in your Python environment: `'numpy',
 'astropy', 'requests', 'pytz', 'scipy'`.
 
 ### 2.2 Setup
 
 This package relies on PWV measurements taken by the SuomiNet project. In
 order to model the PWV transmission function for a given date, SuomiNet data
-for that date must be available on the host machine. By default this package
+for that date must be available on the host machine. By default, this package
 contains all necessary SuomiNet data from 2010 through the end of 2016. It is
 recommended to update the local SuomiNet data after installing or updating the
 package, and periodically as necessary.
@@ -192,7 +192,7 @@ Help information for each function can be accesed using the standard python
 
 #### Updating local SuomiNet data
 
-Version 0.9.11 of this package is distributed with all the necessary Suominet
+Version 0.9.11 of this package is distributed with all the necessary SuomiNet
 data from 2010 through 2016. To download any SuomiNet data published after
 2016 use the `update_models` function:
 
