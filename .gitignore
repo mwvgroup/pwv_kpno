@@ -1,16 +1,9 @@
-
+build/*
+dist/*
+.idea/*
+pwv_kpno.egg-info/*
 pwv_kpno/__pycache__/*
-
-*.ipynb
-
-*.pyc
-
 pwv_kpno/spect_20150708_matheson/*
 
-build/*
-
-pwv_kpno.egg-info/*
-
-dist/*
-
-LOGO2.png
+*.ipynb
+*.pyc
