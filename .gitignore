@@ -7,3 +7,4 @@ pwv_kpno/spect_20150708_matheson/*
 
 *.ipynb
 *.pyc
+*.DS_Store

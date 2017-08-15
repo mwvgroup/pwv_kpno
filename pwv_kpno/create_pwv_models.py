@@ -108,10 +108,10 @@ def _download_suomi_data(year):
 
     # Download data for each GPS receiver
     for loc in SUOMI_IDS:
-        try:
-            response = requests.get(url.format(loc, year))
-            response.raise_for_status()
+        response = requests.get(url.format(loc, year))
 
+        try:
+            response.raise_for_status()
             path = fpath.format(loc, year)
             with open(path, 'wb') as ofile:
                 ofile.write(response.content)
@@ -178,7 +178,7 @@ def _read_file(path):
     return out_table
 
 
-def _update_suomi_data(year=None):
+def update_suomi_data(year=None):
     """Download data from SuomiNet and update the master table
 
     If a year is provided, download SuomiNet data for that year to SUOMI_DIR.
@@ -201,7 +201,7 @@ def _update_suomi_data(year=None):
         years = set(range(STRT_YEAR, datetime.now().year + 1))
 
     else:
-        years = set([year])
+        years = {year}
 
     # Download data from SuomiNet
     updated_years = []
@@ -234,7 +234,7 @@ def _update_suomi_data(year=None):
     return updated_years
 
 
-def _update_pwv_model():
+def update_pwv_model():
     """Create a new model for the PWV level at Kitt Peak
 
     Create first order polynomials relating the PWV measured by GPS receivers
@@ -244,12 +244,6 @@ def _update_pwv_model():
     data to a csv file at PWV_TAB_DIR/measured.csv. The resulting file contains
     the columns 'date' and 'pwv', where dates are represented as UNIX
     timestamps and PWV values are measured in millimeters.
-
-    Args:
-        None
-
-    Returns:
-        None
     """
 
     # Credit belongs to Jessica Kroboth for suggesting the use of a linear fit

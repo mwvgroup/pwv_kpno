@@ -34,8 +34,8 @@ from pytz import utc
 from astropy.table import Table
 from scipy.interpolate import interpn
 
-from .create_pwv_models import _update_suomi_data
-from .create_pwv_models import _update_pwv_model
+from .create_pwv_models import update_suomi_data
+from .create_pwv_models import update_pwv_model
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -59,7 +59,7 @@ def _timestamp(date):
     datetime.timestamp method was not yet available.
 
     Args:
-        date_str (str): Datetime as string in %Y-%m-%dT%H:%M format
+        date (datetime.datetime): Datetime as string in %Y-%m-%dT%H:%M format
     """
 
     unix_epoch = datetime(1970, 1, 1, tzinfo=utc)
@@ -75,9 +75,6 @@ def available_data():
     local machine. Note that this list includes years for which any amount
     of data has been downloaded. It does not indicate if additional data has
     been released by SuomiNet for a given year that is not locally available.
-
-    Args:
-        None
 
     Returns:
         years (list): A list of years with locally available SuomiNet data
@@ -119,8 +116,8 @@ def update_models(year=None):
             raise ValueError(msg)
 
     # Update the local SuomiData and PWV models
-    updated_years = _update_suomi_data(year)
-    _update_pwv_model()
+    updated_years = update_suomi_data(year)
+    update_pwv_model()
 
     return updated_years
 

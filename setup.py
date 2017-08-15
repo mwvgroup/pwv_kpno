@@ -21,10 +21,12 @@ def long_description():
 def add_data_files(file_list, directory, ext_tuple):
     """List the contents of a directory
 
-    Walk through a directory and create a list of encountered file paths.
-    Only include files with extensions contained in a tuple argument.
+    Walk through a directory and add any file path with an extension in the
+    provided tuple to the provided list. Only include files with extensions
+    contained in a tuple argument.
 
     Args:
+        file_list (list) : A list to append file paths to
         directory (str)  : A directory to walk through.
         ext_tuple (tuple): A tuple of file extensions.
 
@@ -33,9 +35,10 @@ def add_data_files(file_list, directory, ext_tuple):
     """
 
     pattern = re.compile('(.*(({})$))'.format('|'.join(ext_tuple)))
-    files = [os.path.join(directory, fname)
-             for fname in os.listdir(os.path.join('pwv_kpno', directory))
-             if pattern.search(fname)]
+    files = []
+    for fname in os.listdir(os.path.join('pwv_kpno', directory)):
+        if pattern.search(fname):
+            files.append(os.path.join(directory, fname))
     file_list.extend(files)
 
 
