@@ -4,7 +4,7 @@
 </h1>
 
 <h4 align="center">
-Models the atmospheric transmission function due to precipitable water vapor at
+Providing models of the atmospheric transmission function at
 Kitt Peak National Observatory
 </h4>
 
