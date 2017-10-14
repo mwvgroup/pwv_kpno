@@ -93,34 +93,34 @@ def _download_suomi_data(year):
         new_paths (list): List containing file paths of the downloaded data
     """
 
-    # List to store paths of downloaded files
-    new_paths = []
+    new_paths = [] # To store paths of downloaded files
 
-    # General form of destination file path
-    fpath = os.path.join(SUOMI_DIR, '{0}nrt_{1}.plot')
+    # General form of destination file paths for daily and hourly data
+    hourly_path = os.path.join(SUOMI_DIR, '{0}nrt_{1}.plot')
+    daily_path = os.path.join(SUOMI_DIR, '{0}pp_{1}.plot')
 
-    # General form for URL of SuomiNet data
-    url = 'http://www.suominet.ucar.edu/data/staYrHr/{0}nrt_{1}.plot'
+    # General form for URLs of SuomiNet data published hourly and daily
+    hourly_url = 'http://www.suominet.ucar.edu/data/staYrHr/{0}nrt_{1}.plot'
+    daily_url = 'http://www.suominet.ucar.edu/data/staYrDay/{}pp_{}.plt'
 
-    # Make sure the necessary directories exist
     if not os.path.exists(SUOMI_DIR):
         os.mkdir(SUOMI_DIR)
 
-    # Download data for each GPS receiver
-    for loc in SUOMI_IDS:
-        response = requests.get(url.format(loc, year))
+    for fpath, url in zip([hourly_path, daily_path], [hourly_url, daily_url]):
+        for loc in SUOMI_IDS:
+            response = requests.get(url.format(loc, year))
 
-        try:
-            response.raise_for_status()
-            path = fpath.format(loc, year)
-            with open(path, 'wb') as ofile:
-                ofile.write(response.content)
+            try:
+                response.raise_for_status()
+                path = fpath.format(loc, year)
+                with open(path, 'wb') as ofile:
+                    ofile.write(response.content)
 
-            new_paths.append(path)
+                new_paths.append(path)
 
-        except requests.exceptions.HTTPError as err:
-            if response.status_code != 404:
-                raise Exception(err)
+            except requests.exceptions.HTTPError as err:
+                if response.status_code != 404:
+                    raise Exception(err)
 
     if not new_paths:
         warn('No data files downloaded from SuomiNet', RuntimeWarning)
