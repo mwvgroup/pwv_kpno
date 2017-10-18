@@ -34,11 +34,11 @@ Tucson (SA46), and Tohono O'odham Community College (SA48). For more details
 on the SuomiNet project see http://www.suominet.ucar.edu/overview.html.
 """
 
+from collections import Counter
+from datetime import datetime, timedelta
 import os
 import pickle
 from warnings import warn
-from datetime import datetime
-from collections import Counter
 
 import requests
 import numpy as np
@@ -52,30 +52,37 @@ __license__ = 'GPL V3'
 __email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'
 
-# Define necessary directory paths
+# Necessary directory paths
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
 ATM_MOD_DIR = os.path.join(FILE_DIR, 'atm_models')  # atmospheric models
 PWV_TAB_DIR = os.path.join(FILE_DIR, 'pwv_tables')  # PWV data tables
-SUOMI_DIR = os.path.join(FILE_DIR, 'suomi_data')  # SuomiNet data files
+SUOMI_DIR = os.path.join(FILE_DIR, 'suomi_data')    # SuomiNet data files
 
-# Define parameters that define what data to download
+# Parameters that define what data to download
 SUOMI_IDS = ['KITT', 'AZAM', 'P014', 'SA46', 'SA48']  # SuomiNet receiver IDs
 STRT_YEAR = 2017  # First year of SuomiNet data not included with package
 
 
-def _str_to_timestamp(date_str):
-    """Returns seconds since epoch of a UTC datetime in %Y-%m-%dT%H:%M format
+def _str_to_timestamp(year, days_str):
+    """Returns seconds since epoch of a datetime provided in DDD.YYYYY format
 
-    This function provides compatability for Python 2.7, for which the
-    datetime.timestamp method was not yet available.
+    This function converts the datetime notation used by SuomiNet to a UTC
+    timestamp. THe Suominet format consists of the day of the year (1 - 365)
+    followed by the decimal number of hours that have passed in the given day.
+    For example, Feburary 1st, 00:15 would be 36.01042.
 
     Args:
-        date_str (str): Datetime as string in %Y-%m-%dT%H:%M format
+        year     (int): The year of the desired datetime
+        days_str (str): The number of days that have passed since january 1st
+
+    Returns:
+        The seconds since epoch in UTC as a float
     """
 
-    date = datetime.strptime(date_str, '%Y-%m-%dT%H:%M')
-    timestamp = (date - datetime(1970, 1, 1)).total_seconds()
-    return timestamp
+    jan_1st = datetime(year=year, month=1, hour=0, minute=0)
+    date = jan_1st + timedelta(days=float(days_str))
+    date = date.replace(second=0, microsecond=0)
+    return (date - datetime(1970, 1, 1)).total_seconds()
 
 
 def _download_suomi_data(year):
@@ -93,11 +100,11 @@ def _download_suomi_data(year):
         new_paths (list): List containing file paths of the downloaded data
     """
 
-    new_paths = [] # To store paths of downloaded files
+    new_paths = []  # To store paths of downloaded files
 
     # General form of destination file paths for daily and hourly data
-    hourly_path = os.path.join(SUOMI_DIR, '{0}nrt_{1}.plot')
-    daily_path = os.path.join(SUOMI_DIR, '{0}pp_{1}.plot')
+    hourly_path = os.path.join(SUOMI_DIR, '{0}nrt_{1}.plt')
+    daily_path = os.path.join(SUOMI_DIR, '{0}pp_{1}.plt')
 
     # General form for URLs of SuomiNet data published hourly and daily
     hourly_url = 'http://www.suominet.ucar.edu/data/staYrHr/{0}nrt_{1}.plot'
@@ -106,7 +113,7 @@ def _download_suomi_data(year):
     if not os.path.exists(SUOMI_DIR):
         os.mkdir(SUOMI_DIR)
 
-    for fpath, url in zip([hourly_path, daily_path], [hourly_url, daily_url]):
+    for fpath, url in ((hourly_path, hourly_url), (daily_path, daily_url)):
         for loc in SUOMI_IDS:
             response = requests.get(url.format(loc, year))
 
