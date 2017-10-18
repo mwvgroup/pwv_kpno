@@ -147,19 +147,19 @@ def _check_search_args(year, month, day, hour):
     elif isinstance(year, int) and year > datetime.now().year:
         raise ValueError("Argument 'year' (pos 1) is larger than current year")
 
-    def check_type(arg, value, pos, bound):
+    def check_type(arg, value, pos, bounds):
         """Check an argument is of an appropriate type and value"""
 
         if not (isinstance(value, int) or value is None):
             msg = "Argument '{0}' (pos {1}) must be an integer"
             raise TypeError(msg.format(arg, pos))
 
-        if isinstance(value, int) and not (0 < value < bound):
+        if isinstance(value, int) and not (bounds[0] <= value <= bounds[1]):
             raise ValueError('Invalid value for {0}: {1}'.format(arg, value))
 
-    check_type('month', month, 2, 13)
-    check_type('day', day, 3, 32)
-    check_type('hour', hour, 4, 25)
+    check_type('month', month, 2, (1, 12))
+    check_type('day', day, 3, (1, 31))
+    check_type('hour', hour, 4, (0, 23))
 
 
 def _search_dt_table(data_tab, **params):
