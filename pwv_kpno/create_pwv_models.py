@@ -79,7 +79,7 @@ def _str_to_timestamp(year, days_str):
         The seconds since epoch in UTC as a float
     """
 
-    jan_1st = datetime(year=year, month=1, hour=0, minute=0)
+    jan_1st = datetime(year=year, month=1, day=1)
     date = jan_1st + timedelta(days=float(days_str))
     date = date.replace(second=0, microsecond=0)
     return (date - datetime(1970, 1, 1)).total_seconds()
@@ -103,17 +103,17 @@ def _download_suomi_data(year):
     new_paths = []  # To store paths of downloaded files
 
     # General form of destination file paths for daily and hourly data
-    hourly_path = os.path.join(SUOMI_DIR, '{0}nrt_{1}.plt')
-    daily_path = os.path.join(SUOMI_DIR, '{0}pp_{1}.plt')
+    hourly_path = os.path.join(SUOMI_DIR, '{0}hr_{1}.plt')
+    daily_path = os.path.join(SUOMI_DIR, '{0}dy_{1}.plt')
 
     # General form for URLs of SuomiNet data published hourly and daily
-    hourly_url = 'http://www.suominet.ucar.edu/data/staYrHr/{0}nrt_{1}.plot'
-    daily_url = 'http://www.suominet.ucar.edu/data/staYrDay/{}pp_{}.plt'
+    hourly_url = 'http://www.suominet.ucar.edu/data/staYrHr/{0}nrt_{1}.plt'
+    daily_url = 'http://www.suominet.ucar.edu/data/staYrDay/{0}pp_{1}.plt'
 
     if not os.path.exists(SUOMI_DIR):
         os.mkdir(SUOMI_DIR)
 
-    for fpath, url in ((hourly_path, hourly_url), (daily_path, daily_url)):
+    for fpath, url in ((hourly_path, hourly_url),): #, (daily_path, daily_url)):
         for loc in SUOMI_IDS:
             response = requests.get(url.format(loc, year))
 
@@ -157,12 +157,12 @@ def _read_file(path):
     """
 
     # Read data from file
-    data = np.genfromtxt(path, usecols=[1, 2],
+    data = np.genfromtxt(path, usecols=[0, 1],
                          names=['date', 'pwv'],
                          dtype=[(np.str_, 16), float])
 
-    # We remove duplicate, contradicting, and unphysical values.
     # SuomiNet uses unphysical entries to indicate offline GPS receivers.
+    # We remove duplicate, contradicting, and unphysical values.
     # Credit goes to Jessica Kroboth for identifying these conditions.
 
     data = data[data['pwv'] > 0]  # Remove data with PWV < 0
@@ -171,16 +171,18 @@ def _read_file(path):
     # Remove any remaining entries with duplicate dates but different data
     dup_dates = (Counter(data['date']) - Counter(set(data['date']))).keys()
     ind = [(x not in dup_dates) for x in data['date']]
-    out_table = Table(np.extract(ind, data), names=['date', path[-17:-13]])
+    out_table = Table(np.extract(ind, data), names=['date', path[-15:-11]])
 
     # Remove data from faulty reciever at Kitt Peak (Jan 2016 through Mar 2016)
-    if path[-17:-5] == 'KITTnrt_2016':
+    if path.endswith('KITTnrt_2016.plt') or path.endswith('KITTpp_2016.plt'):
         april_2016_begins = 1459468800.0
         out_table = out_table[april_2016_begins < out_table['date']]
 
     # Convert dates to UNIX timestamp
     if out_table:
-        out_table['date'] = np.vectorize(_str_to_timestamp)(out_table['date'])
+        year = int(path[-8:-4])
+        to_timestamp_vectorized = np.vectorize(_str_to_timestamp)
+        out_table['date'] = to_timestamp_vectorized(year, out_table['date'])
 
     return out_table
 
@@ -225,7 +227,7 @@ def update_suomi_data(year=None):
 
         loc_data = unique(vstack([loc_data, data]), keys=['date'])
         updated_years.append(yr)
-
+    return loc_data
     # Write updated data to file
     out_path = os.path.join(PWV_TAB_DIR, 'measured_pwv.csv')
     loc_data.write(out_path, overwrite=True)
@@ -283,3 +285,6 @@ def update_pwv_model():
     out = Table([pwv_data['date'], sup_data], names=['date', 'pwv'])
     out = out[np.where(out['pwv'] > 0)[0]]
     out.write(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'), overwrite=True)
+
+if __name__ == "__main__":
+    print(update_suomi_data('suomi_data/P014hr_2010.plt'))

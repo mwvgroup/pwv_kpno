@@ -130,9 +130,9 @@ def _check_search_args(year, month, day, hour):
 
     Args:
         year  (int): An integer value betwean 2010 and the current year
-        month (int): An integer value betwean 0 and 12
-        day   (int): An integer value betwean 0 and 31
-        hour  (int): An integer value betwean 0 and 24
+        month (int): An integer value betwean 1 and 12 (inclusive)
+        day   (int): An integer value betwean 1 and 31 (inclusive)
+        hour  (int): An integer value betwean 0 and 23 (inclusive)
 
     Returns:
         None
