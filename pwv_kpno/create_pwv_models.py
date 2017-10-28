@@ -58,9 +58,8 @@ ATM_MOD_DIR = os.path.join(FILE_DIR, 'atm_models')  # atmospheric models
 PWV_TAB_DIR = os.path.join(FILE_DIR, 'pwv_tables')  # PWV data tables
 SUOMI_DIR = os.path.join(FILE_DIR, 'suomi_data')    # SuomiNet data files
 
-# Parameters that define what data to download
-SUOMI_IDS = ['KITT', 'AZAM', 'P014', 'SA46', 'SA48']  # SuomiNet receiver IDs
-STRT_YEAR = 2017  # First year of SuomiNet data not included with package
+# SuomiNet receiver IDs to download data for
+SUOMI_IDS = ['KITT', 'AZAM', 'P014', 'SA46', 'SA48']
 
 
 def _str_to_timestamp(year, days_str):
@@ -80,59 +79,10 @@ def _str_to_timestamp(year, days_str):
     """
 
     jan_1st = datetime(year=year, month=1, day=1)
-    date = jan_1st + timedelta(days=float(days_str))
+    date = jan_1st + timedelta(days=float(days_str) - 1)
     date = date.replace(second=0, microsecond=0)
-    return (date - datetime(1970, 1, 1)).total_seconds()
-
-
-def _download_suomi_data(year):
-    """Download SuomiNet data for a given year
-
-    For a given year, download the relevant SuomiNet data for each GPS
-    receiver listed in SUOMI_IDS. Files are downloaded by using the urllib
-    module to access http://www.suominet.ucar.edu/data/staYrHr/. Any existing
-    data files are overwritten.
-
-    Args:
-        year       (int): A year to download data for
-
-    Returns:
-        new_paths (list): List containing file paths of the downloaded data
-    """
-
-    new_paths = []  # To store paths of downloaded files
-
-    # General form of destination file paths for daily and hourly data
-    hourly_path = os.path.join(SUOMI_DIR, '{0}hr_{1}.plt')
-    daily_path = os.path.join(SUOMI_DIR, '{0}dy_{1}.plt')
-
-    # General form for URLs of SuomiNet data published hourly and daily
-    hourly_url = 'http://www.suominet.ucar.edu/data/staYrHr/{0}nrt_{1}.plt'
-    daily_url = 'http://www.suominet.ucar.edu/data/staYrDay/{0}pp_{1}.plt'
-
-    if not os.path.exists(SUOMI_DIR):
-        os.mkdir(SUOMI_DIR)
-
-    for fpath, url in ((hourly_path, hourly_url),): #, (daily_path, daily_url)):
-        for loc in SUOMI_IDS:
-            response = requests.get(url.format(loc, year))
-
-            try:
-                response.raise_for_status()
-                path = fpath.format(loc, year)
-                with open(path, 'wb') as ofile:
-                    ofile.write(response.content)
-
-                new_paths.append(path)
-
-            except requests.exceptions.HTTPError as err:
-                if response.status_code != 404:
-                    raise Exception(err)
-
-    if not new_paths:
-        warn('No data files downloaded from SuomiNet', RuntimeWarning)
-
-    return new_paths
+    timestamp = (date - datetime(1970, 1, 1)).total_seconds()
+    return timestamp
 
 
 def _read_file(path):
@@ -173,18 +123,91 @@ def _read_file(path):
     ind = [(x not in dup_dates) for x in data['date']]
     out_table = Table(np.extract(ind, data), names=['date', path[-15:-11]])
 
-    # Remove data from faulty reciever at Kitt Peak (Jan 2016 through Mar 2016)
-    if path.endswith('KITTnrt_2016.plt') or path.endswith('KITTpp_2016.plt'):
-        april_2016_begins = 1459468800.0
-        out_table = out_table[april_2016_begins < out_table['date']]
-
     # Convert dates to UNIX timestamp
     if out_table:
         year = int(path[-8:-4])
         to_timestamp_vectorized = np.vectorize(_str_to_timestamp)
         out_table['date'] = to_timestamp_vectorized(year, out_table['date'])
 
+    # Remove data from faulty reciever at Kitt Peak (Jan 2016 through Mar 2016)
+    if path.endswith('KITThr_2016.plt') or path.endswith('KITTdy_2016.plt'):
+        april_2016_begins = 1459468800.0
+        out_table = out_table[april_2016_begins < out_table['date']]
+
     return out_table
+
+def _download_suomi_files(year, site_id):
+    """Download SuomiNet data for a given year
+
+    For a given year, download the relevant SuomiNet data for each GPS
+    receiver listed in SUOMI_IDS. Files are downloaded by using the urllib
+    module to access http://www.suominet.ucar.edu/data/staYrHr/. Any existing
+    data files are overwritten.
+
+    Args:
+        year       (int): A year to download data for
+
+    Returns:
+        downloaded_paths (list): Contains file paths of downloaded data
+    """
+
+    downloaded_paths = []
+    daily_path = os.path.join(SUOMI_DIR, '{0}dy_{1}.plt')
+    daily_url = 'http://www.suominet.ucar.edu/data/staYrDay/{0}pp_{1}.plt'
+    hourly_path = os.path.join(SUOMI_DIR, '{0}hr_{1}.plt')
+    hourly_url = 'http://www.suominet.ucar.edu/data/staYrHr/{0}nrt_{1}.plt'
+
+    if not os.path.exists(SUOMI_DIR):
+        os.mkdir(SUOMI_DIR)
+
+    for general_path, url in ((daily_path, daily_url), (hourly_path, hourly_url)):
+        response = requests.get(url.format(site_id, year))
+
+        try:
+            response.raise_for_status()
+            path = general_path.format(site_id, year)
+            with open(path, 'wb') as ofile:
+                ofile.write(response.content)
+
+            downloaded_paths.append(path)
+
+        except requests.exceptions.HTTPError as err:
+            if response.status_code != 404:
+                raise Exception(err)
+
+    return downloaded_paths
+
+
+def _download_suomi_data_for_year(yr):
+    """Downloadsnd returns data from all four SuomiNet sites for a given year
+
+    Args:
+        yr (int): The year of the desired data
+    """
+
+    combined_data = None
+    for site_id in SUOMI_IDS:
+        site_data = None
+        for path in _download_suomi_files(yr, site_id):
+            new_data = _read_file(path)
+            if not site_data and new_data:
+                site_data = new_data
+
+            elif new_data:
+                site_data = unique(vstack([site_data, new_data]), keys=['date'])
+
+        if not combined_data and site_data:
+            combined_data = site_data
+
+        elif site_data:
+            combined_data = join(combined_data, site_data,
+                                 join_type='outer', keys=['date'])
+
+    if not combined_data:
+        msg = 'No SuomiNet data downloaded for year {}'.format(yr)
+        warn(msg.format(site_id, year), RuntimeWarning)
+
+    return combined_data
 
 
 def update_suomi_data(year=None):
@@ -203,11 +226,15 @@ def update_suomi_data(year=None):
     """
 
     # Get any local data that has already been downloaded
-    loc_data = Table.read(os.path.join(PWV_TAB_DIR, 'measured_pwv.csv'))
+    local_data_path = os.path.join(PWV_TAB_DIR, 'measured_pwv.csv')
+    local_data = Table.read(local_data_path)
 
     # Create a set of years that need to be downloaded
     if year is None:
-        years = set(range(STRT_YEAR, datetime.now().year + 1))
+        with open(os.path.join(FILE_DIR, 'CONFIG.txt'), 'rb') as ofile:
+            local_years = pickle.load(ofile)
+            years = set(range(2010, datetime.now().year + 1)) - local_years
+            years.add(max(local_years))
 
     else:
         years = {year}
@@ -215,26 +242,17 @@ def update_suomi_data(year=None):
     # Download data from SuomiNet
     updated_years = []
     for yr in years:
-        data = None
-        for path in _download_suomi_data(yr):
-            if not data:
-                data = _read_file(path)
-                continue
+        new_data = _download_suomi_data_for_year(yr)
+        local_data = unique(vstack([local_data, new_data]),
+                            keys=['date'],
+                            keep='last')
 
-            new_data = _read_file(path)
-            if new_data:
-                data = join(data, new_data, join_type='outer', keys=['date'])
-
-        loc_data = unique(vstack([loc_data, data]), keys=['date'])
         updated_years.append(yr)
-    return loc_data
-    # Write updated data to file
-    out_path = os.path.join(PWV_TAB_DIR, 'measured_pwv.csv')
-    loc_data.write(out_path, overwrite=True)
+
+    local_data.write(local_data_path, overwrite=True)
 
     # Update config.txt
-    config_path = os.path.join(FILE_DIR, 'CONFIG.txt')
-    with open(config_path, 'r+b') as ofile:
+    with open(os.path.join(FILE_DIR, 'CONFIG.txt'), 'r+b') as ofile:
         available_years = pickle.load(ofile)
         available_years.update(updated_years)
         ofile.seek(0)
@@ -287,4 +305,6 @@ def update_pwv_model():
     out.write(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'), overwrite=True)
 
 if __name__ == "__main__":
-    print(update_suomi_data('suomi_data/P014hr_2010.plt'))
+    for year in range(2010, datetime.now().year):
+        print('downloading data for {}'.format(year))
+        update_suomi_data(year)
