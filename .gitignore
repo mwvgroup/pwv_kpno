@@ -1,10 +1,10 @@
-.idea
-build
-dist
-pwv_kpno.egg-info
-pwv_kpno/__pycache__
-pwv_kpno/spect_20150708_matheson
-scrap_work
+.idea/
+build/
+dist/
+pwv_kpno.egg-info/
+pwv_kpno/__pycache__/
+pwv_kpno/spect_20150708_matheson/
+scrap_work/
 
 *.ipynb
 *.pyc
