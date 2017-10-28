@@ -205,7 +205,7 @@ def _download_suomi_data_for_year(yr):
 
     if not combined_data:
         msg = 'No SuomiNet data downloaded for year {}'.format(yr)
-        warn(msg.format(site_id, year), RuntimeWarning)
+        warn(msg, RuntimeWarning)
 
     return combined_data
 

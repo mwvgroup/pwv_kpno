@@ -310,7 +310,7 @@ def _check_transmission_args(date, airmass, model):
     # Check for SuomiNet data available near the given date
     diff = model['date'] - timestamp
     interval = min(diff[diff > 0]) - max(diff[diff < 0])
-    three_days_in_seconds = 24 * 60 * 60
+    three_days_in_seconds = 3 * 24 * 60 * 60
 
     if three_days_in_seconds < interval:
         msg = ('Specified datetime falls within interval of missing SuomiNet' +
