@@ -32,11 +32,8 @@ for those intent on understanding the how the pwv_kpno source code works.
 
 1)  Make sure that the config.txt and measured_pwv.csv exist and include all
     of the SuomiNet data that you want to include with the package
-2)  Change the `STRT_YEAR` variable in create_pwv_models.py to the year that the
-    you are releasing your new version. This should be equivalent to the first
-    year for which SuomiNet data is not included with the package
-3)  Update the docstring for `update_models` to indicate what years of SuomiNet
+1)  Update the docstring for `update_models` to indicate what years of SuomiNet
     data are included with the current package version.
-4)  Update README.md and __init__.py to indicate what years of SuomiNet data
+1)  Update README.md and __init__.py to indicate what years of SuomiNet data
     are included with the current package version.
-5)  Update version number in README.md, __init__.py, and setup.py
+1)  Update version number in README.md, __init__.py, and setup.py

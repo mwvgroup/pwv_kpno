@@ -66,7 +66,7 @@ def _str_to_timestamp(year, days_str):
     """Returns seconds since epoch of a datetime provided in DDD.YYYYY format
 
     This function converts the datetime notation used by SuomiNet to a UTC
-    timestamp. THe Suominet format consists of the day of the year (1 - 365)
+    timestamp. THe SuomiNet format consists of the day of the year (1 to 365)
     followed by the decimal number of hours that have passed in the given day.
     For example, Feburary 1st, 00:15 would be 36.01042.
 
@@ -97,7 +97,8 @@ def _read_file(path):
     Data is removed from the array for dates where the PWV level is negative.
     This condition is equivalent to checking for dates when a GPS receiver is
     offline. Data is also removed for dates with multiple, unequal entries.
-    Note that this may result in an empty table being returned.
+    Note that this may result in an empty table being returned. Credit goes to
+    Jessica Kroboth for identifying these conditions.
 
     Args:
         path (str): File path to be read
@@ -110,10 +111,6 @@ def _read_file(path):
     data = np.genfromtxt(path, usecols=[0, 1],
                          names=['date', 'pwv'],
                          dtype=[(np.str_, 16), float])
-
-    # SuomiNet uses unphysical entries to indicate offline GPS receivers.
-    # We remove duplicate, contradicting, and unphysical values.
-    # Credit goes to Jessica Kroboth for identifying these conditions.
 
     data = data[data['pwv'] > 0]  # Remove data with PWV < 0
     data = np.unique(data)  # Sometimes SuomiNet records duplicate entries
@@ -137,15 +134,15 @@ def _read_file(path):
     return out_table
 
 def _download_suomi_files(year, site_id):
-    """Download SuomiNet data for a given year
+    """Download SuomiNet data for a given year and SuomiNet id
 
-    For a given year, download the relevant SuomiNet data for each GPS
-    receiver listed in SUOMI_IDS. Files are downloaded by using the urllib
-    module to access http://www.suominet.ucar.edu/data/staYrHr/. Any existing
-    data files are overwritten.
+    For a given year and SuomiNet id, download data from the corresponding GPS
+    receiver. Files are downloaded from both the daily and hourly data
+    releases. Any existing data files are overwritten.
 
     Args:
-        year       (int): A year to download data for
+        year    (int): A year to download data for
+        site_id (str): A SuomiNet receiver id code (eg. KITT)
 
     Returns:
         downloaded_paths (list): Contains file paths of downloaded data
@@ -179,10 +176,17 @@ def _download_suomi_files(year, site_id):
 
 
 def _download_suomi_data_for_year(yr):
-    """Downloadsnd returns data from all four SuomiNet sites for a given year
+    """Downloads and returns data from all five SuomiNet sites for a given year
+
+    Data is downloaded for the SuomiNet sites KITT, SA48, SA46, P014, and AZAM.
+    The returned table contains all available data from the daily data releases
+    in addition to being supplemented by the hourly data releases.
 
     Args:
         yr (int): The year of the desired data
+
+    Returns:
+        combined_data (astropy.table.Table): A Table of the downloaded data
     """
 
     combined_data = None
