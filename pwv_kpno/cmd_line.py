@@ -21,7 +21,7 @@
 import argparse
 from datetime import datetime
 
-from __init__ import __version__ as VERSION
+from __init__ import __version__ as version
 from .end_user_functions import available_data
 from .end_user_functions import update_models
 from .end_user_functions import measured_pwv
@@ -135,7 +135,7 @@ def transmission_wrapper(cli_args):
 
 # Create an argument parser to handle command line arguments
 PARSER = argparse.ArgumentParser()
-PARSER.add_argument('-v', '--version', action='version', version=VERSION)
+PARSER.add_argument('-v', '--version', action='version', version=version)
 SUBPARSERS = PARSER.add_subparsers()
 
 # Create a command line subparser for the available_data_wrapper function

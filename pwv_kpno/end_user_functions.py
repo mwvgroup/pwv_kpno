@@ -34,8 +34,8 @@ from pytz import utc
 from astropy.table import Table
 from scipy.interpolate import interpn
 
-from .create_pwv_models import _update_suomi_data
-from .create_pwv_models import _update_pwv_model
+from .create_pwv_models import update_suomi_data
+from .create_pwv_models import update_pwv_model
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -59,7 +59,7 @@ def _timestamp(date):
     datetime.timestamp method was not yet available.
 
     Args:
-        date_str (str): Datetime as string in %Y-%m-%dT%H:%M format
+        date (datetime.datetime): Datetime as string in %Y-%m-%dT%H:%M format
     """
 
     unix_epoch = datetime(1970, 1, 1, tzinfo=utc)
@@ -75,9 +75,6 @@ def available_data():
     local machine. Note that this list includes years for which any amount
     of data has been downloaded. It does not indicate if additional data has
     been released by SuomiNet for a given year that is not locally available.
-
-    Args:
-        None
 
     Returns:
         years (list): A list of years with locally available SuomiNet data
@@ -119,8 +116,8 @@ def update_models(year=None):
             raise ValueError(msg)
 
     # Update the local SuomiData and PWV models
-    updated_years = _update_suomi_data(year)
-    _update_pwv_model()
+    updated_years = update_suomi_data(year)
+    update_pwv_model()
 
     return updated_years
 
@@ -133,9 +130,9 @@ def _check_search_args(year, month, day, hour):
 
     Args:
         year  (int): An integer value betwean 2010 and the current year
-        month (int): An integer value betwean 0 and 12
-        day   (int): An integer value betwean 0 and 31
-        hour  (int): An integer value betwean 0 and 24
+        month (int): An integer value betwean 1 and 12 (inclusive)
+        day   (int): An integer value betwean 1 and 31 (inclusive)
+        hour  (int): An integer value betwean 0 and 23 (inclusive)
 
     Returns:
         None
@@ -150,19 +147,19 @@ def _check_search_args(year, month, day, hour):
     elif isinstance(year, int) and year > datetime.now().year:
         raise ValueError("Argument 'year' (pos 1) is larger than current year")
 
-    def check_type(arg, value, pos, bound):
+    def check_type(arg, value, pos, bounds):
         """Check an argument is of an appropriate type and value"""
 
         if not (isinstance(value, int) or value is None):
             msg = "Argument '{0}' (pos {1}) must be an integer"
             raise TypeError(msg.format(arg, pos))
 
-        if isinstance(value, int) and not (0 < value < bound):
+        if isinstance(value, int) and not (bounds[0] <= value <= bounds[1]):
             raise ValueError('Invalid value for {0}: {1}'.format(arg, value))
 
-    check_type('month', month, 2, 13)
-    check_type('day', day, 3, 32)
-    check_type('hour', hour, 4, 25)
+    check_type('month', month, 2, (1, 12))
+    check_type('day', day, 3, (1, 31))
+    check_type('hour', hour, 4, (0, 23))
 
 
 def _search_dt_table(data_tab, **params):
@@ -313,7 +310,7 @@ def _check_transmission_args(date, airmass, model):
     # Check for SuomiNet data available near the given date
     diff = model['date'] - timestamp
     interval = min(diff[diff > 0]) - max(diff[diff < 0])
-    three_days_in_seconds = 24 * 60 * 60
+    three_days_in_seconds = 3 * 24 * 60 * 60
 
     if three_days_in_seconds < interval:
         msg = ('Specified datetime falls within interval of missing SuomiNet' +
