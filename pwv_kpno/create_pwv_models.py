@@ -133,6 +133,7 @@ def _read_file(path):
 
     return out_table
 
+
 def _download_suomi_files(year, site_id):
     """Download SuomiNet data for a given year and SuomiNet id
 
@@ -149,15 +150,15 @@ def _download_suomi_files(year, site_id):
     """
 
     downloaded_paths = []
-    daily_path = os.path.join(SUOMI_DIR, '{0}dy_{1}.plt')
-    daily_url = 'http://www.suominet.ucar.edu/data/staYrDay/{0}pp_{1}.plt'
-    hourly_path = os.path.join(SUOMI_DIR, '{0}hr_{1}.plt')
-    hourly_url = 'http://www.suominet.ucar.edu/data/staYrHr/{0}nrt_{1}.plt'
+    day_path = os.path.join(SUOMI_DIR, '{0}dy_{1}.plt')
+    day_url = 'http://www.suominet.ucar.edu/data/staYrDay/{0}pp_{1}.plt'
+    hour_path = os.path.join(SUOMI_DIR, '{0}hr_{1}.plt')
+    hour_url = 'http://www.suominet.ucar.edu/data/staYrHr/{0}nrt_{1}.plt'
 
     if not os.path.exists(SUOMI_DIR):
         os.mkdir(SUOMI_DIR)
 
-    for general_path, url in ((daily_path, daily_url), (hourly_path, hourly_url)):
+    for general_path, url in ((day_path, day_url), (hour_path, hour_url)):
         response = requests.get(url.format(site_id, year))
 
         try:
@@ -198,7 +199,8 @@ def _download_suomi_data_for_year(yr):
                 site_data = new_data
 
             elif new_data:
-                site_data = unique(vstack([site_data, new_data]), keys=['date'])
+                site_data = unique(vstack([site_data, new_data]),
+                                   keys=['date'])
 
         if not combined_data and site_data:
             combined_data = site_data
