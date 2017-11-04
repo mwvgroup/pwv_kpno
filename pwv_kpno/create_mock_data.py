@@ -18,12 +18,13 @@
 
 """This code creates mock data used for unit testing."""
 
+import os
 from datetime import datetime, timedelta
 
 from astropy.table import Table
 
 
-def create_mock_pwv_model(out_path):
+def create_mock_pwv_model(out_path, overwrite=True):
     """Creates a file of demo PWV values for unit testing
 
     Creates a table with the columns "date" and "pwv" and writes it to the
@@ -33,6 +34,7 @@ def create_mock_pwv_model(out_path):
 
     Args:
         out_path (str): The output path of
+        overwrite (bool): Whether to overwrite existing files
     """
 
     start_date = datetime(2009, 12, 31, 23, 45)
@@ -42,7 +44,7 @@ def create_mock_pwv_model(out_path):
     out_table = Table(names=['date', 'pwv'], dtype=[datetime, float])
     for i in range(total_time_intervals):
         start_date += timedelta(minutes=30)
-        out_table.add_row([start_date, 25.0])
+        out_table.add_row([start_date.timestamp(), 25.0])
 
     day = 24 * 2  # number of 30 min intervals in a day
     gap_indices = []
@@ -52,12 +54,12 @@ def create_mock_pwv_model(out_path):
     gap_indices.extend(range(215 * day, 219 * day))  # 08-04 through 04-07
 
     out_table.remove_rows(gap_indices)
-    out_table.write(out_path)
+    out_table.write(out_path, overwrite=overwrite)
 
 
-def create_mock_files():
-    create_mock_pwv_model('mock_pwv_model.csv')
+def create_mock_files(directory):
+    create_mock_pwv_model(os.path.join(directory, 'mock_pwv_model.csv'))
 
 
 if __name__ == '__main__':
-    create_mock_files()
+    create_mock_files('.')
