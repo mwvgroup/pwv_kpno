@@ -33,7 +33,7 @@ def create_mock_pwv_model(out_path, overwrite=True):
     "pwv" column are set to 25.0.
 
     Args:
-        out_path (str): The output path of
+        out_path  (str): The output path of
         overwrite (bool): Whether to overwrite existing files
     """
 
