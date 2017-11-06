@@ -24,19 +24,20 @@ from pytz import utc
 from pwv_kpno import measured_pwv
 
 
-class TestErrors(unittest.TestCase):
+class TestErrorRaising(unittest.TestCase):
     """Tests to ensure appropriate errors are thrown by pwv_kpno.measure_pwv"""
 
     def test_year(self):
-        """Test errors thrown due to bad year argument"""
+        """Test for correct errors due to bad year argument"""
 
+        self.assertRaises(ValueError, measured_pwv, -2010)
         self.assertRaises(ValueError, measured_pwv, 2009)
         self.assertRaises(ValueError, measured_pwv, datetime.now().year + 1)
         self.assertRaises(TypeError, measured_pwv, '2009')
         self.assertRaises(TypeError, measured_pwv, 2009.0)
 
     def test_month(self):
-        """Test errors thrown due to bad month argument"""
+        """Test for correct errors due to bad month argument"""
 
         self.assertRaises(ValueError, measured_pwv, month=-3)
         self.assertRaises(ValueError, measured_pwv, month=0)
@@ -47,7 +48,7 @@ class TestErrors(unittest.TestCase):
         self.assertTrue(measured_pwv(month=12))
 
     def test_day(self):
-        """Test errors thrown due to bad day argument"""
+        """Test for correct errors due to bad day argument"""
 
         self.assertRaises(ValueError, measured_pwv, day=-3)
         self.assertRaises(ValueError, measured_pwv, day=0)
@@ -58,7 +59,7 @@ class TestErrors(unittest.TestCase):
         self.assertTrue(measured_pwv(day=17))
 
     def test_hour(self):
-        """Test errors thrown due to bad hour argument"""
+        """Test for correct errors due to bad hour argument"""
 
         self.assertRaises(ValueError, measured_pwv, hour=-3)
         self.assertRaises(ValueError, measured_pwv, hour=24)
@@ -110,6 +111,44 @@ class TestReturnedResults(unittest.TestCase):
         current_year = datetime.now().year
         msg = 'There should be no data for the current year ({})'
         self.assertFalse(measured_pwv(current_year), msg.format(current_year))
+
+    def _check_attrs(self, table, **kwargs):
+        """Check value of datetime attributes from 'date' column of a table
+
+        Iterate through the 'date' column of a table and check that all
+        attribute values match those specified by **kwargs.
+
+        Args:
+            table    (Table): A table with a 'date' column
+            **kwargs      (): datetime attributes and values
+
+        Returns:
+            True or False
+        """
+
+        assert(len(kwargs), 'No attributes specified')
+        for obj in table['date']:
+            for param_name, param_value in kwargs.items():
+                if getattr(obj, param_name) != param_value:
+                    return False
+
+        return True
+
+    def assert_filter(self, kwargs):
+        """Assert if measured_pwv results are correctly filtered by kwargs"""
+
+        msg = 'measured_pwv returned incorrect dates. kwargs: {}'
+        self.assertTrue(self._check_attrs(measured_pwv(**kwargs), **kwargs),
+                        msg.format(kwargs))
+
+    def test_filtering_by_args(self):
+        """Test if results are correctly filtered for multiple kwarg combos"""
+
+        self.assert_filter({'year': 2010})
+        self.assert_filter({'month': 7})
+        self.assert_filter({'day': 21})
+        self.assert_filter({'hour': 5})
+        self.assert_filter({'year': 2011, 'month': 4, 'day': 30, 'hour': 21})
 
 
 if __name__ == '__main__':
