@@ -39,7 +39,7 @@ from .create_pwv_models import update_pwv_model
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
-__credits__ = ['Alexander Afanasyev', 'Micahel Wood-Vasey']
+__credits__ = ['Micahel Wood-Vasey', 'Alexander Afanasyev']
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@gmail.com'
@@ -162,7 +162,7 @@ def _check_search_args(year, month, day, hour):
     check_type('hour', hour, 4, (0, 23))
 
 
-def _search_dt_table(data_tab, **params):
+def _search_dt_table(data_tab, **kwargs):
     """Search an astropy table
 
     Given an astropy table with column 'date', return all entries in the table
@@ -171,7 +171,7 @@ def _search_dt_table(data_tab, **params):
 
     Args:
         data_tab (astropy.table.Table): An astropy table to search
-        **params (): The parameters to search data_tab for
+        **kwargs (): The parameters to search data_tab for
 
     Returns:
         Entries from data_tab that match search parameters
@@ -180,10 +180,10 @@ def _search_dt_table(data_tab, **params):
     # Credit for this function belongs to Alexander Afanasyev
     # https://codereview.stackexchange.com/questions/165811
 
-    def vectorize_callable(item):
+    def vectorize_callable(obj):
         """Checks if datetime attributes match specified values"""
-        return all(getattr(item, param_name) == param_value
-                   for param_name, param_value in params.items()
+        return all(getattr(obj, param_name) == param_value
+                   for param_name, param_value in kwargs.items()
                    if param_value is not None)
 
     indexing_func = np.vectorize(vectorize_callable)
@@ -218,7 +218,8 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
     data = Table.read(os.path.join(PWV_TAB_DIR, 'measured_pwv.csv'))
 
     # Convert UNIX timestamps to UTC
-    data['date'] = np.vectorize(datetime.utcfromtimestamp)(data['date'])
+    to_datetime = lambda date: datetime.fromtimestamp(date, utc)
+    data['date'] = np.vectorize(to_datetime)(data['date'])
     data['date'].unit = 'UTC'
 
     # Assign units to the remaining columns
