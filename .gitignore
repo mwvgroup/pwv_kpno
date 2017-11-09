@@ -8,6 +8,7 @@ pwv_kpno/spect_20150708_matheson/
 scrap_work/
 
 tests/*.csv
+tests/*.plt
 
 *.ipynb
 *.pyc
