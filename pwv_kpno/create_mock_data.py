@@ -24,7 +24,7 @@ from datetime import datetime, timedelta
 from astropy.table import Table
 
 
-def create_mock_pwv_model(out_path, overwrite=True):
+def create_mock_pwv_model(out_path):
     """Creates a file of demo PWV values for unit testing
 
     Creates a table with the columns "date" and "pwv" and writes it to the
@@ -54,7 +54,7 @@ def create_mock_pwv_model(out_path, overwrite=True):
     gap_indices.extend(range(215 * day, 219 * day))  # 08-04 through 04-07
 
     out_table.remove_rows(gap_indices)
-    out_table.write(out_path, overwrite=overwrite)
+    out_table.write(out_path, overwrite=True)
 
 
 def create_mock_suominet_data(out_dir):
