@@ -57,9 +57,25 @@ def create_mock_pwv_model(out_path, overwrite=True):
     out_table.write(out_path, overwrite=overwrite)
 
 
-def create_mock_files(directory):
-    create_mock_pwv_model(os.path.join(directory, 'mock_pwv_model.csv'))
+def create_mock_suominet_data(out_dir):
+
+    line_format = '{:0.5f}  25\n'
+    intervals_in_day = 48  # number of 30 min intervals in a day
+
+    kitt_out_file = open(os.path.join(out_dir, 'KITThr_2010'), 'w')
+    azam_out_file = open(os.path.join(out_dir, 'AZAMhr_2010'), 'w')
+    p014_out_file = open(os.path.join(out_dir, 'P014hr_2010'), 'w')
+
+
+    for integer_day in range(1, 366):
+        for i in range(intervals_in_day):
+            decimal_days = (15 + 30 * i) / (60 * 24)
+            date = integer_day + round(decimal_days, 5)
+            kitt_out_file.write(line_format.format(date))
+            azam_out_file.write(line_format.format(date))
+            p014_out_file.write(line_format.format(date))
 
 
 if __name__ == '__main__':
-    create_mock_files('.')
+    create_mock_pwv_model('./mock_pwv_model.csv')
+    create_mock_suominet_data('.')
