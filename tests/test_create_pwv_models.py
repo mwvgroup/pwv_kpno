@@ -160,14 +160,14 @@ class TestSuomiNetDataDownload(unittest.TestCase):
     def test_download_suomi_data_for_year(self):
         """Test downloaded data for correct columns"""
 
-        bad_column_msg = 'Unexpected column for year={}: {}'
-        expected_2012_cols = ['date', 'AZAM', 'P014', 'SA46', 'SA48']
-        expected_2015_cols = ['date', 'KITT', 'P014', 'SA46', 'SA48', 'AZAM']
+        bad_column_msg = 'Wrong columns for year={}'
+        expected_2012_cols = {'date', 'AZAM', 'P014', 'SA46', 'SA48'}
+        expected_2015_cols = {'date', 'KITT', 'P014', 'SA46', 'SA48', 'AZAM'}
 
-        retrieved_2012_cols = self.data_2012.colnames
+        retrieved_2012_cols = set(self.data_2012.colnames)
         self.assertEqual(retrieved_2012_cols, expected_2012_cols,
-                         bad_column_msg.format(2012, retrieved_2012_cols))
+                         bad_column_msg.format(2012))
 
-        retrieved_2015_cols = self.data_2015.colnames
+        retrieved_2015_cols = set(self.data_2015.colnames)
         self.assertEqual(retrieved_2015_cols, expected_2015_cols,
-                         bad_column_msg.format(2015, retrieved_2015_cols))
+                         bad_column_msg.format(2015))
