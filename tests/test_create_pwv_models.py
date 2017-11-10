@@ -23,11 +23,10 @@ import unittest
 from pytz import utc
 
 from pwv_kpno.create_pwv_models import _download_suomi_data_for_year
-from pwv_kpno.create_pwv_models import _download_suomi_files
 from pwv_kpno.create_pwv_models import _read_file
 from pwv_kpno.create_pwv_models import _str_to_timestamp
 
-SPATH = '../pwv_kpno/suomi_data/'
+SPATH = '../pwv_kpno/suomi_data/'  # Package directory of SuomiNet data files
 
 
 def timestamp(date):
@@ -45,20 +44,17 @@ def timestamp(date):
 
     unix_epoch = datetime(1970, 1, 1, tzinfo=utc)
     utc_date = date.astimezone(utc)
-    timestamp = (utc_date - unix_epoch).total_seconds()
-    return timestamp
+    total_seconds = (utc_date - unix_epoch).total_seconds()
+    return total_seconds
 
 
 class TestDateFormatConversion(unittest.TestCase):
-    """Tests for _str_to_timestamp function"""
+    """Tests for create_pwv_models._str_to_timestamp"""
 
     def test_roundoff_error(self):
-        """Test that returned timestamps not suffer from round off error
+        """Test returned timestamps for round off error"""
 
-        We test dates with known round off error before the bug fix intended
-        for package version 0.9.13
-        """
-
+        # Dates with known round off error before bug fix in 0.9.13
         jan_01_2010_01_15 = datetime(2010, 1, 1, 1, 15, tzinfo=utc)
         jan_01_2010_02_45 = datetime(2010, 1, 1, 2, 45, tzinfo=utc)
         jan_01_2010_04_15 = datetime(2010, 1, 1, 4, 15, tzinfo=utc)
@@ -77,7 +73,7 @@ class TestDateFormatConversion(unittest.TestCase):
                          error_msg.format(jan_01_2010_04_15))
 
     def test_dates_out_of_data_range(self):
-        """Test _str_to_timestamp on dates outside the SuomiNet data range"""
+        """Test timestamp calculation for dates outside SuomiNet data range"""
 
         jan_01_2000_00_15 = datetime(2000, 1, 1, 0, 15, tzinfo=utc)
         dec_31_2021_23_15 = datetime(2021, 12, 31, 23, 15, tzinfo=utc)
@@ -93,7 +89,7 @@ class TestDateFormatConversion(unittest.TestCase):
 
 
 class TestSuomiNetFileParsing(unittest.TestCase):
-    """Tests for _read_file function"""
+    """Tests for create_pwv_models._read_file"""
 
     def setUp(self):
         """Read in SuomiNet data from data files included with the package"""
@@ -109,13 +105,13 @@ class TestSuomiNetFileParsing(unittest.TestCase):
         self.p014_hr_data = _read_file(os.path.join(SPATH, self.p014_dy_path))
 
     def test_column_names(self):
-        """Test returned data has correct column names"""
+        """Test returned data has correct columns"""
 
         k_cols = self.kitt_hr_data.colnames
         a_cols = self.azam_hr_data.colnames
         p_cols = self.p014_hr_data.colnames
 
-        msg = 'Wrong column names returned for ({}).' # Todo
+        msg = 'Wrong column names returned for {}: ({}).'
         self.assertEqual(k_cols, ['date', 'KITT'], msg.format('KITT', k_cols))
         self.assertEqual(a_cols, ['date', 'AZAM'], msg.format('AZAM', a_cols))
         self.assertEqual(p_cols, ['date', 'P014'], msg.format('P014', p_cols))
@@ -150,3 +146,28 @@ class TestSuomiNetFileParsing(unittest.TestCase):
 
         self.assertFalse(len(bad_hr_data))
         self.assertFalse(len(bad_dy_data))
+
+
+class TestSuomiNetDataDownload(unittest.TestCase):
+    """Tests for create_pwv_models._download_suomi_data_for_year"""
+
+    def setUp(self):
+        """Download data from SuomiNet for 2012 and 2015"""
+
+        self.data_2012 = _download_suomi_data_for_year(2012)
+        self.data_2015 = _download_suomi_data_for_year(2015)
+
+    def test_download_suomi_data_for_year(self):
+        """Test downloaded data for correct columns"""
+
+        bad_column_msg = 'Unexpected column for year={}: {}'
+        expected_2012_cols = ['date', 'AZAM', 'P014', 'SA46', 'SA48']
+        expected_2015_cols = ['date', 'KITT', 'P014', 'SA46', 'SA48', 'AZAM']
+
+        retrieved_2012_cols = self.data_2012.colnames
+        self.assertEqual(retrieved_2012_cols, expected_2012_cols,
+                         bad_column_msg.format(2012, retrieved_2012_cols))
+
+        retrieved_2015_cols = self.data_2015.colnames
+        self.assertEqual(retrieved_2015_cols, expected_2015_cols,
+                         bad_column_msg.format(2015, retrieved_2015_cols))
