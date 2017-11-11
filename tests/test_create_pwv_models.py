@@ -16,6 +16,10 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno. If not, see <http://www.gnu.org/licenses/>.
 
+"""This file tests that SuomiNet data is downloaded and parsed correctly. The
+tests below contribute to coverage of create_pwv_models.py
+"""
+
 import os
 from datetime import datetime
 
@@ -157,7 +161,7 @@ class TestSuomiNetDataDownload(unittest.TestCase):
         self.data_2012 = _download_suomi_data_for_year(2012)
         self.data_2015 = _download_suomi_data_for_year(2015)
 
-    def test_download_suomi_data_for_year(self):
+    def test_column_names(self):
         """Test downloaded data for correct columns"""
 
         bad_column_msg = 'Wrong columns for year={}'

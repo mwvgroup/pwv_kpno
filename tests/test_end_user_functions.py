@@ -16,6 +16,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno. If not, see <http://www.gnu.org/licenses/>.
 
+"""This file provides tests for function 'transmission'"""
+
 from pwv_kpno import measured_pwv
 import unittest
 from datetime import datetime
@@ -25,44 +27,39 @@ from pytz import utc
 
 
 from pwv_kpno.end_user_functions import _check_transmission_args
+from pwv_kpno.end_user_functions import _check_search_args
 from pwv_kpno.end_user_functions import transmission, modeled_pwv
 
 
-class TestErrorRaising(unittest.TestCase):
-    """Check errors are thrown appropriately by pwv_kpno.transmission"""
+class TestTransmissionArgs(unittest.TestCase):
+    """Test pwv_kpno.transmission for raised errors due to bad arguments"""
 
     pwv_model = modeled_pwv()
 
     def test_argument_types(self):
-        """Test errors from function call with wrong arg types
+        """Test errors raised from function call with wrong argument types"""
 
-        Test that the appropriate errors are raised when transmission is
-        called with the wrong argument types.
-        """
+        # TypeError for airmass argument (should be float)
+        self.assertRaises(TypeError, transmission, 1, 1)
+        self.assertRaises(TypeError, transmission, "1", 1)
 
-        with self.assertRaises(TypeError):
-            transmission(1, 1)
-            transmission("1", 1)
+        # TypeError for airmass argument (should be float or int)
+        test_datetime = datetime.utcnow()
+        test_datetime = test_datetime.replace(year=2011, tzinfo=utc)
+        self.assertRaises(TypeError, transmission, test_datetime, "1")
 
-            datetime_object = datetime.utcnow()
-            datetime_object = datetime_object.replace(year=2011, tzinfo=utc)
-            transmission(datetime_object, "1")
-
-        # Error should be thrown for a naive datetime with no time zone info
-        with self.assertRaises(ValueError):
-            transmission(datetime.now(), 1)
+        # ValueError due to naive datetime with no time zone info
+        self.assertRaises(ValueError, transmission, datetime.now(), 1)
 
     def test_year_out_of_range(self):
         """Test errors from function call with date out of range"""
 
         early_date = datetime(year=2009, month=12, day=31, tzinfo=utc)
-        with self.assertRaises(ValueError):
-            transmission(date=early_date, airmass=1)
+        self.assertRaises(ValueError, transmission, early_date, 1)
 
         current_year = datetime.now().year
         late_date = datetime(year=current_year + 1, month=1, day=1, tzinfo=utc)
-        with self.assertRaises(ValueError):
-            transmission(date=late_date, airmass=1)
+        self.assertRaises(ValueError, transmission, late_date, 1)
 
     def data_gap_handeling(self):  # Todo
 
@@ -82,51 +79,49 @@ class TestErrorRaising(unittest.TestCase):
             _check_transmission_args(four_day_gap_begin, 1, self.pwv_model)
 
 
-class TestDataRetrieval(unittest.TestCase):
-    """Tests to ensure appropriate errors are thrown by pwv_kpno.measure_pwv"""
+class TestDataRetrievalArgs(unittest.TestCase):
+    """Test pwv_kpno.transmission for raised errors due to bad arguments"""
 
     all_local_pwv_data = measured_pwv()
 
     def test_checks_for_valid_year(self):
         """Test for correct errors due to bad year argument"""
 
-        self.assertRaises(ValueError, measured_pwv, -2010)
-        self.assertRaises(ValueError, measured_pwv, 2009)
-        self.assertRaises(ValueError, measured_pwv, datetime.now().year + 1)
-        self.assertRaises(TypeError, measured_pwv, '2009')
-        self.assertRaises(TypeError, measured_pwv, 2009.0)
+        next_year = datetime.now().year + 1
+        self.assertRaises(ValueError, _check_search_args, -2010)
+        self.assertRaises(ValueError, _check_search_args, 2009)
+        self.assertRaises(ValueError, _check_search_args, next_year)
+        self.assertRaises(TypeError, _check_search_args, '2009')
+        self.assertRaises(TypeError, _check_search_args, 2009.0)
 
     def test_checks_for_valid_month(self):
         """Test for correct errors due to bad month argument"""
 
-        self.assertRaises(ValueError, measured_pwv, month=-3)
-        self.assertRaises(ValueError, measured_pwv, month=0)
-        self.assertRaises(ValueError, measured_pwv, month=13)
-        self.assertRaises(ValueError, measured_pwv, month=20)
-        self.assertRaises(TypeError, measured_pwv, month='12')
-        self.assertRaises(TypeError, measured_pwv, month=12.0)
-        self.assertTrue(measured_pwv(month=12))
+        self.assertRaises(ValueError, _check_search_args, month=-3)
+        self.assertRaises(ValueError, _check_search_args, month=0)
+        self.assertRaises(ValueError, _check_search_args, month=13)
+        self.assertRaises(ValueError, _check_search_args, month=20)
+        self.assertRaises(TypeError, _check_search_args, month='12')
+        self.assertRaises(TypeError, _check_search_args, month=12.0)
 
     def test_checks_for_valid_day(self):
         """Test for correct errors due to bad day argument"""
 
-        self.assertRaises(ValueError, measured_pwv, day=-3)
-        self.assertRaises(ValueError, measured_pwv, day=0)
-        self.assertRaises(ValueError, measured_pwv, day=32)
-        self.assertRaises(ValueError, measured_pwv, day=40)
-        self.assertRaises(TypeError, measured_pwv, day='17')
-        self.assertRaises(TypeError, measured_pwv, day=17.0)
-        self.assertTrue(measured_pwv(day=17))
+        self.assertRaises(ValueError, _check_search_args, day=-3)
+        self.assertRaises(ValueError, _check_search_args, day=0)
+        self.assertRaises(ValueError, _check_search_args, day=32)
+        self.assertRaises(ValueError, _check_search_args, day=40)
+        self.assertRaises(TypeError, _check_search_args, day='17')
+        self.assertRaises(TypeError, _check_search_args, day=17.0)
 
     def test_checks_for_valid_hour(self):
         """Test for correct errors due to bad hour argument"""
 
-        self.assertRaises(ValueError, measured_pwv, hour=-3)
-        self.assertRaises(ValueError, measured_pwv, hour=24)
-        self.assertRaises(ValueError, measured_pwv, hour=30)
-        self.assertRaises(TypeError, measured_pwv, hour='12')
-        self.assertRaises(TypeError, measured_pwv, hour=12.0)
-        self.assertTrue(measured_pwv(hour=17))
+        self.assertRaises(ValueError, _check_search_args, hour=-3)
+        self.assertRaises(ValueError, _check_search_args, hour=24)
+        self.assertRaises(ValueError, _check_search_args, hour=30)
+        self.assertRaises(TypeError, _check_search_args, hour='12')
+        self.assertRaises(TypeError, _check_search_args, hour=12.0)
 
     def test_returned_tz_info(self):
         """Test if datetimes in the returned data are timezone aware"""

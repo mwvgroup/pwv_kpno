@@ -16,10 +16,10 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno. If not, see <http://www.gnu.org/licenses/>.
 
-"""Tests in this file ensure that the package contains the appropriate SuomiNet
-data files. These include the hourly and daily data files from 2010 through the
-previous year. Data should be available for the 'KITT', 'P014', 'SA46', 'SA48',
-and 'AZAM' recievers.
+"""This file tests that the appropriate SuomiNet data files are available
+within the package. These files should include all available hourly and daily
+SuomiNet data from 2010 through the previous year. Data should be available for
+the 'KITT', 'P014', 'SA46', 'SA48', and 'AZAM' recievers.
 """
 
 import os
