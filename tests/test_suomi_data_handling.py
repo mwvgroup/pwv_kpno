@@ -16,9 +16,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno. If not, see <http://www.gnu.org/licenses/>.
 
-"""This file tests that SuomiNet data is downloaded and parsed correctly. The
-tests below contribute to coverage of create_pwv_models.py
-"""
+"""This file tests that SuomiNet data is downloaded and parsed correctly."""
 
 import os
 from datetime import datetime
@@ -53,7 +51,7 @@ def timestamp(date):
 
 
 class TestDateFormatConversion(unittest.TestCase):
-    """Tests for create_pwv_models._str_to_timestamp"""
+    """Tests conversion of SuomiNet datetime format to timestamps"""
 
     def test_roundoff_error(self):
         """Test returned timestamps for round off error"""
@@ -93,7 +91,7 @@ class TestDateFormatConversion(unittest.TestCase):
 
 
 class TestSuomiNetFileParsing(unittest.TestCase):
-    """Tests for create_pwv_models._read_file"""
+    """Tests file parsing by create_pwv_models._read_file"""
 
     def setUp(self):
         """Read in SuomiNet data from data files included with the package"""
@@ -111,14 +109,19 @@ class TestSuomiNetFileParsing(unittest.TestCase):
     def test_column_names(self):
         """Test returned data has correct columns"""
 
-        k_cols = self.kitt_hr_data.colnames
-        a_cols = self.azam_hr_data.colnames
-        p_cols = self.p014_hr_data.colnames
+        kitt_cols = self.kitt_hr_data.colnames
+        azam_cols = self.azam_hr_data.colnames
+        p014_cols = self.p014_hr_data.colnames
 
         msg = 'Wrong column names returned for {}: ({}).'
-        self.assertEqual(k_cols, ['date', 'KITT'], msg.format('KITT', k_cols))
-        self.assertEqual(a_cols, ['date', 'AZAM'], msg.format('AZAM', a_cols))
-        self.assertEqual(p_cols, ['date', 'P014'], msg.format('P014', p_cols))
+        self.assertEqual(kitt_cols, ['date', 'KITT'],
+                         msg.format(self.kitt_hr_path, kitt_cols))
+
+        self.assertEqual(azam_cols, ['date', 'AZAM'],
+                         msg.format(self.azam_hr_path, azam_cols))
+
+        self.assertEqual(p014_cols, ['date', 'P014'],
+                         msg.format(self.p014_dy_path, p014_cols))
 
     def test_dates_are_unique(self):
         """Test for the removal of any duplicate dates"""
@@ -130,7 +133,7 @@ class TestSuomiNetFileParsing(unittest.TestCase):
         self.assertEqual(table_entries, unique_dates, msg)
 
     def test_removed_negative_values(self):
-        """Test for the removal of any negative PWV values"""
+        """Test for the removal of negative PWV values"""
 
         msg = 'Negative PWV values were returned when parsing {}'
         is_negative_kitt_data = any(self.kitt_hr_data['KITT'] < 0)
@@ -153,7 +156,7 @@ class TestSuomiNetFileParsing(unittest.TestCase):
 
 
 class TestSuomiNetDataDownload(unittest.TestCase):
-    """Tests for create_pwv_models._download_suomi_data_for_year"""
+    """Tests data is downloaded correctly by _download_suomi_data_for_year"""
 
     def setUp(self):
         """Download data from SuomiNet for 2012 and 2015"""
