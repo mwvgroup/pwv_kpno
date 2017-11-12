@@ -22,14 +22,38 @@ from datetime import datetime
 from astropy.table import Table
 from pytz import utc
 
-from pwv_kpno import measured_pwv
+from pwv_kpno import measured_pwv, modeled_pwv
 from pwv_kpno.end_user_functions import _check_search_args
 
 
-class TestDataRetrievalArgs(unittest.TestCase):
-    """Test pwv_kpno.transmission for raised errors due to bad arguments"""
+def _check_attrs(iterable, **kwargs):
+    """Check the attribute values of objects in an iterable
 
-    all_local_pwv_data = measured_pwv()
+    Iterate through the contents of a given iterable and check that all
+    attribute values match those specified by **kwargs.
+
+    Args:
+        table    (Table): A table with a 'date' column
+        **kwargs      (): datetime attributes and values
+
+    Returns:
+        True or False
+    """
+
+    assert (len(kwargs), 'No attributes specified')
+    for obj in iterable:
+        for param_name, param_value in kwargs.items():
+            if getattr(obj, param_name) != param_value:
+                return False
+
+    return True
+
+
+class TestSearchArgumentErrors(unittest.TestCase):
+    """Test that _check_search_args raises the appropriate errors
+
+    _check_search_args is responsible for checking the arguments for both
+    pwv_kpno.measured_pwv and pwv_kpno.modeled_pwv"""
 
     def test_checks_for_valid_year(self):
         """Test for correct errors due to bad year argument"""
@@ -70,79 +94,79 @@ class TestDataRetrievalArgs(unittest.TestCase):
         self.assertRaises(TypeError, _check_search_args, hour='12')
         self.assertRaises(TypeError, _check_search_args, hour=12.0)
 
-    def test_returned_tz_info(self):
-        """Test if datetimes in the returned data are timezone aware"""
 
-        tzinfo = self.all_local_pwv_data['date'][0].tzinfo
-        self.assertTrue(tzinfo == utc, 'Datetimes should be UTC aware')
+class TestMeasuredPWV(unittest.TestCase):
+    """Tests for the 'measured_pwv' function"""
+
+    all_local_pwv_measurements = measured_pwv()
+
+    def test_returned_tz_info(self):
+        """Test if datetimes in the returned data are timezone aware
+
+        This test only checks the first and last returned result
+        """
+
+        tzinfo = self.all_local_pwv_measurements['date'][0].tzinfo
+        error_msg = 'Datetimes should be UTC aware (found "{}")'
+        self.assertIsNotNone(tzinfo, error_msg.format('None'))
+        self.assertTrue(tzinfo == utc, error_msg.format(tzinfo))
 
     def test_returned_column_order(self):
-        """Test the column order of the table returned by measured_pwv()"""
+        """Test the column order of the table returned by measured_pwv()
 
-        self.assertTrue(self.all_local_pwv_data.colnames[0] == 'date',
-                        'First column of measured_pwv() should be "date"')
-
-        self.assertTrue(self.all_local_pwv_data.colnames[1] == 'KITT',
-                        'Second column of measured_pwv() should be "KITT"')
-
-    def test_returned_date_range(self):
-        """Test that SuomiNet data is available only for the appropriate years
-
-        Each package distribution should contain all necessary SuomiNet data
-        for 2010 through the previous year.
+        The first two columns should be 'date' and 'KITT'
         """
 
-        earliest_date = min(self.all_local_pwv_data['date'])
-        earliest_date = earliest_date.replace(tzinfo=None)
-
-        expected_earliest_date = datetime(2010, 1, 1, 0, 15)
-        msg = 'Expected earliest date in data to be {}. Found {}.'
-        self.assertTrue(earliest_date == expected_earliest_date,
-                        msg.format(expected_earliest_date, earliest_date))
-
-        msg = 'No SuomiNet data found for {}'
-        for year in range(2010, datetime.now().year):
-            data_for_year = measured_pwv(year)
-            self.assertTrue(data_for_year, msg.format(year))
-
-        current_year = datetime.now().year
-        msg = 'There should be no data for the current year ({})'
-        self.assertFalse(measured_pwv(current_year), msg.format(current_year))
-
-    def _check_attrs(self, table, **kwargs):
-        """Check value of datetime attributes from 'date' column of a table
-
-        Iterate through the 'date' column of a table and check that all
-        attribute values match those specified by **kwargs.
-
-        Args:
-            table    (Table): A table with a 'date' column
-            **kwargs      (): datetime attributes and values
-
-        Returns:
-            True or False
-        """
-
-        assert (len(kwargs), 'No attributes specified')
-        for obj in table['date']:
-            for param_name, param_value in kwargs.items():
-                if getattr(obj, param_name) != param_value:
-                    return False
-
-        return True
-
-    def assert_filter(self, kwargs):
-        """Assert if measured_pwv results are correctly filtered by kwargs"""
-
-        msg = 'measured_pwv returned incorrect dates. kwargs: {}'
-        self.assertTrue(self._check_attrs(measured_pwv(**kwargs), **kwargs),
-                        msg.format(kwargs))
+        col_0 = self.all_local_pwv_measurements.colnames[0]
+        col_1 = self.all_local_pwv_measurements.colnames[1]
+        error_msg = 'column {} should be "{}", found "{}"'
+        self.assertEqual(col_0, 'date', error_msg.format(0, 'date', col_0))
+        self.assertEqual(col_1, 'KITT', error_msg.format(1, 'KITT', col_1))
 
     def test_filtering_by_args(self):
-        """Test if results are correctly filtered for multiple kwarg combos"""
+        """Test if results are correctly filtered by kwarg arguments"""
 
-        self.assert_filter({'year': 2010})
-        self.assert_filter({'month': 7})
-        self.assert_filter({'day': 21})
-        self.assert_filter({'hour': 5})
-        self.assert_filter({'year': 2011, 'month': 4, 'day': 30, 'hour': 21})
+        test_cases = [{'year': 2010}, {'month': 7}, {'day': 21}, {'hour': 5},
+                      {'year': 2011, 'month': 4, 'day': 30, 'hour': 21}]
+
+        error_msg = 'measured_pwv returned incorrect dates. kwargs: {}'
+        for kwargs in test_cases:
+            attr_check = _check_attrs(measured_pwv(**kwargs)['date'], **kwargs)
+            self.assertTrue(attr_check, error_msg.format(kwargs))
+
+    def test_units(self):
+        """Test columns for appropriate units"""
+
+        for column in self.all_local_pwv_measurements.itercols():
+            if column.name == 'date':
+                self.assertEqual(column.unit, 'UTC')
+
+            else:
+                self.assertEqual(column.unit, 'mm')
+
+
+class TestModeledPWV(unittest.TestCase):
+    """Tests for the 'modeled_pwv' function"""
+
+    modeled_pwv_data = modeled_pwv()
+
+    def test_returned_tz_info(self):
+        """Test if datetimes in the returned data are timezone aware
+
+        This test only checks the first and last returned result
+        """
+
+        tzinfo = self.modeled_pwv_data['date'][0].tzinfo
+        error_msg = 'Datetimes should be UTC aware (found "{}")'
+        self.assertIsNotNone(tzinfo, error_msg.format('None'))
+        self.assertTrue(tzinfo == utc, error_msg.format(tzinfo))
+
+    def test_units(self):
+        """Test columns for appropriate units"""
+
+        error_msg = 'Wrong units for column {}. Found ({})'
+        date_unit = self.modeled_pwv_data['date'].unit
+        pwv_unit = self.modeled_pwv_data['pwv'].unit
+
+        self.assertEqual(date_unit, 'UTC', error_msg.format('date', date_unit))
+        self.assertEqual(pwv_unit, 'mm', error_msg.format('pwv', pwv_unit))
