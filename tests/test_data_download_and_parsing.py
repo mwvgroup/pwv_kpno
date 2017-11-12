@@ -50,6 +50,42 @@ def timestamp(date):
     return total_seconds
 
 
+class TestSuomiNetDataDownload(unittest.TestCase):
+    """Tests data is downloaded correctly by _download_suomi_data_for_year"""
+
+    @classmethod
+    def setUpClass(self):
+        """Download data from SuomiNet for 2012 and 2015"""
+
+        self.data_2012 = _download_suomi_data_for_year(2012)
+        self.data_2015 = _download_suomi_data_for_year(2015)
+
+    def test_column_names(self):
+        """Test downloaded data for correct columns"""
+
+        bad_column_msg = 'Wrong columns for year={}'
+        expected_2012_cols = {'date', 'AZAM', 'P014', 'SA46', 'SA48'}
+        expected_2015_cols = {'date', 'KITT', 'P014', 'SA46', 'SA48', 'AZAM'}
+
+        retrieved_2012_cols = set(self.data_2012.colnames)
+        self.assertEqual(retrieved_2012_cols, expected_2012_cols,
+                         bad_column_msg.format(2012))
+
+        retrieved_2015_cols = set(self.data_2015.colnames)
+        self.assertEqual(retrieved_2015_cols, expected_2015_cols,
+                         bad_column_msg.format(2015))
+
+    def test_year_values(self):
+        """Test data was downloaded for the correct years"""
+
+        error_msg = 'Wrong data downloaded for year {}'
+        first_2012_date = datetime.utcfromtimestamp(self.data_2012['date'][0])
+        first_2015_date = datetime.utcfromtimestamp(self.data_2015['date'][0])
+
+        self.assertEqual(first_2012_date.year, 2012, error_msg.format(2012))
+        self.assertEqual(first_2015_date.year, 2015, error_msg.format(2015))
+
+
 class TestDateFormatConversion(unittest.TestCase):
     """Tests conversion of SuomiNet datetime format to timestamps"""
 
@@ -154,39 +190,3 @@ class TestSuomiNetFileParsing(unittest.TestCase):
 
         self.assertFalse(len(bad_hr_data))
         self.assertFalse(len(bad_dy_data))
-
-
-class TestSuomiNetDataDownload(unittest.TestCase):
-    """Tests data is downloaded correctly by _download_suomi_data_for_year"""
-
-    @classmethod
-    def setUpClass(self):
-        """Download data from SuomiNet for 2012 and 2015"""
-
-        self.data_2012 = _download_suomi_data_for_year(2012)
-        self.data_2015 = _download_suomi_data_for_year(2015)
-
-    def test_column_names(self):
-        """Test downloaded data for correct columns"""
-
-        bad_column_msg = 'Wrong columns for year={}'
-        expected_2012_cols = {'date', 'AZAM', 'P014', 'SA46', 'SA48'}
-        expected_2015_cols = {'date', 'KITT', 'P014', 'SA46', 'SA48', 'AZAM'}
-
-        retrieved_2012_cols = set(self.data_2012.colnames)
-        self.assertEqual(retrieved_2012_cols, expected_2012_cols,
-                         bad_column_msg.format(2012))
-
-        retrieved_2015_cols = set(self.data_2015.colnames)
-        self.assertEqual(retrieved_2015_cols, expected_2015_cols,
-                         bad_column_msg.format(2015))
-
-    def test_year_values(self):
-        """Test data was downloaded for the correct years"""
-
-        error_msg = 'Wrong data downloaded for year {}'
-        first_2012_date = datetime.utcfromtimestamp(self.data_2012['date'][0])
-        first_2015_date = datetime.utcfromtimestamp(self.data_2015['date'][0])
-
-        self.assertEqual(first_2012_date.year, 2012, error_msg.format(2012))
-        self.assertEqual(first_2015_date.year, 2015, error_msg.format(2015))
