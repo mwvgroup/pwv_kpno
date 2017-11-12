@@ -93,7 +93,8 @@ class TestDateFormatConversion(unittest.TestCase):
 class TestSuomiNetFileParsing(unittest.TestCase):
     """Tests file parsing by create_pwv_models._read_file"""
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         """Read in SuomiNet data from data files included with the package"""
 
         self.kitt_hr_path = 'KITThr_2016.plt'
@@ -158,7 +159,8 @@ class TestSuomiNetFileParsing(unittest.TestCase):
 class TestSuomiNetDataDownload(unittest.TestCase):
     """Tests data is downloaded correctly by _download_suomi_data_for_year"""
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         """Download data from SuomiNet for 2012 and 2015"""
 
         self.data_2012 = _download_suomi_data_for_year(2012)
@@ -184,7 +186,7 @@ class TestSuomiNetDataDownload(unittest.TestCase):
 
         error_msg = 'Wrong data downloaded for year {}'
         first_2012_date = datetime.utcfromtimestamp(self.data_2012['date'][0])
-        first_2015_date = datetime.utcfromtimestamp(self.data_2012['date'][0])
+        first_2015_date = datetime.utcfromtimestamp(self.data_2015['date'][0])
 
         self.assertEqual(first_2012_date.year, 2012, error_msg.format(2012))
-        self.assertEqual(first_2015_date, 2015, error_msg.format(2015))
+        self.assertEqual(first_2015_date.year, 2015, error_msg.format(2015))

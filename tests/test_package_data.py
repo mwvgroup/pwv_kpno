@@ -35,7 +35,8 @@ COFIG_PATH = '../pwv_kpno/CONFIG.txt'
 class TestCorrectDataFiles(unittest.TestCase):
     """Test appropriate SuomiNet data files are included with the package"""
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         """Determine what data files are currently included in the package"""
 
         self.data_file_years = set()
@@ -62,7 +63,7 @@ class TestCorrectDataFiles(unittest.TestCase):
     def test_correct_gps_ids(self):
         """Test data files correspond to appropriate GPS receivers"""
 
-        expected_ids = {'date', 'KITT', 'P014', 'SA46', 'SA48', 'AZAM'}
+        expected_ids = {'KITT', 'P014', 'SA46', 'SA48', 'AZAM'}
         missing_ids = expected_ids - self.data_file_GPS_ids
         bad_ids = self.data_file_GPS_ids - expected_ids
 
