@@ -23,32 +23,33 @@ pwv_kpno/end_user_functions.py
 import unittest
 from datetime import datetime, timedelta
 
-from astropy.table import Table
 from pytz import utc
 
-from pwv_kpno.end_user_functions import _check_transmission_args
-from pwv_kpno.end_user_functions import transmission, modeled_pwv
+from pwv_kpno.end_user_functions import _check_transmission_args as arg_check
+from tests.create_mock_data import create_mock_pwv_model
 
 
 class TestTransmissionArgs(unittest.TestCase):
     """Test pwv_kpno.transmission for raised errors due to bad arguments"""
 
-    pwv_model = modeled_pwv()
+    pwv_model = create_mock_pwv_model(2010)
 
     def test_argument_types(self):
         """Test errors raised from function call with wrong argument types"""
 
-        # TypeError for airmass argument (should be float)
-        self.assertRaises(TypeError, transmission, 1, 1)
-        self.assertRaises(TypeError, transmission, "1", 1)
+        test_date = datetime.utcnow()
+        test_date = test_date.replace(year=2011, tzinfo=utc)
+
+        # TypeError for date argument (should be datetime)
+        self.assertRaises(TypeError, arg_check, "1", 1, self.pwv_model)
 
         # TypeError for airmass argument (should be float or int)
-        test_datetime = datetime.utcnow()
-        test_datetime = test_datetime.replace(year=2011, tzinfo=utc)
-        self.assertRaises(TypeError, transmission, test_datetime, "1")
+        bad_airmass_args = (test_date, "1", self.pwv_model)
+        self.assertRaises(TypeError, arg_check, *bad_airmass_args)
 
         # ValueError due to naive datetime with no time zone info
-        self.assertRaises(ValueError, transmission, datetime.now(), 1)
+        bad_datetime_args = (datetime.now(), 1, self.pwv_model)
+        self.assertRaises(ValueError, arg_check, *bad_datetime_args)
 
     def test_year_out_of_range(self):
         """Test errors from function call with date out of data range
@@ -59,28 +60,34 @@ class TestTransmissionArgs(unittest.TestCase):
         """
 
         early_date = datetime(year=2009, month=12, day=31, tzinfo=utc)
-        self.assertRaises(ValueError, transmission, early_date, 1)
+        self.assertRaises(ValueError, arg_check, early_date, 1, self.pwv_model)
 
         now = datetime.now()
         late_day = now + timedelta(days=1)
-        self.assertRaises(ValueError, transmission, late_day, 1)
+        self.assertRaises(ValueError, arg_check, late_day, 1, self.pwv_model)
 
         late_year = datetime(year=now.year + 1, month=1, day=1, tzinfo=utc)
-        self.assertRaises(ValueError, transmission, late_year, 1)
+        self.assertRaises(ValueError, arg_check, late_year, 1, self.pwv_model)
 
-    def data_gap_handeling(self):  # Todo
+    def test_data_gap_handeling(self):  # Todo: this test should pass but fails
+        """Test for error due to function call for a datetime without PWV data
 
-        one_day_gap_begin = datetime(year=2010, month=1, day=11, tzinfo=utc)
-        two_day_gap_begin = datetime(year=2010, month=2, day=10, tzinfo=utc)
-        three_day_gap_begin = datetime(year=2010, month=4, day=11, tzinfo=utc)
-        four_day_gap_begin = datetime(year=2010, month=8, day=4, tzinfo=utc)
+        The function 'transmission' should raise an error if it is asked for
+        the atmospheric transmission at a datetime that falls within a gap in
+        available data spanning three days or more.
+        """
 
-        # Should return the interpolated transmission function
-        self.assertIsInstance(transmission(one_day_gap_begin, 1), Table)
-        self.assertIsInstance(transmission(two_day_gap_begin, 1), Table)
+        one_day_gap = datetime(year=2010, month=1, day=11, tzinfo=utc)
+        two_day_gap = datetime(year=2010, month=2, day=10, tzinfo=utc)
+        three_day_gap = datetime(year=2010, month=4, day=11, tzinfo=utc)
+        four_day_gap = datetime(year=2010, month=8, day=4, tzinfo=utc)
 
-        with self.assertRaises(ValueError):
-            _check_transmission_args(three_day_gap_begin, 1, self.pwv_model)
+        four_day_args = (four_day_gap, 1, self.pwv_model)
+        self.assertRaises(ValueError, arg_check, *four_day_args)
 
-        with self.assertRaises(ValueError):
-            _check_transmission_args(four_day_gap_begin, 1, self.pwv_model)
+        three_day_args = (three_day_gap, 1, self.pwv_model)
+        self.assertRaises(ValueError, arg_check, *three_day_args)
+
+        self.assertIsNone(arg_check(one_day_gap, 1, self.pwv_model))
+        self.assertIsNone(arg_check(two_day_gap, 1, self.pwv_model))
+
