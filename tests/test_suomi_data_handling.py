@@ -178,3 +178,13 @@ class TestSuomiNetDataDownload(unittest.TestCase):
         retrieved_2015_cols = set(self.data_2015.colnames)
         self.assertEqual(retrieved_2015_cols, expected_2015_cols,
                          bad_column_msg.format(2015))
+
+    def test_year_values(self):
+        """Test data was downloaded for the correct years"""
+
+        error_msg = 'Wrong data downloaded for year {}'
+        first_2012_date = datetime.utcfromtimestamp(self.data_2012['date'][0])
+        first_2015_date = datetime.utcfromtimestamp(self.data_2012['date'][0])
+
+        self.assertEqual(first_2012_date.year, 2012, error_msg.format(2012))
+        self.assertEqual(first_2015_date, 2015, error_msg.format(2015))
