@@ -16,10 +16,9 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno. If not, see <http://www.gnu.org/licenses/>.
 
-"""This file tests that the appropriate SuomiNet data files are available
-within the package. These files should include all available hourly and daily
-SuomiNet data from 2010 through the previous year. Data should be available for
-the 'KITT', 'P014', 'SA46', 'SA48', and 'AZAM' recievers.
+"""This file tests that the necessary SuomiNet data files are available within
+the package, and that the config file accurately represents what data is
+available.
 """
 
 import os
@@ -34,7 +33,7 @@ COFIG_PATH = '../pwv_kpno/CONFIG.txt'
 
 
 class TestCorrectDataFiles(unittest.TestCase):
-    """Test that appropriate SuomiNet data files are included with package"""
+    """Test appropriate SuomiNet data files are included with the package"""
 
     def setUp(self):
         """Determine what data files are currently included in the package"""
@@ -48,7 +47,7 @@ class TestCorrectDataFiles(unittest.TestCase):
                 self.data_file_GPS_ids.add(fname[0:4])
 
     def test_correct_years(self):
-        """Test data files correspond to appropriate years"""
+        """Test that data files correspond to appropriate years"""
 
         expected_years = set(range(2010, datetime.now().year))
         missing_years = expected_years - self.data_file_years
@@ -64,7 +63,11 @@ class TestCorrectDataFiles(unittest.TestCase):
         """Test data files correspond to appropriate GPS receivers"""
 
         expected_ids = {'date', 'KITT', 'P014', 'SA46', 'SA48', 'AZAM'}
+        missing_ids = expected_ids - self.data_file_GPS_ids
         bad_ids = self.data_file_GPS_ids - expected_ids
+
+        error_msg = 'Missing data files for SuomiNet id {}'
+        self.assertFalse(missing_ids, error_msg.format(missing_ids))
 
         error_msg = 'Unexpected data file with SuomiNet id {}'
         self.assertFalse(bad_ids, error_msg.format(bad_ids))
@@ -75,6 +78,7 @@ class TestConfigFile(unittest.TestCase):
 
     def test_config_matches_data(self):
         """Compare years in config file with years of present data files"""
+
         config_data = set(available_data())
         expected_years = set(range(2010, datetime.now().year))
         missing_years = expected_years - config_data
