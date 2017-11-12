@@ -16,6 +16,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno. If not, see <http://www.gnu.org/licenses/>.
 
+"""This file tests the measured_pwv and modeled_pwv functions."""
+
 import unittest
 from datetime import datetime
 
