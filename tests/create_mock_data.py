@@ -16,36 +16,46 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno. If not, see <http://www.gnu.org/licenses/>.
 
-"""This code creates mock data used for unit testing."""
+"""This code creates a mock PWV model used for unit testing."""
 
 from datetime import datetime, timedelta
 
 from astropy.table import Table
+from pytz import utc
 
 
-def create_mock_pwv_model(year):
-    """Creates a file of demo PWV values for unit testing
-    Creates a table with the columns "date" and "pwv" and writes it to the
-    given path. Dates span 2010 in 30 minute increments (just like actual
-    SuomiNet data) with data gaps of 1, 2, 3, and 4 days. All values in the
-    "pwv" column are set to 25.0.
+def create_mock_pwv_model(year, gaps=None):
+    """Create a mock model for the PWV level at Kitt Peak for airmass 1
 
+    Return a table with the columns "date" and "pwv". Included dates span the
+    given year in 30 minute increments and are represented as UTC timestamps.
+    PWV values are calculated as the index of its position in the table mod 15.
+    Gaps in the returned data can be included via the gaps argument.
+
+    Args:
+        year  (int): The year of the desired model
+        gaps (list): [(start day - datetime, gap length in days - int), ]
     """
 
-    start_date = datetime(year - 1, 12, 31, 23, 45)
-    end_date = datetime(year + 1, 1, 1)
+    start_date = datetime(year - 1, 12, 31, 23, 45, tzinfo=utc)
+    end_date = datetime(year + 1, 1, 1, tzinfo=utc)
     total_time_intervals = (end_date - start_date).days * 24 * 60 // 30
 
-    out_table = Table(names=['date', 'pwv'], dtype=[datetime, float])
+    out_table = Table(names=['date', 'pwv'], dtype=[float, float])
     for i in range(total_time_intervals):
         start_date += timedelta(minutes=30)
-        out_table.add_row([start_date.timestamp(), i % 25])
+        out_table.add_row([start_date.timestamp(), i % 15])
 
-    day = 24 * 2  # number of 30 min intervals in a day
-    gap_indices = []
-    gap_indices.extend(range(10 * day, 11 * day))  # 01-11
-    gap_indices.extend(range(40 * day, 42 * day))  # 02-10 through 02-11
-    gap_indices.extend(range(100 * day, 103 * day))  # 04-11 through 04-13
-    gap_indices.extend(range(215 * day, 219 * day))  # 08-04 through 04-07
+    if gaps is not None:
+        intervals = 48  # number of 30 min intervals in a day
+        gap_indices = []
+
+        for date, length in gaps:
+            gap_start = (date - start_date).days
+            gap_end = gap_start + length
+            gap_range = range(gap_start * intervals, gap_end * intervals)
+            gap_indices.extend(gap_range)
+
+        out_table.remove_rows(gap_indices)
 
     return out_table
