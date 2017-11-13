@@ -22,6 +22,7 @@ available.
 """
 
 import os
+from glob import glob
 from datetime import datetime
 
 import unittest
@@ -42,10 +43,9 @@ class TestCorrectDataFiles(unittest.TestCase):
         self.data_file_years = set()
         self.data_file_GPS_ids = set()
 
-        for fname in os.listdir(PACKAGE_DATA_DIR):
-            if fname.endswith('.plt'):
-                self.data_file_years.add(int(fname[7:11]))
-                self.data_file_GPS_ids.add(fname[0:4])
+        for fname in glob(os.path.join(PACKAGE_DATA_DIR, '*.plt')):
+            self.data_file_years.add(int(fname[-8: -4]))
+            self.data_file_GPS_ids.add(fname[-15: -11])
 
     def test_correct_years(self):
         """Test that data files correspond to appropriate years"""
@@ -74,10 +74,10 @@ class TestCorrectDataFiles(unittest.TestCase):
         self.assertFalse(bad_ids, error_msg.format(bad_ids))
 
 
-class TestConfigFile(unittest.TestCase):
+class TestConfigMatchesData(unittest.TestCase):
     """Test config.txt has the appropriate data"""
 
-    def test_config_matches_data(self):
+    def runTest(self):
         """Compare years in config file with years of present data files"""
 
         config_data = set(available_data())

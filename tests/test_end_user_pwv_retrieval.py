@@ -16,7 +16,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno. If not, see <http://www.gnu.org/licenses/>.
 
-"""This file tests the measured_pwv and modeled_pwv functions."""
+"""This file tests the functions "measured_pwv" and "modeled_pwv"."""
 
 import unittest
 from datetime import datetime
@@ -150,7 +150,7 @@ class TestMeasuredPWV(unittest.TestCase):
 class TestModeledPWV(unittest.TestCase):
     """Tests for the 'modeled_pwv' function"""
 
-    modeled_pwv_data = modeled_pwv()
+    pwv_model_for_kitt_peak = modeled_pwv()
 
     def test_returned_tz_info(self):
         """Test if datetimes in the returned data are timezone aware
@@ -158,7 +158,7 @@ class TestModeledPWV(unittest.TestCase):
         This test only checks the first and last returned result
         """
 
-        tzinfo = self.modeled_pwv_data['date'][0].tzinfo
+        tzinfo = self.pwv_model_for_kitt_peak['date'][0].tzinfo
         error_msg = 'Datetimes should be UTC aware (found "{}")'
         self.assertIsNotNone(tzinfo, error_msg.format('None'))
         self.assertTrue(tzinfo == utc, error_msg.format(tzinfo))
@@ -167,8 +167,8 @@ class TestModeledPWV(unittest.TestCase):
         """Test columns for appropriate units"""
 
         error_msg = 'Wrong units for column {}. Found ({})'
-        date_unit = self.modeled_pwv_data['date'].unit
-        pwv_unit = self.modeled_pwv_data['pwv'].unit
+        date_unit = self.pwv_model_for_kitt_peak['date'].unit
+        pwv_unit = self.pwv_model_for_kitt_peak['pwv'].unit
 
         self.assertEqual(date_unit, 'UTC', error_msg.format('date', date_unit))
         self.assertEqual(pwv_unit, 'mm', error_msg.format('pwv', pwv_unit))

@@ -190,3 +190,6 @@ class TestSuomiNetFileParsing(unittest.TestCase):
 
         self.assertFalse(len(bad_hr_data))
         self.assertFalse(len(bad_dy_data))
+
+# Todo: add test for update_models
+#    (add debug keyword and have it return table instead of writing it)

@@ -16,9 +16,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno. If not, see <http://www.gnu.org/licenses/>.
 
-"""This file provides tests for the end user function 'transmission' found in
-pwv_kpno/end_user_functions.py
-"""
+"""This file provides tests for the function "transmission"."""
 
 import unittest
 from datetime import datetime, timedelta
@@ -123,7 +121,7 @@ class TestTransmissionResults(unittest.TestCase):
 
         self.assertTrue(all(same_transmission))
 
-    def test_interpolation(self):
+    def test_interpolation(self):  # Todo
         pass
 
     def test_column_units(self):
