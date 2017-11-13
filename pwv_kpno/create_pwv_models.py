@@ -174,9 +174,9 @@ def _download_suomi_files(year, site_id):
 
             downloaded_paths.append(path)
 
-        except requests.exceptions.HTTPError as err:
+        except requests.exceptions.HTTPError:
             if response.status_code != 404:
-                raise Exception(err)
+                raise
 
     return downloaded_paths
 
@@ -314,8 +314,3 @@ def update_pwv_model():
     out = Table([pwv_data['date'], sup_data], names=['date', 'pwv'])
     out = out[np.where(out['pwv'] > 0)[0]]
     out.write(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'), overwrite=True)
-
-if __name__ == "__main__":
-    for year in range(2010, datetime.now().year):
-        print('downloading data for {}'.format(year))
-        update_suomi_data(year)
