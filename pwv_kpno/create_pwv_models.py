@@ -80,7 +80,12 @@ def _str_to_timestamp(year, days_str):
 
     jan_1st = datetime(year=year, month=1, day=1)
     date = jan_1st + timedelta(days=float(days_str) - 1)
+
+    # Correct for round off error in SuomiNet date format
     date = date.replace(second=0, microsecond=0)
+    if date.minute % 5:
+        date += timedelta(minutes=1)
+
     timestamp = (date - datetime(1970, 1, 1)).total_seconds()
     return timestamp
 
