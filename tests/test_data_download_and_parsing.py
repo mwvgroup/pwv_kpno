@@ -28,6 +28,14 @@ from pwv_kpno.create_pwv_models import _download_suomi_data_for_year
 from pwv_kpno.create_pwv_models import _read_file
 from pwv_kpno.create_pwv_models import _str_to_timestamp
 
+__author__ = 'Daniel Perrefort'
+__copyright__ = 'Copyright 2017, Daniel Perrefort'
+
+__license__ = 'GPL V3'
+__email__ = 'djperrefort@gmail.com'
+__status__ = 'Development'
+
+
 SPATH = '../pwv_kpno/suomi_data/'  # Package directory of SuomiNet data files
 
 

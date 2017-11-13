@@ -27,6 +27,13 @@ from pytz import utc
 from pwv_kpno import measured_pwv, modeled_pwv
 from pwv_kpno.end_user_functions import _check_search_args
 
+__author__ = 'Daniel Perrefort'
+__copyright__ = 'Copyright 2017, Daniel Perrefort'
+
+__license__ = 'GPL V3'
+__email__ = 'djperrefort@gmail.com'
+__status__ = 'Development'
+
 
 def _check_attrs(iterable, **kwargs):
     """Check the attribute values of objects in an iterable

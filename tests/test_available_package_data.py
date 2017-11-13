@@ -29,8 +29,16 @@ import unittest
 
 from pwv_kpno.end_user_functions import available_data
 
+__author__ = 'Daniel Perrefort'
+__copyright__ = 'Copyright 2017, Daniel Perrefort'
+
+__license__ = 'GPL V3'
+__email__ = 'djperrefort@gmail.com'
+__status__ = 'Development'
+
+
 PACKAGE_DATA_DIR = '../pwv_kpno/suomi_data/'
-COFIG_PATH = '../pwv_kpno/CONFIG.txt'
+CONFIG_PATH = '../pwv_kpno/CONFIG.txt'
 
 
 class TestCorrectDataFiles(unittest.TestCase):
