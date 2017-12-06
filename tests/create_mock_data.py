@@ -31,6 +31,22 @@ __email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'
 
 
+def _timestamp(date):
+    """Returns seconds since epoch of a UTC datetime
+
+    This function provides compatability for Python 2.7, for which the
+    datetime.timestamp method was not yet available.
+
+    Args:
+        date (datetime.datetime): A datetime object
+    """
+
+    unix_epoch = datetime(1970, 1, 1, tzinfo=utc)
+    utc_date = date.astimezone(utc)
+    timestamp = (utc_date - unix_epoch).total_seconds()
+    return timestamp
+
+
 def create_mock_pwv_model(year, gaps=None):
     """Create a mock model for the PWV level at Kitt Peak for airmass 1
 
@@ -51,7 +67,7 @@ def create_mock_pwv_model(year, gaps=None):
     out_table = Table(names=['date', 'pwv'], dtype=[float, float])
     for i in range(total_time_intervals):
         start_date += timedelta(minutes=30)
-        out_table.add_row([start_date.timestamp(), i % 15])
+        out_table.add_row([_timestamp(start_date), i % 15])
 
     if gaps is not None:
         intervals = 48  # number of 30 min intervals in a day
