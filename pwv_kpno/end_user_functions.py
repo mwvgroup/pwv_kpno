@@ -345,7 +345,7 @@ def transmission(date, airmass):
     pwv = np.interp(timestamp, pwv_model['date'], pwv_model['pwv']) * airmass
 
     # Read the first file to get an table of the considered wavelengths
-    atm_model_files = glob.glob(os.path.join(ATM_MOD_DIR, '*.csv'))
+    atm_model_files = sorted(glob.glob(os.path.join(ATM_MOD_DIR, '*.csv')))
     wavelength = Table.read(atm_model_files[0])['wavelength']
 
     # Read the astmospheric models into a 3D array
