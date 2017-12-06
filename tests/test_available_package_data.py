@@ -37,8 +37,8 @@ __email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'
 
 
-PACKAGE_DATA_DIR = '../pwv_kpno/suomi_data/'
-CONFIG_PATH = '../pwv_kpno/CONFIG.txt'
+PACKAGE_DATA_DIR = 'pwv_kpno/suomi_data/'
+CONFIG_PATH = 'pwv_kpno/CONFIG.txt'
 
 
 class TestCorrectDataFiles(unittest.TestCase):

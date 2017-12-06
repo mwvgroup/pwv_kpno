@@ -36,7 +36,7 @@ __email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'
 
 
-SPATH = '../pwv_kpno/suomi_data/'  # Package directory of SuomiNet data files
+SPATH = 'pwv_kpno/suomi_data/'  # Package directory of SuomiNet data files
 
 
 def timestamp(date):
