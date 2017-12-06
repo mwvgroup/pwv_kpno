@@ -258,7 +258,8 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
     data = Table.read(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'))
 
     # Convert UNIX timestamps to UTC
-    data['date'] = np.vectorize(datetime.utcfromtimestamp)(data['date'])
+    to_datetime = lambda date: datetime.fromtimestamp(date, utc)
+    data['date'] = np.vectorize(to_datetime)(data['date'])
     data['date'].unit = 'UTC'
     data['pwv'].unit = 'mm'
 
