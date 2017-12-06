@@ -128,9 +128,6 @@ class TestTransmissionResults(unittest.TestCase):
 
         self.assertTrue(all(same_transmission))
 
-    def test_interpolation(self):  # Todo
-        pass
-
     def test_column_units(self):
         """Test columns of the returned transmission table for correct units
 
