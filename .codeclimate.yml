@@ -15,12 +15,17 @@ engines:
         enabled: false
       MD033: # Checks for inline HTML
         enabled: false
+      MD014: # Requires output for bash commands
+        enabled: false
 
   fixme:
     enabled: true
 
   pep8:
     enabled: true
+
+    E731: # Suggests def instead of lambda
+        enabled: false
 
   radon: 
     enabled: true
