@@ -122,7 +122,7 @@ def update_models(year=None):
     return updated_years
 
 
-def _check_search_args(year, month, day, hour):
+def _check_search_args(year=None, month=None, day=None, hour=None):
     """This function provides argument type and value checking
 
     This function provides argument type and value checking for the functions
@@ -319,7 +319,7 @@ def _check_transmission_args(date, airmass, model):
         raise ValueError(msg.format(timedelta(seconds=interval)))
 
 
-def transmission(date, airmass):
+def transmission(date, airmass, test_model=None):
     """Return a model for the atmospheric transmission function due to PWV
 
     For a given datetime and airmass, return a model for the atmospheric
@@ -331,13 +331,18 @@ def transmission(date, airmass):
     Args:
         date (datetime.datetime): The datetime of the desired model
         airmass          (float): The airmass of the desired model
+        test_model       (Table): A mock pwv model used for testing
 
     Returns:
         trans_func (astropy.table.Table): The modeled transmission function
     """
 
     # Check for valid arguments
-    pwv_model = Table.read(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'))
+    if test_model is None:
+        pwv_model = Table.read(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'))
+    else:
+        pwv_model = test_model
+
     _check_transmission_args(date, airmass, pwv_model)
 
     # Determine the PWV level along line of sight as pwv(zenith) * airmass
