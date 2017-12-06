@@ -63,9 +63,13 @@ Alternatively, you use the `setup.py` file
 
     $ python setup.py install --user
 
-If you have issues installing the package with either method, ensure the
+If you have issues installing the package with either method, ensure that the
 following dependencies are installed in your Python environment: `'numpy',
 'astropy', 'requests', 'pytz', 'scipy'`.
+
+To run the test suite use
+
+    $ python setup.py test
 
 ### 2.2 Setup
 
