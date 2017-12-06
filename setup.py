@@ -73,6 +73,8 @@ setup(name='pwv_kpno',
 
       python_requires='>=2.7',
       install_requires=['numpy', 'astropy', 'requests', 'pytz', 'scipy'],
+      setup_requires=['pytest-runner'],
+      tests_require=['pytest'],
       package_data={'pwv_kpno': DATA_FILES},
       include_package_data=True
       )
