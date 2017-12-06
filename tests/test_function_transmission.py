@@ -26,7 +26,7 @@ from pytz import utc
 
 from pwv_kpno import transmission
 from pwv_kpno.end_user_functions import _check_transmission_args as arg_check
-from tests.create_mock_data import create_mock_pwv_model
+from create_mock_data import create_mock_pwv_model
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
