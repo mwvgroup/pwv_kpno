@@ -112,11 +112,8 @@ Help information for each function can be accesed using the standard python
         of data has been downloaded. It does not indicate if additional data has
         been released by SuomiNet for a given year that is not locally available.
 
-        Args:
-            None
-
         Returns:
-            years (list): A list of years with locally available SuomiNet data
+            A list of years with locally available SuomiNet data
 
 
     update_models(year=None):
@@ -132,7 +129,7 @@ Help information for each function can be accesed using the standard python
             year (int): A Year from 2010 onward
 
         Returns:
-            updated_years (list): A list of years for which models where updated
+            A list of years for which models where updated
 
 
     measured_pwv(year=None, month=None, day=None, hour=None):
@@ -153,7 +150,7 @@ Help information for each function can be accesed using the standard python
             hour  (int): The hour of the desired PWV data in 24-hour format
 
         Returns:
-            data (astropy.table.Table): A table of measured PWV values in mm
+            An astropy table of measured PWV values in mm
 
 
     modeled_pwv(year=None, month=None, day=None, hour=None):
@@ -173,24 +170,24 @@ Help information for each function can be accesed using the standard python
             hour  (int): The hour of the desired PWV data in 24-hour format
 
         Returns:
-            data (astropy.table.Table): A table of modeled PWV values in mm
+            An astropy table of modeled PWV values in mm
 
 
     transmission(date, airmass):
-        Return a model for the atmospheric transmission function due to PWV
+        Check arguments for the function `transmission`
 
-        For a given datetime and airmass, return a model for the atmospheric
-        transmission function due to precipitable water vapor (PWV) at Kitt Peak.
-        The modeled transmission is returned as an astropy table with the columns
-        'wavelength' and 'transmission'. Wavelength values range from 7000 to
-        10,000 angstroms.
+        This function provides argument checks for the `transmission` function. It
+        checks argument types, if a datetime falls within the range of the locally
+        available SuomiNet data, and if SuomiNet data is available near that
+        datetime.
 
         Args:
-            date (datetime.datetime): The datetime of the desired model
-            airmass          (float): The airmass of the desired model
+            date    (datetime.datetime): A datetime value
+            airmass             (float): An airmass value
+            model (astropy.table.Table): A model for the PWV level at KPNO
 
         Returns:
-            trans_func (astropy.table.Table): The modeled transmission function
+            None
 
 ### 3.2 Examples
 

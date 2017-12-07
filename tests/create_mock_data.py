@@ -32,13 +32,16 @@ __status__ = 'Development'
 
 
 def _timestamp(date):
-    """Returns seconds since epoch of a UTC datetime
+    """Return seconds since epoch of a UTC datetime
 
-    This function provides compatability for Python 2.7, for which the
+    This function provides compatibility for Python 2.7, for which the
     datetime.timestamp method was not yet available.
 
     Args:
         date (datetime.datetime): A datetime object
+
+    Returns:
+        The timestamp of the provided datetime as a float
     """
 
     unix_epoch = datetime(1970, 1, 1, tzinfo=utc)
@@ -57,7 +60,10 @@ def create_mock_pwv_model(year, gaps=None):
 
     Args:
         year  (int): The year of the desired model
-        gaps (list): [(start day - datetime, gap length in days - int), ]
+        gaps (list): [(start day as datetime, gap length in days as int), ]
+
+    Returns:
+        The modeled data set as an astropy table
     """
 
     start_date = datetime(year - 1, 12, 31, 23, 45, tzinfo=utc)

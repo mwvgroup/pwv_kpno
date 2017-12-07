@@ -39,7 +39,7 @@ from .create_pwv_models import update_pwv_model
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
-__credits__ = ['Micahel Wood-Vasey', 'Alexander Afanasyev']
+__credits__ = ['Michael Wood-Vasey', 'Alexander Afanasyev']
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@gmail.com'
@@ -55,11 +55,14 @@ PWV_TAB_DIR = os.path.join(FILE_DIR, 'pwv_tables')  # PWV data tables
 def _timestamp(date):
     """Returns seconds since epoch of a UTC datetime in %Y-%m-%dT%H:%M format
 
-    This function provides compatability for Python 2.7, for which the
+    This function provides comparability for Python 2.7, for which the
     datetime.timestamp method was not yet available.
 
     Args:
-        date (datetime.datetime): Datetime as string in %Y-%m-%dT%H:%M format
+        date (datetime.datetime): A datetime to find the timestamp of
+
+    Returns:
+        The timestamp of the provided datetime as a float
     """
 
     unix_epoch = datetime(1970, 1, 1, tzinfo=utc)
@@ -77,7 +80,7 @@ def available_data():
     been released by SuomiNet for a given year that is not locally available.
 
     Returns:
-        years (list): A list of years with locally available SuomiNet data
+        A list of years with locally available SuomiNet data
     """
 
     config_path = os.path.join(FILE_DIR, 'CONFIG.txt')
@@ -100,7 +103,7 @@ def update_models(year=None):
         year (int): A Year from 2010 onward
 
     Returns:
-        updated_years (list): A list of years for which models where updated
+        A list of years for which models where updated
     """
 
     # Check for valid args
@@ -208,7 +211,7 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
         hour  (int): The hour of the desired PWV data in 24-hour format
 
     Returns:
-        data (astropy.table.Table): A table of measured PWV values in mm
+        An astropy table of measured PWV values in mm
     """
 
     # Check for valid arguments
@@ -248,7 +251,7 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
         hour  (int): The hour of the desired PWV data in 24-hour format
 
     Returns:
-        data (astropy.table.Table): A table of modeled PWV values in mm
+        An astropy table of modeled PWV values in mm
     """
 
     # Check for valid arg types
@@ -335,12 +338,13 @@ def transmission(date, airmass, test_model=None):
         test_model       (Table): A mock pwv model used for testing
 
     Returns:
-        trans_func (astropy.table.Table): The modeled transmission function
+        The modeled transmission function as an astropy table
     """
 
     # Check for valid arguments
     if test_model is None:
         pwv_model = Table.read(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'))
+
     else:
         pwv_model = test_model
 
@@ -354,7 +358,7 @@ def transmission(date, airmass, test_model=None):
     atm_model_files = sorted(glob.glob(os.path.join(ATM_MOD_DIR, '*.csv')))
     wavelength = Table.read(atm_model_files[0])['wavelength']
 
-    # Read the astmospheric models into a 3D array
+    # Read the atmospheric models into a 3D array
     pwv_values = []
     array_shape = (len(atm_model_files), len(wavelength))
     transmission_models = np.zeros(array_shape, dtype=np.float)

@@ -39,14 +39,14 @@ __status__ = 'Development'
 SPATH = 'pwv_kpno/suomi_data/'  # Package directory of SuomiNet data files
 
 
-def timestamp(date):
-    """Returns seconds since UTC epoch of a datetime
+def _timestamp(date):
+    """Returns seconds since epoch of a UTC datetime in %Y-%m-%dT%H:%M format
 
-    This function provides compatibility for Python 2.7, for which the
+    This function provides comparability for Python 2.7, for which the
     datetime.timestamp method was not yet available.
 
     Args:
-        date (datetime): A datetime to convert to timestamp
+        date (datetime.datetime): A datetime to find the timestamp of
 
     Returns:
         The timestamp of the provided datetime as a float
@@ -54,8 +54,8 @@ def timestamp(date):
 
     unix_epoch = datetime(1970, 1, 1, tzinfo=utc)
     utc_date = date.astimezone(utc)
-    total_seconds = (utc_date - unix_epoch).total_seconds()
-    return total_seconds
+    timestamp = (utc_date - unix_epoch).total_seconds()
+    return timestamp
 
 
 class TestSuomiNetDataDownload(unittest.TestCase):
@@ -192,7 +192,7 @@ class TestSuomiNetFileParsing(unittest.TestCase):
     def test_removed_bad_kitt_data(self):
         """Test for the removal of Kitt Peak data from jan through mar 2016"""
 
-        april_2016 = timestamp(datetime(2016, 4, 1, tzinfo=utc))
+        april_2016 = _timestamp(datetime(2016, 4, 1, tzinfo=utc))
         bad_hr_data = self.kitt_hr_data[self.kitt_hr_data['date'] < april_2016]
         bad_dy_data = self.kitt_dy_data[self.kitt_dy_data['date'] < april_2016]
 

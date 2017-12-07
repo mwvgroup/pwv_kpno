@@ -25,13 +25,11 @@ Kitt Peak for times when no Kitt Peak data is available.
 
 Data downloaded from SuomiNet is added to a master table located at
 PWV_TAB_DIR/measured.csv. Supplemented PWV values are stored in a master table
-located at PWV_TAB_DIR/modeled.csv. All datetimes are recorded in UNIX format
+located at PWV_TAB_DIR/modeled.csv. All datetimes are recorded as timestamps
 and PWV measurements are represented in units of millimeters.
 
-This code only considers data taken from 2010 onward and uses data taken by
-GPS receivers located at Kitt Peak (KITT), Amado (AZAM), Sahuarita (P014),
-Tucson (SA46), and Tohono O'odham Community College (SA48). For more details
-on the SuomiNet project see http://www.suominet.ucar.edu/overview.html.
+For more details on the SuomiNet project see
+http://www.suominet.ucar.edu/overview.html.
 """
 
 from collections import Counter
@@ -63,19 +61,19 @@ SUOMI_IDS = ['KITT', 'AZAM', 'P014', 'SA46', 'SA48']
 
 
 def _str_to_timestamp(year, days_str):
-    """Returns seconds since epoch of a datetime provided in DDD.YYYYY format
+    """Return seconds since epoch of a datetime provided in DDD.YYYYY format
 
-    This function converts the datetime notation used by SuomiNet to a UTC
-    timestamp. THe SuomiNet format consists of the day of the year (1 to 365)
-    followed by the decimal number of hours that have passed in the given day.
-    For example, Feburary 1st, 00:15 would be 36.01042.
+    Convert the datetime notation used by SuomiNet to a UTC timestamp. The
+    SuomiNet format consists of the day of the year (1 to 365) followed by the
+    decimal number of hours that have passed in the given day. For example,
+    Feburary 1st, 00:15 would be 36.01042.
 
     Args:
-        year     (int): The year of the desired datetime
+        year     (int): The year of the desired timestamp
         days_str (str): The number of days that have passed since january 1st
 
     Returns:
-        The seconds since epoch in UTC as a float
+        The seconds from UTC epoch to the provided date as a float
     """
 
     jan_1st = datetime(year=year, month=1, day=1)
@@ -91,7 +89,7 @@ def _str_to_timestamp(year, days_str):
 
 
 def _read_file(path):
-    """Returns PWV measurements from a SuomiNet data file as an astropy table
+    """Return PWV measurements from a SuomiNet data file as an astropy table
 
     Expects data files from http://www.suominet.ucar.edu/data.html under the
     "Specific station - All year hourly" section. The returned astropy table
@@ -109,7 +107,7 @@ def _read_file(path):
         path (str): File path to be read
 
     Returns:
-        out_table (astropy.table.Table): Astropy Table with data from path
+        An astropy Table with data from path
     """
 
     # Read data from file
@@ -151,7 +149,7 @@ def _download_suomi_files(year, site_id):
         site_id (str): A SuomiNet receiver id code (eg. KITT)
 
     Returns:
-        downloaded_paths (list): Contains file paths of downloaded data
+        A list of file paths containing downloaded data
     """
 
     downloaded_paths = []
@@ -182,17 +180,17 @@ def _download_suomi_files(year, site_id):
 
 
 def _download_suomi_data_for_year(yr):
-    """Downloads and returns data from all five SuomiNet sites for a given year
+    """Download and return data from all five SuomiNet sites for a given year
 
-    Data is downloaded for the SuomiNet sites KITT, SA48, SA46, P014, and AZAM.
-    The returned table contains all available data from the daily data releases
-    in addition to being supplemented by the hourly data releases.
+    Downloaded data for the SuomiNet sites KITT, SA48, SA46, P014, and AZAM.
+    Return this data as an astropy table with all available data from the daily
+    data releases supplemented by the hourly release data.
 
     Args:
         yr (int): The year of the desired data
 
     Returns:
-        combined_data (astropy.table.Table): A Table of the downloaded data
+        An astropy Table of the combined downloaded data for the given year.
     """
 
     combined_data = None
@@ -222,7 +220,7 @@ def _download_suomi_data_for_year(yr):
 
 
 def update_suomi_data(year=None):
-    """Download data from SuomiNet and update the master table
+    """Download data from SuomiNet and update PWV_TAB_DIR/measured_pwv.csv
 
     If a year is provided, download SuomiNet data for that year to SUOMI_DIR.
     If not, download all available data not included with the release of this
@@ -233,7 +231,7 @@ def update_suomi_data(year=None):
         year (int): The year to update data for
 
     Returns:
-        updated_years (list): A list of years for which data was updated
+        A list of years for which data was updated
     """
 
     # Get any local data that has already been downloaded
@@ -276,12 +274,10 @@ def update_pwv_model():
     """Create a new model for the PWV level at Kitt Peak
 
     Create first order polynomials relating the PWV measured by GPS receivers
-    near Kitt Peak to the PWV measured at Kitt Peak (one per receiver). Use
-    these polynomials to supplement PWV measurements taken at Kitt Peak for
+    near Kitt Peak to the PWV measured at Kitt Peak (one per off site receiver)
+    Use these polynomials to supplement PWV measurements taken at Kitt Peak for
     times when no Kitt Peak data is available. Write the supplemented PWV
-    data to a csv file at PWV_TAB_DIR/measured.csv. The resulting file contains
-    the columns 'date' and 'pwv', where dates are represented as UNIX
-    timestamps and PWV values are measured in millimeters.
+    data to a csv file at PWV_TAB_DIR/measured.csv.
     """
 
     # Credit belongs to Jessica Kroboth for suggesting the use of a linear fit
