@@ -48,28 +48,37 @@ by relating the delay in GPS signals to PWV levels in the atmosphere. This
 package uses measurements taken by GPS receivers located at Kitt Peak AZ,
 Amado AZ, Sahuarita AZ, Tucson AZ, and Tohono O'odham Community College.
 For more details on the correlation between GPS signals and PWV levels see
-[Blake and Shaw, 2011](https://arxiv.org/abs/1109.6703). For more details on the SuomiNet project see
+[Blake and Shaw, 2011](https://arxiv.org/abs/1109.6703). For more details on
+the SuomiNet project see
 [http://www.suominet.ucar.edu/overview.html](http://www.suominet.ucar.edu/overview.html).
 
 ## 2) Installation
 
 ### 2.1 Install
 
-This package can be installed using pip
+This package can be installed using the pip package manager
 
-    $ pip install pwv_kpno
+    pip install pwv_kpno
 
 Alternatively, you use the `setup.py` file
 
-    $ python setup.py install --user
+    python setup.py install --user
 
-If you have issues installing the package with either method, ensure that the
-following dependencies are installed in your Python environment: `'numpy',
-'astropy', 'requests', 'pytz', 'scipy'`.
+Both installation methods should automatically install any missing necessary
+dependencies. However, if you have issues installing the package, ensure\
+that these dependencies are present in your enviornment by installing them manually.
+To do so with pip run: 
+ 
+ 
+    pip install numpy
+    pip install astropy
+    pip install requests
+    pip install pytz
+    pip install scipy
 
-To run the test suite use
+If desired, the test suite can be run using the command:
 
-    $ python setup.py test
+    python setup.py test
 
 ### 2.2 Setup
 
