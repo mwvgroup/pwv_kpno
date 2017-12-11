@@ -14,3 +14,4 @@ tests/*.plt
 *.ipynb
 *.pyc
 *.DS_Store
+*stackdump
