@@ -173,9 +173,6 @@ def _download_suomi_files(year, site_id):
             if response.status_code != 404:
                 raise
 
-        except:
-            print(response.status_code)
-
     return downloaded_paths
 
 
