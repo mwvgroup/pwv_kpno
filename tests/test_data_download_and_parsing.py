@@ -9,7 +9,7 @@
 #    (at your option) any later version.
 #
 #    The pwv_kpno package is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    but WITHOUT ANY WARRANTY; pk.cre   without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
@@ -26,7 +26,7 @@ from pytz import utc
 
 from pwv_kpno.create_pwv_models import _download_suomi_data_for_year
 from pwv_kpno.create_pwv_models import _read_file
-from pwv_kpno.create_pwv_models import _str_to_timestamp
+from pwv_kpno.create_pwv_models import _suomi_date_to_timestamp
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -106,16 +106,16 @@ class TestDateFormatConversion(unittest.TestCase):
         jan_01_2010_04_15 = datetime(2010, 1, 1, 4, 15, tzinfo=utc)
 
         error_msg = 'Incorrect timestamp for {}'
-        self.assertEqual(_str_to_timestamp(2010, '1.05208'),
-                         timestamp(jan_01_2010_01_15),
+        self.assertEqual(_suomi_date_to_timestamp(2010, '1.05208'),
+                         _timestamp(jan_01_2010_01_15),
                          error_msg.format(jan_01_2010_01_15))
 
-        self.assertEqual(_str_to_timestamp(2010, '1.11458'),
-                         timestamp(jan_01_2010_02_45),
+        self.assertEqual(_suomi_date_to_timestamp(2010, '1.11458'),
+                         _timestamp(jan_01_2010_02_45),
                          error_msg.format(jan_01_2010_02_45))
 
-        self.assertEqual(_str_to_timestamp(2010, '1.17708'),
-                         timestamp(jan_01_2010_04_15),
+        self.assertEqual(_suomi_date_to_timestamp(2010, '1.17708'),
+                         _timestamp(jan_01_2010_04_15),
                          error_msg.format(jan_01_2010_04_15))
 
     def test_dates_out_of_data_range(self):
@@ -125,12 +125,12 @@ class TestDateFormatConversion(unittest.TestCase):
         dec_31_2021_23_15 = datetime(2021, 12, 31, 23, 15, tzinfo=utc)
 
         error_msg = 'Incorrect timestamp for {}'
-        self.assertEqual(_str_to_timestamp(2000, '1.01042'),
-                         timestamp(jan_01_2000_00_15),
+        self.assertEqual(_suomi_date_to_timestamp(2000, '1.01042'),
+                         _timestamp(jan_01_2000_00_15),
                          error_msg.format(jan_01_2000_00_15))
 
-        self.assertEqual(_str_to_timestamp(2021, '365.96875'),
-                         timestamp(dec_31_2021_23_15),
+        self.assertEqual(_suomi_date_to_timestamp(2021, '365.96875'),
+                         _timestamp(dec_31_2021_23_15),
                          error_msg.format(dec_31_2021_23_15))
 
 

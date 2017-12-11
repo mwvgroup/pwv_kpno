@@ -59,7 +59,7 @@ def _timestamp(date):
     datetime.timestamp method was not yet available.
 
     Args:
-        date (datetime.datetime): A datetime to find the timestamp of
+        date (datetime.datetime): A datetime to find the timestamp for
 
     Returns:
         The timestamp of the provided datetime as a float
@@ -85,9 +85,9 @@ def available_data():
 
     config_path = os.path.join(FILE_DIR, 'CONFIG.txt')
     with open(config_path, 'rb') as ofile:
-        years = list(pickle.load(ofile))
-        years.sort()
-        return years
+        config_settings = pickle.load(ofile)
+
+    return sorted(list(config_settings['years']))
 
 
 def update_models(year=None):

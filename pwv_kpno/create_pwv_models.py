@@ -56,11 +56,8 @@ ATM_MOD_DIR = os.path.join(FILE_DIR, 'atm_models')  # atmospheric models
 PWV_TAB_DIR = os.path.join(FILE_DIR, 'pwv_tables')  # PWV data tables
 SUOMI_DIR = os.path.join(FILE_DIR, 'suomi_data')    # SuomiNet data files
 
-# SuomiNet receiver IDs to download data for
-SUOMI_IDS = ['KITT', 'AZAM', 'P014', 'SA46', 'SA48']
 
-
-def _str_to_timestamp(year, days_str):
+def _suomi_date_to_timestamp(year, days_str):
     """Return seconds since epoch of a datetime provided in DDD.YYYYY format
 
     Convert the datetime notation used by SuomiNet to a UTC timestamp. The
@@ -126,7 +123,7 @@ def _read_file(path):
     # Convert dates to UNIX timestamp
     if out_table:
         year = int(path[-8:-4])
-        to_timestamp_vectorized = np.vectorize(_str_to_timestamp)
+        to_timestamp_vectorized = np.vectorize(_suomi_date_to_timestamp)
         out_table['date'] = to_timestamp_vectorized(year, out_table['date'])
 
     # Remove data from faulty reciever at Kitt Peak (Jan 2016 through Mar 2016)
@@ -176,6 +173,9 @@ def _download_suomi_files(year, site_id):
             if response.status_code != 404:
                 raise
 
+        except:
+            print(response.status_code)
+
     return downloaded_paths
 
 
@@ -193,8 +193,11 @@ def _download_suomi_data_for_year(yr):
         An astropy Table of the combined downloaded data for the given year.
     """
 
+    with open(os.path.join(FILE_DIR, 'CONFIG.txt'), 'rb') as ofile:
+        config_settings =  pickle.load(ofile)
+
     combined_data = None
-    for site_id in SUOMI_IDS:
+    for site_id in config_settings['sites']:
         site_data = None
         for path in _download_suomi_files(yr, site_id):
             new_data = _read_file(path)
@@ -239,35 +242,32 @@ def update_suomi_data(year=None):
     local_data = Table.read(local_data_path)
 
     # Create a set of years that need to be downloaded
+    with open(os.path.join(FILE_DIR, 'CONFIG.txt'), 'rb') as ofile:
+        config_settings =  pickle.load(ofile)
+
     if year is None:
-        with open(os.path.join(FILE_DIR, 'CONFIG.txt'), 'rb') as ofile:
-            local_years = pickle.load(ofile)
-            years = set(range(2010, datetime.now().year + 1)) - local_years
-            years.add(max(local_years))
+        years = set(range(2010, datetime.now().year + 1)) - config_settings['years']
+        years.add(max(config_settings['years']))
 
     else:
         years = {year}
 
     # Download data from SuomiNet
-    updated_years = []
     for yr in years:
         new_data = _download_suomi_data_for_year(yr)
         local_data = unique(vstack([local_data, new_data]),
                             keys=['date'],
                             keep='last')
 
-        updated_years.append(yr)
+        config_settings['years'].add(yr)
 
+    # Update local files
     local_data.write(local_data_path, overwrite=True)
-
-    # Update config.txt
-    with open(os.path.join(FILE_DIR, 'CONFIG.txt'), 'r+b') as ofile:
-        available_years = pickle.load(ofile)
-        available_years.update(updated_years)
+    with open(os.path.join(FILE_DIR, 'CONFIG.txt'), 'wb') as ofile:
         ofile.seek(0)
-        pickle.dump(available_years, ofile, protocol=2)
+        pickle.dump(config_settings, ofile, protocol=2)
 
-    return updated_years
+    return config_settings['years']
 
 
 def update_pwv_model():
