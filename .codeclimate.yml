@@ -15,8 +15,6 @@ engines:
         enabled: false
       MD033: # Checks for inline HTML
         enabled: false
-      MD014: # Requires output for bash commands
-        enabled: false
 
   fixme:
     enabled: true
