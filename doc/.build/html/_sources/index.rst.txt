@@ -32,22 +32,6 @@ For more details on the correlation between GPS signals and PWV levels see
 the SuomiNet project see
 `http://www.suominet.ucar.edu/overview.html <http://www.suominet.ucar.edu/overview.html>`_.
 
-***********
-How to Cite
-***********
-
-The **pwv_kpno** is maintained by Daniel J. Perrefort. If you use **pwv_kpno**
-as part of your research, please cite it in the following way
-This is an example. Change the actual info.
-Jackson L. Lee, Ross Burkholder, Gallagher B. Flinn, and Emily R. Coppess. 2016. Working with CHAT transcripts in Python. Technical report TR-2016-02, Department of Computer Science, University of Chicago. [code]
-@TechReport{lee-et-al-pylangacq:2016,
-  Title       = {Working with CHAT transcripts in Python},
-  Author      = {Lee, Jackson L. and Burkholder, Ross and Flinn, Gallagher B. and Coppess, Emily R.},
-  Institution = {Department of Computer Science, University of Chicago},
-  Year        = {2016},
-  Number      = {TR-2016-02},
-}
-
 *****************
 Table of Contents
 *****************
@@ -59,3 +43,23 @@ Table of Contents
     documentation
     examples
     development
+
+***************
+Getting Started
+***************
+
+Getting started¶
+Download and install: Get PyLangAcq!
+Tutorial: Quick examples and pointers
+Library reference: Full library and code details
+All pages of this library documentation can be reached via the menu on the left or the Table of contents.
+
+***********
+How to Cite
+***********
+
+The **pwv_kpno** is maintained by Daniel J. Perrefort. If you use **pwv_kpno**
+as part of your research, please cite it in the following way:
+
+Todo: Insert example
+

@@ -92,7 +92,12 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation and Setup</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#modeling-atmospheric-transmission">Modeling Atmospheric Transmission</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#checking-and-updating-pwv-data">Checking and Updating PWV Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#accessing-local-data">Accessing Local Data</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
 </ul>
@@ -160,6 +165,33 @@
             
   <div class="section" id="documentation">
 <h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h1>
+<p>This is a document introduction.</p>
+<div class="section" id="modeling-atmospheric-transmission">
+<h2>Modeling Atmospheric Transmission<a class="headerlink" href="#modeling-atmospheric-transmission" title="Permalink to this headline">¶</a></h2>
+<p>This is what it means to model transmission</p>
+<dl class="function">
+<dt id="pwv_kpno.transmission">
+<code class="descclassname">pwv_kpno.</code><code class="descname">transmission</code><span class="sig-paren">(</span><em>date</em>, <em>airmass</em>, <em>test_model=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/calc_transmission.html#transmission"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.transmission" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a model for the atmospheric transmission function due to PWV</p>
+<p>For a given datetime and airmass, return a model for the atmospheric
+transmission function due to precipitable water vapor (PWV) at Kitt Peak.
+The modeled transmission is returned as an astropy table with the columns
+‘wavelength’ and ‘transmission’. Wavelength values range from 7000 to
+10,000 angstroms.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>date (datetime.datetime): The datetime of the desired model
+airmass          (float): The airmass of the desired model
+test_model       (Table): A mock pwv model used for testing</dd>
+<dt>Returns:</dt>
+<dd>The modeled transmission function as an astropy table</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="checking-and-updating-pwv-data">
+<h2>Checking and Updating PWV Data<a class="headerlink" href="#checking-and-updating-pwv-data" title="Permalink to this headline">¶</a></h2>
+<p>This is why you need to check for and update the local data.</p>
 <dl class="function">
 <dt id="pwv_kpno.available_data">
 <code class="descclassname">pwv_kpno.</code><code class="descname">available_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_utilities.html#available_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.available_data" title="Permalink to this definition">¶</a></dt>
@@ -191,25 +223,10 @@ If not, download all available data from 2017 onward. Data for years from
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="pwv_kpno.transmission">
-<code class="descclassname">pwv_kpno.</code><code class="descname">transmission</code><span class="sig-paren">(</span><em>date</em>, <em>airmass</em>, <em>test_model=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/calc_transmission.html#transmission"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.transmission" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a model for the atmospheric transmission function due to PWV</p>
-<p>For a given datetime and airmass, return a model for the atmospheric
-transmission function due to precipitable water vapor (PWV) at Kitt Peak.
-The modeled transmission is returned as an astropy table with the columns
-‘wavelength’ and ‘transmission’. Wavelength values range from 7000 to
-10,000 angstroms.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>date (datetime.datetime): The datetime of the desired model
-airmass          (float): The airmass of the desired model
-test_model       (Table): A mock pwv model used for testing</dd>
-<dt>Returns:</dt>
-<dd>The modeled transmission function as an astropy table</dd>
-</dl>
-</dd></dl>
-
+</div>
+<div class="section" id="accessing-local-data">
+<h2>Accessing Local Data<a class="headerlink" href="#accessing-local-data" title="Permalink to this headline">¶</a></h2>
+<p>This is what it means to access the “local data”</p>
 <dl class="function">
 <dt id="pwv_kpno.measured_pwv">
 <code class="descclassname">pwv_kpno.</code><code class="descname">measured_pwv</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>hour=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_utilities.html#measured_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.measured_pwv" title="Permalink to this definition">¶</a></dt>
@@ -253,6 +270,7 @@ hour  (int): The hour of the desired PWV data in 24-hour format</dd>
 </dl>
 </dd></dl>
 
+</div>
 </div>
 
 

@@ -53,8 +53,8 @@ Some Key Points
   include data for the years you want to include with the current package
   version.
 
-When Releasing a Version
-========================
+Releasing a New Version
+=======================
 
 1. Make sure that the config.txt and measured_pwv.csv exist and exclusively
    include the SuomiNet data intended for distribution with the package
