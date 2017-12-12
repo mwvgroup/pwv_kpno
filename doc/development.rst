@@ -24,6 +24,10 @@ On Uix systems this will call the make file `docs/Makefile` while Windows
 machines will use the file `docs/make.bat`. The end result is the same on
 either platform.
 
+Note that the sphinx configuration file `docs/conf.py` is not setup for any
+outputs supported by sphinx other than html (such as Texinfo, LaTeX, or
+HTMLHelp).
+
 Future Features
 ===============
 
@@ -49,8 +53,8 @@ Some Key Points
   include data for the years you want to include with the current package
   version.
 
-When Releasing a Version
-========================
+Releasing a New Version
+=======================
 
 1. Make sure that the config.txt and measured_pwv.csv exist and exclusively
    include the SuomiNet data intended for distribution with the package

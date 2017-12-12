@@ -36,7 +36,7 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="pwv_kpno 0.10.0 documentation" href="index.html"/>
-        <link rel="next" title="Development" href="development.html"/>
+        <link rel="next" title="Examples" href="examples.html"/>
         <link rel="prev" title="Installation and Setup" href="install.html"/> 
 
   
@@ -93,6 +93,7 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation and Setup</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
 </ul>
 
@@ -157,11 +158,61 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-pwv_kpno">
-<span id="documentation"></span><h1>Documentation<a class="headerlink" href="#module-pwv_kpno" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="documentation">
+<h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="pwv_kpno.available_data">
+<code class="descclassname">pwv_kpno.</code><code class="descname">available_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_utilities.html#available_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.available_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of years for which SuomiNet data has been downloaded</p>
+<p>Return a list of years for which SuomiNet data has been downloaded to the
+local machine. Note that this list includes years for which any amount
+of data has been downloaded. It does not indicate if additional data has
+been released by SuomiNet for a given year that is not locally available.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>A list of years with locally available SuomiNet data</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="pwv_kpno.update_models">
+<code class="descclassname">pwv_kpno.</code><code class="descname">update_models</code><span class="sig-paren">(</span><em>year=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_utilities.html#update_models"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.update_models" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download data from SuomiNet and update the locally stored PWV model</p>
+<p>Update the locally available SuomiNet data by downloading new data from
+the SuomiNet website. Use this data to create an updated model for the PWV
+level at Kitt Peak. If a year is provided, only update data for that year.
+If not, download all available data from 2017 onward. Data for years from
+2010 through 2016 is included with this package version by default.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>year (int): A Year from 2010 onward</dd>
+<dt>Returns:</dt>
+<dd>A list of years for which models where updated</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="pwv_kpno.transmission">
+<code class="descclassname">pwv_kpno.</code><code class="descname">transmission</code><span class="sig-paren">(</span><em>date</em>, <em>airmass</em>, <em>test_model=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/calc_transmission.html#transmission"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.transmission" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a model for the atmospheric transmission function due to PWV</p>
+<p>For a given datetime and airmass, return a model for the atmospheric
+transmission function due to precipitable water vapor (PWV) at Kitt Peak.
+The modeled transmission is returned as an astropy table with the columns
+‘wavelength’ and ‘transmission’. Wavelength values range from 7000 to
+10,000 angstroms.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>date (datetime.datetime): The datetime of the desired model
+airmass          (float): The airmass of the desired model
+test_model       (Table): A mock pwv model used for testing</dd>
+<dt>Returns:</dt>
+<dd>The modeled transmission function as an astropy table</dd>
+</dl>
+</dd></dl>
+
 <dl class="function">
 <dt id="pwv_kpno.measured_pwv">
-<code class="descclassname">pwv_kpno.</code><code class="descname">measured_pwv</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>hour=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_functions.html#measured_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.measured_pwv" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pwv_kpno.</code><code class="descname">measured_pwv</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>hour=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_utilities.html#measured_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.measured_pwv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an astropy table of PWV measurements taken by SuomiNet</p>
 <p>Return an astropy table of precipitable water vapor (PWV) measurements
 taken by the SuomiNet project. The first column is named ‘date’ and
@@ -181,6 +232,27 @@ hour  (int): The hour of the desired PWV data in 24-hour format</dd>
 </dl>
 </dd></dl>
 
+<dl class="function">
+<dt id="pwv_kpno.modeled_pwv">
+<code class="descclassname">pwv_kpno.</code><code class="descname">modeled_pwv</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>hour=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_utilities.html#modeled_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.modeled_pwv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an astropy table of the modeled PWV at Kitt Peak</p>
+<p>Return a model for the precipitable water vapor level at Kitt Peak as an
+astropy table. The first column of the table is named ‘date’ and contains
+the UTC datetime of each modeled value. The second column is named ‘pwv’,
+and contains PWV values in millimeters. By default this function returns
+modeled values from 2010 onward. Results can be restricted to a specific
+year, month, day, and hour by using the key word arguments.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>year  (int): The year of the desired PWV data
+month (int): The month of the desired PWV data
+day   (int): The day of the desired PWV data
+hour  (int): The hour of the desired PWV data in 24-hour format</dd>
+<dt>Returns:</dt>
+<dd>An astropy table of modeled PWV values in mm</dd>
+</dl>
+</dd></dl>
+
 </div>
 
 
@@ -193,7 +265,7 @@ hour  (int): The hour of the desired PWV data in 24-hour format</dd>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="development.html" class="btn btn-neutral float-right" title="Development" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="install.html" class="btn btn-neutral" title="Installation and Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

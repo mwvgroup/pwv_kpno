@@ -1,21 +1,61 @@
-.. pwv_kpno documentation master file, created by
-   sphinx-quickstart on Mon Dec 11 16:21:02 2017.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-.. figure::  LOGO.png
+.. figure::  _static/LOGO.png
    :align:   center
+
+.. image:: https://img.shields.io/badge/version-0.10.0-blue.svg            :target:
+.. image:: https://img.shields.io/badge/version-0.10.0-blue.svg            :target:
+.. image:: https://img.shields.io/badge/python-2.7,%203.6-blue.svg         :target:
+.. image:: https://img.shields.io/badge/license-GPL%20v3.0-blue.svg        :target:
+.. image:: https://img.shields.io/codeclimate/github/mwvgroup/pwv_kpno.svg :target:
+|
+********
+Overview
+********
+
+**pwv_kpno** is a Python package for modeling the atmospheric transmission
+function at Kitt Peak National Observatory. It provides atmospheric models
+in the optical and near-infrared (7000 to 11000 Angstroms) for years 2010
+onward. Knowing the atmospheric transmission function is important when
+correcting ground based astronomical observations for atmospheric effects.
+Observed spectra are typically corrected using observations of a telluric
+standard star. **pwv_kpno** provides an alternative method that does not require
+dedicated observation time, and that can be run at the observer's convenience.
+
+When working in the optical and near-infrared, the atmospheric transmission
+function is highly dependent on the amount of precipitable water vapor (PWV)
+in the atmosphere. **pwv_kpno** models the atmospheric transmission using PWV
+measurements provided by the SuomiNet Project. SuomiNet measures PWV values
+by relating the delay in GPS signals to PWV levels in the atmosphere. This
+package uses measurements taken by GPS receivers located at Kitt Peak AZ,
+Amado AZ, Sahuarita AZ, Tucson AZ, and Tohono O'odham Community College.
+For more details on the correlation between GPS signals and PWV levels see
+`Blake and Shaw, 2011 <https://arxiv.org/abs/1109.6703>`_. For more details on
+the SuomiNet project see
+`http://www.suominet.ucar.edu/overview.html <http://www.suominet.ucar.edu/overview.html>`_.
+
+***********
+How to Cite
+***********
+
+The **pwv_kpno** is maintained by Daniel J. Perrefort. If you use **pwv_kpno**
+as part of your research, please cite it in the following way
+This is an example. Change the actual info.
+Jackson L. Lee, Ross Burkholder, Gallagher B. Flinn, and Emily R. Coppess. 2016. Working with CHAT transcripts in Python. Technical report TR-2016-02, Department of Computer Science, University of Chicago. [code]
+@TechReport{lee-et-al-pylangacq:2016,
+  Title       = {Working with CHAT transcripts in Python},
+  Author      = {Lee, Jackson L. and Burkholder, Ross and Flinn, Gallagher B. and Coppess, Emily R.},
+  Institution = {Department of Computer Science, University of Chicago},
+  Year        = {2016},
+  Number      = {TR-2016-02},
+}
+
+*****************
+Table of Contents
+*****************
 
 .. toctree::
     :maxdepth: 2
 
     install
     documentation
+    examples
     development
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

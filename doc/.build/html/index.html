@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Indices and tables &mdash; pwv_kpno 0.10.0 documentation</title>
+  <title>Overview &mdash; pwv_kpno 0.10.0 documentation</title>
   
 
   
@@ -92,6 +92,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation and Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
 </ul>
 
@@ -137,7 +138,7 @@
     
       <li><a href="#">Docs</a> &raquo;</li>
         
-      <li>Indices and tables</li>
+      <li>Overview</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -157,8 +158,55 @@
            <div itemprop="articleBody">
             
   <div class="figure align-center">
-<img alt="LOGO.png" src="LOGO.png" />
+<img alt="_static/LOGO.png" src="_static/LOGO.png" />
 </div>
+<img alt="https://img.shields.io/badge/version-0.10.0-blue.svg:target:" src="https://img.shields.io/badge/version-0.10.0-blue.svg:target:" />
+<img alt="https://img.shields.io/badge/version-0.10.0-blue.svg:target:" src="https://img.shields.io/badge/version-0.10.0-blue.svg:target:" />
+<img alt="https://img.shields.io/badge/python-2.7,%203.6-blue.svg:target:" src="https://img.shields.io/badge/python-2.7,%203.6-blue.svg:target:" />
+<img alt="https://img.shields.io/badge/license-GPL%20v3.0-blue.svg:target:" src="https://img.shields.io/badge/license-GPL%20v3.0-blue.svg:target:" />
+<img alt="https://img.shields.io/codeclimate/github/mwvgroup/pwv_kpno.svg:target:" src="https://img.shields.io/codeclimate/github/mwvgroup/pwv_kpno.svg:target:" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="section" id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<p><strong>pwv_kpno</strong> is a Python package for modeling the atmospheric transmission
+function at Kitt Peak National Observatory. It provides atmospheric models
+in the optical and near-infrared (7000 to 11000 Angstroms) for years 2010
+onward. Knowing the atmospheric transmission function is important when
+correcting ground based astronomical observations for atmospheric effects.
+Observed spectra are typically corrected using observations of a telluric
+standard star. <strong>pwv_kpno</strong> provides an alternative method that does not require
+dedicated observation time, and that can be run at the observer’s convenience.</p>
+<p>When working in the optical and near-infrared, the atmospheric transmission
+function is highly dependent on the amount of precipitable water vapor (PWV)
+in the atmosphere. <strong>pwv_kpno</strong> models the atmospheric transmission using PWV
+measurements provided by the SuomiNet Project. SuomiNet measures PWV values
+by relating the delay in GPS signals to PWV levels in the atmosphere. This
+package uses measurements taken by GPS receivers located at Kitt Peak AZ,
+Amado AZ, Sahuarita AZ, Tucson AZ, and Tohono O’odham Community College.
+For more details on the correlation between GPS signals and PWV levels see
+<a class="reference external" href="https://arxiv.org/abs/1109.6703">Blake and Shaw, 2011</a>. For more details on
+the SuomiNet project see
+<a class="reference external" href="http://www.suominet.ucar.edu/overview.html">http://www.suominet.ucar.edu/overview.html</a>.</p>
+</div>
+<div class="section" id="how-to-cite">
+<h1>How to Cite<a class="headerlink" href="#how-to-cite" title="Permalink to this headline">¶</a></h1>
+<p>The <strong>pwv_kpno</strong> is maintained by Daniel J. Perrefort. If you use <strong>pwv_kpno</strong>
+as part of your research, please cite it in the following way
+This is an example. Change the actual info.
+Jackson L. Lee, Ross Burkholder, Gallagher B. Flinn, and Emily R. Coppess. 2016. Working with CHAT transcripts in Python. Technical report TR-2016-02, Department of Computer Science, University of Chicago. [code]
+&#64;TechReport{lee-et-al-pylangacq:2016,</p>
+<blockquote>
+<div>Title       = {Working with CHAT transcripts in Python},
+Author      = {Lee, Jackson L. and Burkholder, Ross and Flinn, Gallagher B. and Coppess, Emily R.},
+Institution = {Department of Computer Science, University of Chicago},
+Year        = {2016},
+Number      = {TR-2016-02},</div></blockquote>
+<p>}</p>
+</div>
+<div class="section" id="table-of-contents">
+<h1>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation and Setup</a><ul>
@@ -168,6 +216,13 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#updating-local-suominet-data">Updating local SuomiNet data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#retrieving-local-suominet-data">Retrieving local SuomiNet data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#retrieving-the-pwv-model">Retrieving the PWV model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#generating-an-atmospheric-transmission-function">Generating an atmospheric transmission function</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="development.html#extra-dependancies">Extra Dependancies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="development.html#future-features">Future Features</a></li>
@@ -177,13 +232,6 @@
 </li>
 </ul>
 </div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
-</ul>
 </div>
 
 

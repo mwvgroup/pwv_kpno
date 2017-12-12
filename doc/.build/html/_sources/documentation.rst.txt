@@ -2,8 +2,8 @@
 Documentation
 *************
 
-.. module:: pwv_kpno
-    :platform: Unix, Windows
-    :synopsis: sample of documented python code
-
-.. autofunction:: measured_pwv
+.. autofunction:: pwv_kpno.available_data
+.. autofunction:: pwv_kpno.update_models
+.. autofunction:: pwv_kpno.transmission
+.. autofunction:: pwv_kpno.measured_pwv
+.. autofunction:: pwv_kpno.modeled_pwv

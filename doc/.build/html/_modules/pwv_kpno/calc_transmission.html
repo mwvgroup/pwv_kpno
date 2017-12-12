@@ -1,0 +1,423 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pwv_kpno.calc_transmission &mdash; pwv_kpno 0.10.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pwv_kpno 0.10.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pwv_kpno
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.10.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development.html">Development</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pwv_kpno</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pwv_kpno.calc_transmission</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pwv_kpno.calc_transmission</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+
+<span class="c1">#    This file is part of the pwv_kpno software package.</span>
+<span class="c1">#</span>
+<span class="c1">#    The pwv_kpno package is free software: you can redistribute it and/or</span>
+<span class="c1">#    modify it under the terms of the GNU General Public License as published</span>
+<span class="c1">#    by the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1">#    (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1">#    The pwv_kpno package is distributed in the hope that it will be useful,</span>
+<span class="c1">#    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1">#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1">#    GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1">#    You should have received a copy of the GNU General Public License</span>
+<span class="c1">#    along with pwv_kpno.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">&quot;&quot;&quot;This document defines end user functions for the pwv_kpno package.</span>
+<span class="sd">It relies heavily on the atmospheric transmission models generated by</span>
+<span class="sd">create_atm_models.py and the modeled PWV level at Kitt Peak generated by</span>
+<span class="sd">create_pwv_models.py. Functions contained in this document include</span>
+<span class="sd">`available_data`, `update_models`, `measured_pwv`, `modeled_pwv`,</span>
+<span class="sd">and `transmission`.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pytz</span> <span class="k">import</span> <span class="n">utc</span>
+<span class="kn">from</span> <span class="nn">astropy.table</span> <span class="k">import</span> <span class="n">Table</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">interpn</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Daniel Perrefort&#39;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s1">&#39;Copyright 2017, Daniel Perrefort&#39;</span>
+<span class="n">__credits__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Michael Wood-Vasey&#39;</span><span class="p">,</span> <span class="s1">&#39;Alexander Afanasyev&#39;</span><span class="p">]</span>
+
+<span class="n">__license__</span> <span class="o">=</span> <span class="s1">&#39;GPL V3&#39;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s1">&#39;djperrefort@gmail.com&#39;</span>
+<span class="n">__status__</span> <span class="o">=</span> <span class="s1">&#39;Development&#39;</span>
+
+
+<span class="c1"># Define necessary directory paths</span>
+<span class="n">FILE_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+<span class="n">ATM_MOD_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_DIR</span><span class="p">,</span> <span class="s1">&#39;atm_models&#39;</span><span class="p">)</span>  <span class="c1"># atmospheric models</span>
+<span class="n">PWV_TAB_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FILE_DIR</span><span class="p">,</span> <span class="s1">&#39;pwv_tables&#39;</span><span class="p">)</span>  <span class="c1"># PWV data tables</span>
+
+
+<span class="k">def</span> <span class="nf">_timestamp</span><span class="p">(</span><span class="n">date</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns seconds since epoch of a UTC datetime in %Y-%m-%dT%H:%M format</span>
+
+<span class="sd">    This function provides comparability for Python 2.7, for which the</span>
+<span class="sd">    datetime.timestamp method was not yet available.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        date (datetime.datetime): A datetime to find the timestamp for</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The timestamp of the provided datetime as a float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">unix_epoch</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">1970</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">utc</span><span class="p">)</span>
+    <span class="n">utc_date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">utc</span><span class="p">)</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="p">(</span><span class="n">utc_date</span> <span class="o">-</span> <span class="n">unix_epoch</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">timestamp</span>
+
+
+<span class="k">def</span> <span class="nf">_check_transmission_args</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">airmass</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check arguments for the function `transmission`</span>
+
+<span class="sd">    This function provides argument checks for the `transmission` function. It</span>
+<span class="sd">    checks argument types, if a datetime falls within the range of the locally</span>
+<span class="sd">    available SuomiNet data, and if SuomiNet data is available near that</span>
+<span class="sd">    datetime.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        date    (datetime.datetime): A datetime value</span>
+<span class="sd">        airmass             (float): An airmass value</span>
+<span class="sd">        model (astropy.table.Table): A model for the PWV level at KPNO</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Check argument types</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Argument &#39;date&#39; (pos 1) must be a datetime instance&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">date</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Argument &#39;date&#39; (pos 1) has no timezone information.&quot;</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">airmass</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Argument &#39;airmass&#39; (pos 2) must be an int or float&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check date falls within the range of available PWV data</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">_timestamp</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
+    <span class="n">w_data_less_than</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">model</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">timestamp</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">w_data_less_than</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">min_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">model</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]))</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;No local SuomiNet data found for datetimes before </span><span class="si">{0}</span><span class="s1">&#39;</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">min_date</span><span class="p">))</span>
+
+    <span class="n">w_data_greater_than</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">timestamp</span> <span class="o">&lt;</span> <span class="n">model</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">w_data_greater_than</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">max_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">model</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]))</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;No local SuomiNet data found for datetimes after </span><span class="si">{0}</span><span class="s1">&#39;</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">max_date</span><span class="p">))</span>
+
+    <span class="c1"># Check for SuomiNet data available near the given date</span>
+    <span class="n">diff</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">timestamp</span>
+    <span class="n">interval</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">diff</span><span class="p">[</span><span class="n">diff</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="n">diff</span><span class="p">[</span><span class="n">diff</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="n">three_days_in_seconds</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span>
+
+    <span class="k">if</span> <span class="n">three_days_in_seconds</span> <span class="o">&lt;</span> <span class="n">interval</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Specified datetime falls within interval of missing SuomiNet&#39;</span> <span class="o">+</span>
+               <span class="s1">&#39; data larger than 3 days (</span><span class="si">{0}</span><span class="s1"> interval found).&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">interval</span><span class="p">)))</span>
+
+
+<span class="k">def</span> <span class="nf">_transmission_for_pwv_value</span><span class="p">(</span><span class="n">pwv</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the atmospheric transmission due a given PWV concentration</span>
+
+<span class="sd">    For a given precipitatable water vapor concentration, return the modeled</span>
+<span class="sd">    atmospheric transmission function. The modeled transmission is returned as</span>
+<span class="sd">    an astropy table with the columns &#39;wavelength&#39; and &#39;transmission&#39;.</span>
+<span class="sd">    Wavelength values range from 7000 to 10,000 angstroms.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        pwv (float): The PWV concentration of the desired transmission function</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The modeld transmission function as an astropy table.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Read the first file to get an table of the considered wavelengths</span>
+    <span class="n">atm_model_files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ATM_MOD_DIR</span><span class="p">,</span> <span class="s1">&#39;*.csv&#39;</span><span class="p">)))</span>
+    <span class="n">wavelength</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">atm_model_files</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Read the atmospheric models into a 3D array</span>
+    <span class="n">pwv_values</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">array_shape</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">atm_model_files</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">wavelength</span><span class="p">))</span>
+    <span class="n">transmission_models</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">array_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">model_file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">atm_model_files</span><span class="p">):</span>
+        <span class="n">model_pwv</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">model_file</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="n">pwv_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model_pwv</span><span class="p">)</span>
+
+        <span class="n">this_pwv_model</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">model_file</span><span class="p">)</span>
+        <span class="n">transmission_models</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">this_pwv_model</span><span class="p">[</span><span class="s1">&#39;transmission&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Interpolate to find the transmission function</span>
+    <span class="n">interp_trans</span> <span class="o">=</span> <span class="n">interpn</span><span class="p">(</span><span class="n">points</span><span class="o">=</span><span class="p">(</span><span class="n">pwv_values</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">),</span>
+                           <span class="n">values</span><span class="o">=</span><span class="n">transmission_models</span><span class="p">,</span>
+                           <span class="n">xi</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">pwv</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">wavelength</span><span class="p">]))</span>
+
+    <span class="c1"># Create a table to store the modeled transmission function</span>
+    <span class="n">trans_func</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="n">wavelength</span><span class="p">,</span> <span class="n">interp_trans</span><span class="p">],</span>
+                       <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">,</span> <span class="s1">&#39;transmission&#39;</span><span class="p">],</span>
+                       <span class="n">dtype</span><span class="o">=</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span>
+
+    <span class="n">trans_func</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;angstrom&#39;</span>
+    <span class="n">trans_func</span><span class="p">[</span><span class="s1">&#39;transmission&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;percent&#39;</span>
+    <span class="k">return</span> <span class="n">trans_func</span>
+
+
+<div class="viewcode-block" id="transmission"><a class="viewcode-back" href="../../documentation.html#pwv_kpno.transmission">[docs]</a><span class="k">def</span> <span class="nf">transmission</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">airmass</span><span class="p">,</span> <span class="n">test_model</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return a model for the atmospheric transmission function due to PWV</span>
+
+<span class="sd">    For a given datetime and airmass, return a model for the atmospheric</span>
+<span class="sd">    transmission function due to precipitable water vapor (PWV) at Kitt Peak.</span>
+<span class="sd">    The modeled transmission is returned as an astropy table with the columns</span>
+<span class="sd">    &#39;wavelength&#39; and &#39;transmission&#39;. Wavelength values range from 7000 to</span>
+<span class="sd">    10,000 angstroms.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        date (datetime.datetime): The datetime of the desired model</span>
+<span class="sd">        airmass          (float): The airmass of the desired model</span>
+<span class="sd">        test_model       (Table): A mock pwv model used for testing</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The modeled transmission function as an astropy table</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Check for valid arguments</span>
+    <span class="k">if</span> <span class="n">test_model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pwv_model</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">PWV_TAB_DIR</span><span class="p">,</span> <span class="s1">&#39;modeled_pwv.csv&#39;</span><span class="p">))</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pwv_model</span> <span class="o">=</span> <span class="n">test_model</span>
+
+    <span class="n">_check_transmission_args</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">airmass</span><span class="p">,</span> <span class="n">pwv_model</span><span class="p">)</span>
+
+    <span class="c1"># Determine the PWV level along line of sight as pwv(zenith) * airmass</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">_timestamp</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
+    <span class="n">pwv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">pwv_model</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">],</span> <span class="n">pwv_model</span><span class="p">[</span><span class="s1">&#39;pwv&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">airmass</span>
+    <span class="k">return</span> <span class="n">_transmission_for_pwv_value</span><span class="p">(</span><span class="n">pwv</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Daniel J. Perrefort.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.10.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
