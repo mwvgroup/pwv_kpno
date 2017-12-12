@@ -25,21 +25,19 @@ and `transmission`.
 """
 
 import os
-import glob
 import pickle
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import numpy as np
 from pytz import utc
 from astropy.table import Table
-from scipy.interpolate import interpn
 
 from .create_pwv_models import update_suomi_data
 from .create_pwv_models import update_pwv_model
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
-__credits__ = ['Michael Wood-Vasey', 'Alexander Afanasyev']
+__credits__ = ['Alexander Afanasyev']
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@gmail.com'
@@ -50,25 +48,6 @@ __status__ = 'Development'
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
 ATM_MOD_DIR = os.path.join(FILE_DIR, 'atm_models')  # atmospheric models
 PWV_TAB_DIR = os.path.join(FILE_DIR, 'pwv_tables')  # PWV data tables
-
-
-def _timestamp(date):
-    """Returns seconds since epoch of a UTC datetime in %Y-%m-%dT%H:%M format
-
-    This function provides comparability for Python 2.7, for which the
-    datetime.timestamp method was not yet available.
-
-    Args:
-        date (datetime.datetime): A datetime to find the timestamp for
-
-    Returns:
-        The timestamp of the provided datetime as a float
-    """
-
-    unix_epoch = datetime(1970, 1, 1, tzinfo=utc)
-    utc_date = date.astimezone(utc)
-    timestamp = (utc_date - unix_epoch).total_seconds()
-    return timestamp
 
 
 def available_data():
@@ -268,117 +247,3 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
 
     # Refine results to only include datetimes indicated by kwargs
     return _search_dt_table(data, year=year, month=month, day=day, hour=hour)
-
-
-def _check_transmission_args(date, airmass, model):
-    """Check arguments for the function `transmission`
-
-    This function provides argument checks for the `transmission` function. It
-    checks argument types, if a datetime falls within the range of the locally
-    available SuomiNet data, and if SuomiNet data is available near that
-    datetime.
-
-    Args:
-        date    (datetime.datetime): A datetime value
-        airmass             (float): An airmass value
-        model (astropy.table.Table): A model for the PWV level at KPNO
-
-    Returns:
-        None
-    """
-
-    # Check argument types
-    if not isinstance(date, datetime):
-        raise TypeError("Argument 'date' (pos 1) must be a datetime instance")
-
-    if date.tzinfo is None:
-        msg = "Argument 'date' (pos 1) has no timezone information."
-        raise ValueError(msg)
-
-    if not isinstance(airmass, (float, int)):
-        raise TypeError("Argument 'airmass' (pos 2) must be an int or float")
-
-    # Check date falls within the range of available PWV data
-    timestamp = _timestamp(date)
-    w_data_less_than = np.where(model['date'] < timestamp)[0]
-    if len(w_data_less_than) < 1:
-        min_date = datetime.utcfromtimestamp(min(model['date']))
-        msg = 'No local SuomiNet data found for datetimes before {0}'
-        raise ValueError(msg.format(min_date))
-
-    w_data_greater_than = np.where(timestamp < model['date'])[0]
-    if len(w_data_greater_than) < 1:
-        max_date = datetime.utcfromtimestamp(max(model['date']))
-        msg = 'No local SuomiNet data found for datetimes after {0}'
-        raise ValueError(msg.format(max_date))
-
-    # Check for SuomiNet data available near the given date
-    diff = model['date'] - timestamp
-    interval = min(diff[diff > 0]) - max(diff[diff < 0])
-    three_days_in_seconds = 3 * 24 * 60 * 60
-
-    if three_days_in_seconds < interval:
-        msg = ('Specified datetime falls within interval of missing SuomiNet' +
-               ' data larger than 3 days ({0} interval found).')
-        raise ValueError(msg.format(timedelta(seconds=interval)))
-
-
-def transmission(date, airmass, test_model=None):
-    """Return a model for the atmospheric transmission function due to PWV
-
-    For a given datetime and airmass, return a model for the atmospheric
-    transmission function due to precipitable water vapor (PWV) at Kitt Peak.
-    The modeled transmission is returned as an astropy table with the columns
-    'wavelength' and 'transmission'. Wavelength values range from 7000 to
-    10,000 angstroms.
-
-    Args:
-        date (datetime.datetime): The datetime of the desired model
-        airmass          (float): The airmass of the desired model
-        test_model       (Table): A mock pwv model used for testing
-
-    Returns:
-        The modeled transmission function as an astropy table
-    """
-
-    # Check for valid arguments
-    if test_model is None:
-        pwv_model = Table.read(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'))
-
-    else:
-        pwv_model = test_model
-
-    _check_transmission_args(date, airmass, pwv_model)
-
-    # Determine the PWV level along line of sight as pwv(zenith) * airmass
-    timestamp = _timestamp(date)
-    pwv = np.interp(timestamp, pwv_model['date'], pwv_model['pwv']) * airmass
-
-    # Read the first file to get an table of the considered wavelengths
-    atm_model_files = sorted(glob.glob(os.path.join(ATM_MOD_DIR, '*.csv')))
-    wavelength = Table.read(atm_model_files[0])['wavelength']
-
-    # Read the atmospheric models into a 3D array
-    pwv_values = []
-    array_shape = (len(atm_model_files), len(wavelength))
-    transmission_models = np.zeros(array_shape, dtype=np.float)
-    for i, model_file in enumerate(atm_model_files):
-        model_pwv = float(os.path.basename(model_file).split("_")[3])
-        pwv_values.append(model_pwv)
-
-        this_pwv_model = Table.read(model_file)
-        transmission_models[i, :] = this_pwv_model['transmission']
-
-    # Interpolate to find the transmission function
-    interp_trans = interpn(points=(pwv_values, wavelength),
-                           values=transmission_models,
-                           xi=np.array([[pwv, x] for x in wavelength]))
-
-    # Create a table to store the modeled transmission function
-    trans_func = Table([wavelength, interp_trans],
-                       names=['wavelength', 'transmission'],
-                       dtype=[float, float])
-
-    trans_func['wavelength'].unit = 'angstrom'
-    trans_func['transmission'].unit = 'percent'
-    return trans_func

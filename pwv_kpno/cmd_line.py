@@ -22,11 +22,11 @@ import argparse
 from datetime import datetime
 
 from __init__ import __version__ as version
-from .end_user_functions import available_data
-from .end_user_functions import update_models
-from .end_user_functions import measured_pwv
-from .end_user_functions import modeled_pwv
-from .end_user_functions import transmission
+from .calc_transmission import available_data
+from .calc_transmission import update_models
+from .calc_transmission import measured_pwv
+from .calc_transmission import modeled_pwv
+from .calc_transmission import transmission
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -37,8 +37,8 @@ __status__ = 'Development'
 
 
 # We create wrapper functions that pass command line arguments to functions
-# imported from end_user_functions.py. For more information on these functions
-# documentation is included in end_user_functions.py and also in README.MD
+# imported from calc_transmission.py. For more information on these functions
+# documentation is included in calc_transmission.py and also in README.MD
 
 def available_data_wrapper(cli_args):
     """Print a set of years for which SuomiNet data is locally available

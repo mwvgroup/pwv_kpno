@@ -27,7 +27,7 @@ from datetime import datetime
 
 import unittest
 
-from pwv_kpno.end_user_functions import available_data
+from pwv_kpno.end_user_utilities import available_data
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
