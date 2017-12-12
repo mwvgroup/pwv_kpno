@@ -35,7 +35,7 @@ from scipy.interpolate import interpn
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
-__credits__ = ['Michael Wood-Vasey', 'Alexander Afanasyev']
+__credits__ = ['Michael Wood-Vasey']
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@gmail.com'
