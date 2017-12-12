@@ -11,6 +11,7 @@
 
     install
     documentation
+    development
 
 Indices and tables
 ==================

@@ -4,8 +4,8 @@ Installation and Setup
 
 **pwv_kpno** is designed to be compatible with both Python 2.7 and 3.6.
 The use of other python versions is possible, but not explicitly supported.
-If you experience issues with installing that are not resolved by trying the
-suggestions below, please raise an issue on `GitHub
+If you experience problems installing **pwv_kpno** that are not resolved by
+trying the suggestions below, please raise an issue on `GitHub
 <https://github.com/mwvgroup/pwv_kpno>`_.
 
 Installation
@@ -22,7 +22,7 @@ Using the pip package manager is the recommended method for installing
     pip install pwv_kpno
 
 The pip package manager will automatically install any missing dependencies
-in your Python environment. If you have any issues installing the package with,
+in your Python environment. If you have any issues installing the package,
 try installing each dependency individually and then reinstall **pwv_kpno**.
 Dependencies can be installed with pip by running::
 
