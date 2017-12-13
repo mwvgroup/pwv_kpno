@@ -49,7 +49,7 @@ package, first install each dependency individually and then try again.
 Package Setup
 =============
 
-This package relies on PWV measurements taken by the SuomiNet project. In order
+**pwv_kpno** relies on PWV measurements taken by the SuomiNet project. In order
 to model the PWV transmission function for a given date, SuomiNet data for that
 date must be available on the host machine. By default, **pwv_kpno** contains
 all necessary SuomiNet data from 2010 through the end of 2016. It is
@@ -73,6 +73,7 @@ write and modify files within the package directory.
 |
 Running Tests
 =============
+
 If desired, the full test suite can be run using::
 
     python setup.py tests

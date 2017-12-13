@@ -41,25 +41,14 @@ Table of Contents
 
     install
     documentation
-    examples
     development
 
-***************
-Getting Started
-***************
+..
+    ***********
+    How to Cite
+    ***********
 
-Getting started¶
-Download and install: Get PyLangAcq!
-Tutorial: Quick examples and pointers
-Library reference: Full library and code details
-All pages of this library documentation can be reached via the menu on the left or the Table of contents.
+    The **pwv_kpno** is maintained by Daniel J. Perrefort. If you use **pwv_kpno**
+    as part of your research, please cite it in the following way:
 
-***********
-How to Cite
-***********
-
-The **pwv_kpno** is maintained by Daniel J. Perrefort. If you use **pwv_kpno**
-as part of your research, please cite it in the following way:
-
-Todo: Insert example
-
+    Todo: Insert example
