@@ -91,7 +91,10 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation and Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../retrieving_atm_models.html">Retrieving Atmospheric Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../updating_data.html">Updating PWV Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../accessing_pwv_data.html">Accessing PWV Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../science_notes.html">Science Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../development.html">Development</a></li>
 </ul>
 
@@ -230,7 +233,7 @@
     <span class="k">return</span> <span class="n">timestamp</span>
 
 
-<div class="viewcode-block" id="available_data"><a class="viewcode-back" href="../../documentation.html#pwv_kpno.available_data">[docs]</a><span class="k">def</span> <span class="nf">available_data</span><span class="p">():</span>
+<div class="viewcode-block" id="available_data"><a class="viewcode-back" href="../../updating_data.html#pwv_kpno.available_data">[docs]</a><span class="k">def</span> <span class="nf">available_data</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Return a list of years for which SuomiNet data has been downloaded</span>
 
 <span class="sd">    Return a list of years for which SuomiNet data has been downloaded to the</span>
@@ -249,7 +252,7 @@
     <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">config_settings</span><span class="p">[</span><span class="s1">&#39;years&#39;</span><span class="p">]))</span></div>
 
 
-<div class="viewcode-block" id="update_models"><a class="viewcode-back" href="../../documentation.html#pwv_kpno.update_models">[docs]</a><span class="k">def</span> <span class="nf">update_models</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="update_models"><a class="viewcode-back" href="../../updating_data.html#pwv_kpno.update_models">[docs]</a><span class="k">def</span> <span class="nf">update_models</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Download data from SuomiNet and update the locally stored PWV model</span>
 
 <span class="sd">    Update the locally available SuomiNet data by downloading new data from</span>
@@ -352,7 +355,7 @@
     <span class="k">return</span> <span class="n">data_tab</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">indexing_func</span><span class="p">(</span><span class="n">data_tab</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]]</span>
 
 
-<div class="viewcode-block" id="measured_pwv"><a class="viewcode-back" href="../../documentation.html#pwv_kpno.measured_pwv">[docs]</a><span class="k">def</span> <span class="nf">measured_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="measured_pwv"><a class="viewcode-back" href="../../accessing_pwv_data.html#pwv_kpno.measured_pwv">[docs]</a><span class="k">def</span> <span class="nf">measured_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return an astropy table of PWV measurements taken by SuomiNet</span>
 
 <span class="sd">    Return an astropy table of precipitable water vapor (PWV) measurements</span>
@@ -393,7 +396,7 @@
     <span class="k">return</span> <span class="n">_search_dt_table</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="n">day</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="n">hour</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="modeled_pwv"><a class="viewcode-back" href="../../documentation.html#pwv_kpno.modeled_pwv">[docs]</a><span class="k">def</span> <span class="nf">modeled_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="modeled_pwv"><a class="viewcode-back" href="../../accessing_pwv_data.html#pwv_kpno.modeled_pwv">[docs]</a><span class="k">def</span> <span class="nf">modeled_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return an astropy table of the modeled PWV at Kitt Peak</span>
 
 <span class="sd">    Return a model for the precipitable water vapor level at Kitt Peak as an</span>
@@ -482,7 +485,7 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">interval</span><span class="p">)))</span>
 
 
-<div class="viewcode-block" id="transmission"><a class="viewcode-back" href="../../documentation.html#pwv_kpno.transmission">[docs]</a><span class="k">def</span> <span class="nf">transmission</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">airmass</span><span class="p">,</span> <span class="n">test_model</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="transmission"><a class="viewcode-back" href="../../retrieving_atm_models.html#pwv_kpno.transmission">[docs]</a><span class="k">def</span> <span class="nf">transmission</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">airmass</span><span class="p">,</span> <span class="n">test_model</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return a model for the atmospheric transmission function due to PWV</span>
 
 <span class="sd">    For a given datetime and airmass, return a model for the atmospheric</span>

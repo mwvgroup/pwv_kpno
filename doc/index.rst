@@ -6,7 +6,9 @@
 .. image:: https://img.shields.io/badge/python-2.7,%203.6-blue.svg         :target:
 .. image:: https://img.shields.io/badge/license-GPL%20v3.0-blue.svg        :target:
 .. image:: https://img.shields.io/codeclimate/github/mwvgroup/pwv_kpno.svg :target:
+
 |
+
 ********
 Overview
 ********
@@ -40,7 +42,10 @@ Table of Contents
     :maxdepth: 2
 
     install
-    documentation
+    retrieving_atm_models
+    updating_data
+    accessing_pwv_data
+    science_notes
     development
 
 ..
