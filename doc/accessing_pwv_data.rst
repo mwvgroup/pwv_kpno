@@ -2,7 +2,7 @@
 Accessing PWV Data
 ******************
 
-This is what it means to access the "local data"
+Todo: Add document description
 
 Measured PWV Data
 =================
@@ -15,6 +15,12 @@ month, day, and hour
 
 Example
 -------
+
+To retrieve all SuomiNet data available on the local machine as an astropy
+table::
+
+    >>> pwv_kpno.measured_pwv()
+
 
 To retrieve SuomiNet data taken on November 14, 2016::
 
@@ -29,12 +35,7 @@ To retrieve SuomiNet data taken on November 14, 2016::
                         ...  ...  ...  ...  ...  ...
 
 Note that if no SuomiNet data is available during the specified datetime, the
-returned table will be empty::
-
-    >>> pwv_data = pwv_kpno.measured_pwv(year=2016, month=11, day=11, hour=1)
-    >>> len(pwv_data)
-
-        0
+returned table will be empty.
 
 Modeled PWV Data
 ================
@@ -48,7 +49,7 @@ function
 Example
 -------
 
-f::
+To retrieve the entire PWV model covering from 2010 onward::
 
     >>> modeled_pwv = pwv_kpno.modeled_pwv()
     >>> print(modeled_pwv)
@@ -61,8 +62,8 @@ f::
         2010-06-25 01:15:00  5.56017738737
                         ...            ...
 
-Results can also be refined by year, month, day, and hour. For example,
-model values for November 14, 2016 can be retrieved as follows::
+
+To retrieve the modeled PWV level for November 14, 2016::
 
     >>> modeled_pwv = pwv_kpno.modeled_pwv(year=2016, month=11, day=14)
     >>> print(modeled_pwv)
@@ -76,10 +77,4 @@ model values for November 14, 2016 can be retrieved as follows::
                         ...  ...
 
 Note that the PWV model does not have a data point for every datetime. This
-means that for some datetimes the returned table will be empty::
-
-    >>> pwv_data = pwv_kpno.measured_pwv(year=2016, month=11, day=11, hour=1)
-    >>> len(pwv_data)
-
-        0
-
+means that for some datetimes the returned table may be empty.

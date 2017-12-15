@@ -36,7 +36,7 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="pwv_kpno 0.10.0 documentation" href="index.html"/>
-        <link rel="next" title="Development" href="development.html"/>
+        <link rel="next" title="Science Notes" href="science_notes.html"/>
         <link rel="prev" title="Updating PWV Data" href="updating_data.html"/> 
 
   
@@ -105,6 +105,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="science_notes.html">Science Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
 </ul>
 
@@ -171,7 +172,7 @@
             
   <div class="section" id="accessing-pwv-data">
 <h1>Accessing PWV Data<a class="headerlink" href="#accessing-pwv-data" title="Permalink to this headline">¶</a></h1>
-<p>This is what it means to access the &#8220;local data&#8221;</p>
+<p>Todo: Add document description</p>
 <div class="section" id="measured-pwv-data">
 <h2>Measured PWV Data<a class="headerlink" href="#measured-pwv-data" title="Permalink to this headline">¶</a></h2>
 <p>To retrieve an astropy table of SuomiNet available on the local machine,
@@ -201,6 +202,11 @@ hour  (int): The hour of the desired PWV data in 24-hour format</dd>
 
 <div class="section" id="example">
 <h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<p>To retrieve all SuomiNet data available on the local machine as an astropy
+table:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_kpno</span><span class="o">.</span><span class="n">measured_pwv</span><span class="p">()</span>
+</pre></div>
+</div>
 <p>To retrieve SuomiNet data taken on November 14, 2016:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_kpno</span><span class="o">.</span><span class="n">measured_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 
@@ -214,13 +220,7 @@ hour  (int): The hour of the desired PWV data in 24-hour format</dd>
 </pre></div>
 </div>
 <p>Note that if no SuomiNet data is available during the specified datetime, the
-returned table will be empty:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_data</span> <span class="o">=</span> <span class="n">pwv_kpno</span><span class="o">.</span><span class="n">measured_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">pwv_data</span><span class="p">)</span>
-
-<span class="go">    0</span>
-</pre></div>
-</div>
+returned table will be empty.</p>
 </div>
 </div>
 <div class="section" id="modeled-pwv-data">
@@ -251,7 +251,7 @@ hour  (int): The hour of the desired PWV data in 24-hour format</dd>
 
 <div class="section" id="id1">
 <h3>Example<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<p>f:</p>
+<p>To retrieve the entire PWV model covering from 2010 onward:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">modeled_pwv</span> <span class="o">=</span> <span class="n">pwv_kpno</span><span class="o">.</span><span class="n">modeled_pwv</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">modeled_pwv</span><span class="p">)</span>
 
@@ -264,8 +264,7 @@ hour  (int): The hour of the desired PWV data in 24-hour format</dd>
 <span class="go">                    ...            ...</span>
 </pre></div>
 </div>
-<p>Results can also be refined by year, month, day, and hour. For example,
-model values for November 14, 2016 can be retrieved as follows:</p>
+<p>To retrieve the modeled PWV level for November 14, 2016:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">modeled_pwv</span> <span class="o">=</span> <span class="n">pwv_kpno</span><span class="o">.</span><span class="n">modeled_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">modeled_pwv</span><span class="p">)</span>
 
@@ -279,13 +278,7 @@ model values for November 14, 2016 can be retrieved as follows:</p>
 </pre></div>
 </div>
 <p>Note that the PWV model does not have a data point for every datetime. This
-means that for some datetimes the returned table will be empty:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_data</span> <span class="o">=</span> <span class="n">pwv_kpno</span><span class="o">.</span><span class="n">measured_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">pwv_data</span><span class="p">)</span>
-
-<span class="go">    0</span>
-</pre></div>
-</div>
+means that for some datetimes the returned table may be empty.</p>
 </div>
 </div>
 </div>
@@ -300,7 +293,7 @@ means that for some datetimes the returned table will be empty:</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="development.html" class="btn btn-neutral float-right" title="Development" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="science_notes.html" class="btn btn-neutral float-right" title="Science Notes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="updating_data.html" class="btn btn-neutral" title="Updating PWV Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

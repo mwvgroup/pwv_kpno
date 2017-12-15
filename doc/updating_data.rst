@@ -4,7 +4,7 @@ Updating PWV Data
 
 **pwv_kpno** relies on PWV measurements taken by the SuomiNet project. In order
 to model the PWV transmission function for a given date, SuomiNet data for that
-date must be available on the host machine. By default, **pwv_kpno** contains
+date must be available on your local machine. By default, **pwv_kpno** contains
 all necessary SuomiNet data from 2010 through the end of 2016.
 
 Checking Available Data

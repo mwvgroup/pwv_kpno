@@ -17,10 +17,10 @@ the `transmission` method.
 
 Note that this method requires SuomiNet data for the desired datetime to be
 available on the local machine. **pwv_kpno** includes all necessary PWV data
-for years 2010 through 2016. If you require additional data, please see the
-`updating data <updating_data.html#updating-data>`_ section. For more
-information on how **pwv_kpno** relates PWV concentration and airmass, see the
-`Science Notes <science_notes.html>`_.
+for years 2010 through 2016. If you require additional data on your machine,
+please see the `updating data <updating_data.html#updating-data>`_ section. For
+more information on how **pwv_kpno** relates PWV concentration and airmass, see
+the `Science Notes <science_notes.html>`_.
 
 .. autofunction:: pwv_kpno.transmission
 
@@ -60,7 +60,7 @@ can be done using the `transmission_pwv` method.
 
 .. autofunction:: pwv_kpno.transmission_pwv
 
-Example:
---------
+Example
+-------
 
 
