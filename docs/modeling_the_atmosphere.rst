@@ -41,14 +41,14 @@ given by::
     >>>                      tzinfo=pytz.utc)
     >>>
     >>> trans = pwv_kpno.transmission(date=obsv_date, airmass=1.2)
-    >>> print(trans)
-
+    >>> trans
 
       wavelength   transmission
+       Angstrom         %
       ------------- --------------
-             7000.0 0.996573011501
-      7001.00033344 0.993783855758
-      7002.00066689 0.999867137883
+             7000.0 0.994565196207
+      7001.00033344  0.99014340451
+      7002.00066689 0.999789258963
                 ...            ...
 
 Transmission from PWV
@@ -62,5 +62,13 @@ can be done using the `transmission_pwv` method.
 
 Example
 -------
+.. code-block:: python
 
+    >>> pwv_kpno.transmission_pwv(13.5)
 
+      wavelength   transmission
+       Angstrom         %
+      ------------- --------------
+             7000.0 0.927538932462
+      7001.00033344 0.872185668270
+      7002.00066689 0.997095800639

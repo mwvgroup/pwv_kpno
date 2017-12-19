@@ -19,6 +19,12 @@ is distributed with all the necessary SuomiNet data from 2010 through 2016.
 Example
 -------
 
+.. code-block:: python
+
+    >>> pwv_kpno.available_data()
+
+      [2010, 2011, 2012, 2013, 2014, 2015, 2016]
+
 Updating Data
 =============
 
@@ -32,9 +38,9 @@ Example
 -------
 
 By default, `update_models` will download any data that is not available on the
-local machine::
+local machine. Version 0.10.0 already includes all data from years 2010 through
+2016::
 
-    >>> # Download all available data from 2017 onward
     >>> updated_years = pwv_kpno.update_models()
     >>> updated_years
 

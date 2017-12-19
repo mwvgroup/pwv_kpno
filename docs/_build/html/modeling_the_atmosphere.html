@@ -226,14 +226,14 @@ given by:</p>
 <span class="gp">&gt;&gt;&gt; </span>                     <span class="n">tzinfo</span><span class="o">=</span><span class="n">pytz</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
 <span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">trans</span> <span class="o">=</span> <span class="n">pwv_kpno</span><span class="o">.</span><span class="n">transmission</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="n">obsv_date</span><span class="p">,</span> <span class="n">airmass</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span>
-
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trans</span>
 
 <span class="go">  wavelength   transmission</span>
+<span class="go">   Angstrom         %</span>
 <span class="go">  ------------- --------------</span>
-<span class="go">         7000.0 0.996573011501</span>
-<span class="go">  7001.00033344 0.993783855758</span>
-<span class="go">  7002.00066689 0.999867137883</span>
+<span class="go">         7000.0 0.994565196207</span>
+<span class="go">  7001.00033344  0.99014340451</span>
+<span class="go">  7002.00066689 0.999789258963</span>
 <span class="go">            ...            ...</span>
 </pre></div>
 </div>
@@ -246,6 +246,16 @@ modeled transmission function by directly specifying a PWV concentration. This
 can be done using the <cite>transmission_pwv</cite> method.</p>
 <div class="section" id="id1">
 <h3>2.2.1. Example<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_kpno</span><span class="o">.</span><span class="n">transmission_pwv</span><span class="p">(</span><span class="mf">13.5</span><span class="p">)</span>
+
+<span class="go">  wavelength   transmission</span>
+<span class="go">   Angstrom         %</span>
+<span class="go">  ------------- --------------</span>
+<span class="go">         7000.0 0.927538932462</span>
+<span class="go">  7001.00033344 0.872185668270</span>
+<span class="go">  7002.00066689 0.997095800639</span>
+</pre></div>
+</div>
 </div>
 </div>
 </div>

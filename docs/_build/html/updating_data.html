@@ -200,6 +200,11 @@ been released by SuomiNet for a given year that is not locally available.</p>
 
 <div class="section" id="example">
 <h3>3.1.1. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_kpno</span><span class="o">.</span><span class="n">available_data</span><span class="p">()</span>
+
+<span class="go">  [2010, 2011, 2012, 2013, 2014, 2015, 2016]</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="updating-data">
@@ -231,9 +236,9 @@ If not, download all available data from 2017 onward. Data for years from
 <div class="section" id="id1">
 <h3>3.2.1. Example<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>By default, <cite>update_models</cite> will download any data that is not available on the
-local machine:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Download all available data from 2017 onward</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">updated_years</span> <span class="o">=</span> <span class="n">pwv_kpno</span><span class="o">.</span><span class="n">update_models</span><span class="p">()</span>
+local machine. Version 0.10.0 already includes all data from years 2010 through
+2016:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">updated_years</span> <span class="o">=</span> <span class="n">pwv_kpno</span><span class="o">.</span><span class="n">update_models</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">updated_years</span>
 
 <span class="go">  [2017]</span>
