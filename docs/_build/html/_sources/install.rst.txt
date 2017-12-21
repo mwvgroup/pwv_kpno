@@ -4,8 +4,8 @@ Installation and Setup
 
 **pwv_kpno** is designed to be compatible with both Python 2.7 and 3.6.
 The use of other python versions is possible, but not explicitly supported.
-If you experience problems installing **pwv_kpno** that are not resolved by
-trying the suggestions below, please raise an issue on `GitHub
+If you experience installation problems that are not resolved by trying the
+suggestions below, please raise an issue on `GitHub
 <https://github.com/mwvgroup/pwv_kpno>`_.
 
 Installation
@@ -74,7 +74,7 @@ write and modify files within the package directory.
 Running Tests
 =============
 
-If desired, the full test suite can be run using::
+If desired, the test suite can be run using::
 
     python setup.py tests
 

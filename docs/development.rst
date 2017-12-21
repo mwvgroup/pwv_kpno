@@ -22,12 +22,13 @@ In order to automatically generate a new version of the documentation, from the
     make html
 
 On Uix systems this will call the make file `docs/Makefile` while Windows
-machines will use the file `docs/make.bat`. The end result is the same on
-either platform.
+machines will use the file `docs/make.bat` (the end result is the same on
+either platform).
 
-Note that the sphinx configuration file `docs/conf.py` is not setup for any
-outputs supported by sphinx other than html (such as Texinfo, LaTeX, or
-HTMLHelp).
+Note that the usage examples are hard coded, and the make file will not update
+the demonstrated code outputs to reflect and new source code changes. Also, the
+sphinx configuration file `docs/conf.py` is not setup for any outputs supported
+by sphinx other than html (such as Texinfo, LaTeX, or HTMLHelp).
 
 Future Features
 ===============

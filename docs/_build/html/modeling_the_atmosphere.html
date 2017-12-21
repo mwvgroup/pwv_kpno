@@ -182,11 +182,10 @@ for a provided datetime and airmass. Note that this requires SuomiNet data for
 the desired datetime to be available on the local machine. By default,
 <strong>pwv_kpno</strong> includes all necessary PWV data for years 2010 through 2016. To
 find the atmospheric transmission, use the <cite>transmission</cite> method.</p>
-<p>If you require additional data on your machine, please see the <a class="reference external" href="updating_data.html#updating-data">updating data</a> section. For more information on how
-<strong>pwv_kpno</strong> relates PWV concentration and airmass, see the <a class="reference external" href="science_notes.html">Science Notes</a>.</p>
+<p>If you require additional data on your machine, please see the <a class="reference external" href="updating_data.html#updating-data">updating data</a> section.</p>
 <dl class="function">
 <dt id="pwv_kpno.transmission">
-<code class="descclassname">pwv_kpno.</code><code class="descname">transmission</code><span class="sig-paren">(</span><em>date</em>, <em>airmass</em>, <em>test_model=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_functions.html#transmission"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.transmission" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pwv_kpno.</code><code class="descname">transmission</code><span class="sig-paren">(</span><em>date</em>, <em>airmass</em>, <em>test_model=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/calc_transmission.html#transmission"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.transmission" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a model for the atmospheric transmission function due to PWV</p>
 <p>For a given datetime and airmass, return a model for the atmospheric
 transmission function due to precipitable water vapor (PWV) at Kitt Peak.
@@ -200,7 +199,6 @@ The modeled transmission is returned as an astropy table with the columns
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>date</strong> (<em>datetime.datetime</em>) &#8211; The datetime of the desired model</li>
 <li><strong>airmass</strong> (<em>float</em>) &#8211; The airmass of the desired model</li>
-<li><strong>test_model</strong> (<em>Table</em>) &#8211; A mock pwv model used for testing</li>
 </ul>
 </td>
 </tr>
@@ -244,6 +242,26 @@ given by:</p>
 <p>Instead of relying on SuomiNet measurements, users can also retrieve the
 modeled transmission function by directly specifying a PWV concentration. This
 can be done using the <cite>transmission_pwv</cite> method.</p>
+<dl class="function">
+<dt id="pwv_kpno.transmission_pwv">
+<code class="descclassname">pwv_kpno.</code><code class="descname">transmission_pwv</code><span class="sig-paren">(</span><em>pwv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/calc_transmission.html#transmission_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.transmission_pwv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the atmospheric transmission due a given PWV concentration</p>
+<p>For a given precipitatable water vapor concentration, return the modeled
+atmospheric transmission function. The modeled transmission is returned as
+an astropy table with the columns &#8216;wavelength&#8217; and &#8216;transmission&#8217;.
+Wavelength values range from 7000 to 10,000 angstroms.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pwv</strong> (<em>float</em>) &#8211; The PWV concentration of the desired transmission function</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The modeld transmission function as an astropy table.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <div class="section" id="id1">
 <h3>2.2.1. Example<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_kpno</span><span class="o">.</span><span class="n">transmission_pwv</span><span class="p">(</span><span class="mf">13.5</span><span class="p">)</span>

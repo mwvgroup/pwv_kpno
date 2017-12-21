@@ -171,15 +171,17 @@
             
   <div class="section" id="accessing-pwv-data">
 <h1>4. Accessing PWV Data<a class="headerlink" href="#accessing-pwv-data" title="Permalink to this headline">¶</a></h1>
-<p>Todo: Add document description</p>
+<p>In order to determine the precipitable water vapor concentration for a given
+datetime, <strong>pwv_kpno</strong> relies on data from the <a class="reference external" href="http://www.suominet.ucar.edu">SuomiNet</a> project. This data is then used to create a
+model for the PWV level at Kitt Peak National Observatory.</p>
 <div class="section" id="measured-pwv-data">
 <h2>4.1. Measured PWV Data<a class="headerlink" href="#measured-pwv-data" title="Permalink to this headline">¶</a></h2>
-<p>To retrieve an astropy table of SuomiNet available on the local machine,
+<p>To retrieve an astropy table of SuomiNet data available on the local machine,
 use the <cite>measured_pwv</cite> function. Results can be filtered independently by year,
 month, day, and hour</p>
 <dl class="function">
 <dt id="pwv_kpno.measured_pwv">
-<code class="descclassname">pwv_kpno.</code><code class="descname">measured_pwv</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>hour=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_functions.html#measured_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.measured_pwv" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pwv_kpno.</code><code class="descname">measured_pwv</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>hour=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_utilities.html#measured_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.measured_pwv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an astropy table of PWV measurements taken by SuomiNet</p>
 <p>Return an astropy table of precipitable water vapor (PWV) measurements
 taken by the SuomiNet project. The first column is named &#8216;date&#8217; and
@@ -222,7 +224,9 @@ table:</p>
 <span class="go">                        ...     ...     ...     ...     ...     ...</span>
 </pre></div>
 </div>
-<p>To retrieve SuomiNet data taken on November 14, 2016:</p>
+<p>To retrieve SuomiNet data taken on November 14, 2016, specify the datetime as
+keyword arguments. Note in the below example that there is no data available
+from the SA48 receiver for this date:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_kpno</span><span class="o">.</span><span class="n">measured_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 
 <span class="go">             date             KITT    P014    SA46    SA48    AZAM</span>
@@ -234,18 +238,18 @@ table:</p>
 <span class="go">                        ...     ...     ...     ...     ...     ...</span>
 </pre></div>
 </div>
-<p>Note that if no SuomiNet data is available during the specified datetime, the
+<p>If no SuomiNet data is available at all during the specified datetime, then the
 returned table will be empty.</p>
 </div>
 </div>
 <div class="section" id="modeled-pwv-data">
 <h2>4.2. Modeled PWV Data<a class="headerlink" href="#modeled-pwv-data" title="Permalink to this headline">¶</a></h2>
 <p>This package uses SuomiNet data to create a model for the PWV level at Kitt
-Peak. To retrieve this model as an astropy table, use the <cite>measured_pwv</cite>
+Peak. To retrieve this model as an astropy table, use the <cite>modeled_pwv</cite>
 function</p>
 <dl class="function">
 <dt id="pwv_kpno.modeled_pwv">
-<code class="descclassname">pwv_kpno.</code><code class="descname">modeled_pwv</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>hour=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_functions.html#modeled_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.modeled_pwv" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pwv_kpno.</code><code class="descname">modeled_pwv</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>hour=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_utilities.html#modeled_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.modeled_pwv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an astropy table of the modeled PWV at Kitt Peak</p>
 <p>Return a model for the precipitable water vapor level at Kitt Peak as an
 astropy table. The first column of the table is named &#8216;date&#8217; and contains
@@ -277,18 +281,18 @@ year, month, day, and hour by using the key word arguments.</p>
 <p>To retrieve the entire PWV model covering from 2010 onward:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_kpno</span><span class="o">.</span><span class="n">modeled_pwv</span><span class="p">()</span>
 
-<span class="go">            date             pwv</span>
-<span class="go">            UTC               mm</span>
-<span class="go">    -------------------  -------------</span>
-<span class="go">    2010-06-25 00:15:00  5.37705575203</span>
-<span class="go">    2010-06-25 00:45:00  5.51619053262</span>
-<span class="go">    2010-06-25 01:15:00  5.56017738737</span>
-<span class="go">                    ...            ...</span>
+<span class="go">             date                pwv</span>
+<span class="go">             UTC                  mm</span>
+<span class="go">            object             float64</span>
+<span class="go">  ------------------------- --------------</span>
+<span class="go">  2010-01-01 00:15:00+00:00  1.06488584353</span>
+<span class="go">  2010-01-01 00:45:00+00:00  1.05127933812</span>
+<span class="go">  2010-01-01 01:14:00+00:00 0.782751028328</span>
+<span class="go">                        ...            ...</span>
 </pre></div>
 </div>
 <p>To retrieve the modeled PWV level for November 14, 2016:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">modeled_pwv</span> <span class="o">=</span> <span class="n">pwv_kpno</span><span class="o">.</span><span class="n">modeled_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">modeled_pwv</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_kpno</span><span class="o">.</span><span class="n">modeled_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 
 <span class="go">            date         PWV</span>
 <span class="go">            UTC           mm</span>
@@ -299,8 +303,6 @@ year, month, day, and hour by using the key word arguments.</p>
 <span class="go">                    ...  ...</span>
 </pre></div>
 </div>
-<p>Note that the PWV model does not have a data point for every datetime. This
-means that for some datetimes the returned table may be empty.</p>
 </div>
 </div>
 </div>

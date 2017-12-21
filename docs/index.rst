@@ -46,7 +46,6 @@ Table of Contents
     modeling_the_atmosphere
     updating_data
     accessing_pwv_data
-    ..science_background
     development
 
 ..

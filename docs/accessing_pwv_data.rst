@@ -2,12 +2,15 @@
 Accessing PWV Data
 ******************
 
-Todo: Add document description
+In order to determine the precipitable water vapor concentration for a given
+datetime, **pwv_kpno** relies on data from the `SuomiNet
+<http://www.suominet.ucar.edu>`_ project. This data is then used to create a
+model for the PWV level at Kitt Peak National Observatory.
 
 Measured PWV Data
 =================
 
-To retrieve an astropy table of SuomiNet available on the local machine,
+To retrieve an astropy table of SuomiNet data available on the local machine,
 use the `measured_pwv` function. Results can be filtered independently by year,
 month, day, and hour
 
@@ -50,7 +53,7 @@ Modeled PWV Data
 ================
 
 This package uses SuomiNet data to create a model for the PWV level at Kitt
-Peak. To retrieve this model as an astropy table, use the `measured_pwv`
+Peak. To retrieve this model as an astropy table, use the `modeled_pwv`
 function
 
 .. autofunction:: pwv_kpno.modeled_pwv

@@ -18,9 +18,10 @@ the desired datetime to be available on the local machine. By default,
 find the atmospheric transmission, use the `transmission` method.
 
 If you require additional data on your machine, please see the `updating data
-<updating_data.html#updating-data>`_ section. For more information on how
-**pwv_kpno** relates PWV concentration and airmass, see the `Science Notes
-<science_notes.html>`_.
+<updating_data.html#updating-data>`_ section.
+
+.. For more information on how **pwv_kpno** relates PWV concentration and airmass,
+.. see the `Science Notes <science_notes.html>`_.
 
 .. autofunction:: pwv_kpno.transmission
 
