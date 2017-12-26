@@ -40,10 +40,9 @@ __license__ = 'GPL V3'
 __email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'
 
-
-# Define necessary directory paths
+# Paths of atmospheric model and pwv data tables
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
-ATM_MOD_DIR = os.path.join(FILE_DIR, 'atm_models')  # atmospheric models
+ATM_MODEL = os.path.join(FILE_DIR, 'locations/kitt_peak/atm_model.csv')
 PWV_TAB_DIR = os.path.join(FILE_DIR, 'pwv_tables')  # PWV data tables
 
 
@@ -134,28 +133,23 @@ def transmission_pwv(pwv):
         The modeled transmission function as an astropy table.
     """
 
-    # Read the first file to get an table of the considered wavelengths
-    atm_model_files = sorted(glob.glob(os.path.join(ATM_MOD_DIR, '*.csv')))
-    wavelength = Table.read(atm_model_files[0])['wavelength']
+    atm_model = Table.read(ATM_MODEL)
+    wavelengths = atm_model['wavelength']
+    atm_model.remove_column('wavelength')
 
-    # Read the atmospheric models into a 3D array
     pwv_values = []
-    array_shape = (len(atm_model_files), len(wavelength))
+    array_shape = (len(atm_model.colnames), len(wavelengths))
     transmission_models = np.zeros(array_shape, dtype=np.float)
-    for i, model_file in enumerate(atm_model_files):
-        model_pwv = float(os.path.basename(model_file).split("_")[3])
-        pwv_values.append(model_pwv)
 
-        this_pwv_model = Table.read(model_file)
-        transmission_models[i, :] = this_pwv_model['transmission']
+    for i, column in enumerate(atm_model.itercols()):
+        pwv_values.append(float(column.name))
+        transmission_models[i, :] = column
 
-    # Interpolate to find the transmission function
-    interp_trans = interpn(points=(pwv_values, wavelength),
+    interp_trans = interpn(points=(pwv_values, wavelengths),
                            values=transmission_models,
-                           xi=np.array([[pwv, x] for x in wavelength]))
+                           xi=np.array([[pwv, x] for x in wavelengths]))
 
-    # Create a table to store the modeled transmission function
-    trans_func = Table([wavelength, interp_trans],
+    trans_func = Table([wavelengths, interp_trans],
                        names=['wavelength', 'transmission'],
                        dtype=[float, float])
 
