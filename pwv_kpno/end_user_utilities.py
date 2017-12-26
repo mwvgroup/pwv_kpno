@@ -43,7 +43,7 @@ __status__ = 'Development'
 
 # Define path of PWV data tables
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
-PWV_TAB_DIR = os.path.join(FILE_DIR, 'pwv_tables')
+DATA_DIR = os.path.join(FILE_DIR, 'locations/kitt_peak')
 
 
 def available_data():
@@ -193,7 +193,7 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
     _check_search_args(year, month, day, hour)
 
     # Read in SuomiNet measurements from the master table
-    data = Table.read(os.path.join(PWV_TAB_DIR, 'measured_pwv.csv'))
+    data = Table.read(os.path.join(DATA_DIR, 'measured_pwv.csv'))
 
     # Convert UNIX timestamps to UTC
     to_datetime = lambda date: datetime.fromtimestamp(date, utc)
@@ -233,7 +233,7 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
     _check_search_args(year, month, day, hour)
 
     # Read in SuomiNet measurements from the master table
-    data = Table.read(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'))
+    data = Table.read(os.path.join(DATA_DIR, 'modeled_pwv.csv'))
 
     # Convert UNIX timestamps to UTC
     to_datetime = lambda date: datetime.fromtimestamp(date, utc)

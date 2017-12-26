@@ -39,10 +39,9 @@ __license__ = 'GPL V3'
 __email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'
 
-# Paths of atmospheric model and pwv data tables
+# Paths of data file for Kitt Peak
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
-ATM_MODEL = os.path.join(FILE_DIR, 'locations/kitt_peak/atm_model.csv')
-PWV_TAB_DIR = os.path.join(FILE_DIR, 'pwv_tables')  # PWV data tables
+DATA_DIR = os.path.join(FILE_DIR, 'locations/kitt_peak')
 
 
 def _timestamp(date):
@@ -132,7 +131,8 @@ def transmission_pwv(pwv):
         The modeled transmission function as an astropy table.
     """
 
-    atm_model = Table.read(ATM_MODEL)
+    model_path = os.path.join(DATA_DIR, 'atm_model.csv')
+    atm_model = Table.read(model_path)
     wavelengths = atm_model['wavelength']
     atm_model.remove_column('wavelength')
 
@@ -176,7 +176,7 @@ def transmission(date, airmass, test_model=None):
 
     # Check for valid arguments
     if test_model is None:
-        pwv_model = Table.read(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'))
+        pwv_model = Table.read(os.path.join(DATA_DIR, 'modeled_pwv.csv'))
 
     else:
         pwv_model = test_model

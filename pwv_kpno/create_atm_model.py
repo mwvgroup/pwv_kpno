@@ -41,7 +41,7 @@ __status__ = 'Development'
 
 # Define necessary directory paths
 PHOSIM_DATA = './sims_phosim/data/atmosphere'
-ATM_MODELS = './atm_models'  # Where to write the atmospheric models
+ATM_MODELS = '.'  # Where to write the atmospheric models
 
 
 def _load_cross_section(filename, x_fine):

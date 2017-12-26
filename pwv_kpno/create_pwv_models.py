@@ -52,8 +52,8 @@ __status__ = 'Development'
 
 # Necessary directory paths
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
-PWV_TAB_DIR = os.path.join(FILE_DIR, 'pwv_tables')  # PWV data tables
-SUOMI_DIR = os.path.join(FILE_DIR, 'suomi_data')    # SuomiNet data files
+DATA_DIR = os.path.join(FILE_DIR, 'locations/kitt_peak')  # package data tables
+SUOMI_DIR = os.path.join(FILE_DIR, 'suomi_data')          # SuomiNet data files
 
 
 def _suomi_date_to_timestamp(year, days_str):
@@ -234,7 +234,7 @@ def update_suomi_data(year=None):
     """
 
     # Get any local data that has already been downloaded
-    local_data_path = os.path.join(PWV_TAB_DIR, 'measured_pwv.csv')
+    local_data_path = os.path.join(DATA_DIR, 'measured_pwv.csv')
     local_data = Table.read(local_data_path)
 
     # Create a set of years that need to be downloaded
@@ -281,7 +281,7 @@ def update_pwv_model():
     # to supplement PWV measurements when no Kitt Peak data is available.
 
     # Read the local PWV data from file
-    pwv_data = Table.read(os.path.join(PWV_TAB_DIR, 'measured_pwv.csv'))
+    pwv_data = Table.read(os.path.join(DATA_DIR, 'measured_pwv.csv'))
     gps_receivers = set(pwv_data.colnames) - {'date', 'KITT'}
 
     # Generate the fit parameters
@@ -306,4 +306,4 @@ def update_pwv_model():
     # Write results to file
     out = Table([pwv_data['date'], sup_data], names=['date', 'pwv'])
     out = out[np.where(out['pwv'] > 0)[0]]
-    out.write(os.path.join(PWV_TAB_DIR, 'modeled_pwv.csv'), overwrite=True)
+    out.write(os.path.join(DATA_DIR, 'modeled_pwv.csv'), overwrite=True)

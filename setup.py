@@ -45,8 +45,7 @@ def add_data_files(file_list, directory, ext_tuple):
 
 
 DATA_FILES = ['CONFIG.txt']
-add_data_files(DATA_FILES, 'atm_models', ('.csv',))
-add_data_files(DATA_FILES, 'pwv_tables', ('.csv',))
+add_data_files(DATA_FILES, 'locations/kitt_peak', ('.csv',))
 add_data_files(DATA_FILES, 'sims_phosim/data/atmosphere', ('.txt.',))
 add_data_files(DATA_FILES, 'suomi_data', ('.plot',))
 
