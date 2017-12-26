@@ -108,10 +108,10 @@ def _check_search_args(year=None, month=None, day=None, hour=None):
     `measured_pwv` and `modeled_pwv`.
 
     Args:
-        year  (int): An integer value betwean 2010 and the current year
-        month (int): An integer value betwean 1 and 12 (inclusive)
-        day   (int): An integer value betwean 1 and 31 (inclusive)
-        hour  (int): An integer value betwean 0 and 23 (inclusive)
+        year  (int): An integer value between 2010 and the current year
+        month (int): An integer value between 1 and 12 (inclusive)
+        day   (int): An integer value between 1 and 31 (inclusive)
+        hour  (int): An integer value between 0 and 23 (inclusive)
 
     Returns:
         None
@@ -159,13 +159,13 @@ def _search_dt_table(data_tab, **kwargs):
     # Credit for this function belongs to Alexander Afanasyev
     # https://codereview.stackexchange.com/questions/165811
 
-    def vectorize_callable(obj):
+    def vectorized_callable(obj):
         """Checks if datetime attributes match specified values"""
         return all(getattr(obj, param_name) == param_value
                    for param_name, param_value in kwargs.items()
                    if param_value is not None)
 
-    indexing_func = np.vectorize(vectorize_callable)
+    indexing_func = np.vectorize(vectorized_callable)
     return data_tab[np.where(indexing_func(data_tab['date']))[0]]
 
 

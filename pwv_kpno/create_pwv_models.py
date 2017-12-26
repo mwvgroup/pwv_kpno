@@ -63,7 +63,7 @@ def _suomi_date_to_timestamp(year, days_str):
     Convert the datetime notation used by SuomiNet to a UTC timestamp. The
     SuomiNet format consists of the day of the year (1 to 365) followed by the
     decimal number of hours that have passed in the given day. For example,
-    Feburary 1st, 00:15 would be 36.01042.
+    February 1st, 00:15 would be 36.01042.
 
     Args:
         year     (int): The year of the desired timestamp
@@ -126,7 +126,7 @@ def _read_file(path):
         to_timestamp_vectorized = np.vectorize(_suomi_date_to_timestamp)
         out_table['date'] = to_timestamp_vectorized(year, out_table['date'])
 
-    # Remove data from faulty reciever at Kitt Peak (Jan 2016 through Mar 2016)
+    # Remove data from faulty receiver at Kitt Peak (Jan 2016 through Mar 2016)
     if path.endswith('KITThr_2016.plt') or path.endswith('KITTdy_2016.plt'):
         april_2016_begins = 1459468800.0
         out_table = out_table[april_2016_begins < out_table['date']]
@@ -191,7 +191,7 @@ def _download_suomi_data_for_year(yr):
     """
 
     with open(os.path.join(FILE_DIR, 'CONFIG.txt'), 'rb') as ofile:
-        config_settings =  pickle.load(ofile)
+        config_settings = pickle.load(ofile)
 
     combined_data = None
     for site_id in config_settings['sites']:
@@ -240,10 +240,11 @@ def update_suomi_data(year=None):
 
     # Create a set of years that need to be downloaded
     with open(os.path.join(FILE_DIR, 'CONFIG.txt'), 'rb') as ofile:
-        config_settings =  pickle.load(ofile)
+        config_settings = pickle.load(ofile)
 
     if year is None:
-        years = set(range(2010, datetime.now().year + 1)) - config_settings['years']
+        years = set(range(2010, datetime.now().year + 1))
+        years -= config_settings['years']
         years.add(max(config_settings['years']))
 
     else:
@@ -287,9 +288,9 @@ def update_pwv_model():
     # Generate the fit parameters
     for receiver in gps_receivers:
         # Identify rows with data for both KITT and receiver
-        kitt_indx = np.logical_not(pwv_data['KITT'].mask)
-        reci_indx = np.logical_not(pwv_data[receiver].mask)
-        matching_indices = np.where(np.logical_and(kitt_indx, reci_indx))[0]
+        kitt_index = np.logical_not(pwv_data['KITT'].mask)
+        rec_index = np.logical_not(pwv_data[receiver].mask)
+        matching_indices = np.where(np.logical_and(kitt_index, rec_index))[0]
 
         # Generate and apply a first order fit
         fit_data = pwv_data['KITT', receiver][list(matching_indices)]
