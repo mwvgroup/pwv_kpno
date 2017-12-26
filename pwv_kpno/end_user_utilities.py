@@ -41,10 +41,9 @@ __email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'
 
 
-# Define necessary directory paths
+# Define path of PWV data tables
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
-ATM_MOD_DIR = os.path.join(FILE_DIR, 'atm_models')  # atmospheric models
-PWV_TAB_DIR = os.path.join(FILE_DIR, 'pwv_tables')  # PWV data tables
+PWV_TAB_DIR = os.path.join(FILE_DIR, 'pwv_tables')
 
 
 def available_data():

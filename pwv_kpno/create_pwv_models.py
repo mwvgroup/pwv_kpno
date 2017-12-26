@@ -52,7 +52,6 @@ __status__ = 'Development'
 
 # Necessary directory paths
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
-ATM_MOD_DIR = os.path.join(FILE_DIR, 'atm_models')  # atmospheric models
 PWV_TAB_DIR = os.path.join(FILE_DIR, 'pwv_tables')  # PWV data tables
 SUOMI_DIR = os.path.join(FILE_DIR, 'suomi_data')    # SuomiNet data files
 

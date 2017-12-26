@@ -24,7 +24,6 @@ include `transmission` and `transmission_pwv`.
 """
 
 import os
-import glob
 from datetime import datetime, timedelta
 
 import numpy as np
