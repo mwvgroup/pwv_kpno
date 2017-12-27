@@ -131,6 +131,13 @@ def transmission_pwv(pwv):
         The modeled transmission function as an astropy table.
     """
 
+    if pwv < 0:
+        raise ValueError('PWV concentration cannot be negative')
+
+    if pwv > 30.1:
+        err_msg = 'Cannot provide models for PWV concentrations above 30.1'
+        raise ValueError(err_msg)
+
     model_path = os.path.join(DATA_DIR, 'atm_model.csv')
     atm_model = Table.read(model_path)
     wavelengths = atm_model['wavelength']
