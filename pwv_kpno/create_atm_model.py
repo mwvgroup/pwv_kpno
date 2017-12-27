@@ -191,7 +191,10 @@ def write_atm_models(output_dir):
 
     wl, atm_trans = _generate_atm_model(7000, 10000, 1, pint_list, xlf_dict)
 
-    out_table = None
+    # Asserts that transmission is 100% for all wavelengths when PWV is 0
+    out_table = Table(names=['wavelength', '00.0'],
+                      data=[wl, [1 for i in wl]])
+
     for model_num, model in enumerate(xlf_dict['h2o']):
         temp_table = Table(data=[wl, atm_trans[model_num, 0, 0, 0, 0, :]],
                            names=['wavelength', 'transmission'])
@@ -199,12 +202,7 @@ def write_atm_models(output_dir):
         pwv_level = model / NA * (18.0152 * 0.99997 * 10)
         pwv_as_str = '{:.1f}'.format(pwv_level).zfill(4)
         temp_table.rename_column('transmission', pwv_as_str)
-
-        if out_table is None:
-            out_table = temp_table
-
-        else:
-            out_table.add_column(temp_table[pwv_as_str])
+        out_table.add_column(temp_table[pwv_as_str])
 
     out_table.write(os.path.join(output_dir, 'atm_model.csv'), overwrite=True)
 
@@ -212,6 +210,7 @@ def write_atm_models(output_dir):
 def main():
     """Generate atmospheric models and write them to the ATM_MODELS"""
     write_atm_models(ATM_MODELS)
+
 
 if __name__ == "__main__":
     main()
