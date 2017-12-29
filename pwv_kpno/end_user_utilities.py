@@ -22,7 +22,6 @@ Functions contained in this document include `available_data`, `update_models`,
 """
 
 import os
-import pickle
 from datetime import datetime
 
 import numpy as np
@@ -31,6 +30,7 @@ from astropy.table import Table
 
 from .create_pwv_models import update_suomi_data
 from .create_pwv_models import update_pwv_model
+from .settings import Settings
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -58,11 +58,7 @@ def available_data():
         A list of years with locally available SuomiNet data
     """
 
-    config_path = os.path.join(FILE_DIR, 'CONFIG.txt')
-    with open(config_path, 'rb') as ofile:
-        config_settings = pickle.load(ofile)
-
-    return sorted(list(config_settings['years']))
+    return sorted(Settings().current_location.available_years)
 
 
 def update_models(year=None):

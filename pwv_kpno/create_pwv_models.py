@@ -35,12 +35,13 @@ http://www.suominet.ucar.edu/overview.html.
 from collections import Counter
 from datetime import datetime, timedelta
 import os
-import pickle
 from warnings import warn
 
 import requests
 import numpy as np
 from astropy.table import Table, join, vstack, unique
+
+from .settings import Settings
 
 __authors__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2016, Daniel Perrefort'
@@ -189,11 +190,8 @@ def _download_suomi_data_for_year(yr):
         An astropy Table of the combined downloaded data for the given year.
     """
 
-    with open(os.path.join(FILE_DIR, 'CONFIG.txt'), 'rb') as ofile:
-        config_settings = pickle.load(ofile)
-
     combined_data = None
-    for site_id in config_settings['sites']:
+    for site_id in Settings().current_location.enabled_receivers:
         site_data = None
         for path in _download_suomi_files(yr, site_id):
             new_data = _read_file(path)
@@ -237,14 +235,13 @@ def update_suomi_data(year=None):
     local_data_path = os.path.join(DATA_DIR, 'measured_pwv.csv')
     local_data = Table.read(local_data_path)
 
-    # Create a set of years that need to be downloaded
-    with open(os.path.join(FILE_DIR, 'CONFIG.txt'), 'rb') as ofile:
-        config_settings = pickle.load(ofile)
-
+    current_location = Settings().current_location
+    current_years = set(current_location.available_years)
     if year is None:
-        years = set(range(2010, datetime.now().year + 1))
-        years -= config_settings['years']
-        years.add(max(config_settings['years']))
+        # Todo: Add test for this code block
+        all_years = set(range(2010, datetime.now().year + 1))
+        years = all_years - current_years
+        years.add(max(current_years))
 
     else:
         years = {year}
@@ -256,15 +253,15 @@ def update_suomi_data(year=None):
                             keys=['date'],
                             keep='last')
 
-        config_settings['years'].add(yr)
+        current_years.add(yr)
 
     # Update local files
     local_data.write(local_data_path, overwrite=True)
-    with open(os.path.join(FILE_DIR, 'CONFIG.txt'), 'wb') as ofile:
-        ofile.seek(0)
-        pickle.dump(config_settings, ofile, protocol=2)
 
-    return config_settings['years']
+    # Todo: Reduce the use of type casting between lists and sets
+    current_location._replace_years(list(current_years))
+
+    return current_years
 
 
 def update_pwv_model():
