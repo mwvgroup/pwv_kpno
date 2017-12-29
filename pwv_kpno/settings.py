@@ -19,9 +19,8 @@
 
 """This code allows users to modify package settings"""
 
-# Todo: Switch from CONFIG.txt to CONFIG.json
 # Todo: Write tests
-# Todo: Update html documentation
+# Todo: Write complete documentation (including rst doc)
 
 import json
 import os
@@ -79,9 +78,15 @@ class Location:
         if type(enabled) is not bool:
             raise TypeError(type_err.format('enabled', 'bool'))
 
-    @property
-    def available_years(self):
-        return self._config_data['years']
+    def __getitem__(self, key):
+        if not isinstance(key, str):
+            raise TypeError('Expected string index')
+
+        if key not in self.all_receivers:
+            err_msg = "No stored settings for GPS receiver '{}'".format(key)
+            raise ValueError(err_msg)
+
+        return self._config_data['receivers'][key]
 
     def _replace_years(self, yr_list):
 
@@ -91,6 +96,11 @@ class Location:
             current_data['years'] = yr_list
             ofile.seek(0)
             json.dump(current_data, ofile, indent=2, sort_keys=True)
+            ofile.truncate()
+
+    @property
+    def available_years(self):
+        return self._config_data['years']
 
     def restore(self):
         """Overwrite any currently unsaved settings with saved values"""
@@ -130,7 +140,7 @@ class Location:
             del self._config_data['receivers'][id]
 
         else:
-            warn('No entry found with id {}.'.format(id))
+            warn("No entry found with id '{}'".format(id))
 
     def enable_receiver(self, id):
         """Set the status of a GPS receiver to enabled for this location
@@ -187,13 +197,13 @@ class Location:
         # Todo (include type checks)
 
         warn('`Location` class is under development. '
-             'This method is not functional')
+             'This method is not functional.')
 
     def use_dates(self, id, date_range):
         # Todo (include type checks)
 
         warn('`Location` class is under development. '
-             'This method is not functional')
+             'This method is not functional.')
 
     def save(self):
         """Save current settings for this locations to file"""
@@ -201,6 +211,7 @@ class Location:
         path = CONFIG_PATH.format(self._original_name)
         with open(path, 'w') as ofile:
             json.dump(self._config_data, ofile, indent=2, sort_keys=True)
+            ofile.truncate()
 
         old_dir = os.path.join(LOC_PATH, self._original_name)
         new_dir = os.path.join(LOC_PATH, self.name)
@@ -256,7 +267,7 @@ class Settings:
             raise TypeError('Expected string index')
 
         if key not in self.locations:
-            raise ValueError('No stored settings for location {}'.format(key))
+            raise ValueError("No stored settings for location '{}'".format(key))
 
         config_data = _get_config_data(key)
         location = Location(key)
@@ -303,11 +314,11 @@ class Settings:
         # Todo (First implement ability to generate new atmospheric models)
 
         warn('`Settings` class is under development. '
-             'This method is not functional')
+             'This method is not functional.')
 
     def read(self, fpath):
         """Read settings from file"""
         # Todo (First implement add_location method)
 
         warn('`Settings` class is under development. '
-             'This method is not functional')
+             'This method is not functional.')

@@ -127,9 +127,13 @@ def _read_file(path):
         out_table['date'] = to_timestamp_vectorized(year, out_table['date'])
 
     # Remove data from faulty receiver at Kitt Peak (Jan 2016 through Mar 2016)
-    if path.endswith('KITThr_2016.plt') or path.endswith('KITTdy_2016.plt'):
-        april_2016_begins = 1459468800.0
-        out_table = out_table[april_2016_begins < out_table['date']]
+    site_id = path[-15:-11]
+    site_settings = Settings().current_location[site_id]
+
+    for start_timestamp, end_timestamp in site_settings[1]:
+        index_start = start_timestamp < out_table['date']
+        index_end = out_table['date'] < end_timestamp
+        out_table = out_table[np.logical_and(index_start, index_end)]
 
     return out_table
 
@@ -236,16 +240,17 @@ def update_suomi_data(year=None):
     local_data = Table.read(local_data_path)
 
     current_location = Settings().current_location
-    current_years = set(current_location.available_years)
+    current_years = current_location.available_years
     if year is None:
         # Todo: Add test for this code block
-        all_years = set(range(2010, datetime.now().year + 1))
-        years = all_years - current_years
-        years.add(max(current_years))
+        all_years = range(2010, datetime.now().year + 1)
+        years = [yr for yr in all_years if yr not in current_years]
+        years.append(max(current_years))
 
     else:
         years = {year}
 
+    new_years = []
     # Download data from SuomiNet
     for yr in years:
         new_data = _download_suomi_data_for_year(yr)
@@ -253,15 +258,16 @@ def update_suomi_data(year=None):
                             keys=['date'],
                             keep='last')
 
-        current_years.add(yr)
+        new_years.append(yr)
 
     # Update local files
     local_data.write(local_data_path, overwrite=True)
+    current_years = set(current_years)
+    current_years.update(new_years)
+    current_years = list(current_years)
+    current_location._replace_years(current_years)
 
-    # Todo: Reduce the use of type casting between lists and sets
-    current_location._replace_years(list(current_years))
-
-    return current_years
+    return new_years
 
 
 def update_pwv_model():

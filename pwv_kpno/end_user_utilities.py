@@ -93,7 +93,7 @@ def update_models(year=None):
     updated_years = update_suomi_data(year)
     update_pwv_model()
 
-    return updated_years
+    return sorted(updated_years)
 
 
 def _check_search_args(year=None, month=None, day=None, hour=None):
