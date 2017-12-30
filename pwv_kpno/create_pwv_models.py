@@ -130,7 +130,7 @@ def _read_file(path):
     site_id = path[-15:-11]
     site_settings = Settings().current_location[site_id]
 
-    for start_timestamp, end_timestamp in site_settings[1]:
+    for start_timestamp, end_timestamp in site_settings.ignore_timestamps:
         index_start = start_timestamp < out_table['date']
         index_end = out_table['date'] < end_timestamp
         out_table = out_table[np.logical_and(index_start, index_end)]

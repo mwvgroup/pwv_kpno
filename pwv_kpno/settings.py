@@ -17,11 +17,15 @@
 #    along with pwv_kpno. If not, see <http://www.gnu.org/licenses/>.
 
 
-"""This code allows users to modify package settings"""
+"""This code allows users to modify package settings. While some of this code
+is already being used in the package, much of it is provided as a framework for
+future development.
+"""
 
 # Todo: Write tests
-# Todo: Write complete documentation (including rst doc)
+# Todo: Write rst documentation
 
+from datetime import datetime
 import json
 import os
 import pickle
@@ -43,15 +47,82 @@ CONFIG_PATH = os.path.join(LOC_PATH, '{}/config.json')
 
 
 def _get_config_data(location_name):
-    """Retrieves settings from the package config file"""
+    """Retrieves settings from a location's config file
+
+    Each location has its own directory in pwv_kpno/locations/
+    """
 
     path = CONFIG_PATH.format(location_name)
     with open(path, 'r') as ofile:
         return json.load(ofile)
 
 
+class Receiver:
+    """Represents a single SuomiNet GPS receiver
+
+    Attributes:
+        id                : The 4 character SuomiNet ID code for this receiver
+        location          : The Location this receiver is associated with
+        enabled           : If data from this receiver is being used for its
+                            location
+        ignore_timestamps : A 2d list of timestamps to ignore data for
+        ignore_datetimes  : ignore_timestamps represented as datetime objects
+    """
+
+    def __init__(self):
+        self.id = None
+        self.enabled = None
+        self.location = None
+        self.ignore_timestamps = []
+
+    @property
+    def ignore_datetimes(self):
+        """A 2d list of datetimes for which data from this receiver is ignored
+
+        eg. [[start_datetime, end_datetime], ...]
+        """
+
+        out_list = []
+        for end_time, start_time in self.ignore_timestamps:
+            out_list.append([datetime.utcfromtimestamp(end_time),
+                             datetime.utcfromtimestamp(start_time)])
+
+        return out_list
+
+
 class Location:
-    """Represents package settings for an individual SuomiNet GPS receiver"""
+    """Package settings for a collection of SuomiNet GPS receivers
+
+    Entries with an asterisk are underdevelopment and not functional
+
+    Attributes:
+        name              : The name of this location (eg. 'kitt_peak')
+        available_years   : A list of Years for which SuomiNet data has been
+                            downloaded for this location
+        primary_receiver  : The id code of this location's primary GPS receiver
+        all_receivers     : A list of all GPS receiver ids associated with
+                            this location - both enabled and disabled
+        enabled_receivers : A list of enabled GPS receivers associated with
+                            this location
+
+    Methods:
+        restore          : Overwrites instance attributes with saved settings
+        add_receiver     : Add a new GPS receiver to this location
+        delete_receiver  : Delete a GPS receiver from this location
+        enable_receiver  : Enable a GPS receiver for this location
+        disable_receiver : Disable a GPS receiver for this location
+        * ignore_dates   : Ignore data from a GPS receiver for specified dates
+        * use_dates      : Undoes the ignore_dates method
+        save             : Save location settings (attribute values)
+        export           : Export saved settings to an ecsv file
+
+    Indexing:
+        Instances can be indexed using the id code of an associated GPS
+        receiver. This returns a Receiver type object. See `all_receivers` for
+        a list of available indices. For example:
+
+            Location()['KITT']
+    """
 
     def __init__(self, name=None):
         self.name = name
@@ -86,9 +157,15 @@ class Location:
             err_msg = "No stored settings for GPS receiver '{}'".format(key)
             raise ValueError(err_msg)
 
-        return self._config_data['receivers'][key]
+        receiver_data = self._config_data['receivers'][key]
+        receiver = Receiver()
+        receiver.id = key
+        receiver.enabled = receiver_data[0]
+        receiver.ignore_timestamps = receiver_data[1]
+        return receiver_data[0]
 
     def _replace_years(self, yr_list):
+        """Replaces the list of years in the location's config file"""
 
         path = CONFIG_PATH.format(self.name)
         with open(path, 'r+') as ofile:
@@ -100,6 +177,8 @@ class Location:
 
     @property
     def available_years(self):
+        """A list of years for which SuomiNet data has been downloaded"""
+
         return self._config_data['years']
 
     def restore(self):
@@ -113,9 +192,11 @@ class Location:
         """Save the receiver instance to the package settings
 
         Args:
-            id       (str):
-            enabled (bool):
+            id       (str): The SuomiNet id code of the receiver
+            enabled (bool): Whether to use data from this receiver
         """
+
+        # Todo : change this method to accept Receiver object
 
         self._check_receiver_args(id, enabled)
 
@@ -127,7 +208,7 @@ class Location:
             self._config_data['receivers'][id] = [enabled, []]
 
     def delete_receiver(self, id):
-        """Deletes settings for a SuomiNet receiver from the package
+        """Deletes a SuomiNet receiver from this location
 
         Only settings data is deleted. All PWV data downloaded from SuomiNet
         for the receiver will remain on disk.
@@ -248,10 +329,25 @@ class Location:
 
 
 class Settings:
-    """Represents package setting for pwv_kpno
+    """Represents package settings for pwv_kpno
 
-    To get a list of locations for which settings are locally available,
-    see the `locations` attribute.
+    Entries with an asterisk are underdevelopment and not functional
+
+    Attributes:
+        locations        : A list of locations with stored settings
+        current_location : The default location used when providing
+                           atmospheric models
+
+    Methods:
+        * add_location : Create a new location with a unique atmospheric model
+        * read         : Read locations settings from file
+
+    Indexing:
+        Instances can be indexed using the name of a location with stored
+        settings. This returns a Location type object. See `locations` for a
+        list of available indices. For example:
+
+            Settings()['kitt_peak']
     """
 
     def __iter__(self):
@@ -317,7 +413,7 @@ class Settings:
              'This method is not functional.')
 
     def read(self, fpath):
-        """Read settings from file"""
+        """Read locations settings from file"""
         # Todo (First implement add_location method)
 
         warn('`Settings` class is under development. '
