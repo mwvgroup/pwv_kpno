@@ -15,3 +15,5 @@ tests/*.plt
 *.pyc
 *.DS_Store
 *stackdump
+
+profile_tests.py
