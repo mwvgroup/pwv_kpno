@@ -18,14 +18,18 @@
 
 """This code provides a command line interface for the pwv_kpno package."""
 
+# Todo: add transmission_pwv_wrapper
+# Todo: Test that this code still works
+# Todo: Create rst documentation
+
 import argparse
 from datetime import datetime
 
-from __init__ import __version__ as version
-from .calc_transmission import available_data
-from .calc_transmission import update_models
-from .calc_transmission import measured_pwv
-from .calc_transmission import modeled_pwv
+from .__init__ import __version__ as version
+from .end_user_utilities import available_data
+from .end_user_utilities import update_models
+from .end_user_utilities import measured_pwv
+from .end_user_utilities import modeled_pwv
 from .calc_transmission import transmission
 
 __author__ = 'Daniel Perrefort'
@@ -138,13 +142,13 @@ PARSER = argparse.ArgumentParser()
 PARSER.add_argument('-v', '--version', action='version', version=version)
 SUBPARSERS = PARSER.add_subparsers()
 
-# Create a command line subparser for the available_data_wrapper function
+# Create a command line sub-parser for the available_data_wrapper function
 DA_DESC = "Return a set of years for which local SuomiNet data is available."
 
 DA_PRSR = SUBPARSERS.add_parser('available_data', description=DA_DESC)
 DA_PRSR.set_defaults(func=available_data_wrapper)
 
-# Create a command line subparser for the update_models_wrapper
+# Create a command line sub-parser for the update_models_wrapper
 UP_DESC = 'Update the local SuomiNet data and PWV models.'
 UP_YHLP = ('The year to download local data for. If unspecified,' +
            ' data is updated for all available years.')
@@ -153,7 +157,7 @@ UP_PRSR = SUBPARSERS.add_parser('update_models', description=UP_DESC)
 UP_PRSR.set_defaults(func=update_models_wrapper)
 UP_PRSR.add_argument('-y', '--year', type=int, default=None, help=UP_YHLP)
 
-# Create a command line subparser for the measured_pwv_wrapper function
+# Create a command line sub-parser for the measured_pwv_wrapper function
 ME_DESC = 'Write a copy of the local SuomiNet data to a .csv file.'
 ME_OHLP = 'The desired output file path'
 ME_YHLP = 'Only include measurements for a specified year'
@@ -169,7 +173,7 @@ ME_PRSR.add_argument('-m', '--month', type=int, default=None, help=ME_MHLP)
 ME_PRSR.add_argument('-d', '--day', type=int, default=None, help=ME_DHLP)
 ME_PRSR.add_argument('-H', '--hour', type=int, default=None, help=ME_HHLP)
 
-# Create a command line subparser for the modeled_pwv_wrapper function
+# Create a command line sub-parser for the modeled_pwv_wrapper function
 MO_DESC = 'Write a copy of the PWV model for Kitt Peak to a .csv file.'
 MO_OHLP = 'The desired output file path'
 MO_YHLP = 'Only include model values for a specified year'
@@ -185,7 +189,7 @@ MO_PRSR.add_argument('-m', '--month', type=int, default=None, help=MO_MHLP)
 MO_PRSR.add_argument('-d', '--day', type=int, default=None, help=MO_DHLP)
 MO_PRSR.add_argument('-H', '--hour', type=int, default=None, help=MO_HHLP)
 
-# Create command line subparser for the transmission_wrapper function
+# Create command line sub-parser for the transmission_wrapper function
 TR_DESC = ('Get the modeled atmospheric transmission spectrum for' +
            ' a given date and airmass.')
 TR_AHLP = 'The airmass of the desired model spectrum'

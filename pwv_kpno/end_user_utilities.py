@@ -61,6 +61,7 @@ def available_data():
     return sorted(Settings().current_location.available_years)
 
 
+# Todo: Improve speed of this function
 def update_models(year=None):
     """Download data from SuomiNet and update the locally stored PWV model
 

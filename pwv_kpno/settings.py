@@ -363,7 +363,8 @@ class Settings:
             raise TypeError('Expected string index')
 
         if key not in self.locations:
-            raise ValueError("No stored settings for location '{}'".format(key))
+            err_msg = "No stored settings for location '{}'"
+            raise ValueError(err_msg.format(key))
 
         config_data = _get_config_data(key)
         location = Location(key)
