@@ -150,6 +150,7 @@ class Location:
             raise TypeError(type_err.format('enabled', 'bool'))
 
     def __getitem__(self, key):
+
         if not isinstance(key, str):
             raise TypeError('Expected string index')
 
@@ -162,7 +163,7 @@ class Location:
         receiver.id = key
         receiver.enabled = receiver_data[0]
         receiver.ignore_timestamps = receiver_data[1]
-        return receiver_data[0]
+        return receiver
 
     def _replace_years(self, yr_list):
         """Replaces the list of years in the location's config file"""
