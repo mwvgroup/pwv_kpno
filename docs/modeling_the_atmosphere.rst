@@ -14,7 +14,7 @@ Using measurements from the `SuomiNet <http://www.suominet.ucar.edu>`_ project,
 **pwv_kpno** is able to determine the PWV concentration along line of sight
 for a provided datetime and airmass. Note that this requires SuomiNet data for
 the desired datetime to be available on the local machine. By default,
-**pwv_kpno** includes all necessary PWV data for years 2010 through 2016. To
+**pwv_kpno** includes all necessary PWV data for years 2010 through 2017. To
 find the atmospheric transmission, use the `transmission` method.
 
 If you require additional data on your machine, please see the `updating data
@@ -41,15 +41,14 @@ given by::
     >>>                      minute=35,
     >>>                      tzinfo=pytz.utc)
     >>>
-    >>> trans = pwv_kpno.transmission(date=obsv_date, airmass=1.2)
-    >>> trans
+    >>> pwv_kpno.transmission(date=obsv_date, airmass=1.2)
 
       wavelength   transmission
        Angstrom         %
       ------------- --------------
-             7000.0 0.994565196207
-      7001.00033344  0.99014340451
-      7002.00066689 0.999789258963
+             7000.0 0.995667371031
+      7001.00033344 0.992141802334
+      7002.00066689 0.999832009999
                 ...            ...
 
 Transmission from PWV
@@ -71,5 +70,5 @@ Example
        Angstrom         %
       ------------- --------------
              7000.0 0.927538932462
-      7001.00033344 0.872185668270
+      7001.00033344  0.87218566827
       7002.00066689 0.997095800639
