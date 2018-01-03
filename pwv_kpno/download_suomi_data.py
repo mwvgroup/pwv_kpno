@@ -179,24 +179,24 @@ def _download_data_for_year(yr):
         An astropy Table of the combined downloaded data for the given year.
     """
 
-    combined_data = None
-    for site_id in Settings().current_location.enabled_receivers:
-        site_data = None
-        for path in _download_data_for_site(yr, site_id):
-            new_data = _read_file(path)
-            if not site_data and new_data:
-                site_data = new_data
+    receiver_ids = Settings().current_location.enabled_receivers
+    combined_data = Table(names=['date', *receiver_ids])
+    while receiver_ids:
+        site_id = receiver_ids.pop()
+        file_paths = _download_data_for_site(yr, site_id)
 
-            elif new_data:
-                site_data = unique(vstack([site_data, new_data]),
-                                   keys=['date'])
+        if file_paths:
+            site_data = vstack([_read_file(path) for path in file_paths])
 
-        if not combined_data and site_data:
-            combined_data = site_data
+            if site_data:
+                site_data = unique(site_data, keys=['date'], keep='first')
 
-        elif site_data:
-            combined_data = join(combined_data, site_data,
-                                 join_type='outer', keys=['date'])
+            if combined_data:
+                combined_data = join(combined_data, site_data,
+                                     join_type='outer', keys=['date'])
+
+            else:
+                combined_data = site_data
 
     if not combined_data:
         msg = 'No SuomiNet data downloaded for year {}'.format(yr)
