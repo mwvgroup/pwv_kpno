@@ -111,13 +111,10 @@ def _read_file(path):
     data.keep_columns(['col1', 'col2'])
     data.rename_column('col1', 'date')
     data.rename_column('col2', path[-15:-11])
-
-    # Remove non-physical and duplicate data
     data = data[data[path[-15:-11]] > 0]
-    data = unique(unique(data), keys='date', keep='none')
 
-    # Convert dates to UNIX timestamp
     if data:
+        data = unique(unique(data), keys='date', keep='none')
         year = int(path[-8:-4])
         to_timestamp_vectorized = np.vectorize(_suomi_date_to_timestamp)
         data['date'] = to_timestamp_vectorized(year, data['date'])
@@ -125,7 +122,7 @@ def _read_file(path):
     return data
 
 
-def _download_suomi_files(year, site_id):
+def _download_data_for_site(year, site_id):
     """Download SuomiNet data for a given year and SuomiNet id
 
     For a given year and SuomiNet id, download data from the corresponding GPS
@@ -158,6 +155,7 @@ def _download_suomi_files(year, site_id):
             with open(path, 'wb') as ofile:
                 ofile.write(response.content)
 
+            # The preferred data file should be first in the list
             downloaded_paths.append(path)
 
         except requests.exceptions.HTTPError:
@@ -167,7 +165,7 @@ def _download_suomi_files(year, site_id):
     return downloaded_paths
 
 
-def _download_suomi_data_for_year(yr):
+def _download_data_for_year(yr):
     """Download and return data from all five SuomiNet sites for a given year
 
     Downloaded data for the SuomiNet sites KITT, SA48, SA46, P014, and AZAM.
@@ -184,7 +182,7 @@ def _download_suomi_data_for_year(yr):
     combined_data = None
     for site_id in Settings().current_location.enabled_receivers:
         site_data = None
-        for path in _download_suomi_files(yr, site_id):
+        for path in _download_data_for_site(yr, site_id):
             new_data = _read_file(path)
             if not site_data and new_data:
                 site_data = new_data
@@ -242,7 +240,7 @@ def update_suomi_data(year=None):
     new_years = []
     # Download data from SuomiNet
     for yr in years:
-        new_data = _download_suomi_data_for_year(yr)
+        new_data = _download_data_for_year(yr)
         local_data = unique(vstack([local_data, new_data]),
                             keys=['date'],
                             keep='last')
