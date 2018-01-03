@@ -37,9 +37,9 @@ from datetime import datetime, timedelta
 import os
 from warnings import warn
 
-import requests
-import numpy as np
 from astropy.table import Table, join, vstack, unique
+import numpy as np
+import requests
 
 from .settings import Settings
 
@@ -125,15 +125,6 @@ def _read_file(path):
         year = int(path[-8:-4])
         to_timestamp_vectorized = np.vectorize(_suomi_date_to_timestamp)
         out_table['date'] = to_timestamp_vectorized(year, out_table['date'])
-
-    # Remove data from faulty receiver at Kitt Peak (Jan 2016 through Mar 2016)
-    site_id = path[-15:-11]
-    site_settings = Settings().current_location[site_id]
-
-    for start_timestamp, end_timestamp in site_settings.ignore_timestamps:
-        index_start = start_timestamp < out_table['date']
-        index_end = out_table['date'] < end_timestamp
-        out_table = out_table[np.logical_and(index_start, index_end)]
 
     return out_table
 
@@ -268,45 +259,3 @@ def update_suomi_data(year=None):
     current_location._replace_years(current_years)
 
     return new_years
-
-
-def update_pwv_model():
-    """Create a new model for the PWV level at Kitt Peak
-
-    Create first order polynomials relating the PWV measured by GPS receivers
-    near Kitt Peak to the PWV measured at Kitt Peak (one per off site receiver)
-    Use these polynomials to supplement PWV measurements taken at Kitt Peak for
-    times when no Kitt Peak data is available. Write the supplemented PWV
-    data to a csv file at PWV_TAB_DIR/measured.csv.
-    """
-
-    # Credit belongs to Jessica Kroboth for suggesting the use of a linear fit
-    # to supplement PWV measurements when no Kitt Peak data is available.
-
-    # Read the local PWV data from file
-    pwv_data = Table.read(os.path.join(DATA_DIR, 'measured_pwv.csv'))
-    gps_receivers = set(pwv_data.colnames) - {'date', 'KITT'}
-
-    # Generate the fit parameters
-    for receiver in gps_receivers:
-        # Identify rows with data for both KITT and receiver
-        kitt_index = np.logical_not(pwv_data['KITT'].mask)
-        rec_index = np.logical_not(pwv_data[receiver].mask)
-        matching_indices = np.where(np.logical_and(kitt_index, rec_index))[0]
-
-        # Generate and apply a first order fit
-        fit_data = pwv_data['KITT', receiver][list(matching_indices)]
-        fit = np.polyfit(fit_data[receiver], fit_data['KITT'], 1)
-        pwv_data[receiver] = np.poly1d(fit)(pwv_data[receiver])
-
-    # Average together the modeled PWV values from all receivers except KITT
-    cols = [c for c in pwv_data.itercols() if c.name not in ['date', 'KITT']]
-    avg_pwv = np.ma.average(cols, axis=0)
-
-    # Supplement KITT data with averaged fits
-    sup_data = np.ma.where(pwv_data['KITT'].mask, avg_pwv, pwv_data['KITT'])
-
-    # Write results to file
-    out = Table([pwv_data['date'], sup_data], names=['date', 'pwv'])
-    out = out[np.where(out['pwv'] > 0)[0]]
-    out.write(os.path.join(DATA_DIR, 'modeled_pwv.csv'), overwrite=True)
