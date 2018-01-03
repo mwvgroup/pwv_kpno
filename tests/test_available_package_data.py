@@ -73,7 +73,6 @@ class TestCorrectDataFiles(unittest.TestCase):
 
         expected_ids = {'KITT', 'P014', 'SA46', 'SA48', 'AZAM'}
         missing_ids = expected_ids - self.data_file_GPS_ids
-        print(self.data_file_GPS_ids)
         bad_ids = self.data_file_GPS_ids - expected_ids
 
         error_msg = 'Missing data files for SuomiNet id {}'

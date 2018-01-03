@@ -25,7 +25,7 @@ from astropy.table import Table
 from pytz import utc
 
 from pwv_kpno import measured_pwv, modeled_pwv
-from pwv_kpno.end_user_utilities import _check_search_args
+from pwv_kpno.end_user_utilities import _check_date_time_args
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -68,46 +68,46 @@ class TestSearchArgumentErrors(unittest.TestCase):
         """Test for correct errors due to bad year argument"""
 
         next_year = datetime.now().year + 1
-        self.assertRaises(ValueError, _check_search_args, -2010)
-        self.assertRaises(ValueError, _check_search_args, 2009)
-        self.assertRaises(ValueError, _check_search_args, next_year)
-        self.assertRaises(TypeError, _check_search_args, '2009')
-        self.assertRaises(TypeError, _check_search_args, 2009.0)
+        self.assertRaises(ValueError, _check_date_time_args, -2010)
+        self.assertRaises(ValueError, _check_date_time_args, 2009)
+        self.assertRaises(ValueError, _check_date_time_args, next_year)
+        self.assertRaises(TypeError, _check_date_time_args, '2009')
+        self.assertRaises(TypeError, _check_date_time_args, 2009.0)
 
     def test_checks_for_valid_month(self):
         """Test for correct errors due to bad month argument"""
 
-        self.assertRaises(ValueError, _check_search_args, month=-3)
-        self.assertRaises(ValueError, _check_search_args, month=0)
-        self.assertRaises(ValueError, _check_search_args, month=13)
-        self.assertRaises(ValueError, _check_search_args, month=20)
-        self.assertRaises(TypeError, _check_search_args, month='12')
-        self.assertRaises(TypeError, _check_search_args, month=12.0)
+        self.assertRaises(ValueError, _check_date_time_args, month=-3)
+        self.assertRaises(ValueError, _check_date_time_args, month=0)
+        self.assertRaises(ValueError, _check_date_time_args, month=13)
+        self.assertRaises(ValueError, _check_date_time_args, month=20)
+        self.assertRaises(TypeError, _check_date_time_args, month='12')
+        self.assertRaises(TypeError, _check_date_time_args, month=12.0)
 
     def test_checks_for_valid_day(self):
         """Test for correct errors due to bad day argument"""
 
-        self.assertRaises(ValueError, _check_search_args, day=-3)
-        self.assertRaises(ValueError, _check_search_args, day=0)
-        self.assertRaises(ValueError, _check_search_args, day=32)
-        self.assertRaises(ValueError, _check_search_args, day=40)
-        self.assertRaises(TypeError, _check_search_args, day='17')
-        self.assertRaises(TypeError, _check_search_args, day=17.0)
+        self.assertRaises(ValueError, _check_date_time_args, day=-3)
+        self.assertRaises(ValueError, _check_date_time_args, day=0)
+        self.assertRaises(ValueError, _check_date_time_args, day=32)
+        self.assertRaises(ValueError, _check_date_time_args, day=40)
+        self.assertRaises(TypeError, _check_date_time_args, day='17')
+        self.assertRaises(TypeError, _check_date_time_args, day=17.0)
 
     def test_checks_for_valid_hour(self):
         """Test for correct errors due to bad hour argument"""
 
-        self.assertRaises(ValueError, _check_search_args, hour=-3)
-        self.assertRaises(ValueError, _check_search_args, hour=24)
-        self.assertRaises(ValueError, _check_search_args, hour=30)
-        self.assertRaises(TypeError, _check_search_args, hour='12')
-        self.assertRaises(TypeError, _check_search_args, hour=12.0)
+        self.assertRaises(ValueError, _check_date_time_args, hour=-3)
+        self.assertRaises(ValueError, _check_date_time_args, hour=24)
+        self.assertRaises(ValueError, _check_date_time_args, hour=30)
+        self.assertRaises(TypeError, _check_date_time_args, hour='12')
+        self.assertRaises(TypeError, _check_date_time_args, hour=12.0)
 
 
 class TestMeasuredPWV(unittest.TestCase):
     """Tests for the 'measured_pwv' function"""
 
-    all_local_pwv_measurements = measured_pwv()
+    all_local_pwv_data = measured_pwv()
 
     def test_returned_tz_info(self):
         """Test if datetimes in the returned data are timezone aware
@@ -115,7 +115,7 @@ class TestMeasuredPWV(unittest.TestCase):
         This test only checks the first and last returned result
         """
 
-        tzinfo = self.all_local_pwv_measurements['date'][0].tzinfo
+        tzinfo = self.all_local_pwv_data['date'][0].tzinfo
         error_msg = 'Datetimes should be UTC aware (found "{}")'
         self.assertIsNotNone(tzinfo, error_msg.format('None'))
         self.assertTrue(tzinfo == utc, error_msg.format(tzinfo))
@@ -126,8 +126,8 @@ class TestMeasuredPWV(unittest.TestCase):
         The first two columns should be 'date' and 'KITT'
         """
 
-        col_0 = self.all_local_pwv_measurements.colnames[0]
-        col_1 = self.all_local_pwv_measurements.colnames[1]
+        col_0 = self.all_local_pwv_data.colnames[0]
+        col_1 = self.all_local_pwv_data.colnames[1]
         error_msg = 'column {} should be "{}", found "{}"'
         self.assertEqual(col_0, 'date', error_msg.format(0, 'date', col_0))
         self.assertEqual(col_1, 'KITT', error_msg.format(1, 'KITT', col_1))
@@ -146,12 +146,20 @@ class TestMeasuredPWV(unittest.TestCase):
     def test_units(self):
         """Test columns for appropriate units"""
 
-        for column in self.all_local_pwv_measurements.itercols():
+        for column in self.all_local_pwv_data.itercols():
             if column.name == 'date':
                 self.assertEqual(column.unit, 'UTC')
 
             else:
                 self.assertEqual(column.unit, 'mm')
+
+    def test_removed_bad_kitt_data(self):
+        """Test for the removal of Kitt Peak data from jan through mar 2016"""
+
+        data_2016 = measured_pwv(2016)
+        april_2016 = datetime(2016, 4, 1, tzinfo=utc)
+        bad_data = data_2016[data_2016['date'] < april_2016]
+        self.assertTrue(all(bad_data['KITT'].mask))
 
 
 class TestModeledPWV(unittest.TestCase):

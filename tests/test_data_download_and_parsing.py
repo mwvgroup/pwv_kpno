@@ -24,9 +24,9 @@ from datetime import datetime
 import unittest
 from pytz import utc
 
-from pwv_kpno.create_pwv_models import _download_suomi_data_for_year
-from pwv_kpno.create_pwv_models import _read_file
-from pwv_kpno.create_pwv_models import _suomi_date_to_timestamp
+from pwv_kpno.download_suomi_data import _download_suomi_data_for_year
+from pwv_kpno.download_suomi_data import _read_file
+from pwv_kpno.download_suomi_data import _suomi_date_to_timestamp
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -188,14 +188,3 @@ class TestSuomiNetFileParsing(unittest.TestCase):
         self.assertFalse(is_negative_kitt_data, msg.format(self.kitt_hr_path))
         self.assertFalse(is_negative_azam_data, msg.format(self.azam_hr_path))
         self.assertFalse(is_negative_p014_data, msg.format(self.p014_dy_path))
-
-    def test_removed_bad_kitt_data(self):
-        """Test for the removal of Kitt Peak data from jan through mar 2016"""
-
-        april_2016 = _timestamp(datetime(2016, 4, 1, tzinfo=utc))
-        bad_hr_data = self.kitt_hr_data[self.kitt_hr_data['date'] < april_2016]
-        bad_dy_data = self.kitt_dy_data[self.kitt_dy_data['date'] < april_2016]
-
-        self.assertFalse(len(bad_hr_data))
-        self.assertFalse(len(bad_dy_data))
-
