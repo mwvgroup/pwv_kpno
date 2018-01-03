@@ -53,8 +53,8 @@ __status__ = 'Development'
 
 # Necessary directory paths
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
-DATA_DIR = os.path.join(FILE_DIR, 'locations/kitt_peak')  # package data tables
-SUOMI_DIR = os.path.join(FILE_DIR, 'suomi_data')          # SuomiNet data files
+MEAS_PATH = os.path.join(FILE_DIR, 'locations/{}/measured_pwv.csv')
+SUOMI_DIR = os.path.join(FILE_DIR, 'suomi_data')
 
 
 def _suomi_date_to_timestamp(year, days_str):
@@ -107,26 +107,22 @@ def _read_file(path):
         An astropy Table with data from path
     """
 
-    # Read data from file
-    data = np.genfromtxt(path, usecols=[0, 1],
-                         names=['date', 'pwv'],
-                         dtype=[(np.str_, 16), float])
+    data = Table.read(path, format='ascii')
+    data.keep_columns(['col1', 'col2'])
+    data.rename_column('col1', 'date')
+    data.rename_column('col2', path[-15:-11])
 
-    data = data[data['pwv'] > 0]  # Remove data with PWV < 0
-    data = np.unique(data)  # Sometimes SuomiNet records duplicate entries
-
-    # Remove any remaining entries with duplicate dates but different data
-    dup_dates = (Counter(data['date']) - Counter(set(data['date']))).keys()
-    ind = [(x not in dup_dates) for x in data['date']]
-    out_table = Table(np.extract(ind, data), names=['date', path[-15:-11]])
+    # Remove non-physical and duplicate data
+    data = data[data[path[-15:-11]] > 0]
+    data = unique(unique(data), keys='date', keep='none')
 
     # Convert dates to UNIX timestamp
-    if out_table:
+    if data:
         year = int(path[-8:-4])
         to_timestamp_vectorized = np.vectorize(_suomi_date_to_timestamp)
-        out_table['date'] = to_timestamp_vectorized(year, out_table['date'])
+        data['date'] = to_timestamp_vectorized(year, data['date'])
 
-    return out_table
+    return data
 
 
 def _download_suomi_files(year, site_id):
@@ -227,7 +223,9 @@ def update_suomi_data(year=None):
     """
 
     # Get any local data that has already been downloaded
-    local_data_path = os.path.join(DATA_DIR, 'measured_pwv.csv')
+
+    location_name = Settings().current_location.name
+    local_data_path = MEAS_PATH.format(location_name)
     local_data = Table.read(local_data_path)
 
     current_location = Settings().current_location
