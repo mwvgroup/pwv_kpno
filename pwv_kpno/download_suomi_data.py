@@ -32,7 +32,6 @@ For more details on the SuomiNet project see
 http://www.suominet.ucar.edu/overview.html.
 """
 
-from collections import Counter
 from datetime import datetime, timedelta
 import os
 from warnings import warn
@@ -249,9 +248,8 @@ def update_suomi_data(year=None):
 
     # Update local files
     local_data.write(local_data_path, overwrite=True)
-    current_years = set(current_years)
-    current_years.update(new_years)
-    current_years = list(current_years)
+    current_years.extend(new_years)
+    current_years = list(set(current_years))
     current_location._replace_years(current_years)
 
     return new_years
