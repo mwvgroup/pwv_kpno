@@ -31,6 +31,8 @@ from pytz import utc
 from astropy.table import Table
 from scipy.interpolate import interpn
 
+from pwv_kpno.settings import Settings
+
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
 __credits__ = ['Michael Wood-Vasey']
@@ -41,7 +43,8 @@ __status__ = 'Development'
 
 # Paths of data file for Kitt Peak
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
-DATA_DIR = os.path.join(FILE_DIR, 'locations/kitt_peak')
+ATM_MODEL_PATH = os.path.join(FILE_DIR, 'locations/{}/atm_model.csv')
+PWV_MODEL_PATH = os.path.join(FILE_DIR, 'locations/{}/modeled_pwv.csv')
 
 
 def _timestamp(date):
@@ -138,8 +141,8 @@ def transmission_pwv(pwv):
         err_msg = 'Cannot provide models for PWV concentrations above 30.1'
         raise ValueError(err_msg)
 
-    model_path = os.path.join(DATA_DIR, 'atm_model.csv')
-    atm_model = Table.read(model_path)
+    location_name = Settings().current_location.name
+    atm_model = Table.read(ATM_MODEL_PATH.format(location_name))
     wavelengths = atm_model['wavelength']
     atm_model.remove_column('wavelength')
 
@@ -183,7 +186,8 @@ def transmission(date, airmass, test_model=None):
 
     # Check for valid arguments
     if test_model is None:
-        pwv_model = Table.read(os.path.join(DATA_DIR, 'modeled_pwv.csv'))
+        location_name = Settings().current_location.name
+        pwv_model = Table.read(PWV_MODEL_PATH.format(location_name))
 
     else:
         pwv_model = test_model

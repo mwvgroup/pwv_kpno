@@ -42,8 +42,8 @@ __status__ = 'Development'
 
 # Define path of PWV data tables
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
-MEAS_PATH = os.path.join(FILE_DIR, 'locations/{}/measured_pwv.csv')
-MODL_PATH = os.path.join(FILE_DIR, 'locations/{}/modeled_pwv.csv')
+PWV_MSRED_PATH = os.path.join(FILE_DIR, 'locations/{}/measured_pwv.csv')
+PWV_MODEL_PATH = os.path.join(FILE_DIR, 'locations/{}/modeled_pwv.csv')
 
 
 def available_data():
@@ -140,7 +140,7 @@ def _get_measured_data():
     """
 
     location_name = Settings().current_location.name
-    data = Table.read(MEAS_PATH.format(location_name))
+    data = Table.read(PWV_MSRED_PATH.format(location_name))
     location = Settings().current_location
 
     for site_id in data.colnames:
@@ -217,7 +217,7 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
 
     # Read in SuomiNet measurements from the master table
     location_name = Settings().current_location.name
-    data = Table.read(MODL_PATH.format(location_name))
+    data = Table.read(PWV_MODEL_PATH.format(location_name))
 
     # Convert UNIX timestamps to UTC
     to_datetime = lambda date: datetime.fromtimestamp(date, utc)
@@ -270,7 +270,7 @@ def _update_pwv_model():
     out = out[out['pwv'] > 0]
 
     location_name = Settings().current_location.name
-    out.write(MODL_PATH.format(location_name), overwrite=True)
+    out.write(PWV_MODEL_PATH.format(location_name), overwrite=True)
 
 
 def update_models(year=None):
