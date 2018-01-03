@@ -24,7 +24,7 @@ from datetime import datetime
 import unittest
 from pytz import utc
 
-from pwv_kpno.download_suomi_data import _download_suomi_data_for_year
+from pwv_kpno.download_suomi_data import _download_data_for_year
 from pwv_kpno.download_suomi_data import _read_file
 from pwv_kpno.download_suomi_data import _suomi_date_to_timestamp
 
@@ -65,8 +65,8 @@ class TestSuomiNetDataDownload(unittest.TestCase):
     def setUpClass(self):
         """Download data from SuomiNet for 2012 and 2015"""
 
-        self.data_2012 = _download_suomi_data_for_year(2012)
-        self.data_2015 = _download_suomi_data_for_year(2015)
+        self.data_2012 = _download_data_for_year(2012)
+        self.data_2015 = _download_data_for_year(2015)
 
     def test_column_names(self):
         """Test downloaded data for correct columns"""
