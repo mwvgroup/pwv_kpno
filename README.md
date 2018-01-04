@@ -61,11 +61,10 @@ Alternatively, you use the `setup.py` file
     python setup.py install --user
 
 Both installation methods should automatically install any missing necessary
-dependencies. However, if you have issues installing the package, ensure\
-that these dependencies are present in your enviornment by installing them manually.
-To do so with pip run: 
- 
- 
+dependencies. However, if you have issues installing the package, ensure
+that these dependencies are present in your environment by installing them manually.
+To do so with pip run:
+
     pip install numpy
     pip install astropy
     pip install requests

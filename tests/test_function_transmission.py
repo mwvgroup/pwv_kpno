@@ -78,8 +78,8 @@ class TestTransmissionArgs(unittest.TestCase):
         acceptable date range begins with 2010 through the current date.
         """
 
-        early_date = datetime(year=2009, month=12, day=31, tzinfo=utc)
-        self.assertRaises(ValueError, arg_check, early_date, 1, self.mock_model)
+        early_day = datetime(year=2009, month=12, day=31, tzinfo=utc)
+        self.assertRaises(ValueError, arg_check, early_day, 1, self.mock_model)
 
         now = datetime.now()
         late_day = now + timedelta(days=1)
