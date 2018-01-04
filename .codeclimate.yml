@@ -21,8 +21,8 @@ engines:
 
   pep8:
     enabled: true
-
-    E731: # Suggests def instead of lambda
+    checks:
+      E731: # Suggests def instead of lambda
         enabled: false
 
   radon: 
