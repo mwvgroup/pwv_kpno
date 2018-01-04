@@ -223,38 +223,39 @@ class Location:
         else:
             warn("No entry found with id '{}'".format(id))
 
-    def enable_receiver(self, id):
-        """Set the status of a GPS receiver to enabled for this location
-
-        Atmospheric models returned by pwv_kpno for a location only use data
-        taken by receivers that are enabled. Changing the status of a receiver
-        for one location does not effect other locations.
-
-        Args:
-            id (str): The 4 character id code of a GPS receiver
-        """
+    def _raise_valid_id(self, id):
+        """Raises ValueError if no settings are available for the given id"""
 
         if id not in self._config_data['receivers']:
             err_msg = "No receiver '{}' stored for location '{}'"
             raise ValueError(err_msg.format(id, self.name))
 
+    def enable_receiver(self, id):
+        """Set the status of a GPS receiver to enabled for this location
+
+        Atmospheric models returned for a location only use data taken by
+        receivers that are enabled. Changing the status of a receiver for one
+        location does not effect other locations.
+
+        Args:
+            id (str): The 4 character id code of a GPS receiver
+        """
+
+        self._raise_valid_id(id)
         self._config_data['receivers'][id] = True
 
     def disable_receiver(self, id):
         """Set the status of a GPS receiver to disabled for this location
 
-        Atmospheric models returned by pwv_kpno for a location only use data
-        taken by receivers that are enabled. Changing the status of a receiver
-        for one location does not effect other locations.
+        Atmospheric models returned for a location only use data taken by
+        receivers that are enabled. Changing the status of a receiver for one
+        location does not effect other locations.
 
         Args:
             id (str): The 4 character id code of a GPS receiver
         """
 
-        if id not in self._config_data['receivers']:
-            err_msg = "No receiver '{}' stored for location '{}'"
-            raise ValueError(err_msg.format(id, self.name))
-
+        self._raise_valid_id(id)
         self._config_data['receivers'][id] = False
 
     @property
