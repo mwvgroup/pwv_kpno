@@ -3,10 +3,8 @@ engines:
     enabled: true
     config:
       languages:
-      - python:
-    checks:
-      Similar code:
-        enabled: true
+        python:
+          mass_threshold: 54
 
   markdownlint:
     enabled: true
