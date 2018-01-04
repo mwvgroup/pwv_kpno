@@ -88,7 +88,7 @@ class TestTransmissionArgs(unittest.TestCase):
         late_year = datetime(year=now.year + 1, month=1, day=1, tzinfo=utc)
         self.assertRaises(ValueError, arg_check, late_year, 1, self.mock_model)
 
-    def test_data_gap_handeling(self):
+    def test_data_gap_handling(self):
         """Test for error due to function call for a datetime without PWV data
 
         The function 'transmission' should raise an error if it is asked for
