@@ -181,7 +181,8 @@ def _download_data_for_year(yr):
     """
 
     receiver_ids = Settings().current_location.enabled_receivers
-    combined_data = Table(names=['date', *receiver_ids])
+    names = ['date'].extend(receiver_ids)
+    combined_data = Table(names=names)
     while receiver_ids:
         site_id = receiver_ids.pop()
         file_paths = _download_data_for_site(yr, site_id)

@@ -28,7 +28,6 @@ future development.
 from datetime import datetime
 import json
 import os
-import pickle
 import shutil
 from warnings import warn
 
@@ -392,8 +391,8 @@ class Settings:
     def current_location(self):
         """The current location being modeled by pwv_kpno"""
 
-        with open(os.path.join(FILE_DIR, 'CONFIG.txt'), 'rb') as ofile:
-            return self[pickle.load(ofile)]
+        with open(os.path.join(FILE_DIR, 'CONFIG.txt'), 'r') as ofile:
+            return self[ofile.readline()]
 
     @current_location.setter
     def current_location(self, location):
@@ -403,9 +402,10 @@ class Settings:
             err_msg = 'No stored settings for location {}'
             raise ValueError(err_msg.format(location))
 
-        with open(os.path.join(FILE_DIR, 'CONFIG.txt'), 'wb') as ofile:
+        with open(os.path.join(FILE_DIR, 'CONFIG.txt'), 'w') as ofile:
             ofile.seek(0)
-            pickle.dump(location, ofile, protocol=2)
+            ofile.write(location)
+            ofile.truncate()
 
     def add_location(self):
         """Create a new location with a unique atmospheric model"""
