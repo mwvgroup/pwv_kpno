@@ -6,7 +6,7 @@ engines:
       - python:
     checks:
       Similar code:
-        enabled: false
+        enabled: true
 
   markdownlint:
     enabled: true
@@ -34,3 +34,6 @@ ratings:
   paths:
   - "**.md"    
   - "**.py"
+
+exclude_patterns:
+    - "docs/_build/"
