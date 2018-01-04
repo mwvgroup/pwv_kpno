@@ -1,6 +1,6 @@
-include DEVNOTES.md
+include README.md
 include LICENSE.txt
-graft pwv_kpno/atm_models
-graft pwv_kpno/pwv_tables
+include pwv_kpno/CONFIG.txt
+graft pwv_kpno/locations
 graft pwv_kpno/sims_phosim
 graft pwv_kpno/suomi_data

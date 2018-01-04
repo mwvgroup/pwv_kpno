@@ -3,10 +3,8 @@ engines:
     enabled: true
     config:
       languages:
-      - python:
-    checks:
-      Similar code:
-        enabled: false
+        python:
+          mass_threshold: 56
 
   markdownlint:
     enabled: true
@@ -21,6 +19,9 @@ engines:
 
   pep8:
     enabled: true
+    checks:
+      E731: # Suggests def instead of lambda
+        enabled: false
 
   radon: 
     enabled: true
@@ -31,3 +32,6 @@ ratings:
   paths:
   - "**.md"    
   - "**.py"
+
+exclude_patterns:
+    - "docs/_build/"

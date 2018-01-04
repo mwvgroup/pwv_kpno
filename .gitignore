@@ -1,3 +1,5 @@
+.cache/
+.eggs/
 .idea/
 build/
 dist/
@@ -6,6 +8,12 @@ pwv_kpno/__pycache__/
 pwv_kpno/spect_20150708_matheson/
 scrap_work/
 
+tests/*.csv
+tests/*.plt
+
 *.ipynb
 *.pyc
 *.DS_Store
+*stackdump
+
+profile_tests.py

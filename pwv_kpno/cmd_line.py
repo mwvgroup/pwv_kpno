@@ -18,15 +18,19 @@
 
 """This code provides a command line interface for the pwv_kpno package."""
 
+# Todo: add transmission_pwv_wrapper
+# Todo: Test that this code still works
+# Todo: Create rst documentation
+
 import argparse
 from datetime import datetime
 
-from __init__ import __version__ as version
-from .end_user_functions import available_data
-from .end_user_functions import update_models
-from .end_user_functions import measured_pwv
-from .end_user_functions import modeled_pwv
-from .end_user_functions import transmission
+from .__init__ import __version__ as version
+from .end_user_utilities import available_data
+from .end_user_utilities import update_models
+from .end_user_utilities import measured_pwv
+from .end_user_utilities import modeled_pwv
+from .calc_transmission import transmission
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -37,17 +41,14 @@ __status__ = 'Development'
 
 
 # We create wrapper functions that pass command line arguments to functions
-# imported from end_user_functions.py. For more information on these functions
-# documentation is included in end_user_functions.py and also in README.MD
+# imported from calc_transmission.py. For more information on these functions
+# documentation is included in calc_transmission.py and also in README.MD
 
 def available_data_wrapper(cli_args):
     """Print a set of years for which SuomiNet data is locally available
 
     args:
         cli_args (argparse.Namespace): Arguments from the command line
-
-    Returns:
-        None
     """
 
     print('Found data for: {0}\n'.format(available_data()))
@@ -58,9 +59,6 @@ def update_models_wrapper(cli_args):
 
     args:
         cli_args (argparse.Namespace): Arguments from the command line
-
-    Returns:
-        None
     """
 
     years = update_models(cli_args.year)
@@ -72,43 +70,29 @@ def update_models_wrapper(cli_args):
 
 
 def measured_pwv_wrapper(cli_args):
-    """Write a copy of the local SuomiNet data to a .csv file
+    """Write a copy of the local SuomiNet data to a comma delimited file
 
     args:
         cli_args (argparse.Namespace): Arguments from the command line
-
-    Returns:
-        None
     """
 
     data = measured_pwv(year=cli_args.year, month=cli_args.month,
                         day=cli_args.day, hour=cli_args.hour)
 
-    if cli_args.output.endswith('.csv'):
-        data.write(cli_args.output, overwrite=False)
-
-    else:
-        data.write(cli_args.output + '.csv', overwrite=False)
+    data.write(cli_args.output, overwrite=False, format='ascii.csv')
 
 
 def modeled_pwv_wrapper(cli_args):
-    """Write a copy of the PWV model for Kitt Peak to a .csv file
+    """Write a copy of the PWV model for Kitt Peak to a comma delimited file
 
     args:
         cli_args (argparse.Namespace): Arguments from the command line
-
-    Returns:
-        None
     """
 
     data = modeled_pwv(year=cli_args.year, month=cli_args.month,
                        day=cli_args.day, hour=cli_args.hour)
 
-    if cli_args.output.endswith('.csv'):
-        data.write(cli_args.output, overwrite=False)
-
-    else:
-        data.write(cli_args.output + '.csv', overwrite=False)
+    data.write(cli_args.output, overwrite=False, format='ascii.csv')
 
 
 def transmission_wrapper(cli_args):
@@ -116,9 +100,6 @@ def transmission_wrapper(cli_args):
 
     args:
         cli_args (argparse.Namespace): Arguments from the command line
-
-    Returns:
-        None
     """
 
     date = datetime(year=cli_args.year, month=cli_args.month,
@@ -126,11 +107,7 @@ def transmission_wrapper(cli_args):
                     minute=cli_args.minute)
 
     model = transmission(date, cli_args.airmass)
-    if cli_args.output.endswith('.csv'):
-        model.write(cli_args.output, overwrite=False)
-
-    else:
-        model.write(cli_args.output + '.csv', overwrite=False)
+    model.write(cli_args.output, overwrite=False, format='ascii.csv')
 
 
 # Create an argument parser to handle command line arguments
@@ -138,13 +115,13 @@ PARSER = argparse.ArgumentParser()
 PARSER.add_argument('-v', '--version', action='version', version=version)
 SUBPARSERS = PARSER.add_subparsers()
 
-# Create a command line subparser for the available_data_wrapper function
+# Create a command line sub-parser for the available_data_wrapper function
 DA_DESC = "Return a set of years for which local SuomiNet data is available."
 
 DA_PRSR = SUBPARSERS.add_parser('available_data', description=DA_DESC)
 DA_PRSR.set_defaults(func=available_data_wrapper)
 
-# Create a command line subparser for the update_models_wrapper
+# Create a command line sub-parser for the update_models_wrapper
 UP_DESC = 'Update the local SuomiNet data and PWV models.'
 UP_YHLP = ('The year to download local data for. If unspecified,' +
            ' data is updated for all available years.')
@@ -153,7 +130,7 @@ UP_PRSR = SUBPARSERS.add_parser('update_models', description=UP_DESC)
 UP_PRSR.set_defaults(func=update_models_wrapper)
 UP_PRSR.add_argument('-y', '--year', type=int, default=None, help=UP_YHLP)
 
-# Create a command line subparser for the measured_pwv_wrapper function
+# Create a command line sub-parser for the measured_pwv_wrapper function
 ME_DESC = 'Write a copy of the local SuomiNet data to a .csv file.'
 ME_OHLP = 'The desired output file path'
 ME_YHLP = 'Only include measurements for a specified year'
@@ -169,7 +146,7 @@ ME_PRSR.add_argument('-m', '--month', type=int, default=None, help=ME_MHLP)
 ME_PRSR.add_argument('-d', '--day', type=int, default=None, help=ME_DHLP)
 ME_PRSR.add_argument('-H', '--hour', type=int, default=None, help=ME_HHLP)
 
-# Create a command line subparser for the modeled_pwv_wrapper function
+# Create a command line sub-parser for the modeled_pwv_wrapper function
 MO_DESC = 'Write a copy of the PWV model for Kitt Peak to a .csv file.'
 MO_OHLP = 'The desired output file path'
 MO_YHLP = 'Only include model values for a specified year'
@@ -185,7 +162,7 @@ MO_PRSR.add_argument('-m', '--month', type=int, default=None, help=MO_MHLP)
 MO_PRSR.add_argument('-d', '--day', type=int, default=None, help=MO_DHLP)
 MO_PRSR.add_argument('-H', '--hour', type=int, default=None, help=MO_HHLP)
 
-# Create command line subparser for the transmission_wrapper function
+# Create command line sub-parser for the transmission_wrapper function
 TR_DESC = ('Get the modeled atmospheric transmission spectrum for' +
            ' a given date and airmass.')
 TR_AHLP = 'The airmass of the desired model spectrum'
