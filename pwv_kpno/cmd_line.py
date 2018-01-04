@@ -49,9 +49,6 @@ def available_data_wrapper(cli_args):
 
     args:
         cli_args (argparse.Namespace): Arguments from the command line
-
-    Returns:
-        None
     """
 
     print('Found data for: {0}\n'.format(available_data()))
@@ -62,9 +59,6 @@ def update_models_wrapper(cli_args):
 
     args:
         cli_args (argparse.Namespace): Arguments from the command line
-
-    Returns:
-        None
     """
 
     years = update_models(cli_args.year)
@@ -76,43 +70,29 @@ def update_models_wrapper(cli_args):
 
 
 def measured_pwv_wrapper(cli_args):
-    """Write a copy of the local SuomiNet data to a .csv file
+    """Write a copy of the local SuomiNet data to a comma delimited file
 
     args:
         cli_args (argparse.Namespace): Arguments from the command line
-
-    Returns:
-        None
     """
 
     data = measured_pwv(year=cli_args.year, month=cli_args.month,
                         day=cli_args.day, hour=cli_args.hour)
 
-    if cli_args.output.endswith('.csv'):
-        data.write(cli_args.output, overwrite=False)
-
-    else:
-        data.write(cli_args.output + '.csv', overwrite=False)
+    data.write(cli_args.output, overwrite=False, format='ascii.csv')
 
 
 def modeled_pwv_wrapper(cli_args):
-    """Write a copy of the PWV model for Kitt Peak to a .csv file
+    """Write a copy of the PWV model for Kitt Peak to a comma delimited file
 
     args:
         cli_args (argparse.Namespace): Arguments from the command line
-
-    Returns:
-        None
     """
 
     data = modeled_pwv(year=cli_args.year, month=cli_args.month,
                        day=cli_args.day, hour=cli_args.hour)
 
-    if cli_args.output.endswith('.csv'):
-        data.write(cli_args.output, overwrite=False)
-
-    else:
-        data.write(cli_args.output + '.csv', overwrite=False)
+    data.write(cli_args.output, overwrite=False, format='ascii.csv')
 
 
 def transmission_wrapper(cli_args):
@@ -120,9 +100,6 @@ def transmission_wrapper(cli_args):
 
     args:
         cli_args (argparse.Namespace): Arguments from the command line
-
-    Returns:
-        None
     """
 
     date = datetime(year=cli_args.year, month=cli_args.month,
@@ -130,11 +107,7 @@ def transmission_wrapper(cli_args):
                     minute=cli_args.minute)
 
     model = transmission(date, cli_args.airmass)
-    if cli_args.output.endswith('.csv'):
-        model.write(cli_args.output, overwrite=False)
-
-    else:
-        model.write(cli_args.output + '.csv', overwrite=False)
+    model.write(cli_args.output, overwrite=False, format='ascii.csv')
 
 
 # Create an argument parser to handle command line arguments
