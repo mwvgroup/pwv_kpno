@@ -57,6 +57,14 @@ def _check_attrs(iterable, **kwargs):
 
     return True
 
+def _check_tz_info(data):
+    """Test if the first datetime in an iterable is UTC timezone aware"""
+
+    tzinfo = data[0].tzinfo
+    error_msg = 'Datetimes should be UTC aware (found "{}")'
+    unittest.TestCase.assertIsNotNone(tzinfo, error_msg.format('None'))
+    unittest.TestCase.assertTrue(tzinfo == utc, error_msg.format(tzinfo))
+
 
 class TestSearchArgumentErrors(unittest.TestCase):
     """Test that _check_search_args raises the appropriate errors
@@ -115,10 +123,7 @@ class TestMeasuredPWV(unittest.TestCase):
         This test only checks the first and last returned result
         """
 
-        tzinfo = self.all_local_pwv_data['date'][0].tzinfo
-        error_msg = 'Datetimes should be UTC aware (found "{}")'
-        self.assertIsNotNone(tzinfo, error_msg.format('None'))
-        self.assertTrue(tzinfo == utc, error_msg.format(tzinfo))
+        _check_tz_info(self.all_local_pwv_data['date'])
 
     def test_returned_column_order(self):
         """Test the column order of the table returned by measured_pwv()
@@ -173,10 +178,7 @@ class TestModeledPWV(unittest.TestCase):
         This test only checks the first and last returned result
         """
 
-        tzinfo = self.pwv_model_for_kitt_peak['date'][0].tzinfo
-        error_msg = 'Datetimes should be UTC aware (found "{}")'
-        self.assertIsNotNone(tzinfo, error_msg.format('None'))
-        self.assertTrue(tzinfo == utc, error_msg.format(tzinfo))
+        _check_tz_info(self.pwv_model_for_kitt_peak['date'])
 
     def test_units(self):
         """Test columns for appropriate units"""
