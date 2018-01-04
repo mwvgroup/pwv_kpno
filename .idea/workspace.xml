@@ -1,0 +1,1002 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="SCOPE_TYPE" value="3" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="0904ab41-45da-4b19-b323-c01f8b65b1d3" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.codeclimate.yml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/.gitattributes" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
+      <change beforePath="$PROJECT_DIR$/LOGO.png" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/MANIFEST.in" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/Makefile" afterPath="$PROJECT_DIR$/rst_source/Makefile" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/accessing_pwv_data.doctree" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/development.doctree" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/environment.pickle" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/index.doctree" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/install.doctree" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/modeling_the_atmosphere.doctree" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/science_background.doctree" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/updating_data.doctree" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/.buildinfo" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/.nojekyll" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/index.html" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/pwv_kpno/calc_transmission.html" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/pwv_kpno/end_user_functions.html" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/pwv_kpno/end_user_utilities.html" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_sources/accessing_pwv_data.rst.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_sources/development.rst.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_sources/index.rst.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_sources/install.rst.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_sources/modeling_the_atmosphere.rst.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_sources/science_background.rst.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_sources/updating_data.rst.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/LOGO.png" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/ajax-loader.gif" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/basic.css" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/comment-bright.png" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/comment-close.png" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/comment.png" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/css/badge_only.css" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/css/theme.css" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/doctools.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/down-pressed.png" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/down.png" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/file.png" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/fonts/Inconsolata-Bold.ttf" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/fonts/Inconsolata-Regular.ttf" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/fonts/Lato-Bold.ttf" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/fonts/Lato-Regular.ttf" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/fonts/RobotoSlab-Bold.ttf" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/fonts/RobotoSlab-Regular.ttf" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/fonts/fontawesome-webfont.eot" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/fonts/fontawesome-webfont.svg" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/fonts/fontawesome-webfont.ttf" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/fonts/fontawesome-webfont.woff" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/jquery-3.1.0.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/jquery.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/js/modernizr.min.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/js/theme.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/minus.png" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/plus.png" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/pygments.css" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/searchtools.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/underscore-1.3.1.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/underscore.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/up-pressed.png" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/up.png" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/websupport.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/accessing_pwv_data.html" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/development.html" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/genindex.html" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/index.html" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/install.html" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/modeling_the_atmosphere.html" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/objects.inv" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/science_background.html" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/search.html" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/searchindex.js" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/updating_data.html" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/docs/accessing_pwv_data.rst" afterPath="$PROJECT_DIR$/rst_source/accessing_pwv_data.rst" />
+      <change beforePath="$PROJECT_DIR$/docs/conf.py" afterPath="$PROJECT_DIR$/rst_source/conf.py" />
+      <change beforePath="$PROJECT_DIR$/docs/development.rst" afterPath="$PROJECT_DIR$/rst_source/development.rst" />
+      <change beforePath="$PROJECT_DIR$/docs/index.rst" afterPath="$PROJECT_DIR$/rst_source/index.rst" />
+      <change beforePath="$PROJECT_DIR$/docs/install.rst" afterPath="$PROJECT_DIR$/rst_source/install.rst" />
+      <change beforePath="$PROJECT_DIR$/docs/make.bat" afterPath="$PROJECT_DIR$/rst_source/make.bat" />
+      <change beforePath="$PROJECT_DIR$/docs/modeling_the_atmosphere.rst" afterPath="$PROJECT_DIR$/rst_source/modeling_the_atmosphere.rst" />
+      <change beforePath="$PROJECT_DIR$/docs/science_background.rst" afterPath="$PROJECT_DIR$/rst_source/science_background.rst" />
+      <change beforePath="$PROJECT_DIR$/docs/updating_data.rst" afterPath="$PROJECT_DIR$/rst_source/updating_data.rst" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/CONFIG.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/calc_transmission.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/cmd_line.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/create_atm_model.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/download_suomi_data.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/end_user_utilities.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/locations/kitt_peak/atm_model.csv" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/locations/kitt_peak/config.json" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/locations/kitt_peak/measured_pwv.csv" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/locations/kitt_peak/modeled_pwv.csv" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/settings.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/sims_phosim/data/atmosphere/h2ocs.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/sims_phosim/data/atmosphere/o2cs.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/sims_phosim/data/atmosphere/o3cs.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/AZAMdy_2012.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/AZAMdy_2013.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/AZAMdy_2014.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/AZAMdy_2015.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/AZAMdy_2016.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/AZAMdy_2017.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/AZAMhr_2012.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/AZAMhr_2013.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/AZAMhr_2014.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/AZAMhr_2015.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/AZAMhr_2016.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/AZAMhr_2017.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/KITTdy_2015.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/KITTdy_2016.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/KITTdy_2017.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/KITThr_2015.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/KITThr_2016.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/KITThr_2017.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/P014dy_2010.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/P014dy_2011.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/P014dy_2012.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/P014dy_2013.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/P014dy_2014.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/P014dy_2015.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/P014dy_2016.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/P014dy_2017.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/P014hr_2010.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/P014hr_2011.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/P014hr_2012.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/P014hr_2013.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/P014hr_2014.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/P014hr_2015.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/P014hr_2016.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/P014hr_2017.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA46dy_2010.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA46dy_2011.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA46dy_2012.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA46dy_2013.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA46dy_2014.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA46dy_2015.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA46dy_2016.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA46dy_2017.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA46hr_2010.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA46hr_2011.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA46hr_2012.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA46hr_2013.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA46hr_2014.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA46hr_2015.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA46hr_2016.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA46hr_2017.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA48dy_2010.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA48dy_2011.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA48dy_2012.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA48dy_2013.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA48dy_2014.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA48dy_2015.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA48hr_2010.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA48hr_2011.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA48hr_2012.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA48hr_2013.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA48hr_2014.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/pwv_kpno/suomi_data/SA48hr_2015.plt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/setup.cfg" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/setup.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/tests/create_mock_data.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/tests/test_available_package_data.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data_download_and_parsing.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/tests/test_end_user_pwv_retrieval.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/tests/test_function_transmission.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/tests/test_function_update_models.py" afterPath="" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/pwv_kpno$create_mock_data.coverage" NAME="create_mock_data Coverage Results" MODIFIED="1510529131934" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$check_data__1_.coverage" NAME="check_data (1) Coverage Results" MODIFIED="1509032187565" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$test.coverage" NAME="test Coverage Results" MODIFIED="1509743268390" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scrap_work" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$end_user_utilities.coverage" NAME="end_user_utilities Coverage Results" MODIFIED="1514523712381" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pwv_kpno" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$check_data_gaps.coverage" NAME="check_data_gaps Coverage Results" MODIFIED="1509387577130" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scrap_work" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$py_test_for_tests_test_create_pwv_models_TestPrivateFunctions_test_str_to_timestamp.coverage" NAME="py.test for tests.test_create_pwv_models.TestPrivateFunctions.test_str_to_timestamp Coverage Results" MODIFIED="1510195810059" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$py_test_in_test_end_user_pwv_retrieval_py.coverage" NAME="py.test in test_end_user_pwv_retrieval.py Coverage Results" MODIFIED="1515100279327" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$check_data__2_.coverage" NAME="check_data (2) Coverage Results" MODIFIED="1509032932154" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/checks" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$scratch_1.coverage" NAME="scratch_1 Coverage Results" MODIFIED="1508782520943" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$py_test_for_tests_test_function_transmission_TestTransmissionResults.coverage" NAME="py.test for tests.test_function_transmission.TestTransmissionResults Coverage Results" MODIFIED="1510599722548" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$py_test_in_test_function_transmission_py.coverage" NAME="py.test in test_function_transmission.py Coverage Results" MODIFIED="1510528139843" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$create_atm_model.coverage" NAME="create_atm_model Coverage Results" MODIFIED="1514335164595" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pwv_kpno" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$py_test_in_tests.coverage" NAME="py.test in tests Coverage Results" MODIFIED="1514507866714" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$plot_data.coverage" NAME="plot_data Coverage Results" MODIFIED="1509392558204" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scrap_work" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$check_data.coverage" NAME="check_data Coverage Results" MODIFIED="1509030897033" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scratch_work" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$py_test_in_check_data_py.coverage" NAME="py.test in check_data.py Coverage Results" MODIFIED="1509032585891" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/checks" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$dependencies.coverage" NAME="dependencies Coverage Results" MODIFIED="1510770378341" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scrap_work" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$pwv_settings.coverage" NAME="pwv_settings Coverage Results" MODIFIED="1514507774099" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pwv_kpno" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$bug_fix.coverage" NAME="bug_fix Coverage Results" MODIFIED="1512525794407" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scrap_work" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$py_test_in_pwv_kpno.coverage" NAME="py.test in pwv_kpno Coverage Results" MODIFIED="1515095817739" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$profile.coverage" NAME="profile Coverage Results" MODIFIED="1514958950253" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$py_test_in_test_create_pwv_models_py.coverage" NAME="py.test in test_create_pwv_models.py Coverage Results" MODIFIED="1510244743065" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$create_pwv_models.coverage" NAME="create_pwv_models Coverage Results" MODIFIED="1515032197368" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pwv_kpno" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$test__1_.coverage" NAME="test (1) Coverage Results" MODIFIED="1509830726589" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$scrap.coverage" NAME="scrap Coverage Results" MODIFIED="1510263158172" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scrap_work" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$py_test_in_test_function_measured_pwv_py.coverage" NAME="py.test in test_function_measured_pwv.py Coverage Results" MODIFIED="1509841359180" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$check_outliers.coverage" NAME="check_outliers Coverage Results" MODIFIED="1509565135687" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scrap_work" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$py_test_in_test_py.coverage" NAME="py.test in test.py Coverage Results" MODIFIED="1509834889876" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/pwv_kpno$end_user_functions.coverage" NAME="end_user_functions Coverage Results" MODIFIED="1512524736743" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pwv_kpno" />
+  </component>
+  <component name="CoverageOptionsProvider">
+    <option name="myAddOrReplace" value="0" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_TABLE_DETAILS" value="true" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <expand />
+    <select />
+  </component>
+  <component name="ExportTestResults" outputFolder="$USER_HOME$/Desktop" userTempatePath="" />
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="make.bat" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/rst_source/make.bat">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="61">
+              <caret line="17" column="9" lean-forward="true" selection-start-line="17" selection-start-column="9" selection-end-line="17" selection-end-column="9" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="conf.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/rst_source/conf.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="266">
+              <caret line="31" column="0" lean-forward="false" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Makefile" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/rst_source/Makefile">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="361">
+              <caret line="25" column="10" lean-forward="false" selection-start-line="25" selection-start-column="10" selection-end-line="25" selection-end-column="10" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>config.txt</find>
+      <find>CONFIG.txt</find>
+      <find>This method is not functional'</find>
+      <find>update</find>
+      <find>np.uni</find>
+      <find>read</find>
+      <find>upd</find>
+      <find>dump</find>
+      <find>s_</find>
+      <find>subparser</find>
+      <find>2017</find>
+      <find>2016</find>
+      <find>Settings</find>
+      <find>kitt</find>
+      <find>location</find>
+      <find>print</find>
+      <find>location_na</find>
+      <find>DATA_DIR</find>
+      <find>lic</find>
+      <find>config</find>
+      <find>pickle.load</find>
+      <find>load</find>
+      <find>read(</find>
+      <find>*</find>
+      <find>readl</find>
+      <find>_check_attrs</find>
+      <find>arg_check</find>
+      <find>test_re</find>
+      <find>test_returned_tz</find>
+      <find>html</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>0.9.12</replace>
+      <replace>SA48</replace>
+      <replace>MOCK_PWV_MODEL</replace>
+      <replace>self.mock_model</replace>
+      <replace>err_msg</replace>
+      <replace>` class is under development</replace>
+      <replace>This method is not functional'</replace>
+      <replace>This method is not functional.'</replace>
+      <replace>sub-parser</replace>
+    </replaceStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/doc/updating_data.rst" />
+        <option value="$PROJECT_DIR$/doc/development.rst" />
+        <option value="$PROJECT_DIR$/doc/retrieving_atm_models.rst" />
+        <option value="$PROJECT_DIR$/doc/index.rst" />
+        <option value="$PROJECT_DIR$/doc/conf.py" />
+        <option value="$PROJECT_DIR$/doc/make.bat" />
+        <option value="$PROJECT_DIR$/doc/Makefile" />
+        <option value="$PROJECT_DIR$/scrap_work/modify_settings.py" />
+        <option value="$PROJECT_DIR$/docs/development.rst" />
+        <option value="$PROJECT_DIR$/docs/index.rst" />
+        <option value="$PROJECT_DIR$/pwv_kpno/CONFIG.ecsv" />
+        <option value="$PROJECT_DIR$/data.json" />
+        <option value="$PROJECT_DIR$/scrap_work/modify_pwv_settings.py" />
+        <option value="$PROJECT_DIR$/pwv_kpno/CONFIG.json" />
+        <option value="$PROJECT_DIR$/pwv_kpno/modify_pwv_settings.py" />
+        <option value="$PROJECT_DIR$/tests/test_pwv_settings.py" />
+        <option value="$PROJECT_DIR$/pwv_kpno/create_atm_model.py" />
+        <option value="$PROJECT_DIR$/pwv_kpno/pwv_settings.py" />
+        <option value="$PROJECT_DIR$/pwv_kpno/__init__.py" />
+        <option value="$PROJECT_DIR$/profile.py" />
+        <option value="$PROJECT_DIR$/pprofile.py" />
+        <option value="$PROJECT_DIR$/docs/install.rst" />
+        <option value="$PROJECT_DIR$/docs/accessing_pwv_data.rst" />
+        <option value="$PROJECT_DIR$/docs/modeling_the_atmosphere.rst" />
+        <option value="$PROJECT_DIR$/docs/updating_data.rst" />
+        <option value="$PROJECT_DIR$/pwv_kpno/create_pwv_models.py" />
+        <option value="$PROJECT_DIR$/pwv_kpno/locations/kitt_peak/config.json" />
+        <option value="$PROJECT_DIR$/pwv_kpno/locations/kitt_peak/modeled_pwv.csv" />
+        <option value="$PROJECT_DIR$/pwv_kpno/locations/kitt_peak/measured_pwv.csv" />
+        <option value="$PROJECT_DIR$/tests/test_available_package_data.py" />
+        <option value="$PROJECT_DIR$/pwv_kpno/calc_transmission.py" />
+        <option value="$PROJECT_DIR$/pwv_kpno/end_user_utilities.py" />
+        <option value="$PROJECT_DIR$/profile_tests.py" />
+        <option value="$PROJECT_DIR$/tests/test_data_download_and_parsing.py" />
+        <option value="$PROJECT_DIR$/pwv_kpno/download_suomi_data.py" />
+        <option value="$PROJECT_DIR$/pwv_kpno/CONFIG.txt" />
+        <option value="$PROJECT_DIR$/MANIFEST.in" />
+        <option value="$PROJECT_DIR$/setup.py" />
+        <option value="$PROJECT_DIR$/docs/conf.py" />
+        <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/tests/test_function_update_models.py" />
+        <option value="$PROJECT_DIR$/pwv_kpno/settings.py" />
+        <option value="$PROJECT_DIR$/tests/test_function_transmission.py" />
+        <option value="$PROJECT_DIR$/tests/test_end_user_pwv_retrieval.py" />
+        <option value="$PROJECT_DIR$/pwv_kpno/cmd_line.py" />
+        <option value="$PROJECT_DIR$/.codeclimate.yml" />
+        <option value="$PROJECT_DIR$/docs/_build/html/_modules/index.html" />
+        <option value="$PROJECT_DIR$/rst_source/_build/html/index.html" />
+        <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/docs/make.bat" />
+        <option value="$PROJECT_DIR$/docs/Makefile" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="23" />
+    <option name="y" value="31" />
+    <option name="width" value="1440" />
+    <option name="height" value="823" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Default">
+      <profile-state>
+        <expanded-state>
+          <State>
+            <id />
+          </State>
+          <State>
+            <id>Python</id>
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>PyPep8NamingInspection</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State>
+            <id />
+          </State>
+          <State>
+            <id>Bitwise operation issuesJavaScript</id>
+          </State>
+          <State>
+            <id>Code style issuesJavaScript</id>
+          </State>
+          <State>
+            <id>Flow type checkerJavaScript</id>
+          </State>
+          <State>
+            <id>GeneralJavaScript</id>
+          </State>
+          <State>
+            <id>HTML</id>
+          </State>
+          <State>
+            <id>Internationalization issues</id>
+          </State>
+          <State>
+            <id>JavaScript</id>
+          </State>
+          <State>
+            <id>Potentially confusing code constructsJavaScript</id>
+          </State>
+          <State>
+            <id>Probable bugsJavaScript</id>
+          </State>
+          <State>
+            <id>Python</id>
+          </State>
+          <State>
+            <id>SQL</id>
+          </State>
+          <State>
+            <id>Spelling</id>
+          </State>
+          <State>
+            <id>TypeScript</id>
+          </State>
+          <State>
+            <id>XML</id>
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>SpellCheckingInspection</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
+    <entry key="Project Default copy">
+      <profile-state>
+        <expanded-state>
+          <State>
+            <id />
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>AngularJS</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
+  </component>
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scratches" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="pwv_kpno" type="b2602c69:ProjectViewProjectNode" />
+              <item name="pwv_kpno" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="pwv_kpno" type="b2602c69:ProjectViewProjectNode" />
+              <item name="pwv_kpno" type="462c0819:PsiDirectoryNode" />
+              <item name="rst_source" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope">
+        <subPane subId="Changed Files">
+          <expand>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="pwv_kpno" type="cbb8eebc:String" user="pwv_kpno" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="pwv_kpno" type="cbb8eebc:String" user="pwv_kpno" />
+              <item name="pwv_kpno" type="cbb8eebc:String" user="pwv_kpno" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="pwv_kpno" type="cbb8eebc:String" user="pwv_kpno" />
+              <item name="pwv_kpno" type="cbb8eebc:String" user="pwv_kpno" />
+              <item name="locations" type="cbb8eebc:String" user="locations" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="pwv_kpno" type="cbb8eebc:String" user="pwv_kpno" />
+              <item name="pwv_kpno" type="cbb8eebc:String" user="pwv_kpno" />
+              <item name="locations" type="cbb8eebc:String" user="locations" />
+              <item name="kitt_peak" type="cbb8eebc:String" user="kitt_peak" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+        <subPane subId="Project Files">
+          <expand>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="pwv_kpno" type="cbb8eebc:String" user="pwv_kpno" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="" />
+    <property name="node.js.path.for.package.standard" value="project" />
+    <property name="node.js.detected.package.standard" value="true" />
+    <property name="node.js.selected.package.standard" value="" />
+    <property name="com.intellij.ide.scratch.LRUPopupBuilder$2/Languages" value="Python" />
+    <property name="add_unversioned_files" value="$PROJECT_DIR$/scrap_work/modify_pwv_settings.py&#10;/Users/daniel/GitHub/pwv_kpno/scrap_work/modify_settings.py&#10;true&#10;/Users/daniel/GitHub/pwv_kpno/scrap_work/dependencies.py" />
+    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file:///Users/daniel/GitHub/pwv_kpno/README.md" />
+  </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings module-name="pwv_kpno" sdk-home="$USER_HOME$/anaconda/bin/python">
+        <option name="mySdkHome" value="$USER_HOME$/anaconda/bin/python" />
+        <option name="myModuleName" value="pwv_kpno" />
+      </console-settings>
+    </option>
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/scrap_work" />
+      <recent name="$PROJECT_DIR$/pwv_kpno" />
+      <recent name="$PROJECT_DIR$/pwv_kpno/locations/kitt_peak" />
+      <recent name="$PROJECT_DIR$/pwv_kpno/kitt_peak/locations" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/documentation" />
+      <recent name="$PROJECT_DIR$/documentation/.build/html" />
+      <recent name="$PROJECT_DIR$/pwv_kpno" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Python tests.py.test in test_end_user_pwv_retrieval.py">
+    <configuration name="create_pwv_models" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/pwv_kpno" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="pwv_kpno" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pwv_kpno/download_suomi_data.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <configuration name="end_user_utilities" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/pwv_kpno" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="pwv_kpno" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pwv_kpno/end_user_utilities.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <configuration name="profile" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="pwv_kpno" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/profile_tests.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <configuration name="py.test in pwv_kpno" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="pwv_kpno" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+    </configuration>
+    <configuration name="py.test in test_end_user_pwv_retrieval.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="pwv_kpno" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/test_end_user_pwv_retrieval.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+    </configuration>
+    <list size="5">
+      <item index="0" class="java.lang.String" itemvalue="Python.end_user_utilities" />
+      <item index="1" class="java.lang.String" itemvalue="Python.profile" />
+      <item index="2" class="java.lang.String" itemvalue="Python.create_pwv_models" />
+      <item index="3" class="java.lang.String" itemvalue="Python tests.py.test in pwv_kpno" />
+      <item index="4" class="java.lang.String" itemvalue="Python tests.py.test in test_end_user_pwv_retrieval.py" />
+    </list>
+    <recent_temporary>
+      <list size="5">
+        <item index="0" class="java.lang.String" itemvalue="Python tests.py.test in test_end_user_pwv_retrieval.py" />
+        <item index="1" class="java.lang.String" itemvalue="Python tests.py.test in pwv_kpno" />
+        <item index="2" class="java.lang.String" itemvalue="Python.create_pwv_models" />
+        <item index="3" class="java.lang.String" itemvalue="Python.profile" />
+        <item index="4" class="java.lang.String" itemvalue="Python.end_user_utilities" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0904ab41-45da-4b19-b323-c01f8b65b1d3" name="Default" comment="" />
+      <created>1501557134225</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1501557134225</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TestHistory">
+    <history-entry file="py_test_in_pwv_kpno - 2018.01.02 at 23h 06m 25s.xml">
+      <configuration name="py.test in pwv_kpno" configurationId="tests" />
+    </history-entry>
+    <history-entry file="py_test_in_pwv_kpno - 2018.01.02 at 23h 22m 46s.xml">
+      <configuration name="py.test in pwv_kpno" configurationId="tests" />
+    </history-entry>
+    <history-entry file="py_test_in_pwv_kpno - 2018.01.03 at 00h 15m 01s.xml">
+      <configuration name="py.test in pwv_kpno" configurationId="tests" />
+    </history-entry>
+    <history-entry file="py_test_in_pwv_kpno - 2018.01.03 at 13h 20m 28s.xml">
+      <configuration name="py.test in pwv_kpno" configurationId="tests" />
+    </history-entry>
+    <history-entry file="py_test_in_pwv_kpno - 2018.01.04 at 14h 27m 24s.xml">
+      <configuration name="py.test in pwv_kpno" configurationId="tests" />
+    </history-entry>
+    <history-entry file="py_test_in_pwv_kpno - 2018.01.04 at 14h 57m 55s.xml">
+      <configuration name="py.test in pwv_kpno" configurationId="tests" />
+    </history-entry>
+    <history-entry file="py_test_in_test_end_user_pwv_retrieval_py - 2018.01.04 at 13h 25m 57s.xml">
+      <configuration name="py.test in test_end_user_pwv_retrieval.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="py_test_in_test_end_user_pwv_retrieval_py - 2018.01.04 at 13h 26m 19s.xml">
+      <configuration name="py.test in test_end_user_pwv_retrieval.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="py_test_in_test_end_user_pwv_retrieval_py - 2018.01.04 at 14h 57m 55s.xml">
+      <configuration name="py.test in test_end_user_pwv_retrieval.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="py_test_in_test_end_user_pwv_retrieval_py - 2018.01.04 at 16h 11m 20s.xml">
+      <configuration name="py.test in test_end_user_pwv_retrieval.py" configurationId="tests" />
+    </history-entry>
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="23" y="31" width="1440" height="823" extended-state="0" />
+    <layout>
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40992907" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26666668" sideWeight="0.5028612" order="11" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.7049645" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5134752" sideWeight="0.49713877" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.5900709" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" x="236" y="45" width="968" height="801" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3035461" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" x="398" y="23" width="1004" height="823" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3597997" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" x="989" y="23" width="434" height="705" />
+      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32931727" sideWeight="0.49503547" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26609442" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32907802" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32880434" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32931727" sideWeight="0.49503547" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32904148" sideWeight="0.50496453" order="3" side_tool="true" content_ui="tabs" x="756" y="23" width="612" height="823" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32765958" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Concurrent Activities Diagram" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.6453901" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+    </layout>
+    <layout-to-restore>
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26666668" sideWeight="0.5028612" order="12" side_tool="true" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32880434" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32931727" sideWeight="0.49503547" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26609442" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32907802" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32931727" sideWeight="0.49503547" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40992907" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.7049645" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.50496453" sideWeight="0.49713877" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.17588653" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="236" y="45" width="968" height="801" />
+      <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32904148" sideWeight="0.50496453" order="3" side_tool="true" content_ui="tabs" x="756" y="23" width="612" height="823" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.41560283" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27539343" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" x="989" y="23" width="434" height="705" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32765958" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Concurrent Activities Diagram" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.6453901" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+    </layout-to-restore>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+              <option name="COLUMN_ORDER">
+                <list>
+                  <option value="0" />
+                  <option value="1" />
+                  <option value="2" />
+                  <option value="3" />
+                </list>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <option name="time" value="20" />
+    </breakpoint-manager>
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/rst_source/install.rst" />
+    <entry file="file://$PROJECT_DIR$/rst_source/modeling_the_atmosphere.rst" />
+    <entry file="file://$PROJECT_DIR$/rst_source/science_background.rst" />
+    <entry file="file://$PROJECT_DIR$/rst_source/updating_data.rst" />
+    <entry file="file://$USER_HOME$/anaconda/lib/python3.6/site-packages/IPython/core/interactiveshell.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="158">
+          <caret line="2880" column="0" lean-forward="false" selection-start-line="2880" selection-start-column="0" selection-end-line="2880" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pwv_kpno/locations/kitt_peak/modeled_pwv.csv" />
+    <entry file="file://$PROJECT_DIR$/pwv_kpno/suomi_data/KITTdy_2017.plt" />
+    <entry file="file://$USER_HOME$/anaconda/lib/python3.6/site-packages/astropy/table/column.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="128">
+          <caret line="928" column="0" lean-forward="false" selection-start-line="928" selection-start-column="0" selection-end-line="928" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/test_available_package_data.py" />
+    <entry file="file://$PROJECT_DIR$/pwv_kpno/__init__.py" />
+    <entry file="file://$PROJECT_DIR$/pwv_kpno/create_atm_model.py" />
+    <entry file="file://$PROJECT_DIR$/pwv_kpno/suomi_data/AZAMdy_2016.plt" />
+    <entry file="file://$PROJECT_DIR$/profile_tests.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pwv_kpno/end_user_utilities.py" />
+    <entry file="file://$PROJECT_DIR$/pwv_kpno/locations/kitt_peak/measured_pwv.csv" />
+    <entry file="file://$PROJECT_DIR$/pwv_kpno/locations/kitt_peak/config.json" />
+    <entry file="file://$PROJECT_DIR$/pwv_kpno/suomi_data/AZAMhr_2017.plt" />
+    <entry file="file://$PROJECT_DIR$/pwv_kpno/suomi_data/P014dy_2011.plt" />
+    <entry file="file://$PROJECT_DIR$/pwv_kpno/suomi_data/P014dy_2010.plt" />
+    <entry file="file://$PROJECT_DIR$/pwv_kpno/suomi_data/KITThr_2018.plt" />
+    <entry file="file://$PROJECT_DIR$/pwv_kpno/suomi_data/SA48dy_2011.plt" />
+    <entry file="file://$PROJECT_DIR$/pwv_kpno/suomi_data/SA48hr_2013.plt" />
+    <entry file="file://$PROJECT_DIR$/pwv_kpno/suomi_data/SA48hr_2012.plt" />
+    <entry file="file://$PROJECT_DIR$/pwv_kpno/suomi_data/SA48hr_2011.plt" />
+    <entry file="file://$PROJECT_DIR$/pwv_kpno/suomi_data/SA48hr_2010.plt" />
+    <entry file="file://$PROJECT_DIR$/myfiles.txt" />
+    <entry file="file://$PROJECT_DIR$/pwv_kpno/suomi_data/SA48dy_2010.plt" />
+    <entry file="file://$PROJECT_DIR$/tests/test_data_download_and_parsing.py" />
+    <entry file="file://$PROJECT_DIR$/MANIFEST.in" />
+    <entry file="file://$PROJECT_DIR$/pwv_kpno/CONFIG.txt" />
+    <entry file="file://$PROJECT_DIR$/setup.py" />
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="FIRST">
+          <first_editor relative-caret-position="323">
+            <caret line="74" column="0" lean-forward="false" selection-start-line="74" selection-start-column="0" selection-end-line="74" selection-end-column="0" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pwv_kpno/cmd_line.py" />
+    <entry file="file://$PROJECT_DIR$/tests/test_function_transmission.py" />
+    <entry file="file://$PROJECT_DIR$/tests/test_function_update_models.py" />
+    <entry file="file://$PROJECT_DIR$/pwv_kpno/settings.py" />
+    <entry file="file://$PROJECT_DIR$/rst_source/conf.py" />
+    <entry file="file://$PROJECT_DIR$/pwv_kpno/calc_transmission.py" />
+    <entry file="file://$PROJECT_DIR$/tests/test_end_user_pwv_retrieval.py" />
+    <entry file="file://$PROJECT_DIR$/rst_source/_build/html/_sources/index.rst.txt" />
+    <entry file="file://$PROJECT_DIR$/pwv_kpno/download_suomi_data.py" />
+    <entry file="file://$PROJECT_DIR$/rst_source/_build/html/_modules/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="2" lean-forward="false" selection-start-line="0" selection-start-column="2" selection-end-line="0" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitattributes" />
+    <entry file="file://$PROJECT_DIR$/rst_source/_build/html/index.html" />
+    <entry file="file://$PROJECT_DIR$/.codeclimate.yml" />
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/_build/html/.buildinfo">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rst_source/conf.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="266">
+          <caret line="31" column="0" lean-forward="false" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/doctrees/accessing_pwv_data.doctree">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rst_source/Makefile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="361">
+          <caret line="25" column="10" lean-forward="false" selection-start-line="25" selection-start-column="10" selection-end-line="25" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rst_source/make.bat">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="61">
+          <caret line="17" column="9" lean-forward="true" selection-start-line="17" selection-start-column="9" selection-end-line="17" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ScopeChooserConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>
