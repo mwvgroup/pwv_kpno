@@ -6,7 +6,7 @@ SPHINXOPTS    =
 SPHINXBUILD   = python -msphinx
 SPHINXPROJ    = pwv_kpno
 SOURCEDIR     = .
-BUILDDIR      = ../docs
+BUILDDIR      = .
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -22,6 +22,15 @@ help:
 
 gh-pages:
 	make html
-	mv -fv html/* ../
-	rm -r html/
-	rm -r doctrees/
+
+	rm -fr ../_modules
+	mv -f html/_modules ../_modules
+
+	rm -fr ../_sources
+	mv -f html/_sources ../_sources
+
+	rm -fr ../_static
+	mv -f html/_static ../_static
+
+	rm -fr html/
+	rm -fr doctrees/

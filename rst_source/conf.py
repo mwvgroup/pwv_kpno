@@ -37,4 +37,4 @@ todo_include_todos = False
 html_theme = 'sphinx_rtd_theme'
 
 # Paths that contain custom static files
-html_static_path = ['../LOGO.png']
+html_static_path = ['LOGO.png']
