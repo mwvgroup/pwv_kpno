@@ -5,6 +5,9 @@ engines:
       languages:
         python:
           mass_threshold: 54
+    checks:
+      Similar code:
+        enabled: true
 
   markdownlint:
     enabled: true
