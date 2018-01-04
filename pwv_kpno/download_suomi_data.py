@@ -106,11 +106,13 @@ def _read_file(path):
         An astropy Table with data from path
     """
 
-    data = Table.read(path, format='ascii')
-    data.keep_columns(['col1', 'col2'])
-    data.rename_column('col1', 'date')
-    data.rename_column('col2', path[-15:-11])
-    data = data[data[path[-15:-11]] > 0]
+    site_name = path[-15:-11]
+    data = np.genfromtxt(path, usecols=[0, 1],
+                         names=['date', site_name],
+                         dtype=[(np.str_, 16), float])
+
+    data = Table(data)
+    data = data[data[site_name] > 0]
 
     if data:
         data = unique(unique(data), keys='date', keep='none')
@@ -184,18 +186,18 @@ def _download_data_for_year(yr):
         site_id = receiver_ids.pop()
         file_paths = _download_data_for_site(yr, site_id)
 
-        if file_paths:
+        if file_paths:  # In case no data files were downloaded
             site_data = vstack([_read_file(path) for path in file_paths])
 
-            if site_data:
+            if site_data:  # In case none of the data files have valid data
                 site_data = unique(site_data, keys=['date'], keep='first')
 
-            if combined_data:
-                combined_data = join(combined_data, site_data,
-                                     join_type='outer', keys=['date'])
+                if combined_data:
+                    combined_data = join(combined_data, site_data,
+                                         join_type='outer', keys=['date'])
 
-            else:
-                combined_data = site_data
+                else:
+                    combined_data = site_data
 
     if not combined_data:
         msg = 'No SuomiNet data downloaded for year {}'.format(yr)

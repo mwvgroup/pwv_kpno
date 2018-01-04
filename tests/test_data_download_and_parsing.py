@@ -188,3 +188,19 @@ class TestSuomiNetFileParsing(unittest.TestCase):
         self.assertFalse(is_negative_kitt_data, msg.format(self.kitt_hr_path))
         self.assertFalse(is_negative_azam_data, msg.format(self.azam_hr_path))
         self.assertFalse(is_negative_p014_data, msg.format(self.p014_dy_path))
+
+    def test_parse_2010_data(self):
+        """Test file parsing of SuomiNet data published in 2010
+
+        In 2010 SuomiNet changed the number of columns in their automatically
+        generated data files. This caused the first half of the ascii file
+        to have a different number of columns from the second half of the year.
+        """
+
+        hr_path = os.path.join(SPATH, 'SA48dy_2010.plt')
+
+        try:
+            _read_file(hr_path)
+
+        except:
+            self.fail('Could not parse format of SA48dy_2010.plt')
