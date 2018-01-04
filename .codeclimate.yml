@@ -4,10 +4,7 @@ engines:
     config:
       languages:
         python:
-          mass_threshold: 54
-    checks:
-      Similar code:
-        enabled: true
+          mass_threshold: 55
 
   markdownlint:
     enabled: true
