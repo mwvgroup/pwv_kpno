@@ -49,6 +49,7 @@ def _check_attrs(iterable, **kwargs):
         True or False
     """
 
+    assert len(kwargs), 'No attributes specified'
     for obj in iterable:
         for param_name, param_value in kwargs.items():
             if getattr(obj, param_name) != param_value:
