@@ -4,7 +4,7 @@ engines:
     config:
       languages:
         python:
-          mass_threshold: 55
+          mass_threshold: 56
 
   markdownlint:
     enabled: true
