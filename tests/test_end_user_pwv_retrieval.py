@@ -49,13 +49,13 @@ def _check_attrs(iterable, **kwargs):
         True or False
     """
 
-    assert len(kwargs), 'No attributes specified'
     for obj in iterable:
         for param_name, param_value in kwargs.items():
             if getattr(obj, param_name) != param_value:
                 return False
 
     return True
+
 
 def _check_tz_info(data):
     """Test if the first datetime in an iterable is UTC timezone aware"""
@@ -88,7 +88,6 @@ class TestSearchArgumentErrors(unittest.TestCase):
         self.assertRaises(ValueError, _check_date_time_args, month=-3)
         self.assertRaises(ValueError, _check_date_time_args, month=0)
         self.assertRaises(ValueError, _check_date_time_args, month=13)
-        self.assertRaises(ValueError, _check_date_time_args, month=20)
         self.assertRaises(TypeError, _check_date_time_args, month='12')
         self.assertRaises(TypeError, _check_date_time_args, month=12.0)
 
@@ -98,7 +97,6 @@ class TestSearchArgumentErrors(unittest.TestCase):
         self.assertRaises(ValueError, _check_date_time_args, day=-3)
         self.assertRaises(ValueError, _check_date_time_args, day=0)
         self.assertRaises(ValueError, _check_date_time_args, day=32)
-        self.assertRaises(ValueError, _check_date_time_args, day=40)
         self.assertRaises(TypeError, _check_date_time_args, day='17')
         self.assertRaises(TypeError, _check_date_time_args, day=17.0)
 
