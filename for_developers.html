@@ -1,0 +1,311 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>5. For Developers &mdash; pwv_kpno 0.10.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="pwv_kpno 0.10.0 documentation" href="index.html"/>
+        <link rel="prev" title="4. Accessing PWV Data" href="accessing_pwv_data.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pwv_kpno
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.10.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">1. Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modeling_the_atmosphere.html">2. Modeling the Atmosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="updating_data.html">3. Updating PWV Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="accessing_pwv_data.html">4. Accessing PWV Data</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">5. For Developers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#extra-dependencies">5.1. Extra Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#future-features">5.2. Future Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#some-key-points">5.3. Some Key Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#releasing-a-new-version">5.4. Releasing a New Version</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pwv_kpno</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>5. For Developers</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/for_developers.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="for-developers">
+<h1>5. For Developers<a class="headerlink" href="#for-developers" title="Permalink to this headline">¶</a></h1>
+<p><strong>pwv_kpno</strong> is open source software released under the GNU <a class="reference external" href="https://www.gnu.org/licenses/gpl-3.0.en.html">General Public
+License</a>. The following is
+provided as reference for future development.</p>
+<div class="section" id="extra-dependencies">
+<h2>5.1. Extra Dependencies<a class="headerlink" href="#extra-dependencies" title="Permalink to this headline">¶</a></h2>
+<p>Documentation for <strong>pwv_kpno</strong> is generated using sphinx with the &#8220;Read The
+Docs&#8221; theme. Source code can be found in the <em>gh-pages</em> branch of the project
+repository <a class="reference external" href="https://github.com/mwvgroup/pwv_kpno/tree/gh-pages">here</a>.
+To update or modify package documentation, you will need to install the
+following:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">sphinx</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">sphinx_rtd_theme</span>
+</pre></div>
+</div>
+<p>In order to automatically generate a new version of the documentation, from the
+<cite>rst_source</cite> directory use the command:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">gh</span><span class="o">-</span><span class="n">pages</span>
+</pre></div>
+</div>
+<p>On Uix systems this will call the make file <cite>rst_source/Makefile</cite> while Windows
+machines will use the file <cite>rst_source/make.bat</cite> (the end result is the same on
+either platform).</p>
+<p>Note that the usage examples are hard coded, and the make file will not update
+the demonstrated code outputs to reflect any new source code changes. Also, the
+sphinx configuration file <cite>rst_source/conf.py</cite> is not explicitly setup for any
+outputs supported by sphinx other than html (such as Texinfo, LaTeX, or
+HTMLHelp).</p>
+</div>
+<div class="section" id="future-features">
+<h2>5.2. Future Features<a class="headerlink" href="#future-features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Include an option or function to return atmospheric transmission functions
+binned at different wavelengths</li>
+<li>When calibrating photometric images, there is error introduced in z when PWV
+absorption isn&#8217;t accounted for. Provide a function that returns this error.</li>
+<li>Allow users to specify what GPS receivers to download data from and what
+datetimes to ignore.</li>
+<li>Add ability to export / import GPS ids and dates</li>
+</ul>
+</div>
+<div class="section" id="some-key-points">
+<h2>5.3. Some Key Points<a class="headerlink" href="#some-key-points" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><strong>pwv_kpno</strong> depends on atmospheric models generated by create_atm_model.py.
+These models only consider the effects of precipitable water vapor, but can
+be modified to include the effects of o<sub>2</sub> and o<sub>3</sub>. The
+necessary code for this is commented out within the file.</li>
+<li>New package versions should be released at least every year, and should
+include all relevant SuomiNet data from 2010 through the previous year. No
+SuomiNet data should be included for the year that the new version is
+released.</li>
+<li>The code assumes that the config.txt and measured_pwv.csv files already
+exist. There are no checks in place to determine if the files exist of if
+they need to be created. Make sure these files are present and that they only
+include data for the years you want to include with the current package
+version.</li>
+</ul>
+</div>
+<div class="section" id="releasing-a-new-version">
+<h2>5.4. Releasing a New Version<a class="headerlink" href="#releasing-a-new-version" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Make sure that the config.txt and measured_pwv.csv exist and exclusively
+include the SuomiNet data intended for distribution with the package</li>
+<li>Update the package version / release number</li>
+<li>Generated new documentation as outlined in the above sections. Check that
+the new documentation has the correct version number.</li>
+<li>Update README.md and __init__.py to indicate what years of SuomiNet data
+are included with the current package version.</li>
+</ol>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="accessing_pwv_data.html" class="btn btn-neutral" title="4. Accessing PWV Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Daniel J. Perrefort.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.10.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

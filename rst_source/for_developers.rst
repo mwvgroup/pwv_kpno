@@ -1,6 +1,6 @@
-***********
-Development
-***********
+**************
+For Developers
+**************
 
 **pwv_kpno** is open source software released under the GNU `General Public
 License <https://www.gnu.org/licenses/gpl-3.0.en.html>`_. The following is
@@ -19,18 +19,19 @@ following::
     pip install sphinx_rtd_theme
 
 In order to automatically generate a new version of the documentation, from the
-`doc` directory use the command::
+`rst_source` directory use the command::
 
     make gh-pages
 
-On Uix systems this will call the make file `docs/Makefile` while Windows
-machines will use the file `docs/make.bat` (the end result is the same on
+On Uix systems this will call the make file `rst_source/Makefile` while Windows
+machines will use the file `rst_source/make.bat` (the end result is the same on
 either platform).
 
 Note that the usage examples are hard coded, and the make file will not update
-the demonstrated code outputs to reflect and new source code changes. Also, the
-sphinx configuration file `docs/conf.py` is not setup for any outputs supported
-by sphinx other than html (such as Texinfo, LaTeX, or HTMLHelp).
+the demonstrated code outputs to reflect any new source code changes. Also, the
+sphinx configuration file `rst_source/conf.py` is not explicitly setup for any
+outputs supported by sphinx other than html (such as Texinfo, LaTeX, or
+HTMLHelp).
 
 Future Features
 ===============

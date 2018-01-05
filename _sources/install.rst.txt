@@ -33,6 +33,7 @@ Dependencies can be installed with pip by running::
     pip install scipy
 
 |
+
 Using setup.py (Legacy)
 -----------------------
 
@@ -71,6 +72,7 @@ Note that the update_models function requires the user to have permission to
 write and modify files within the package directory.
 
 |
+
 Running Tests
 =============
 

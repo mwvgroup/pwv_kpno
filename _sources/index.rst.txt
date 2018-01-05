@@ -42,7 +42,7 @@ Table of Contents
     modeling_the_atmosphere
     updating_data
     accessing_pwv_data
-    development
+    for_developers
 
 ..
     ***********
