@@ -35,3 +35,4 @@ ratings:
 
 exclude_patterns:
     - "docs/_build/"
+    - "cmd_line.py"
