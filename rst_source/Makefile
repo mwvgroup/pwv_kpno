@@ -32,5 +32,6 @@ gh-pages:
 	rm -fr ../_static
 	mv -f html/_static ../_static
 
+	mv -f html/* ../
 	rm -fr html/
 	rm -fr doctrees/

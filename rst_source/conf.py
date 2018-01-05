@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from pwv_kpno import __version__
-
 # Specify extensions / features
 extensions = ['sphinx.ext.autodoc',      # auto-documentation
               'sphinx.ext.viewcode',     # adds links to source code
@@ -21,8 +19,8 @@ copyright = '2017, Daniel J. Perrefort'
 author = 'Daniel J. Perrefort'
 
 # The version info for the project
-version = __version__
-release = __version__
+version = '0.10.0'
+release = '0.10.0'
 
 # Patterns relative to source directory to ignore
 exclude_patterns = ['.build', '.DS_Store']
