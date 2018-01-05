@@ -45,5 +45,4 @@ the SuomiNet project, see their website [here](http://www.suominet.ucar.edu/over
 ## 2) Documentation
 
 Documentation for **pwv_kpno**, including installation and setup instructions,
-can be found [here](https://mwvgroup.github.io/pwv_kpno/). 
-
+can be found [here](https://mwvgroup.github.io/pwv_kpno/).

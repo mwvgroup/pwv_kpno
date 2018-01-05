@@ -180,7 +180,7 @@ MO_PRSR.add_argument('-H', '--hour', type=int, default=None, help=MO_HHLP)
 
 # Create command line sub-parser for the transmission_wrapper function
 TRD_DESC = ('Get the modeled atmospheric transmission spectrum for' +
-           ' a given date and airmass.')
+            ' a given date and airmass.')
 TRD_OHLP = 'The desired output file path'
 TRD_FHLP = 'Whether to overwrite an existing file (default false)'
 TRD_AHLP = 'The airmass of the desired model spectrum'
@@ -195,7 +195,7 @@ TRD_PRSR.set_defaults(func=transmission_wrapper)
 TRD_PRSR.add_argument('-o', '--output', type=str, required=True, help=TRD_OHLP)
 TRD_PRSR.add_argument('-f', '--force', type=bool, default=False, help=TRD_FHLP)
 TRD_PRSR.add_argument('-a', '--airmass', type=float,
-                      required=True,help=TRD_AHLP)
+                      required=True, help=TRD_AHLP)
 TRD_PRSR.add_argument('-y', '--year', type=int, required=True, help=TRD_YHLP)
 TRD_PRSR.add_argument('-m', '--month', type=int, required=True, help=TRD_MHLP)
 TRD_PRSR.add_argument('-d', '--day', type=int, required=True, help=TRD_DHLP)
