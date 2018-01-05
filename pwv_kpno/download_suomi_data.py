@@ -109,7 +109,7 @@ def _read_file(path):
     site_name = path[-15:-11]
     data = np.genfromtxt(path, usecols=[0, 1],
                          names=['date', site_name],
-                         dtype=[(np.str_, 16), float])
+                         dtype=[float, float])
 
     data = Table(data)
     data = data[data[site_name] > 0]
