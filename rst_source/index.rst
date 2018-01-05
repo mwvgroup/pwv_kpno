@@ -1,12 +1,6 @@
 .. figure::  _static/LOGO.png
    :align:   center
 
-.. image:: https://img.shields.io/badge/version-0.10.0-blue.svg            :target:
-.. image:: https://img.shields.io/badge/version-0.10.0-blue.svg            :target:
-.. image:: https://img.shields.io/badge/python-2.7,%203.6-blue.svg         :target:
-.. image:: https://img.shields.io/badge/license-GPL%20v3.0-blue.svg        :target:
-.. image:: https://img.shields.io/codeclimate/github/mwvgroup/pwv_kpno.svg :target:
-
 |
 
 ********
