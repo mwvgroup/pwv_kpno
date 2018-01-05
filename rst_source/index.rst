@@ -29,10 +29,12 @@ measurements provided by the SuomiNet Project. SuomiNet measures PWV values
 by relating the delay in GPS signals to PWV levels in the atmosphere. This
 package uses measurements taken by GPS receivers located at Kitt Peak AZ,
 Amado AZ, Sahuarita AZ, Tucson AZ, and Tohono O'odham Community College.
+
 For more details on the correlation between GPS signals and PWV levels see
-`Blake and Shaw, 2011 <https://arxiv.org/abs/1109.6703>`_. For more details on
-the SuomiNet project see
-`http://www.suominet.ucar.edu/overview.html <http://www.suominet.ucar.edu/overview.html>`_.
+`Blake and Shaw, 2011 <https://arxiv.org/abs/1109.6703>`_. To learn more about
+the SuomiNet project see their website `here <http://www.suominet.ucar.edu/overview.html>`_.
+If you're interested in the package source code, it can be found on
+`GitHub <https://github.com/mwvgroup/pwv_kpno>`_.
 
 *****************
 Table of Contents
