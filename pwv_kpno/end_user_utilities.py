@@ -302,6 +302,6 @@ def update_models(year=None):
             raise ValueError(msg)
 
     # Update the local SuomiData and PWV models
-    updated_years = update_suomi_data(year)  # Todo: Improve speed of this call
+    updated_years = update_suomi_data(year)
     _update_pwv_model()
     return sorted(updated_years)
