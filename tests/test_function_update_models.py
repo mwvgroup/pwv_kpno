@@ -35,10 +35,17 @@ __status__ = 'Development'
 class TestUpdateModelsArgs(unittest.TestCase):
     """Test pwv_kpno.update_models for raised errors due to bad arguments"""
 
-    def runTest(self):
+    def test_argument_errors(self):
         """Test errors raised from function call with wrong argument types"""
 
         self.assertRaises(TypeError, update_models, "2011")
         self.assertRaises(TypeError, update_models, 2011.5)
         self.assertRaises(ValueError, update_models, 2009)
         self.assertRaises(ValueError, update_models, datetime.now().year + 1)
+
+    def test_returns(self):
+        """Tests that update_models returns the correct objects"""
+
+        self.assertEquals(update_models(2010), [2010])
+        self.assertEquals(update_models(2013), [2013])
+        self.assertEquals(update_models(2015), [2015])

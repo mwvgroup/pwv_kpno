@@ -25,7 +25,9 @@ import numpy as np
 from pytz import utc
 
 from pwv_kpno import transmission
-from pwv_kpno.calc_transmission import _check_transmission_args as arg_check
+from pwv_kpno.calc_transmission import _raise_transmission_args
+from pwv_kpno.calc_transmission import _raise_available_data
+from pwv_kpno.calc_transmission import _raise_pwv
 from create_mock_data import create_mock_pwv_model
 
 __author__ = 'Daniel Perrefort'
@@ -36,42 +38,26 @@ __email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'
 
 
-class TestTransmissionArgs(unittest.TestCase):
+class TestTransmissionErrors(unittest.TestCase):
     """Test pwv_kpno.transmission for raised errors due to bad arguments"""
-
-    @classmethod
-    def setUpClass(self):
-
-        # Start dates for data gaps
-        self.one_day_start = datetime(year=2010, month=1, day=11, tzinfo=utc)
-        self.two_day_start = datetime(year=2010, month=2, day=10, tzinfo=utc)
-        self.three_day_start = datetime(year=2010, month=4, day=11, tzinfo=utc)
-        self.four_day_start = datetime(year=2010, month=8, day=4, tzinfo=utc)
-
-        gaps = [(self.one_day_start, 1), (self.two_day_start, 2),
-                (self.three_day_start, 3), (self.four_day_start, 4)]
-
-        self.mock_model = create_mock_pwv_model(year=2010, gaps=gaps)
 
     def test_argument_types(self):
         """Test errors raised from function call with wrong argument types"""
 
-        test_date = datetime.utcnow()
-        test_date = test_date.replace(year=2011, tzinfo=utc)
+        test_date = datetime(2011, 1, 5, 12, 47, tzinfo=utc)
 
         # TypeError for date argument (should be datetime)
-        self.assertRaises(TypeError, arg_check, "1", 1, self.mock_model)
+        self.assertRaises(TypeError, _raise_transmission_args, "1", 1)
 
         # TypeError for airmass argument (should be float or int)
-        bad_airmass_args = (test_date, "1", self.mock_model)
-        self.assertRaises(TypeError, arg_check, *bad_airmass_args)
+        self.assertRaises(TypeError, _raise_transmission_args, test_date, "1")
 
         # ValueError due to naive datetime with no time zone info
-        bad_datetime_args = (datetime.now(), 1, self.mock_model)
-        self.assertRaises(ValueError, arg_check, *bad_datetime_args)
+        self.assertRaises(ValueError, _raise_transmission_args,
+                          datetime.now(), 1)
 
-    def test_year_out_of_range(self):
-        """Test errors from function call with date out of data range
+    def test_argument_values(self):
+        """Test errors raise from function call with date out of data range
 
         An error should be raised for dates that are not covered by the locally
         available data files. For the release version of the package, the
@@ -79,31 +65,63 @@ class TestTransmissionArgs(unittest.TestCase):
         """
 
         early_day = datetime(year=2009, month=12, day=31, tzinfo=utc)
-        self.assertRaises(ValueError, arg_check, early_day, 1, self.mock_model)
+        self.assertRaises(ValueError, _raise_transmission_args, early_day, 1)
 
         now = datetime.now()
         late_day = now + timedelta(days=1)
-        self.assertRaises(ValueError, arg_check, late_day, 1, self.mock_model)
+        self.assertRaises(ValueError, _raise_transmission_args, late_day, 1)
 
         late_year = datetime(year=now.year + 1, month=1, day=1, tzinfo=utc)
-        self.assertRaises(ValueError, arg_check, late_year, 1, self.mock_model)
+        self.assertRaises(ValueError, _raise_transmission_args, late_year, 1)
 
     def test_data_gap_handling(self):
-        """Test for error due to function call for a datetime without PWV data
+        """Test errors raised from function call for datetime without PWV data
 
         The function 'transmission' should raise an error if it is asked for
         the atmospheric transmission at a datetime that falls within a gap in
         available data spanning three days or more.
         """
 
-        four_day_args = (self.four_day_start, 1, self.mock_model)
-        self.assertRaises(ValueError, arg_check, *four_day_args)
+        # Start dates for data gaps
+        one_day_start = datetime(year=2010, month=1, day=11, tzinfo=utc)
+        two_day_start = datetime(year=2010, month=2, day=10, tzinfo=utc)
+        three_day_start = datetime(year=2010, month=4, day=11, tzinfo=utc)
+        four_day_start = datetime(year=2010, month=8, day=4, tzinfo=utc)
 
-        three_day_args = (self.three_day_start, 1, self.mock_model)
-        self.assertRaises(ValueError, arg_check, *three_day_args)
+        gaps = [(one_day_start, 1), (two_day_start, 2),
+                (three_day_start, 3), (four_day_start, 4)]
 
-        self.assertIsNone(arg_check(self.two_day_start, 1, self.mock_model))
-        self.assertIsNone(arg_check(self.one_day_start, 1, self.mock_model))
+        mock_model = create_mock_pwv_model(year=2010, gaps=gaps)
+
+        self.assertIsNone(_raise_available_data(one_day_start, mock_model))
+        self.assertIsNone(_raise_available_data(two_day_start, mock_model))
+        self.assertRaises(ValueError, _raise_available_data,
+                          three_day_start,mock_model)
+
+        self.assertRaises(ValueError, _raise_available_data,
+                          four_day_start, mock_model)
+
+
+class TestTransmissionPwvErrors(unittest.TestCase):
+    """Test pwv_kpno.transmission_pwv for raised errors due to bad arguments"""
+
+    def test_argument_types(self):
+        """Test errors raised from function call with wrong argument types"""
+
+        self.assertRaises(TypeError, _raise_pwv, '13')
+        self.assertIsNone(_raise_pwv(13))
+        self.assertIsNone(_raise_pwv(13.0))
+
+    def test_argument_values(self):
+        """Test errors raised from function call with out of range values
+
+        PWV concentrations should be between 0 and 30.1 mm (inclusive). This
+        is due to the range of the atmospheric models.
+        """
+
+        self.assertRaises(ValueError, _raise_pwv, -1)
+        self.assertRaises(ValueError, _raise_pwv, 30.2)
+        self.assertIsNone(_raise_pwv(15.0))
 
 
 class TestTransmissionResults(unittest.TestCase):

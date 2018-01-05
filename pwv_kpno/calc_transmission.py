@@ -66,57 +66,28 @@ def _timestamp(date):
     return timestamp
 
 
-def _check_transmission_args(date, airmass, model):
-    """Check arguments for the function `transmission`
+def _raise_pwv(pwv):
+    """Raise exception if pwv argument has wrong type or value
 
-    This function provides argument checks for the `transmission` function. It
-    checks argument types, if a datetime falls within the range of the locally
-    available SuomiNet data, and if SuomiNet data is available near that
-    datetime.
+    Provides type and value checking for a PWV concentration. PWV values should
+    be wither a float or int in the range 0 <= pwv <= 30.1
 
     Args:
-        date    (datetime.datetime): A datetime value
-        airmass             (float): An airmass value
-        model (astropy.table.Table): A model for the PWV level at KPNO
+        pwv (int, float): A PWV concentration in mm
 
     Returns:
         None
     """
 
-    # Check argument types
-    if not isinstance(date, datetime):
-        raise TypeError("Argument 'date' (pos 1) must be a datetime instance")
+    if not isinstance(pwv, (int, float)):
+        raise TypeError('PWV concentration must be int or float')
 
-    if date.tzinfo is None:
-        msg = "Argument 'date' (pos 1) has no timezone information."
-        raise ValueError(msg)
+    if pwv < 0:
+        raise ValueError('PWV concentration cannot be negative')
 
-    if not isinstance(airmass, (float, int)):
-        raise TypeError("Argument 'airmass' (pos 2) must be an int or float")
-
-    # Check date falls within the range of available PWV data
-    timestamp = _timestamp(date)
-    w_data_less_than = np.where(model['date'] < timestamp)[0]
-    if len(w_data_less_than) < 1:
-        min_date = datetime.utcfromtimestamp(min(model['date']))
-        msg = 'No local SuomiNet data found for datetimes before {0}'
-        raise ValueError(msg.format(min_date))
-
-    w_data_greater_than = np.where(timestamp < model['date'])[0]
-    if len(w_data_greater_than) < 1:
-        max_date = datetime.utcfromtimestamp(max(model['date']))
-        msg = 'No local SuomiNet data found for datetimes after {0}'
-        raise ValueError(msg.format(max_date))
-
-    # Check for SuomiNet data available near the given date
-    diff = model['date'] - timestamp
-    interval = min(diff[diff > 0]) - max(diff[diff < 0])
-    three_days_in_seconds = 3 * 24 * 60 * 60
-
-    if three_days_in_seconds < interval:
-        msg = ('Specified datetime falls within interval of missing SuomiNet' +
-               ' data larger than 3 days ({0} interval found).')
-        raise ValueError(msg.format(timedelta(seconds=interval)))
+    if pwv > 30.1:
+        err_msg = 'Cannot provide models for PWV concentrations above 30.1 mm'
+        raise ValueError(err_msg)
 
 
 def transmission_pwv(pwv):
@@ -128,18 +99,13 @@ def transmission_pwv(pwv):
     Wavelength values range from 7000 to 10,000 angstroms.
 
     Args:
-        pwv (float): The PWV concentration of the desired transmission in mm
+        pwv (int, float): A PWV concentration in mm
 
     Returns:
         The modeled transmission function as an astropy table.
     """
 
-    if pwv < 0:
-        raise ValueError('PWV concentration cannot be negative')
-
-    if pwv > 30.1:
-        err_msg = 'Cannot provide models for PWV concentrations above 30.1 mm'
-        raise ValueError(err_msg)
+    _raise_pwv(pwv)
 
     location_name = Settings().current_location.name
     atm_model = Table.read(ATM_MODEL_PATH.format(location_name))
@@ -167,6 +133,79 @@ def transmission_pwv(pwv):
     return trans_func
 
 
+def _raise_transmission_args(date, airmass):
+    """Raise exception if arguments of `transmission` have wrong type or value
+
+    This function provides type and value checks for arguments of the
+    function `transmission`. If a test fails, and exception is raised.
+
+    Args:
+        date    (datetime.datetime): A datetime value
+        airmass             (float): An airmass value
+
+    Returns:
+        None
+    """
+
+    if not isinstance(date, datetime):
+        raise TypeError("Argument 'date' (pos 1) must be a datetime instance")
+
+    if date.tzinfo is None:
+        err_msg = "Argument 'date' (pos 1) has no timezone information."
+        raise ValueError(err_msg)
+
+    if date.year < 2010:
+        err_msg = "Cannot model years before 2010 (passed {})"
+        raise ValueError(err_msg.format(date.year))
+
+    if date > datetime.now(utc):
+        err_msg = "Cannot model dates in the future (passed {})"
+        raise ValueError(err_msg.format(date))
+
+    if not isinstance(airmass, (float, int)):
+        raise TypeError("Argument 'airmass' (pos 2) must be an int or float")
+
+
+def _raise_available_data(date, pwv_model):
+    """Check if a date falls within the range of data in an astropy table
+
+    Checks if a datetime falls within the range of available data in an astropy
+    table. If not, or if no data is available near that datetime within three
+    days, an exception is raised
+
+    Args:
+        date   (datetime): A timezone aware datetime
+        pwv_model (Table): An astropy table containing columns 'date' and 'pwv'
+
+    Returns:
+        None
+    """
+
+    # Check date falls within the range of available PWV data
+    timestamp = _timestamp(date)
+    w_data_less_than = np.where(pwv_model['date'] < timestamp)[0]
+    if len(w_data_less_than) < 1:
+        min_date = datetime.utcfromtimestamp(min(pwv_model['date']))
+        msg = 'No local SuomiNet data found for datetimes before {0}'
+        raise ValueError(msg.format(min_date))
+
+    w_data_greater_than = np.where(timestamp < pwv_model['date'])[0]
+    if len(w_data_greater_than) < 1:
+        max_date = datetime.utcfromtimestamp(max(pwv_model['date']))
+        msg = 'No local SuomiNet data found for datetimes after {0}'
+        raise ValueError(msg.format(max_date))
+
+    # Check for SuomiNet data available near the given date
+    diff = pwv_model['date'] - timestamp
+    interval = min(diff[diff > 0]) - max(diff[diff < 0])
+    three_days_in_seconds = 3 * 24 * 60 * 60
+
+    if three_days_in_seconds < interval:
+        msg = ('Specified datetime falls within interval of missing SuomiNet' +
+               ' data larger than 3 days ({0} interval found).')
+        raise ValueError(msg.format(timedelta(seconds=interval)))
+
+
 def transmission(date, airmass, test_model=None):
     """Return a model for the atmospheric transmission function due to PWV
 
@@ -192,7 +231,8 @@ def transmission(date, airmass, test_model=None):
     else:
         pwv_model = test_model
 
-    _check_transmission_args(date, airmass, pwv_model)
+    _raise_transmission_args(date, airmass)
+    _raise_available_data(date, pwv_model)
 
     # Determine the PWV level along line of sight as pwv(zenith) * airmass
     timestamp = _timestamp(date)
