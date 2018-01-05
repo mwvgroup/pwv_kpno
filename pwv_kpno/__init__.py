@@ -24,15 +24,13 @@ years 2010 onward.
 To retrieve the atmospheric model for a datetime and airmass, see the function
 `transmission`. To retrieve the atmospheric model for a precipitable water
 vapor concentration, see the function `transmission_pwv`. Documentation can be
-accessed on the package homepage (url tbd) or by using the standard python help
-function.
+accessed on the package homepage (https://mwvgroup.github.io/pwv_kpno/) or by
+using the standard python help function.
 
 For more details on the correlation between GPS signals and PWV levels see
 Blake and Shaw, 2011 (https://arxiv.org/abs/1109.6703). For more details on the
 SuomiNet project see http://www.suominet.ucar.edu/overview.html.
 """
-
-# Todo: Add documentation url to above description
 
 from .calc_transmission import transmission
 from .calc_transmission import transmission_pwv
