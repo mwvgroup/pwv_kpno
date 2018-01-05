@@ -281,7 +281,7 @@
 
 
 <div class="viewcode-block" id="transmission_pwv"><a class="viewcode-back" href="../../modeling_the_atmosphere.html#pwv_kpno.transmission_pwv">[docs]</a><span class="k">def</span> <span class="nf">transmission_pwv</span><span class="p">(</span><span class="n">pwv</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return the atmospheric transmission due a given PWV concentration</span>
+    <span class="sd">&quot;&quot;&quot;Return the atmospheric transmission due a given PWV concentration in mm</span>
 
 <span class="sd">    For a given precipitable water vapor concentration, return the modeled</span>
 <span class="sd">    atmospheric transmission function. The modeled transmission is returned as</span>
@@ -289,7 +289,7 @@
 <span class="sd">    Wavelength values range from 7000 to 10,000 angstroms.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        pwv (float): The PWV concentration of the desired transmission function</span>
+<span class="sd">        pwv (float): The PWV concentration of the desired transmission in mm</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The modeled transmission function as an astropy table.</span>
@@ -299,7 +299,7 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;PWV concentration cannot be negative&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">pwv</span> <span class="o">&gt;</span> <span class="mf">30.1</span><span class="p">:</span>
-        <span class="n">err_msg</span> <span class="o">=</span> <span class="s1">&#39;Cannot provide models for PWV concentrations above 30.1&#39;</span>
+        <span class="n">err_msg</span> <span class="o">=</span> <span class="s1">&#39;Cannot provide models for PWV concentrations above 30.1 mm&#39;</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span>
 
     <span class="n">location_name</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span><span class="o">.</span><span class="n">current_location</span><span class="o">.</span><span class="n">name</span>
