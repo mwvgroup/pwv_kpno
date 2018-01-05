@@ -182,7 +182,7 @@ using the <cite>available_data</cite> function. By default, version 0.10.0 of <s
 is distributed with all the necessary SuomiNet data from 2010 through 2017.</p>
 <dl class="function">
 <dt id="pwv_kpno.available_data">
-<code class="descclassname">pwv_kpno.</code><code class="descname">available_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_functions.html#available_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.available_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pwv_kpno.</code><code class="descname">available_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_utilities.html#available_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.available_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list of years for which SuomiNet data has been downloaded</p>
 <p>Return a list of years for which SuomiNet data has been downloaded to the
 local machine. Note that this list includes years for which any amount
@@ -192,11 +192,7 @@ been released by SuomiNet for a given year that is not locally available.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>None</strong> &#8211; </td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list of years with locally available SuomiNet data</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">years (list)</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of years with locally available SuomiNet data</td>
 </tr>
 </tbody>
 </table>
@@ -218,7 +214,7 @@ function. By default only data that is not available on the local machine will
 be downloaded.</p>
 <dl class="function">
 <dt id="pwv_kpno.update_models">
-<code class="descclassname">pwv_kpno.</code><code class="descname">update_models</code><span class="sig-paren">(</span><em>year=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_functions.html#update_models"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.update_models" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pwv_kpno.</code><code class="descname">update_models</code><span class="sig-paren">(</span><em>year=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_utilities.html#update_models"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.update_models" title="Permalink to this definition">¶</a></dt>
 <dd><p>Download data from SuomiNet and update the locally stored PWV model</p>
 <p>Update the locally available SuomiNet data by downloading new data from
 the SuomiNet website. Use this data to create an updated model for the PWV
@@ -232,8 +228,6 @@ If not, download all available data from 2017 onward. Data for years from
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>year</strong> (<em>int</em>) &#8211; A Year from 2010 onward</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list of years for which models where updated</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">updated_years (list)</td>
 </tr>
 </tbody>
 </table>

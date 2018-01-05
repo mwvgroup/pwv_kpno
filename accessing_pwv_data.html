@@ -181,7 +181,7 @@ use the <cite>measured_pwv</cite> function. Results can be filtered independentl
 month, day, and hour</p>
 <dl class="function">
 <dt id="pwv_kpno.measured_pwv">
-<code class="descclassname">pwv_kpno.</code><code class="descname">measured_pwv</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>hour=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_functions.html#measured_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.measured_pwv" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pwv_kpno.</code><code class="descname">measured_pwv</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>hour=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_utilities.html#measured_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.measured_pwv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an astropy table of PWV measurements taken by SuomiNet</p>
 <p>Return an astropy table of precipitable water vapor (PWV) measurements
 taken by the SuomiNet project. The first column is named &#8216;date&#8217; and
@@ -202,10 +202,7 @@ refined by year, month, day, and hour by using the keyword arguments.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A table of measured PWV values in mm</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">data (astropy.table.Table)</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An astropy table of measured PWV values in mm</p>
 </td>
 </tr>
 </tbody>
@@ -252,7 +249,7 @@ Peak. To retrieve this model as an astropy table, use the <cite>modeled_pwv</cit
 function</p>
 <dl class="function">
 <dt id="pwv_kpno.modeled_pwv">
-<code class="descclassname">pwv_kpno.</code><code class="descname">modeled_pwv</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>hour=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_functions.html#modeled_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.modeled_pwv" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pwv_kpno.</code><code class="descname">modeled_pwv</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>hour=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_utilities.html#modeled_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.modeled_pwv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an astropy table of the modeled PWV at Kitt Peak</p>
 <p>Return a model for the precipitable water vapor level at Kitt Peak as an
 astropy table. The first column of the table is named &#8216;date&#8217; and contains
@@ -272,10 +269,7 @@ year, month, day, and hour by using the key word arguments.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A table of modeled PWV values in mm</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">data (astropy.table.Table)</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An astropy table of modeled PWV values in mm</p>
 </td>
 </tr>
 </tbody>
