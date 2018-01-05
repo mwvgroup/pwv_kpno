@@ -120,7 +120,7 @@ def _check_transmission_args(date, airmass, model):
 
 
 def transmission_pwv(pwv):
-    """Return the atmospheric transmission due a given PWV concentration
+    """Return the atmospheric transmission due a given PWV concentration in mm
 
     For a given precipitable water vapor concentration, return the modeled
     atmospheric transmission function. The modeled transmission is returned as
@@ -128,7 +128,7 @@ def transmission_pwv(pwv):
     Wavelength values range from 7000 to 10,000 angstroms.
 
     Args:
-        pwv (float): The PWV concentration of the desired transmission function
+        pwv (float): The PWV concentration of the desired transmission in mm
 
     Returns:
         The modeled transmission function as an astropy table.
