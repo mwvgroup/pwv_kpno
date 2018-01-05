@@ -138,7 +138,7 @@ def transmission_pwv(pwv):
         raise ValueError('PWV concentration cannot be negative')
 
     if pwv > 30.1:
-        err_msg = 'Cannot provide models for PWV concentrations above 30.1'
+        err_msg = 'Cannot provide models for PWV concentrations above 30.1 mm'
         raise ValueError(err_msg)
 
     location_name = Settings().current_location.name
