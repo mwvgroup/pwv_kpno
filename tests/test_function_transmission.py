@@ -96,7 +96,7 @@ class TestTransmissionErrors(unittest.TestCase):
         self.assertIsNone(_raise_available_data(one_day_start, mock_model))
         self.assertIsNone(_raise_available_data(two_day_start, mock_model))
         self.assertRaises(ValueError, _raise_available_data,
-                          three_day_start,mock_model)
+                          three_day_start, mock_model)
 
         self.assertRaises(ValueError, _raise_available_data,
                           four_day_start, mock_model)
