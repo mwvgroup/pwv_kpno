@@ -95,7 +95,7 @@
 <li class="toctree-l1"><a class="reference internal" href="updating_data.html">3. Updating PWV Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="accessing_pwv_data.html">4. Accessing PWV Data</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">5. Development</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#extra-dependancies">5.1. Extra Dependancies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#extra-dependencies">5.1. Extra Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#future-features">5.2. Future Features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#some-key-points">5.3. Some Key Points</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#releasing-a-new-version">5.4. Releasing a New Version</a></li>
@@ -169,18 +169,20 @@
 <p><strong>pwv_kpno</strong> is open source software released under the GNU <a class="reference external" href="https://www.gnu.org/licenses/gpl-3.0.en.html">General Public
 License</a>. The following is
 provided as reference for future development.</p>
-<div class="section" id="extra-dependancies">
-<h2>5.1. Extra Dependancies<a class="headerlink" href="#extra-dependancies" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="extra-dependencies">
+<h2>5.1. Extra Dependencies<a class="headerlink" href="#extra-dependencies" title="Permalink to this headline">¶</a></h2>
 <p>Documentation for <strong>pwv_kpno</strong> is generated using sphinx with the &#8220;Read The
-Docs&#8221; theme. To update or modify package documentation, you will need to
-install both of these by running:</p>
+Docs&#8221; theme. Source code can be found in the <em>gh-pages</em> branch of the project
+repository <a class="reference external" href="https://github.com/mwvgroup/pwv_kpno/tree/gh-pages">here</a>.
+To update or modify package documentation, you will need to install the
+following:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">sphinx</span>
 <span class="n">pip</span> <span class="n">install</span> <span class="n">sphinx_rtd_theme</span>
 </pre></div>
 </div>
 <p>In order to automatically generate a new version of the documentation, from the
 <cite>doc</cite> directory use the command:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">html</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">gh</span><span class="o">-</span><span class="n">pages</span>
 </pre></div>
 </div>
 <p>On Uix systems this will call the make file <cite>docs/Makefile</cite> while Windows

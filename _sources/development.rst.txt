@@ -6,12 +6,14 @@ Development
 License <https://www.gnu.org/licenses/gpl-3.0.en.html>`_. The following is
 provided as reference for future development.
 
-Extra Dependancies
+Extra Dependencies
 ==================
 
 Documentation for **pwv_kpno** is generated using sphinx with the "Read The
-Docs" theme. To update or modify package documentation, you will need to
-install both of these by running::
+Docs" theme. Source code can be found in the *gh-pages* branch of the project
+repository `here <https://github.com/mwvgroup/pwv_kpno/tree/gh-pages>`_.
+To update or modify package documentation, you will need to install the
+following::
 
     pip install sphinx
     pip install sphinx_rtd_theme
@@ -19,7 +21,7 @@ install both of these by running::
 In order to automatically generate a new version of the documentation, from the
 `doc` directory use the command::
 
-    make html
+    make gh-pages
 
 On Uix systems this will call the make file `docs/Makefile` while Windows
 machines will use the file `docs/make.bat` (the end result is the same on
