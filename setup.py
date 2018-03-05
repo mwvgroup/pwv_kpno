@@ -19,8 +19,6 @@
 # Because I know I will be looking for thread later on:
 # https://stackoverflow.com/q/7522250
 
-import os
-import re
 from setuptools import setup
 
 
@@ -32,9 +30,10 @@ def long_description():
         description = readme.split('## 1) Package Description')[-1]
         description = description.split('#')[0]
 
-        # Remove markdown links
-        description = re.sub("\]\(([\s\S]*?)\)", "", description).strip('\n')
-        description = description.replace('[', '').replace(']', '')
+        # Remove markdown formating
+        description = description.replace('*', '')
+        description = description.replace('[here]', '')
+        description = description.replace('[', '').replace(']', ' ')
         return description
 
 

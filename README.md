@@ -38,6 +38,7 @@ by relating the delay in GPS signals to PWV levels in the atmosphere. This
 package uses measurements taken by GPS receivers located at Kitt Peak AZ,
 Amado AZ, Sahuarita AZ, Tucson AZ, and Tohono O'odham Community College.
 
+Full documentation for pwv_kpno is available online [here](https://mwvgroup.github.io/pwv_kpno/).
 For more details on the correlation between GPS signals and PWV levels see
 [Blake and Shaw, 2011](https://arxiv.org/abs/1109.6703). To learn more about
 the SuomiNet project, see their website [here](http://www.suominet.ucar.edu/overview.html).
