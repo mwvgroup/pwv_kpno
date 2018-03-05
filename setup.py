@@ -26,9 +26,9 @@ def long_description():
     with open('README.md') as ofile:
         readme = ofile.read()
 
-        # Get the Package Description section
+        # Get the Package Description without headers
         description = readme.split('## 1) Package Description')[-1]
-        description = description.split('#')[0]
+        description = description.replace('\n## 2) Documentation', '')
 
         # Remove markdown formating
         description = description.replace('*', '')
