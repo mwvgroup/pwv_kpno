@@ -107,12 +107,21 @@ def _read_file(path):
     """
 
     site_name = path[-15:-11]
-    data = np.genfromtxt(path, usecols=[0, 1],
-                         names=['date', site_name],
-                         dtype=[float, float])
+    data = np.genfromtxt(path, usecols=[0, 1, 4],
+                         names=['date', site_name, 'press'],
+                         dtype=[float, float, float])
 
     data = Table(data)
     data = data[data[site_name] > 0]
+
+    # Patch to remove bad SuomiNet pressure data for Kitt Peak
+    # Do not use as permanent fix when developing multi-site
+    ########################################################
+    if site_name == 'KITT':
+        data = data[data['press'] > 775]
+    ########################################################
+
+    data.remove_column('press')
 
     if data:
         data = unique(unique(data), keys='date', keep='none')

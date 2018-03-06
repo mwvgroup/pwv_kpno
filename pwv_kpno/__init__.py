@@ -93,6 +93,6 @@ __credits__ = ['Azalee Bostroem', 'Jessica Kroboth',
                'Michael Wood-Vasey', 'Alexander Afanasyev']
 
 __license__ = 'GPL V3'
-__version__ = '0.10.0'
+__version__ = '0.10.1'
 __email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'

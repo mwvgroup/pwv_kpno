@@ -19,8 +19,6 @@
 # Because I know I will be looking for thread later on:
 # https://stackoverflow.com/q/7522250
 
-import os
-import re
 from setuptools import setup
 
 
@@ -28,13 +26,14 @@ def long_description():
     with open('README.md') as ofile:
         readme = ofile.read()
 
-        # Get the Package Description section
+        # Get the Package Description without headers
         description = readme.split('## 1) Package Description')[-1]
-        description = description.split('#')[0]
+        description = description.replace('\n## 2) Documentation', '')
 
-        # Remove markdown links
-        description = re.sub("\]\(([\s\S]*?)\)", "", description).strip('\n')
-        description = description.replace('[', '').replace(']', '')
+        # Remove markdown formating
+        description = description.replace('*', '')
+        description = description.replace('[here]', '')
+        description = description.replace('[', '').replace(']', ' ')
         return description
 
 
