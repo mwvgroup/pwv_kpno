@@ -113,7 +113,7 @@ class TestMeasuredPWV(unittest.TestCase):
         This test only checks the first and last returned result
         """
 
-        tzinfo = self.all_local_pwv_data[0].tzinfo
+        tzinfo = self.all_local_pwv_data[0][0].tzinfo
         error_msg = 'Datetimes should be UTC aware (found "{}")'
         self.assertTrue(tzinfo == utc, error_msg.format(tzinfo))
 
@@ -170,7 +170,7 @@ class TestModeledPWV(unittest.TestCase):
         This test only checks the first result
         """
 
-        tzinfo = self.pwv_model_for_kitt_peak[0].tzinfo
+        tzinfo = self.pwv_model_for_kitt_peak[0][0].tzinfo
         error_msg = 'Datetimes should be UTC aware (found "{}")'
         self.assertTrue(tzinfo == utc, error_msg.format(tzinfo))
 
