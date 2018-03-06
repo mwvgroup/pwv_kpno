@@ -38,7 +38,7 @@ def long_description():
 
 
 setup(name='pwv_kpno',
-      version='0.10.0',
+      version='0.10.1',
       packages=['pwv_kpno'],
       keywords='KPNO atmospheric transmission PWV precipitable water vapor',
       description='Models the atmospheric transmission function for KPNO',
