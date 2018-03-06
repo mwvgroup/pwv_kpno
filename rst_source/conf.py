@@ -19,8 +19,8 @@ copyright = '2017, Daniel J. Perrefort'
 author = 'Daniel J. Perrefort'
 
 # The version info for the project
-version = '0.10.0'
-release = '0.10.0'
+version = '0.10.1'
+release = '0.10.1'
 
 # Patterns relative to source directory to ignore
 exclude_patterns = ['.build', '.DS_Store']

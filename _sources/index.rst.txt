@@ -1,6 +1,18 @@
 .. figure::  _static/LOGO.png
    :align:   center
 
+.. image:: https://img.shields.io/badge/version-0.10.1-blue.svg
+    :target: https://pypi.python.org/pypi/pwv-kpno/
+
+.. image:: https://img.shields.io/badge/python-2.7,%203.6-blue.svg
+    :target: #
+
+.. image:: https://img.shields.io/badge/license-GPL%20v3.0-blue.svg
+    :target: https://www.gnu.org/licenses/gpl-3.0.en.html
+
+.. image:: https://travis-ci.org/mwvgroup/pwv_kpno.svg?branch=master
+    :target: https://travis-ci.org/mwvgroup/pwv_kpno
+
 |
 
 ********
