@@ -16,7 +16,7 @@ Kitt Peak National Observatory
 [![release](https://img.shields.io/badge/version-0.10.0-blue.svg)]()
 [![python](https://img.shields.io/badge/python-2.7,%203.6-blue.svg)]()
 [![license](https://img.shields.io/badge/license-GPL%20v3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-[![Code Climate](https://img.shields.io/codeclimate/maintainability/mwvgroup/pwv_kpno.svg)](https://codeclimate.com/github/mwvgroup/pwv_kpno)
+[![Build Status](https://travis-ci.org/mwvgroup/pwv_kpno.svg?branch=master)](https://travis-ci.org/mwvgroup/pwv_kpno)
 
 ## 1) Package Description
 
