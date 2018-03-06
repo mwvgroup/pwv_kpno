@@ -108,10 +108,7 @@ class TestMeasuredPWV(unittest.TestCase):
     all_local_pwv_data = measured_pwv()
 
     def test_returned_tz_info(self):
-        """Test if datetimes in the returned data are timezone aware
-
-        This test only checks the first and last returned result
-        """
+        """Test if datetimes in the returned data are timezone aware"""
 
         tzinfo = self.all_local_pwv_data[0][0].tzinfo
         error_msg = 'Datetimes should be UTC aware (found "{}")'
@@ -165,10 +162,7 @@ class TestModeledPWV(unittest.TestCase):
     pwv_model_for_kitt_peak = modeled_pwv()
 
     def test_returned_tz_info(self):
-        """Test if datetimes in the returned data are timezone aware
-
-        This test only checks the first result
-        """
+        """Test if datetimes in the returned data are timezone aware"""
 
         tzinfo = self.pwv_model_for_kitt_peak[0][0].tzinfo
         error_msg = 'Datetimes should be UTC aware (found "{}")'
