@@ -20,13 +20,6 @@
 # https://stackoverflow.com/q/7522250
 
 from setuptools import setup
-import sys
-
-if sys.version_info[0] < 3:
-    INSTALL_REQUIRES = ['numpy', 'astropy<3', 'requests', 'pytz', 'scipy']
-
-else:
-    INSTALL_REQUIRES = ['numpy', 'astropy', 'requests', 'pytz', 'scipy']
 
 
 def long_description():
@@ -68,7 +61,7 @@ setup(name='pwv_kpno',
       license='GPL v3',
 
       python_requires='>=2.7',
-      install_requires=INSTALL_REQUIRES,
+      install_requires=['numpy', 'astropy', 'requests', 'pytz', 'scipy'],
       setup_requires=['pytest-runner'],
       tests_require=['pytest'],
       include_package_data=True)
