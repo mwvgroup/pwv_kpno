@@ -23,9 +23,8 @@ In order to automatically generate a new version of the documentation, from the
 
     make gh-pages
 
-On Uix systems this will call the make file `rst_source/Makefile` while Windows
-machines will use the file `rst_source/make.bat` (the end result is the same on
-either platform).
+On Uix systems this will call the make file `rst_source/Makefile`. Currently
+there is no make file for Windows.
 
 Note that the usage examples are hard coded, and the make file will not update
 the demonstrated code outputs to reflect any new source code changes. Also, the
