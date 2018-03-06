@@ -63,7 +63,6 @@ def _check_tz_info(data):
 
     tzinfo = data[0].tzinfo
     error_msg = 'Datetimes should be UTC aware (found "{}")'
-    unittest.TestCase.assertIsNotNone(tzinfo, error_msg.format('None'))
     unittest.TestCase.assertTrue(tzinfo == utc, error_msg.format(tzinfo))
 
 
