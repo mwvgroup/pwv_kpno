@@ -22,7 +22,7 @@ from datetime import datetime
 
 import unittest
 
-from pwv_kpno.end_user_utilities import update_models
+from pwv_kpno.pwv_data import update_models
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'

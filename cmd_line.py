@@ -25,10 +25,10 @@ from pytz import utc
 from pwv_kpno import __version__ as version
 from pwv_kpno.calc_transmission import transmission
 from pwv_kpno.calc_transmission import transmission_pwv
-from pwv_kpno.end_user_utilities import available_data
-from pwv_kpno.end_user_utilities import measured_pwv
-from pwv_kpno.end_user_utilities import modeled_pwv
-from pwv_kpno.end_user_utilities import update_models
+from pwv_kpno.pwv_data import available_data
+from pwv_kpno.pwv_data import measured_pwv
+from pwv_kpno.pwv_data import modeled_pwv
+from pwv_kpno.pwv_data import update_models
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'

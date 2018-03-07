@@ -80,14 +80,14 @@ Getting Started:
 """
 
 
-from .calc_transmission import transmission
-from .calc_transmission import transmission_pwv
-from .end_user_utilities import available_data
-from .end_user_utilities import update_models
-from .end_user_utilities import modeled_pwv
-from .end_user_utilities import measured_pwv
 from .bb_error import zp_bias
 from .bb_error import zp_bias_pwv
+from .calc_transmission import transmission
+from .calc_transmission import transmission_pwv
+from .pwv_data import available_data
+from .pwv_data import update_models
+from .pwv_data import modeled_pwv
+from .pwv_data import measured_pwv
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
