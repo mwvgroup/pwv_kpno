@@ -41,7 +41,7 @@ PACKAGE_DATA_DIR = 'pwv_kpno/suomi_data/'
 CONFIG_PATH = 'pwv_kpno/CONFIG.txt'
 
 
-class TestCorrectDataFiles(unittest.TestCase):
+class CorrectDataFiles(unittest.TestCase):
     """Test appropriate SuomiNet data files are included with the package"""
 
     @classmethod
@@ -81,11 +81,7 @@ class TestCorrectDataFiles(unittest.TestCase):
         error_msg = 'Unexpected data file with SuomiNet id {}'
         self.assertFalse(bad_ids, error_msg.format(bad_ids))
 
-
-class TestConfigMatchesData(unittest.TestCase):
-    """Test config.txt has the appropriate data"""
-
-    def runTest(self):
+    def test_config_matches_data(self):
         """Compare years in config file with years of present data files"""
 
         config_data = set(available_data())

@@ -58,7 +58,7 @@ def _timestamp(date):
     return timestamp
 
 
-class TestSuomiNetDataDownload(unittest.TestCase):
+class SuomiNetDataDownload(unittest.TestCase):
     """Tests data is downloaded correctly by _download_suomi_data_for_year"""
 
     @classmethod
@@ -94,7 +94,7 @@ class TestSuomiNetDataDownload(unittest.TestCase):
         self.assertEqual(first_2015_date.year, 2015, error_msg.format(2015))
 
 
-class TestDateFormatConversion(unittest.TestCase):
+class DateFormatConversion(unittest.TestCase):
     """Tests conversion of SuomiNet datetime format to timestamps"""
 
     def test_roundoff_error(self):
@@ -134,22 +134,22 @@ class TestDateFormatConversion(unittest.TestCase):
                          error_msg.format(dec_31_2021_23_15))
 
 
-class TestSuomiNetFileParsing(unittest.TestCase):
+class SuomiNetFileParsing(unittest.TestCase):
     """Tests file parsing by create_pwv_models._read_file"""
 
     @classmethod
-    def setUpClass(self):
+    def setUpClass(cls):
         """Read in SuomiNet data from data files included with the package"""
 
-        self.kitt_hr_path = 'KITThr_2016.plt'
-        self.hitt_dy_path = 'KITTdy_2016.plt'
-        self.azam_hr_path = 'AZAMhr_2015.plt'
-        self.p014_dy_path = 'P014dy_2012.plt'
+        cls.kitt_hr_path = 'KITThr_2016.plt'
+        cls.kitt_dy_path = 'KITTdy_2016.plt'
+        cls.azam_hr_path = 'AZAMhr_2015.plt'
+        cls.p014_dy_path = 'P014dy_2012.plt'
 
-        self.kitt_hr_data = _read_file(os.path.join(SPATH, self.kitt_hr_path))
-        self.kitt_dy_data = _read_file(os.path.join(SPATH, self.hitt_dy_path))
-        self.azam_hr_data = _read_file(os.path.join(SPATH, self.azam_hr_path))
-        self.p014_hr_data = _read_file(os.path.join(SPATH, self.p014_dy_path))
+        cls.kitt_hr_data = _read_file(os.path.join(SPATH, cls.kitt_hr_path))
+        cls.kitt_dy_data = _read_file(os.path.join(SPATH, cls.kitt_dy_path))
+        cls.azam_hr_data = _read_file(os.path.join(SPATH, cls.azam_hr_path))
+        cls.p014_hr_data = _read_file(os.path.join(SPATH, cls.p014_dy_path))
 
     def test_column_names(self):
         """Test returned data has correct columns"""

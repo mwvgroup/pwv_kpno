@@ -58,7 +58,7 @@ def _check_attrs(iterable, **kwargs):
     return True
 
 
-class TestSearchArgumentErrors(unittest.TestCase):
+class SearchArgumentErrors(unittest.TestCase):
     """Test that _check_search_args raises the appropriate errors
 
     _check_search_args is responsible for checking the arguments for both
@@ -102,7 +102,7 @@ class TestSearchArgumentErrors(unittest.TestCase):
         self.assertRaises(TypeError, _check_date_time_args, hour=12.0)
 
 
-class TestMeasuredPWV(unittest.TestCase):
+class MeasuredPWV(unittest.TestCase):
     """Tests for the 'measured_pwv' function"""
 
     all_local_pwv_data = measured_pwv()
@@ -156,7 +156,7 @@ class TestMeasuredPWV(unittest.TestCase):
         self.assertTrue(all(bad_data['KITT'].mask))
 
 
-class TestModeledPWV(unittest.TestCase):
+class ModeledPWV(unittest.TestCase):
     """Tests for the 'modeled_pwv' function"""
 
     pwv_model_for_kitt_peak = modeled_pwv()

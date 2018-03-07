@@ -28,7 +28,7 @@ from pwv_kpno import transmission
 from pwv_kpno.calc_transmission import _raise_transmission_args
 from pwv_kpno.calc_transmission import _raise_available_data
 from pwv_kpno.calc_transmission import _raise_pwv
-from create_mock_data import create_mock_pwv_model
+from _create_mock_data import create_mock_pwv_model
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -38,7 +38,7 @@ __email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'
 
 
-class TestTransmissionErrors(unittest.TestCase):
+class TransmissionErrors(unittest.TestCase):
     """Test pwv_kpno.transmission for raised errors due to bad arguments"""
 
     def test_argument_types(self):
@@ -102,7 +102,7 @@ class TestTransmissionErrors(unittest.TestCase):
                           four_day_start, mock_model)
 
 
-class TestTransmissionPwvErrors(unittest.TestCase):
+class TransmissionPwvErrors(unittest.TestCase):
     """Test pwv_kpno.transmission_pwv for raised errors due to bad arguments"""
 
     def test_argument_types(self):
@@ -124,7 +124,7 @@ class TestTransmissionPwvErrors(unittest.TestCase):
         self.assertIsNone(_raise_pwv(15.0))
 
 
-class TestTransmissionResults(unittest.TestCase):
+class TransmissionResults(unittest.TestCase):
     """Test pwv_kpno.transmission for the expected returns"""
 
     mock_model = create_mock_pwv_model(2010)
