@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Build and upload the package
+python setup.py sdist
+python setup.py bdist_wheel --universal
+twine upload dist/*
+
+# Remove local build files
+rm -r build
+rm -r dist
+rm -r pwv_kpno.egg-info
+rm -r pwv_kpno-*
