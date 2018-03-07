@@ -28,7 +28,7 @@ import numpy as np
 from pytz import utc
 from astropy.table import Table
 
-from .download_suomi_data import update_suomi_data
+from .download_pwv_data import update_suomi_data
 from .settings import Settings
 
 __author__ = 'Daniel Perrefort'
