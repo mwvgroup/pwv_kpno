@@ -40,7 +40,7 @@ from astropy.table import Table, join, vstack, unique
 import numpy as np
 import requests
 
-from .settings import Settings
+from ._settings import Settings
 
 __authors__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2016, Daniel Perrefort'

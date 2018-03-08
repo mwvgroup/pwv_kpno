@@ -80,10 +80,9 @@ Getting Started:
 """
 
 
-from .bb_error import zp_bias
-from .bb_error import zp_bias_pwv
-from .calc_transmission import transmission
-from .calc_transmission import transmission_pwv
+from .black_body import bias_pwv
+from .transmission import transmission
+from .transmission import transmission_pwv
 from .pwv_data import available_data
 from .pwv_data import update_models
 from .pwv_data import modeled_pwv

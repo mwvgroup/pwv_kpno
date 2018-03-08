@@ -25,9 +25,9 @@ import numpy as np
 from pytz import utc
 
 from pwv_kpno import transmission
-from pwv_kpno.calc_transmission import _raise_transmission_args
-from pwv_kpno.calc_transmission import _raise_available_data
-from pwv_kpno.calc_transmission import _raise_pwv
+from pwv_kpno.transmission import _raise_transmission_args
+from pwv_kpno.transmission import _raise_available_data
+from pwv_kpno.transmission import _raise_pwv
 from _create_mock_data import create_mock_pwv_model
 
 __author__ = 'Daniel Perrefort'

@@ -17,8 +17,6 @@
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
 """This document defines end user functions for accessing / updating PWV data.
-Functions contained in this document include `available_data`, `update_models`,
-`measured_pwv`, and `modeled_pwv`.
 """
 
 import os
@@ -28,8 +26,8 @@ import numpy as np
 from pytz import utc
 from astropy.table import Table
 
-from .download_pwv_data import update_suomi_data
-from .settings import Settings
+from ._data_download import update_suomi_data
+from ._settings import Settings
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -44,6 +42,23 @@ __status__ = 'Development'
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
 PWV_MSRED_PATH = os.path.join(FILE_DIR, 'locations/{}/measured_pwv.csv')
 PWV_MODEL_PATH = os.path.join(FILE_DIR, 'locations/{}/modeled_pwv.csv')
+
+
+def interp_pwv(date, airmass=1, test_model=None):
+
+    if test_model is None:
+        location_name = Settings().current_location.name
+        pwv_model = Table.read(PWV_MODEL_PATH.format(location_name))
+
+    else:
+        pwv_model = test_model
+
+    # Determine the PWV level along line of sight as pwv(zenith) * airmass
+    unix_epoch = datetime(1970, 1, 1, tzinfo=utc)
+    utc_date = date.astimezone(utc)
+    timestamp = (utc_date - unix_epoch).total_seconds()
+
+    return np.interp(timestamp, pwv_model['date'], pwv_model['pwv']) * airmass
 
 
 def available_data():

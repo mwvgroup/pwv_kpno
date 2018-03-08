@@ -23,8 +23,8 @@ from datetime import datetime
 from pytz import utc
 
 from pwv_kpno import __version__ as version
-from pwv_kpno.calc_transmission import transmission
-from pwv_kpno.calc_transmission import transmission_pwv
+from pwv_kpno.transmission import transmission
+from pwv_kpno.transmission import transmission_pwv
 from pwv_kpno.pwv_data import available_data
 from pwv_kpno.pwv_data import measured_pwv
 from pwv_kpno.pwv_data import modeled_pwv

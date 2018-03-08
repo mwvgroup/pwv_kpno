@@ -31,7 +31,8 @@ from pytz import utc
 from astropy.table import Table
 from scipy.interpolate import interpn
 
-from pwv_kpno.settings import Settings
+from pwv_kpno._settings import Settings
+from pwv_kpno.pwv_data import interp_pwv
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -223,18 +224,5 @@ def transmission(date, airmass, test_model=None):
         The modeled transmission function as an astropy table
     """
 
-    # Check for valid arguments
-    if test_model is None:
-        location_name = Settings().current_location.name
-        pwv_model = Table.read(PWV_MODEL_PATH.format(location_name))
-
-    else:
-        pwv_model = test_model
-
-    _raise_transmission_args(date, airmass)
-    _raise_available_data(date, pwv_model)
-
-    # Determine the PWV level along line of sight as pwv(zenith) * airmass
-    timestamp = _timestamp(date)
-    pwv = np.interp(timestamp, pwv_model['date'], pwv_model['pwv']) * airmass
+    pwv = interp_pwv(date, airmass, test_model)
     return transmission_pwv(pwv)
