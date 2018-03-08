@@ -28,7 +28,7 @@ Blake and Shaw, 2011 (https://arxiv.org/abs/1109.6703). For more details on the
 SuomiNet project see http://www.suominet.ucar.edu/overview.html.
 
 
-Getting Started:
+An Incomplete Guide to Getting Started:
 
     To check what years data is locally available for:
 
