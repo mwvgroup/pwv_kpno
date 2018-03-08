@@ -30,8 +30,8 @@ from pytz import utc
 from astropy.table import Table
 from scipy.interpolate import interpn
 
-from pwv_kpno._settings import Settings, ATM_MODEL_PATH
-from pwv_kpno.pwv_data import interp_pwv
+from ._settings import Settings, ATM_MODEL_PATH
+from .pwv_data import interp_pwv
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'

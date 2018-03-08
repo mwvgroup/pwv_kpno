@@ -10,7 +10,7 @@ from astropy.modeling.blackbody import blackbody_lambda
 from astropy.constants import c
 import numpy as np
 
-import pwv_kpno
+from .transmission import transmission_pwv
 
 
 def sed(temp, wavelengths, pwv):
@@ -27,7 +27,7 @@ def sed(temp, wavelengths, pwv):
          An array of flux values in units of ergs / (angstrom * cm2 * s)
      """
 
-    transmission = pwv_kpno.transmission_pwv(pwv)
+    transmission = transmission_pwv(pwv)
     resampled_transmission = np.interp(wavelengths,
                                        transmission['wavelength'],
                                        transmission['transmission'])
