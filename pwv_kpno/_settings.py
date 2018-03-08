@@ -22,8 +22,7 @@ is already being used in the package, much of it is provided as a framework for
 future development.
 """
 
-# Todo: Write tests
-# Todo: Write rst documentation
+# Todo: Transition from Settings class to multi-site classes
 
 from datetime import datetime
 import json

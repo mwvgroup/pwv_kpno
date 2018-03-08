@@ -5,6 +5,8 @@
 body.
 """
 
+# Todo: Write rst documentation
+
 from astropy import units as u
 from astropy.modeling.blackbody import blackbody_lambda
 from astropy.constants import c
