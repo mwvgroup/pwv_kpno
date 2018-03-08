@@ -5,17 +5,12 @@
 body.
 """
 
-import os
-
 from astropy import units as u
 from astropy.modeling.blackbody import blackbody_lambda
 from astropy.constants import c
 import numpy as np
 
 import pwv_kpno
-
-FILE_DIR = os.path.dirname(os.path.realpath(__file__))
-PWV_MODEL_PATH = os.path.join(FILE_DIR, 'locations/{}/modeled_pwv.csv')
 
 
 def sed(temp, wavelengths, pwv):

@@ -31,6 +31,8 @@ import numpy as np
 from astropy.table import Table
 import scipy.interpolate as interpolate
 
+from ._settings import PHOSIM_DATA
+
 __authors__ = 'Azalee Bostroem'
 __copyright__ = 'Copyright 2016, Azalee Bostroem'
 __editor__ = 'Daniel Perrefort'
@@ -38,10 +40,6 @@ __editor__ = 'Daniel Perrefort'
 __license__ = 'GPL V3'
 __email__ = 'abostroem@gmail.com'
 __status__ = 'Development'
-
-# Define necessary directory paths
-PHOSIM_DATA = './sims_phosim/data/atmosphere'
-ATM_MODELS = '.'  # Where to write the atmospheric models
 
 
 def _load_cross_section(filename, x_fine):
@@ -205,12 +203,3 @@ def write_atm_models(output_dir):
         out_table.add_column(temp_table[pwv_as_str])
 
     out_table.write(os.path.join(output_dir, 'atm_model.csv'), overwrite=True)
-
-
-def main():
-    """Generate atmospheric models and write them to the ATM_MODELS"""
-    write_atm_models(ATM_MODELS)
-
-
-if __name__ == "__main__":
-    main()

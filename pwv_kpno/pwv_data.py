@@ -19,7 +19,6 @@
 """This document defines end user functions for accessing / updating PWV data.
 """
 
-import os
 from datetime import datetime
 
 import numpy as np
@@ -27,7 +26,7 @@ from pytz import utc
 from astropy.table import Table
 
 from ._data_download import update_suomi_data
-from ._settings import Settings
+from ._settings import Settings, PWV_MSRED_PATH, PWV_MODEL_PATH
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -36,12 +35,6 @@ __credits__ = ['Alexander Afanasyev']
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'
-
-
-# Define path of PWV data tables
-FILE_DIR = os.path.dirname(os.path.realpath(__file__))
-PWV_MSRED_PATH = os.path.join(FILE_DIR, 'locations/{}/measured_pwv.csv')
-PWV_MODEL_PATH = os.path.join(FILE_DIR, 'locations/{}/modeled_pwv.csv')
 
 
 def interp_pwv(date, airmass=1, test_model=None):

@@ -42,7 +42,12 @@ __status__ = 'Development'
 
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
 LOC_PATH = os.path.join(FILE_DIR, 'locations')
+PHOSIM_DATA = os.path.join(FILE_DIR, '/sims_phosim/data/atmosphere')
+SUOMI_DIR = os.path.join(FILE_DIR, 'suomi_data')
 CONFIG_PATH = os.path.join(LOC_PATH, '{}/config.json')
+ATM_MODEL_PATH = os.path.join(FILE_DIR, 'locations/{}/atm_model.csv')
+PWV_MSRED_PATH = os.path.join(FILE_DIR, 'locations/{}/measured_pwv.csv')
+PWV_MODEL_PATH = os.path.join(FILE_DIR, 'locations/{}/modeled_pwv.csv')
 
 
 def _get_config_data(location_name):
