@@ -80,7 +80,6 @@ An Incomplete Guide to Getting Started:
 """
 
 
-from .black_body import bias_pwv
 from .transmission import transmission
 from .transmission import transmission_pwv
 from .pwv_data import available_data
