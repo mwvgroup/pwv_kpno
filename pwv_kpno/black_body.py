@@ -23,7 +23,7 @@ def sed(temp, wavelengths, pwv):
      Args:
          temp          (float): The desired temperature of the black body
          wavelengths (ndarray): An array like object containing wavelengths
-         pwv  (float): The PWV concentration along line of sight in mm
+         pwv           (float): The PWV concentration along line of sight in mm
 
      Returns:
          An array of flux values in units of ergs / (angstrom * cm2 * s)
@@ -41,8 +41,10 @@ def sed(temp, wavelengths, pwv):
     return flux_trasm
 
 
-def magnitude(temp, band, pwv):
+def magnitude(temp, band, pwv):  # Todo: specify zero point
     """Return the magnitude of a black body with and without pwv absorption
+
+    Magnitudes are calculated relative to a zero point of 3631 Jy
 
     Args:
         temp (float): The temperature of the desired black body
@@ -56,14 +58,16 @@ def magnitude(temp, band, pwv):
     """
 
     wavelengths = np.arange(band[0], band[1])
-    flux = sed(temp, wavelengths, pwv)
+    flux = sed(temp, wavelengths, 0)
+    flux_pwv = sed(temp, wavelengths, pwv)
 
-    lambda_over_c = (np.median(wavelengths) * u.AA) / c
+    lambda_over_c = (np.median(band) * u.AA) / c
     flux *= lambda_over_c.cgs
+    flux_pwv *= lambda_over_c.cgs
 
     zero_point = (3631 * u.jansky).to(u.erg / u.cm ** 2)
     int_flux = np.trapz(x=wavelengths, y=flux) * u.AA
-    int_flux_transm = np.trapz(x=wavelengths, y=flux) * u.AA
+    int_flux_transm = np.trapz(x=wavelengths, y=flux_pwv) * u.AA
 
     magnitude = -2.5 * np.log10(int_flux / zero_point)
     magnitude_transm = -2.5 * np.log10(int_flux_transm / zero_point)
@@ -71,7 +75,7 @@ def magnitude(temp, band, pwv):
     return magnitude.value, magnitude_transm.value
 
 
-def bias_pwv(ref_temp, cal_temp, band, pwv):
+def zp_bias(ref_temp, cal_temp, band, pwv):
     """Calculate the residual error in the photometric zero point due to PWV
 
     Using a black body approximation, calculate the residual error in the zero
