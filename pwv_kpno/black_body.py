@@ -12,7 +12,7 @@ from astropy.modeling.blackbody import blackbody_lambda
 from astropy.constants import c
 import numpy as np
 
-from .transmission import transmission_pwv
+from pwv_kpno.transmission import transmission_pwv
 
 
 def sed(temp, wavelengths, pwv):
@@ -58,11 +58,13 @@ def magnitude(temp, band, pwv):  # Todo: specify zero point
     """
 
     wavelengths = np.arange(band[0], band[1])
-    flux = sed(temp, wavelengths, 0)
-    flux_pwv = sed(temp, wavelengths, pwv)
-
     lambda_over_c = (np.median(band) * u.AA) / c
-    flux *= lambda_over_c.cgs
+
+    # Blackbody_lambda is faster than sed(temp, wavelengths, 0)
+    flux = blackbody_lambda(wavelengths, temp)
+    flux *= (4 * np.pi * u.sr) * lambda_over_c.cgs
+
+    flux_pwv = sed(temp, wavelengths, pwv)
     flux_pwv *= lambda_over_c.cgs
 
     zero_point = (3631 * u.jansky).to(u.erg / u.cm ** 2)
