@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
-"""This module provides functions for calculating the impact of PWV on a black
-body.
+"""This module provides modeling for the effects of atmospheric absorption
+due to precipitable water vapor (PWV) on a black body.
 """
 
 # Todo: Write rst documentation
@@ -29,16 +29,18 @@ def sed(temp, wavelengths, pwv):
          An array of flux values in units of ergs / (angstrom * cm2 * s)
      """
 
-    transmission = transmission_pwv(pwv)
-    resampled_transmission = np.interp(wavelengths,
-                                       transmission['wavelength'],
-                                       transmission['transmission'])
+    sed = blackbody_lambda(wavelengths, temp)
+    sed *= (4 * np.pi * u.sr)  # Integrate over angular coordinates
 
-    flux = blackbody_lambda(wavelengths, temp)
-    flux *= (4 * np.pi * u.sr)
-    flux_trasm = flux * resampled_transmission
+    if pwv > 0:
+        transmission = transmission_pwv(pwv)
+        resampled_transmission = np.interp(wavelengths,
+                                           transmission['wavelength'],
+                                           transmission['transmission'])
 
-    return flux_trasm
+        sed *= resampled_transmission
+
+    return sed
 
 
 def magnitude(temp, band, pwv):  # Todo: specify zero point
@@ -60,9 +62,8 @@ def magnitude(temp, band, pwv):  # Todo: specify zero point
     wavelengths = np.arange(band[0], band[1])
     lambda_over_c = (np.median(band) * u.AA) / c
 
-    # Blackbody_lambda is faster than sed(temp, wavelengths, 0)
-    flux = blackbody_lambda(wavelengths, temp)
-    flux *= (4 * np.pi * u.sr) * lambda_over_c.cgs
+    flux = sed(temp, wavelengths, 0)
+    flux *= lambda_over_c.cgs
 
     flux_pwv = sed(temp, wavelengths, pwv)
     flux_pwv *= lambda_over_c.cgs
