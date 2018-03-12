@@ -21,9 +21,9 @@
 
 from datetime import datetime
 
+from astropy.table import Table
 import numpy as np
 from pytz import utc
-from astropy.table import Table
 
 from ._data_download import update_suomi_data
 from ._settings import Settings, PWV_MSRED_PATH, PWV_MODEL_PATH
@@ -37,7 +37,7 @@ __email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'
 
 
-def interp_pwv(date, airmass=1, test_model=None):
+def get_pwv(date, airmass=1, test_model=None):
 
     if test_model is None:
         location_name = Settings().current_location.name

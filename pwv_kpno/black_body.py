@@ -8,8 +8,8 @@ due to precipitable water vapor (PWV) on a black body.
 # Todo: Write rst documentation
 
 from astropy import units as u
-from astropy.modeling.blackbody import blackbody_lambda
 from astropy.constants import c
+from astropy.modeling.blackbody import blackbody_lambda
 import numpy as np
 
 from pwv_kpno.transmission import transmission_pwv

@@ -80,12 +80,12 @@ An Incomplete Guide to Getting Started:
 """
 
 
+from .pwv_data import available_data
+from .pwv_data import measured_pwv
+from .pwv_data import modeled_pwv
+from .pwv_data import update_models
 from .transmission import transmission
 from .transmission import transmission_pwv
-from .pwv_data import available_data
-from .pwv_data import update_models
-from .pwv_data import modeled_pwv
-from .pwv_data import measured_pwv
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'

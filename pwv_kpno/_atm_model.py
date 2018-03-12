@@ -27,8 +27,8 @@ for documentation purposes and for reference in future package development.
 
 import os
 
-import numpy as np
 from astropy.table import Table
+import numpy as np
 import scipy.interpolate as interpolate
 
 from ._settings import PHOSIM_DATA
