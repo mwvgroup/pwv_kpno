@@ -24,7 +24,7 @@ from datetime import datetime
 from astropy.table import Table
 from pytz import utc
 
-from pwv_kpno import measured_pwv, modeled_pwv
+from pwv_kpno.pwv_trans import measured_pwv, modeled_pwv
 from pwv_kpno._pwv_data import _check_date_time_args
 
 __author__ = 'Daniel Perrefort'
