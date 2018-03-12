@@ -37,7 +37,7 @@ __email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'
 
 
-def get_pwv(date, airmass=1, test_model=None):
+def pwv_date(date, airmass=1, test_model=None):
 
     if test_model is None:
         location_name = Settings().current_location.name

@@ -32,7 +32,7 @@ from astropy.table import Table
 from scipy.interpolate import interpn
 
 from ._settings import Settings, ATM_MODEL_PATH
-from .pwv_data import get_pwv
+from ._pwv_data import pwv_date
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -222,5 +222,5 @@ def transmission(date, airmass, test_model=None):
         The modeled transmission function as an astropy table
     """
 
-    pwv = get_pwv(date, airmass, test_model)
+    pwv = pwv_date(date, airmass, test_model)
     return transmission_pwv(pwv)

@@ -12,7 +12,7 @@ from astropy.constants import c
 from astropy.modeling.blackbody import blackbody_lambda
 import numpy as np
 
-from pwv_kpno.transmission import transmission_pwv
+from pwv_kpno._transmission import transmission_pwv
 
 
 def sed(temp, wavelengths, pwv):
@@ -29,8 +29,8 @@ def sed(temp, wavelengths, pwv):
          An array of flux values in units of ergs / (angstrom * cm2 * s)
      """
 
-    sed = blackbody_lambda(wavelengths, temp)
-    sed *= (4 * np.pi * u.sr)  # Integrate over angular coordinates
+    bb_sed = blackbody_lambda(wavelengths, temp)
+    bb_sed *= (4 * np.pi * u.sr)  # Integrate over angular coordinates
 
     if pwv > 0:
         transmission = transmission_pwv(pwv)
@@ -38,9 +38,9 @@ def sed(temp, wavelengths, pwv):
                                            transmission['wavelength'],
                                            transmission['transmission'])
 
-        sed *= resampled_transmission
+        bb_sed *= resampled_transmission
 
-    return sed
+    return bb_sed
 
 
 def magnitude(temp, band, pwv):  # Todo: specify zero point

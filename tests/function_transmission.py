@@ -24,10 +24,10 @@ from datetime import datetime, timedelta
 import numpy as np
 from pytz import utc
 
-from pwv_kpno import transmission
-from pwv_kpno.transmission import _raise_transmission_args
-from pwv_kpno.transmission import _raise_available_data
-from pwv_kpno.transmission import _raise_pwv
+from pwv_kpno import _transmission
+from pwv_kpno._transmission import _raise_transmission_args
+from pwv_kpno._transmission import _raise_available_data
+from pwv_kpno._transmission import _raise_pwv
 from _create_mock_data import create_mock_pwv_model
 
 __author__ = 'Daniel Perrefort'
@@ -143,8 +143,8 @@ class TransmissionResults(unittest.TestCase):
         date_40 = self.mock_model['date'][40]
         date_40 = datetime.utcfromtimestamp(date_40).replace(tzinfo=utc)
 
-        airmass_2_transm = transmission(date_35, 2, self.mock_model)
-        airmass_1_transm = transmission(date_40, 1, self.mock_model)
+        airmass_2_transm = _transmission(date_35, 2, self.mock_model)
+        airmass_1_transm = _transmission(date_40, 1, self.mock_model)
 
         same_transmission = np.equal(airmass_1_transm['transmission'],
                                      airmass_2_transm['transmission'])
@@ -158,7 +158,7 @@ class TransmissionResults(unittest.TestCase):
         airmass of 1.
         """
 
-        sample_transm = transmission(datetime(2011, 1, 1, tzinfo=utc), 1)
+        sample_transm = _transmission(datetime(2011, 1, 1, tzinfo=utc), 1)
         w_units = sample_transm['wavelength'].unit
         t_units = sample_transm['transmission'].unit
 
