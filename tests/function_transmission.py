@@ -120,8 +120,13 @@ class TransmissionPwvErrors(unittest.TestCase):
         """
 
         self.assertRaises(ValueError, _raise_pwv, -1)
-        self.assertRaises(ValueError, _raise_pwv, 30.2)
+
+        # Check value that uses interpolation
         self.assertIsNone(_raise_pwv(15.0))
+
+        # Check value outside domain that uses extrapolation
+        self.assertIsNone(_raise_pwv(30.5))
+
 
 
 class TransmissionResults(unittest.TestCase):

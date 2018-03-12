@@ -24,6 +24,7 @@ include `transmission` and `transmission_pwv`.
 """
 
 from datetime import datetime, timedelta
+from warnings import warn
 
 import numpy as np
 from pytz import utc
@@ -31,7 +32,7 @@ from astropy.table import Table
 from scipy.interpolate import interpn
 
 from ._settings import Settings, ATM_MODEL_PATH
-from .pwv_data import interp_pwv
+from .pwv_data import get_pwv
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -81,8 +82,10 @@ def _raise_pwv(pwv):
         raise ValueError('PWV concentration cannot be negative')
 
     if pwv > 30.1:
-        err_msg = 'Cannot provide models for PWV concentrations above 30.1 mm'
-        raise ValueError(err_msg)
+        warn_msg = ('Transmission values for PWV above 30.1 mm are'
+                    'extrapolated instead of interpolated.')
+
+        warn(warn_msg, RuntimeWarning)
 
 
 def transmission_pwv(pwv):
@@ -115,6 +118,7 @@ def transmission_pwv(pwv):
         pwv_values.append(float(column.name))
         transmission_models[i, :] = column
 
+    # interpn will automatically extrapolate for values outside the domain
     interp_trans = interpn(points=(pwv_values, wavelengths),
                            values=transmission_models,
                            xi=np.array([[pwv, x] for x in wavelengths]))
@@ -218,5 +222,5 @@ def transmission(date, airmass, test_model=None):
         The modeled transmission function as an astropy table
     """
 
-    pwv = interp_pwv(date, airmass, test_model)
+    pwv = get_pwv(date, airmass, test_model)
     return transmission_pwv(pwv)
