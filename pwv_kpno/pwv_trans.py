@@ -17,7 +17,66 @@
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
 """This module provides access PWV measurements for Kitt Peak and the modeled
-PWV transmission function"""
+PWV transmission function.
+
+For full documentation on a function use the builtin Python `help` function
+or see https://mwvgroup.github.io/pwv_kpno/.
+
+An Incomplete Guide to Getting Started:
+
+    To check what years data is locally available for:
+
+      >>> from pwv_kpno import pwv_trans
+      >>> pwv_trans.available_data()
+
+
+    To update the locally available data with any new measurements:
+
+      >>> pwv_trans.update_models()
+
+
+    To determine the PWV concentration at Kitt Peak for a datetime:
+
+      >>> from datetime import datetime
+      >>> import pytz
+      >>>
+      >>> obsv_date = datetime(year=2013,
+      >>>                      month=12,
+      >>>                      day=15,
+      >>>                      hour=5,
+      >>>                      minute=35,
+      >>>                      tzinfo=pytz.utc)
+      >>>
+      >>> pwv = pwv_trans.pwv_date(obsv_date)
+
+
+    To retrieve the atmospheric model for a line of sight PWV concentration:
+
+      >>> pwv_trans.transmission_pwv(pwv)
+
+
+    To retrieve the atmospheric model for a datetime:
+
+      >>> pwv_trans.transmission(date=obsv_date, airmass=1.2)
+
+
+    To access the PWV measurements as an astropy table:
+
+      >>> # All locally available PWV measurements
+      >>> pwv_trans.measured_pwv()
+      >>>
+      >>> # All PWV measurements taken on November 14, 2016
+      >>> pwv_trans.measured_pwv(year=2016, month=11, day=14)
+
+
+    To access the modeled PWV level at Kitt Peak as an astropy table:
+
+      >>> # The entire model from 2010 to present
+      >>> pwv_trans.modeled_pwv()
+      >>>
+      >>> # The modeled PWV level only for November 14, 2016
+      >>> pwv_trans.modeled_pwv(year=2016, month=11, day=14)
+"""
 
 from ._pwv_data import available_data
 from ._pwv_data import pwv_date

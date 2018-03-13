@@ -17,9 +17,9 @@
 #    along with pwv_kpno. If not, see <http://www.gnu.org/licenses/>.
 
 
-"""This code allows users to modify package settings. While some of this code
-is already being used in the package, much of it is provided as a framework for
-future development.
+"""This code allows for the modification of package settings. While some of
+this code is already being used in the package, much of it is provided as a
+framework for future development. It is not intended for end user visability.
 """
 
 # Todo: Transition from Settings class to multi-site classes

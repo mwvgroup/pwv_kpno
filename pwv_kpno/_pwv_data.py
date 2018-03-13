@@ -16,7 +16,18 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
-"""This document defines end user functions for accessing / updating PWV data.
+"""This document defines functions for updating the PWV model for Kitt Peak.
+Using locally available SuomiNet data, first order polynomials are fitted to
+relate the PWV level at nearby locations to the PWV level at Kitt Peak. The
+resulting polynomials are then used to supplement the PWV measurements taken at
+Kitt Peak for times when no Kitt Peak data is available.
+
+End user functions defined in this document include:
+    - pwv_date
+    - available_data
+    - measured_pwv
+    - modeled_pwv
+    - update_models
 """
 
 from datetime import datetime

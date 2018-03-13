@@ -17,16 +17,11 @@
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
 """This code downloads precipitable water vapor (PWV) measurements from
-from suominet.ucar.edu for Kitt Peak and other nearby locations. Using
-these values, first order polynomials are fitted to relate the PWV
-level at nearby locations to the PWV level at Kitt Peak. The resulting
-polynomials are then used to supplement the PWV measurements taken at
-Kitt Peak for times when no Kitt Peak data is available.
-
-Data downloaded from SuomiNet is added to a master table located at
-PWV_TAB_DIR/measured.csv. Supplemented PWV values are stored in a master table
-located at PWV_TAB_DIR/modeled.csv. All datetimes are recorded as timestamps
-and PWV measurements are represented in units of millimeters.
+from suominet.ucar.edu for Kitt Peak and other nearby locations. Data is added
+to a master table located at PWV_TAB_DIR/measured.csv. Supplemented PWV values
+are stored in a master table located at PWV_TAB_DIR/modeled.csv. All datetimes
+are recorded as timestamps and PWV measurements are represented in units of
+millimeters.
 
 For more details on the SuomiNet project see
 http://www.suominet.ucar.edu/overview.html.
