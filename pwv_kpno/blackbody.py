@@ -92,7 +92,7 @@ def magnitude(temp, band, pwv):
     lambda_over_c = (np.median(band) * u.AA) / c
 
     # We reintroduce units here to make programmatic errors easier to spot
-    flux_pwv = sed(temp, wavelengths, pwv) * (u.AA * u.cm * u.cm * u.s)
+    flux_pwv = sed(temp, wavelengths, pwv) * u.erg / (u.AA * u.cm * u.cm * u.s)
     flux_pwv *= lambda_over_c.cgs
 
     zero_point = (3631 * u.jansky).to(u.erg / u.cm ** 2)
