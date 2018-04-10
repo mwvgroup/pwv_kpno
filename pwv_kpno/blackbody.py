@@ -12,20 +12,20 @@ An Incomplete Guide to Getting Started:
     To determine the SED of a black body under the influence of atmospheric
     effects due to a known PWV concentration (in mm):
 
-      >>> from pwv_kpno import black_body
+      >>> from pwv_kpno import blackbody
       >>>
       >>> temp = 8000  # Black Body temperature in Kelvin
       >>> wavelengths = np.arange(7000, 10000, 100) # Wavelengths in Angstrom
       >>> pwv = 17  # Integrated PWV concentration in mm
       >>>
-      >>> black_body.sed(temp, wavelengths, pwv)
+      >>> blackbody.sed(temp, wavelengths, pwv)
 
 
     To determine the magnitude of a black body both with and without
     atmospheric effects:
 
     >>> band = (7000, 10000) # Units of Angstrom
-    >>> mag_without_atm, mag_with_atm = black_body.magnitude(temp, band, pwv)
+    >>> mag_without_atm, mag_with_atm = blackbody.magnitude(temp, band, pwv)
 
 
     To determine the residual error in the zero point of a photometric image
@@ -58,16 +58,17 @@ def sed(temp, wavelengths, pwv):
          An array of flux values in units of ergs / (angstrom * cm2 * s)
      """
 
-    bb_sed = blackbody_lambda(wavelengths, temp)
-    bb_sed *= (4 * np.pi * u.sr)  # Integrate over angular coordinates
+    # Returns ergs / (angstrom * cm2 * s * sr)
+    bb_sed = blackbody_lambda(wavelengths, temp).value
+    bb_sed *= (4 * np.pi)  # Integrate over angular coordinates
 
     if pwv > 0:
         transmission = transmission_pwv(pwv)
-        resampled_transmission = np.interp(wavelengths,
-                                           transmission['wavelength'],
-                                           transmission['transmission'])
+        sampled_transmission = np.interp(wavelengths,
+                                         transmission['wavelength'],
+                                         transmission['transmission'])
 
-        bb_sed *= resampled_transmission
+        bb_sed *= sampled_transmission
 
     return bb_sed
 
@@ -84,27 +85,21 @@ def magnitude(temp, band, pwv):
         pwv  (float): The PWV concentration along line of sight in mm
 
     Returns:
-        The magnitude of the desired black body WITHOUT H2O absorption
-        The magnitude of the desired black body WITH H2O absorption
+        The magnitude of the desired black body as effected by H2O absorption
     """
 
     wavelengths = np.arange(band[0], band[1])
     lambda_over_c = (np.median(band) * u.AA) / c
 
-    flux = sed(temp, wavelengths, 0)
-    flux *= lambda_over_c.cgs
-
-    flux_pwv = sed(temp, wavelengths, pwv)
+    # We reintroduce units here to make programmatic errors easier to spot
+    flux_pwv = sed(temp, wavelengths, pwv) * (u.AA * u.cm * u.cm * u.s)
     flux_pwv *= lambda_over_c.cgs
 
     zero_point = (3631 * u.jansky).to(u.erg / u.cm ** 2)
-    int_flux = np.trapz(x=wavelengths, y=flux) * u.AA
-    int_flux_transm = np.trapz(x=wavelengths, y=flux_pwv) * u.AA
+    int_flux = np.trapz(x=wavelengths, y=flux_pwv) * u.AA
+    mag = -2.5 * np.log10(int_flux / zero_point)
 
-    magnitude = -2.5 * np.log10(int_flux / zero_point)
-    magnitude_transm = -2.5 * np.log10(int_flux_transm / zero_point)
-
-    return magnitude.value, magnitude_transm.value
+    return mag.value
 
 
 def zp_bias(ref_temp, cal_temp, band, pwv):
@@ -123,15 +118,17 @@ def zp_bias(ref_temp, cal_temp, band, pwv):
         pwv      (float): The PWV concentration along line of sight
 
     Returns:
-        The residual error in the second star's magnitude
+        The residual error in the photometric zero point for the given band
     """
 
     # Values for reference star
-    ref_mag, ref_mag_atm = magnitude(ref_temp, band, pwv)
+    ref_mag = magnitude(ref_temp, band, 0)
+    ref_mag_atm = magnitude(ref_temp, band, pwv)
     ref_zero_point = ref_mag - ref_mag_atm
 
     # Values for star being calibrated
-    cal_mag, cal_mag_atm = magnitude(cal_temp, band, pwv)
+    cal_mag = magnitude(cal_temp, band, 0)
+    cal_mag_atm = magnitude(cal_temp, band, pwv)
     cal_zero_point = cal_mag - cal_mag_atm
 
     bias = cal_zero_point - ref_zero_point

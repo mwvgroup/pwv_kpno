@@ -20,13 +20,12 @@
 
 import unittest
 
-from astropy import units as u
 from astropy.modeling.blackbody import blackbody_lambda
 import numpy as np
 
-from pwv_kpno.black_body import zp_bias
-from pwv_kpno.black_body import sed
-from pwv_kpno.black_body import magnitude
+from pwv_kpno.blackbody import zp_bias
+from pwv_kpno.blackbody import sed
+from pwv_kpno.blackbody import magnitude
 
 
 class BlackbodySED(unittest.TestCase):
@@ -36,23 +35,13 @@ class BlackbodySED(unittest.TestCase):
     temp = 10000  # Kelvin
     pwv = 13  # Millimeters
 
-    def test_units(self):
-        """Tests black body model for correct units"""
-
-        modeled_sed = sed(self.temp, self.wavelengths, 13)
-        sed_units = modeled_sed[0].unit
-        expected_units = u.erg / (u.angstrom * u.cm * u.cm * u.s)
-
-        msg = "Returned SED has incorrect units ({})"
-        self.assertEqual(sed_units, expected_units, msg.format(sed_units))
-
     def test_zero_pwv(self):
         """Tests returned SED has no atmospheric features for pwv = 0"""
 
         returned_sed = sed(self.temp, self.wavelengths, 0)
 
-        expected_sed = blackbody_lambda(self.wavelengths, self.temp)
-        expected_sed *= (4 * np.pi * u.sr)
+        expected_sed = blackbody_lambda(self.wavelengths, self.temp).value
+        expected_sed *= (4 * np.pi)  # Integrate over angular coordinates
 
         sed_is_same = np.all(np.equal(returned_sed, expected_sed))
         self.assertTrue(sed_is_same,
@@ -72,8 +61,7 @@ class BlackbodyMagnitude(unittest.TestCase):
         without_pwv, with_pwv = magnitude(temp, band, pwv)
         self.assertEqual(without_pwv, with_pwv,
                          "Returned magnitudes are not equal for pwv = 0")
-        
-        
+
     def test_nonzero_pwv(self):
         """Tests that returned magnitudes are different for nonzero pwv"""
 
