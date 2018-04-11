@@ -51,27 +51,17 @@ class BlackbodySED(unittest.TestCase):
 class BlackbodyMagnitude(unittest.TestCase):
     """Tests for the function blackbody.magnitude"""
 
-    def test_zero_pwv(self):
-        """Tests magnitude is unaffected by atmospheric for pwv = 0"""
+    def test_pwv_dependence(self):
+        """Tests that returned magnitude increases with pwv"""
 
         temp = 10000  # Kelvin
         band = (7000, 8500)  # Angstroms
-        pwv = 0  # Millimeters
+        test_pwv = 10  # Millimeters
 
-        without_pwv, with_pwv = magnitude(temp, band, pwv)
-        self.assertEqual(without_pwv, with_pwv,
-                         "Returned magnitudes are not equal for pwv = 0")
-
-    def test_nonzero_pwv(self):
-        """Tests that returned magnitudes are different for nonzero pwv"""
-
-        temp = 10000  # Kelvin
-        band = (7000, 8500)  # Angstroms
-        pwv = 5  # Millimeters
-
-        without_pwv, with_pwv = magnitude(temp, band, pwv)
-        self.assertNotEqual(without_pwv, with_pwv, 
-                            "Returned magnitudes are equal for pwv = 5 mm")
+        without_pwv = magnitude(temp, band, 0)
+        with_pwv = magnitude(temp, band, test_pwv)
+        self.assertLess(without_pwv, with_pwv,
+                        "Returned magnitude does not decrease with pwv")
 
 
 class ZeroPointBias(unittest.TestCase):
