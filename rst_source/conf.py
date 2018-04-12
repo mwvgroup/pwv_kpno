@@ -33,6 +33,9 @@ todo_include_todos = False
 
 # The theme to use for HTML and HTML Help pages.
 html_theme = 'sphinx_rtd_theme'
+html_theme_options = {
+    'navigation_depth': 2,  # Depth of the headers shown in the navigation bar
+}
 
 # Paths that contain custom static files
 html_static_path = ['LOGO.png']

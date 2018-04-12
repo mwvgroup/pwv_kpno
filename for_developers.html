@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>7. For Developers &mdash; pwv_kpno 0.10.1 documentation</title>
+  <title>6. For Developers &mdash; pwv_kpno 0.10.1 documentation</title>
   
 
   
@@ -36,7 +36,7 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="pwv_kpno 0.10.1 documentation" href="index.html"/>
-        <link rel="prev" title="6. Modeling a Black Body" href="blackbody_modeling.html"/> 
+        <link rel="prev" title="5. Correcting Observations" href="correcting_observations.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -91,16 +91,15 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">1. Installation and Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="correcting_observations.html">2. Correcting Observations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="updating_data.html">3. Updating PWV Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="accessing_pwv_data.html">4. Accessing PWV Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">5. Modeling the Atmosphere</a></li>
-<li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">6. Modeling a Black Body</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">7. For Developers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#extra-dependencies">7.1. Extra Dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#future-features">7.2. Future Features</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#some-key-points">7.3. Some Key Points</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#releasing-a-new-version">7.4. Releasing a New Version</a></li>
+<li class="toctree-l1"><a class="reference internal" href="updating_data.html">2. Accessing PWV Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">3. Modeling the Atmosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">4. Modeling a Black Body</a></li>
+<li class="toctree-l1"><a class="reference internal" href="correcting_observations.html">5. Correcting Observations</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">6. For Developers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#extra-dependencies">6.1. Extra Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#future-features">6.2. Future Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#some-key-points">6.3. Some Key Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#releasing-a-new-version">6.4. Releasing a New Version</a></li>
 </ul>
 </li>
 </ul>
@@ -147,7 +146,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>7. For Developers</li>
+      <li>6. For Developers</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -167,24 +166,24 @@
            <div itemprop="articleBody">
             
   <div class="section" id="for-developers">
-<h1>7. For Developers<a class="headerlink" href="#for-developers" title="Permalink to this headline">¶</a></h1>
+<h1>6. For Developers<a class="headerlink" href="#for-developers" title="Permalink to this headline">¶</a></h1>
 <p><strong>pwv_kpno</strong> is open source software released under the GNU <a class="reference external" href="https://www.gnu.org/licenses/gpl-3.0.en.html">General Public
 License</a>. The following is
 provided as reference for future development.</p>
 <div class="section" id="extra-dependencies">
-<h2>7.1. Extra Dependencies<a class="headerlink" href="#extra-dependencies" title="Permalink to this headline">¶</a></h2>
-<p>Documentation for <strong>pwv_kpno</strong> is generated using sphinx with the &#8220;Read The
-Docs&#8221; theme. Source code can be found in the <em>gh-pages</em> branch of the project
+<h2>6.1. Extra Dependencies<a class="headerlink" href="#extra-dependencies" title="Permalink to this headline">¶</a></h2>
+<p>Documentation for <strong>pwv_kpno</strong> is generated using sphinx with the “Read The
+Docs” theme. Source code can be found in the <em>gh-pages</em> branch of the project
 repository <a class="reference external" href="https://github.com/mwvgroup/pwv_kpno/tree/gh-pages">here</a>.
 To update or modify package documentation, you will need to install the
 following:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">sphinx</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">sphinx</span>
 <span class="n">pip</span> <span class="n">install</span> <span class="n">sphinx_rtd_theme</span>
 </pre></div>
 </div>
 <p>In order to automatically generate a new version of the documentation, from the
 <cite>rst_source</cite> directory use the command:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">gh</span><span class="o">-</span><span class="n">pages</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">gh</span><span class="o">-</span><span class="n">pages</span>
 </pre></div>
 </div>
 <p>On Uix systems this will call the make file <cite>rst_source/Makefile</cite>. Currently
@@ -196,19 +195,19 @@ outputs supported by sphinx other than html (such as Texinfo, LaTeX, or
 HTMLHelp).</p>
 </div>
 <div class="section" id="future-features">
-<h2>7.2. Future Features<a class="headerlink" href="#future-features" title="Permalink to this headline">¶</a></h2>
+<h2>6.2. Future Features<a class="headerlink" href="#future-features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Include an option or function to return atmospheric transmission functions
 binned at different wavelengths</li>
 <li>When calibrating photometric images, there is error introduced in z when PWV
-absorption isn&#8217;t accounted for. Provide a function that returns this error.</li>
+absorption isn’t accounted for. Provide a function that returns this error.</li>
 <li>Allow users to specify what GPS receivers to download data from and what
 datetimes to ignore.</li>
 <li>Add ability to export / import GPS ids and dates</li>
 </ul>
 </div>
 <div class="section" id="some-key-points">
-<h2>7.3. Some Key Points<a class="headerlink" href="#some-key-points" title="Permalink to this headline">¶</a></h2>
+<h2>6.3. Some Key Points<a class="headerlink" href="#some-key-points" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><strong>pwv_kpno</strong> depends on atmospheric models generated by create_atm_model.py.
 These models only consider the effects of precipitable water vapor, but can
@@ -226,7 +225,7 @@ version.</li>
 </ul>
 </div>
 <div class="section" id="releasing-a-new-version">
-<h2>7.4. Releasing a New Version<a class="headerlink" href="#releasing-a-new-version" title="Permalink to this headline">¶</a></h2>
+<h2>6.4. Releasing a New Version<a class="headerlink" href="#releasing-a-new-version" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
 <li>Make sure that the config.txt and measured_pwv.csv exist and exclusively
 include the SuomiNet data intended for distribution with the package</li>
@@ -250,7 +249,7 @@ are included with the current package version.</li>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="blackbody_modeling.html" class="btn btn-neutral" title="6. Modeling a Black Body" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="correcting_observations.html" class="btn btn-neutral" title="5. Correcting Observations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

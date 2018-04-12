@@ -57,19 +57,18 @@ all necessary SuomiNet data from 2010 through the end of 2017. It is
 recommended to update the local SuomiNet data after installing or updating the
 package, and periodically as necessary.
 
-To download any new SuomiNet data use the update_models
-function::
+To download any new SuomiNet data use the `update_models` function::
 
-    >>> import pwv_kpno
-    >>> pwv_kpno.update_models()
+    >>> from pwv_kpno import pwv_trans
+    >>> pwv_trans.update_models()
 
 Optionally, you can download data only for a specific year by passing the year
 as an argument::
 
-    >>> pwv_kpno.update_models(year=2018)
+    >>> pwv_trans.update_models(year=2018)
 
-Note that the update_models function requires the user to have permission to
-write and modify files within the package directory.
+Note that updating the locally available data requires the user to have
+permission to write and modify files within the package directory.
 
 |
 
@@ -81,4 +80,4 @@ If desired, the test suite can be run using::
     python setup.py tests
 
 Note that **pwv_kpno** includes tests that download SuomiNet data from the
-internet (under 16 MB).
+internet (under 20 MB).

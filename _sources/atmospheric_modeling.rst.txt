@@ -13,20 +13,15 @@ Transmission from Datetime
 Using measurements from the `SuomiNet <http://www.suominet.ucar.edu>`_ project,
 **pwv_kpno** is able to determine the PWV concentration along line of sight
 for a provided datetime and airmass. Note that this requires SuomiNet data for
-the desired datetime to be available on the local machine. By default,
-**pwv_kpno** includes all necessary PWV data for years 2010 through 2017. To
-find the atmospheric transmission, use the `transmission` method.
+the desired datetime to be available on the local machine (See `updating data
+<updating_data.html>`_ for more details).
 
-If you require additional data on your machine, please see the `updating data
-<updating_data.html#updating-data>`_ section.
-
-.. For more information on how **pwv_kpno** relates PWV concentration and airmass,
-.. see the `Science Notes <science_notes.html>`_.
+To find the atmospheric transmission, use the `transmission` method.
 
 .. autofunction:: pwv_kpno.pwv_trans.transmission
 
-Example
--------
+Example:
+--------
 
 For an airmass of 1.2, the transmission function at 2013-12-15 05:35:00 is
 given by::
@@ -61,8 +56,8 @@ can be done using the `transmission_pwv` method.
 
 .. autofunction:: pwv_kpno.pwv_trans.transmission_pwv
 
-Example
--------
+Example:
+--------
 .. code-block:: python
 
     >>> pwv_trans.transmission_pwv(13.5)
