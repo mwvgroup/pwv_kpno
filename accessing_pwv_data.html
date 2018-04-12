@@ -36,7 +36,7 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="pwv_kpno 0.10.1 documentation" href="index.html"/>
-        <link rel="next" title="5. For Developers" href="for_developers.html"/>
+        <link rel="next" title="5. Modeling the Atmosphere" href="atmospheric_modeling.html"/>
         <link rel="prev" title="3. Updating PWV Data" href="updating_data.html"/> 
 
   
@@ -92,7 +92,7 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">1. Installation and Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modeling_the_atmosphere.html">2. Modeling the Atmosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="correcting_observations.html">2. Correcting Observations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="updating_data.html">3. Updating PWV Data</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">4. Accessing PWV Data</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#measured-pwv-data">4.1. Measured PWV Data</a><ul>
@@ -105,7 +105,9 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="for_developers.html">5. For Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">5. Modeling the Atmosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">6. Modeling a Black Body</a></li>
+<li class="toctree-l1"><a class="reference internal" href="for_developers.html">7. For Developers</a></li>
 </ul>
 
             
@@ -179,36 +181,6 @@ model for the PWV level at Kitt Peak National Observatory.</p>
 <p>To retrieve an astropy table of SuomiNet data available on the local machine,
 use the <cite>measured_pwv</cite> function. Results can be filtered independently by year,
 month, day, and hour</p>
-<dl class="function">
-<dt id="pwv_kpno.measured_pwv">
-<code class="descclassname">pwv_kpno.</code><code class="descname">measured_pwv</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>hour=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_utilities.html#measured_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.measured_pwv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return an astropy table of PWV measurements taken by SuomiNet</p>
-<p>Return an astropy table of precipitable water vapor (PWV) measurements
-taken by the SuomiNet project. The first column is named &#8216;date&#8217; and
-contains the UTC datetime of each measurement. Successive columns are
-named using the SuomiNet IDs for different locations and contain PWV
-measurements for that location in millimeters. By default the returned
-table contains all locally available SuomiNet data. Results can be
-refined by year, month, day, and hour by using the keyword arguments.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>year</strong> (<em>int</em>) &#8211; The year of the desired PWV data</li>
-<li><strong>month</strong> (<em>int</em>) &#8211; The month of the desired PWV data</li>
-<li><strong>day</strong> (<em>int</em>) &#8211; The day of the desired PWV data</li>
-<li><strong>hour</strong> (<em>int</em>) &#8211; The hour of the desired PWV data in 24-hour format</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An astropy table of measured PWV values in mm</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <div class="section" id="example">
 <h3>4.1.1. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
 <p>To retrieve all SuomiNet data available on the local machine as an <cite>astropy</cite>
@@ -247,35 +219,6 @@ returned table will be empty.</p>
 <p>This package uses SuomiNet data to create a model for the PWV level at Kitt
 Peak. To retrieve this model as an astropy table, use the <cite>modeled_pwv</cite>
 function</p>
-<dl class="function">
-<dt id="pwv_kpno.modeled_pwv">
-<code class="descclassname">pwv_kpno.</code><code class="descname">modeled_pwv</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>hour=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_utilities.html#modeled_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.modeled_pwv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return an astropy table of the modeled PWV at Kitt Peak</p>
-<p>Return a model for the precipitable water vapor level at Kitt Peak as an
-astropy table. The first column of the table is named &#8216;date&#8217; and contains
-the UTC datetime of each modeled value. The second column is named &#8216;pwv&#8217;,
-and contains PWV values in millimeters. By default this function returns
-modeled values from 2010 onward. Results can be restricted to a specific
-year, month, day, and hour by using the key word arguments.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>year</strong> (<em>int</em>) &#8211; The year of the desired PWV data</li>
-<li><strong>month</strong> (<em>int</em>) &#8211; The month of the desired PWV data</li>
-<li><strong>day</strong> (<em>int</em>) &#8211; The day of the desired PWV data</li>
-<li><strong>hour</strong> (<em>int</em>) &#8211; The hour of the desired PWV data in 24-hour format</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An astropy table of modeled PWV values in mm</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <div class="section" id="id1">
 <h3>4.2.1. Example<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>To retrieve the entire PWV model covering from 2010 onward:</p>
@@ -318,7 +261,7 @@ year, month, day, and hour by using the key word arguments.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="for_developers.html" class="btn btn-neutral float-right" title="5. For Developers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="atmospheric_modeling.html" class="btn btn-neutral float-right" title="5. Modeling the Atmosphere" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="updating_data.html" class="btn btn-neutral" title="3. Updating PWV Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

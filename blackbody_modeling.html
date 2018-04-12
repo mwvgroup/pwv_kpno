@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Search &mdash; pwv_kpno 0.10.1 documentation</title>
+  <title>6. Modeling a Black Body &mdash; pwv_kpno 0.10.1 documentation</title>
   
 
   
@@ -34,8 +34,10 @@
   
         <link rel="index" title="Index"
               href="genindex.html"/>
-        <link rel="search" title="Search" href="#"/>
-    <link rel="top" title="pwv_kpno 0.10.1 documentation" href="index.html"/> 
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="pwv_kpno 0.10.1 documentation" href="index.html"/>
+        <link rel="next" title="7. For Developers" href="for_developers.html"/>
+        <link rel="prev" title="5. Modeling the Atmosphere" href="atmospheric_modeling.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -71,7 +73,7 @@
 
           
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="#" method="get">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -88,13 +90,18 @@
               
             
             
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">1. Installation and Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="correcting_observations.html">2. Correcting Observations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="updating_data.html">3. Updating PWV Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="accessing_pwv_data.html">4. Accessing PWV Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">5. Modeling the Atmosphere</a></li>
-<li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">6. Modeling a Black Body</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">6. Modeling a Black Body</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#generating-and-sed">6.1. Generating and SED</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#magnitude">6.2. Magnitude</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#estimating-zero-point-error">6.3. Estimating Zero Point Error</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="for_developers.html">7. For Developers</a></li>
 </ul>
 
@@ -140,10 +147,14 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Search</li>
+      <li>6. Modeling a Black Body</li>
     
     
       <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/blackbody_modeling.rst.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
     
@@ -155,19 +166,39 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <noscript>
-  <div id="fallback" class="admonition warning">
-    <p class="last">
-      Please activate JavaScript to enable the search
-      functionality.
-    </p>
-  </div>
-  </noscript>
+  <div class="section" id="modeling-a-black-body">
+<h1>6. Modeling a Black Body<a class="headerlink" href="#modeling-a-black-body" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="generating-and-sed">
+<h2>6.1. Generating and SED<a class="headerlink" href="#generating-and-sed" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="magnitude">
+<h2>6.2. Magnitude<a class="headerlink" href="#magnitude" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pwv_kpno.blackbody_with_atm.transmission_pwv">
+<code class="descclassname">pwv_kpno.blackbody_with_atm.</code><code class="descname">transmission_pwv</code><span class="sig-paren">(</span><em>pwv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/_transmission.html#transmission_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.blackbody_with_atm.transmission_pwv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the atmospheric transmission due a given PWV concentration in mm</p>
+<p>For a given precipitable water vapor concentration, return the modeled
+atmospheric transmission function. The modeled transmission is returned as
+an astropy table with the columns &#8216;wavelength&#8217; and &#8216;transmission&#8217;.
+Wavelength values range from 7000 to 10,000 angstroms.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pwv</strong> (<em>int</em><em>, </em><em>float</em>) &#8211; A PWV concentration in mm</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The modeled transmission function as an astropy table.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
-  
-  <div id="search-results">
-  
-  </div>
+</div>
+<div class="section" id="estimating-zero-point-error">
+<h2>6.3. Estimating Zero Point Error<a class="headerlink" href="#estimating-zero-point-error" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
 
            </div>
            <div class="articleComments">
@@ -175,6 +206,15 @@
            </div>
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="for_developers.html" class="btn btn-neutral float-right" title="7. For Developers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="atmospheric_modeling.html" class="btn btn-neutral" title="5. Modeling the Atmosphere" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
@@ -213,7 +253,6 @@
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="_static/searchtools.js"></script>
 
   
 
@@ -229,14 +268,7 @@
           SphinxRtdTheme.StickyNav.enable();
       });
   </script>
-  
-  <script type="text/javascript">
-    jQuery(function() { Search.loadIndex("searchindex.js"); });
-  </script>
-  
-  <script type="text/javascript" id="searchindexloader"></script>
    
-
 
 </body>
 </html>

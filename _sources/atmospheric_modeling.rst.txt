@@ -23,7 +23,7 @@ If you require additional data on your machine, please see the `updating data
 .. For more information on how **pwv_kpno** relates PWV concentration and airmass,
 .. see the `Science Notes <science_notes.html>`_.
 
-.. autofunction:: pwv_kpno.transmission
+.. autofunction:: pwv_kpno.pwv_trans.transmission
 
 Example
 -------
@@ -32,6 +32,7 @@ For an airmass of 1.2, the transmission function at 2013-12-15 05:35:00 is
 given by::
 
     >>> from datetime import datetime
+    >>> from pwv_kpno import pwv_trans
     >>> import pytz
     >>>
     >>> obsv_date = datetime(year=2013,
@@ -41,7 +42,7 @@ given by::
     >>>                      minute=35,
     >>>                      tzinfo=pytz.utc)
     >>>
-    >>> pwv_kpno.transmission(date=obsv_date, airmass=1.2)
+    >>> pwv_trans.transmission(date=obsv_date, airmass=1.2)
 
       wavelength   transmission
        Angstrom         %
@@ -58,13 +59,13 @@ Instead of relying on SuomiNet measurements, users can also retrieve the
 modeled transmission function by directly specifying a PWV concentration. This
 can be done using the `transmission_pwv` method.
 
-.. autofunction:: pwv_kpno.transmission_pwv
+.. autofunction:: pwv_kpno.pwv_trans.transmission_pwv
 
 Example
 -------
 .. code-block:: python
 
-    >>> pwv_kpno.transmission_pwv(13.5)
+    >>> pwv_trans.transmission_pwv(13.5)
 
       wavelength   transmission
        Angstrom         %

@@ -51,9 +51,11 @@ Table of Contents
     :numbered:
 
     install
-    modeling_the_atmosphere
+    correcting_observations
     updating_data
     accessing_pwv_data
+    atmospheric_modeling
+    blackbody_modeling
     for_developers
 
 ..

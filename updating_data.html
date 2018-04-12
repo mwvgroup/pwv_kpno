@@ -37,7 +37,7 @@
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="pwv_kpno 0.10.1 documentation" href="index.html"/>
         <link rel="next" title="4. Accessing PWV Data" href="accessing_pwv_data.html"/>
-        <link rel="prev" title="2. Modeling the Atmosphere" href="modeling_the_atmosphere.html"/> 
+        <link rel="prev" title="2. Correcting Observations" href="correcting_observations.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -92,7 +92,7 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">1. Installation and Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modeling_the_atmosphere.html">2. Modeling the Atmosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="correcting_observations.html">2. Correcting Observations</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">3. Updating PWV Data</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#checking-available-data">3.1. Checking Available Data</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#example">3.1.1. Example</a></li>
@@ -105,7 +105,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="accessing_pwv_data.html">4. Accessing PWV Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="for_developers.html">5. For Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">5. Modeling the Atmosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">6. Modeling a Black Body</a></li>
+<li class="toctree-l1"><a class="reference internal" href="for_developers.html">7. For Developers</a></li>
 </ul>
 
             
@@ -180,24 +182,6 @@ all necessary SuomiNet data from 2010 through the end of 2017.</p>
 <p>Checking the years for which SuomiNet data is locally available can be achieved
 using the <cite>available_data</cite> function. By default, version 0.10.0 of <strong>pwv_kpno</strong>
 is distributed with all the necessary SuomiNet data from 2010 through 2017.</p>
-<dl class="function">
-<dt id="pwv_kpno.available_data">
-<code class="descclassname">pwv_kpno.</code><code class="descname">available_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_utilities.html#available_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.available_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a list of years for which SuomiNet data has been downloaded</p>
-<p>Return a list of years for which SuomiNet data has been downloaded to the
-local machine. Note that this list includes years for which any amount
-of data has been downloaded. It does not indicate if additional data has
-been released by SuomiNet for a given year that is not locally available.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of years with locally available SuomiNet data</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <div class="section" id="example">
 <h3>3.1.1. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_kpno</span><span class="o">.</span><span class="n">available_data</span><span class="p">()</span>
@@ -212,27 +196,6 @@ been released by SuomiNet for a given year that is not locally available.</p>
 <p>To download SuomiNet data to your local machine, use the <cite>update_models</cite>
 function. By default only data that is not available on the local machine will
 be downloaded.</p>
-<dl class="function">
-<dt id="pwv_kpno.update_models">
-<code class="descclassname">pwv_kpno.</code><code class="descname">update_models</code><span class="sig-paren">(</span><em>year=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/end_user_utilities.html#update_models"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.update_models" title="Permalink to this definition">¶</a></dt>
-<dd><p>Download data from SuomiNet and update the locally stored PWV model</p>
-<p>Update the locally available SuomiNet data by downloading new data from
-the SuomiNet website. Use this data to create an updated model for the PWV
-level at Kitt Peak. If a year is provided, only update data for that year.
-If not, download all available data from 2017 onward. Data for years from
-2010 through 2016 is included with this package version by default.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>year</strong> (<em>int</em>) &#8211; A Year from 2010 onward</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list of years for which models where updated</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <div class="section" id="id1">
 <h3>3.2.1. Example<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>By default, <cite>update_models</cite> will download any data that is not available on the
@@ -268,7 +231,7 @@ specific year:</p>
         <a href="accessing_pwv_data.html" class="btn btn-neutral float-right" title="4. Accessing PWV Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="modeling_the_atmosphere.html" class="btn btn-neutral" title="2. Modeling the Atmosphere" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="correcting_observations.html" class="btn btn-neutral" title="2. Correcting Observations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
