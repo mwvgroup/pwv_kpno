@@ -12,20 +12,20 @@ An Incomplete Guide to Getting Started:
     To determine the SED of a black body under the influence of atmospheric
     effects due to a known PWV concentration (in mm):
 
-      >>> from pwv_kpno import blackbody
+      >>> from pwv_kpno import blackbody_with_atm
       >>>
       >>> temp = 8000  # Black Body temperature in Kelvin
       >>> wavelengths = np.arange(7000, 10000, 100) # Wavelengths in Angstrom
       >>> pwv = 17  # Integrated PWV concentration in mm
       >>>
-      >>> blackbody.sed(temp, wavelengths, pwv)
+      >>> blackbody_with_atm.sed(temp, wavelengths, pwv)
 
 
     To determine the magnitude of a black body both with and without
     atmospheric effects:
 
     >>> band = (7000, 10000) # Units of Angstrom
-    >>> mag_without_atm, mag_with_atm = blackbody.magnitude(temp, band, pwv)
+    >>> mag_without_atm, mag_with_atm = blackbody_with_atm.magnitude(temp, band, pwv)
 
 
     To determine the residual error in the zero point of a photometric image

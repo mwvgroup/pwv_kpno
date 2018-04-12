@@ -23,9 +23,9 @@ import unittest
 from astropy.modeling.blackbody import blackbody_lambda
 import numpy as np
 
-from pwv_kpno.blackbody import zp_bias
-from pwv_kpno.blackbody import sed
-from pwv_kpno.blackbody import magnitude
+from pwv_kpno.blackbody_with_atm import zp_bias
+from pwv_kpno.blackbody_with_atm import sed
+from pwv_kpno.blackbody_with_atm import magnitude
 
 
 class BlackbodySED(unittest.TestCase):
