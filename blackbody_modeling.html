@@ -173,44 +173,58 @@ distribution, the magnitude in a given band, and the error in photometric zero
 point. We suggest importing this module as <cite>bb_atm</cite>.</p>
 <div class="section" id="generating-an-sed">
 <h2>4.1. Generating an SED<a class="headerlink" href="#generating-an-sed" title="Permalink to this headline">¶</a></h2>
-<dl class="docutils">
-<dt>If desired, the SED of a black body</dt>
-<dd>without atmospheric effects can also be achieved by specifying a PWV level of zero.</dd>
-</dl>
+<dl class="function">
+<dt id="pwv_kpno.blackbody_with_atm.sed">
+<code class="descclassname">pwv_kpno.blackbody_with_atm.</code><code class="descname">sed</code><span class="sig-paren">(</span><em>temp</em>, <em>wavelengths</em>, <em>pwv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/blackbody_with_atm.html#sed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.blackbody_with_atm.sed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the flux of a black body under the influence of pwv absorption</p>
+<p>Flux is returned in units of ergs / (angstrom * cm2 * s)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>temp</strong> (<em>float</em>) – The desired temperature of the black body</li>
+<li><strong>wavelengths</strong> (<em>ndarray</em>) – An array like object containing wavelengths</li>
+<li><strong>pwv</strong> (<em>float</em>) – The PWV concentration along line of sight in mm</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An array of flux values in units of ergs / (angstrom * cm2 * s)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <div class="section" id="example">
 <h3>4.1.1. Example:<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
-<blockquote>
-<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="k">import</span> <span class="n">blackbody</span> <span class="k">as</span> <span class="n">bb_atm</span>
-<span class="go">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">temp</span> <span class="o">=</span> <span class="mi">8000</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">wavelength</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">7000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pwv</span> <span class="o">=</span> <span class="mi">15</span>
-<span class="go">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sed</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">sed</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">sed</span><span class="p">)</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">blackbody</span> <span class="k">as</span> <span class="n">bb_atm</span>
+ <span class="o">&gt;&gt;&gt;</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">bb_temp</span> <span class="o">=</span> <span class="mi">8000</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">wavelength</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">7000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">pwv</span> <span class="o">=</span> <span class="mi">15</span>
+ <span class="o">&gt;&gt;&gt;</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">sed</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">sed</span><span class="p">(</span><span class="n">bb_temp</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
 </pre></div>
-</div>
-<blockquote>
-<div><dl class="docutils">
-<dt>[67943236.6960908, 70958962.4114214, …,</dt>
-<dd>30913697.9848318, 29947238.7968099]</dd>
-</dl>
-</div></blockquote>
-</div></blockquote>
+</td></tr></table></div>
+<p><strong>Note:</strong> If desired, the SED of a black body without atmospheric effects can
+also be achieved by specifying a PWV level of zero.</p>
 </div>
 </div>
 <div class="section" id="magnitude">
 <h2>4.2. Magnitude<a class="headerlink" href="#magnitude" title="Permalink to this headline">¶</a></h2>
-<dl class="docutils">
-<dt>Using the code{magnitude} function, users can also determine the magnitude of a black body in a given band. For</dt>
-<dd><p class="first">example, in the $i$ band, which ranges from $7,000$ to $8,500 rm{AA}$, the magnitude of a black body is found by
-running</p>
-<p class="last">As in the previous example, the magnitude of a blackbody without the effects of atmospheric absorption can be found
-by specifying a PWV level of zero. pwv_kpno only provides models for the atmospheric transmission between $7,000$
-and $10,000$ angstroms. If the code{magnitude} function as asked to determine the magnitude for a band that
-extends outside this range, and error is raised.</p>
-</dd>
-</dl>
+<p>The <cite>magnitude</cite> function returns the magnitude of a black body in a given band.
+Since <a href="#id1"><span class="problematic" id="id2">**</span></a>pwv_kpno only provides models for the atmospheric transmission between
+7,000 and 10,000 angstroms, if the specified band extends outside this range
+an error is raised.</p>
+<p><strong>Note:</strong> The magnitude of a blackbody without the effects of atmospheric
+absorption can be found by specifying a PWV level of zero.</p>
 <dl class="function">
 <dt id="pwv_kpno.blackbody_with_atm.transmission_pwv">
 <code class="descclassname">pwv_kpno.blackbody_with_atm.</code><code class="descname">transmission_pwv</code><span class="sig-paren">(</span><em>pwv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/_transmission.html#transmission_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.blackbody_with_atm.transmission_pwv" title="Permalink to this definition">¶</a></dt>
@@ -231,23 +245,76 @@ Wavelength values range from 7000 to 10,000 angstroms.</p>
 </table>
 </dd></dl>
 
-<div class="section" id="id1">
-<h3>4.2.1. Example:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">i_band</span> <span class="o">=</span> <span class="p">(</span><span class="mi">7000</span><span class="p">,</span> <span class="mi">8500</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bb_mag</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">magnitude</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">i_band</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
+<div class="section" id="id3">
+<h3>4.2.1. Example:<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>In the <em>i</em> band from 7,000 to 8,500 Angstroms, the magnitude of a
+black body is found by running</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="o">&gt;&gt;&gt;</span> <span class="n">bb_temp</span> <span class="o">=</span> <span class="mi">8000</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">i_band</span> <span class="o">=</span> <span class="p">(</span><span class="mi">7000</span><span class="p">,</span> <span class="mi">8500</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">pwv</span> <span class="o">=</span> <span class="mi">15</span>
+ <span class="o">&gt;&gt;&gt;</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">bb_mag</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">magnitude</span><span class="p">(</span><span class="n">bb_temp</span><span class="p">,</span> <span class="n">i_band</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
 </pre></div>
+</td></tr></table></div>
 </div>
+<div class="section" id="id4">
+<h3>4.2.2. Example:<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>In the <em>i</em> band from 7,000 to 8,500 Angstroms, the magnitude of a
+black body is found by running</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="o">&gt;&gt;&gt;</span> <span class="n">bb_temp</span> <span class="o">=</span> <span class="mi">8000</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">i_band</span> <span class="o">=</span> <span class="p">(</span><span class="mi">7000</span><span class="p">,</span> <span class="mi">8500</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">bb_mag</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">magnitude</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">i_band</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
 </div>
 </div>
 <div class="section" id="estimating-zero-point-error">
 <h2>4.3. Estimating Zero Point Error<a class="headerlink" href="#estimating-zero-point-error" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id2">
-<h3>4.3.1. Example:<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reference_star_temp</span> <span class="o">=</span> <span class="mi">4000</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">other_star_temps</span> <span class="o">=</span> <span class="mi">10000</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bias</span> <span class="o">=</span> <span class="n">zp_bias</span><span class="p">(</span><span class="n">reference_star_temp</span><span class="p">,</span> <span class="n">other_star_temps</span><span class="p">,</span> <span class="n">i_band</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
+<dl class="function">
+<dt id="pwv_kpno.blackbody_with_atm.zp_bias">
+<code class="descclassname">pwv_kpno.blackbody_with_atm.</code><code class="descname">zp_bias</code><span class="sig-paren">(</span><em>ref_temp</em>, <em>cal_temp</em>, <em>band</em>, <em>pwv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/blackbody_with_atm.html#zp_bias"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.blackbody_with_atm.zp_bias" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the residual error in the photometric zero point due to PWV</p>
+<p>Using a black body approximation, calculate the residual error in the zero
+point of a photometric image cause by not considering the PWV transmission
+function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ref_temp</strong> (<em>float</em>) – The temperature of a star used to calibrate the image</li>
+<li><strong>cal_temp</strong> (<em>float</em>) – The temperature of another star in the same image to
+calculate the error for</li>
+<li><strong>band</strong> (<em>tuple</em>) – Tuple specifying the beginning and end points
+of the desired band in angstroms</li>
+<li><strong>pwv</strong> (<em>float</em>) – The PWV concentration along line of sight</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The residual error in the photometric zero point for the given band</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="section" id="id5">
+<h3>4.3.1. Example:<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="o">&gt;&gt;&gt;</span> <span class="n">reference_star_temp</span> <span class="o">=</span> <span class="mi">4000</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">other_star_temps</span> <span class="o">=</span> <span class="mi">10000</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">bias</span> <span class="o">=</span> <span class="n">zp_bias</span><span class="p">(</span><span class="n">reference_star_temp</span><span class="p">,</span> <span class="n">other_star_temps</span><span class="p">,</span> <span class="n">i_band</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 </div>
 </div>
 </div>
@@ -274,7 +341,7 @@ Wavelength values range from 7000 to 10,000 angstroms.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Daniel J. Perrefort.
+        &copy; Copyright 2018, Daniel J. Perrefort.
 
     </p>
   </div>

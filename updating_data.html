@@ -238,7 +238,7 @@ If not, download all available data from 2017 onward. Data for years from
 <p>By default, <cite>update_models</cite> will download any data that is not available on the
 local machine. Version 0.11.0 already includes all data from years 2010 through
 2017:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">updated_years</span> <span class="o">=</span> <span class="n">pwv_kpno</span><span class="o">.</span><span class="n">update_models</span><span class="p">()</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">updated_years</span> <span class="o">=</span> <span class="n">pwv_kpno</span><span class="o">.</span><span class="n">update_models</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">updated_years</span>
 
 <span class="go">  [2017, 2018]</span>
@@ -246,7 +246,7 @@ local machine. Version 0.11.0 already includes all data from years 2010 through
 </div>
 <p>If desired, <strong>pwv_kpno</strong> can be forced to (re)download SuomiNet data for a
 specific year:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_kpno</span><span class="o">.</span><span class="n">update_models</span><span class="p">(</span><span class="mi">2010</span><span class="p">)</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_kpno</span><span class="o">.</span><span class="n">update_models</span><span class="p">(</span><span class="mi">2010</span><span class="p">)</span>
 
 <span class="go">  [2010]</span>
 </pre></div>
@@ -295,7 +295,7 @@ refined by year, month, day, and hour by using the keyword arguments.</p>
 <h3>2.3.1. Example:<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>To retrieve all SuomiNet data available on the local machine as an <cite>astropy</cite>
 table:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_kpno</span><span class="o">.</span><span class="n">measured_pwv</span><span class="p">()</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_kpno</span><span class="o">.</span><span class="n">measured_pwv</span><span class="p">()</span>
 
 <span class="go">             date             KITT    P014    SA46    SA48    AZAM</span>
 <span class="go">             UTC               mm      mm      mm      mm      mm</span>
@@ -312,7 +312,7 @@ table:</p>
 <p>To retrieve SuomiNet data taken on November 14, 2016, specify the datetime as
 keyword arguments. Note in the below example that there is no data available
 from the SA48 receiver for this date:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_kpno</span><span class="o">.</span><span class="n">measured_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_kpno</span><span class="o">.</span><span class="n">measured_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 
 <span class="go">             date             KITT    P014    SA46    SA48    AZAM</span>
 <span class="go">             UTC               mm      mm      mm      mm      mm</span>
@@ -366,7 +366,7 @@ year, month, day, and hour by using the key word arguments.</p>
 <div class="section" id="id4">
 <h3>2.4.1. Example:<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>To retrieve the entire PWV model covering from 2010 onward:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_kpno</span><span class="o">.</span><span class="n">modeled_pwv</span><span class="p">()</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_kpno</span><span class="o">.</span><span class="n">modeled_pwv</span><span class="p">()</span>
 
 <span class="go">             date                pwv</span>
 <span class="go">             UTC                  mm</span>
@@ -382,7 +382,7 @@ year, month, day, and hour by using the key word arguments.</p>
 <div class="section" id="id5">
 <h3>2.4.2. Example:<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <p>To retrieve the modeled PWV level for November 14, 2016:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_kpno</span><span class="o">.</span><span class="n">modeled_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_kpno</span><span class="o">.</span><span class="n">modeled_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 
 <span class="go">               date                pwv</span>
 <span class="go">               UTC                  mm</span>
@@ -420,7 +420,7 @@ year, month, day, and hour by using the key word arguments.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Daniel J. Perrefort.
+        &copy; Copyright 2018, Daniel J. Perrefort.
 
     </p>
   </div>

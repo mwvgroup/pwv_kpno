@@ -2,14 +2,18 @@
 Correcting Observations
 ***********************
 
+We provide examples on how to correct astronomical observations for atmospheric
+effects. For demonstration purposes, we present examples that exclusively
+consider a black body.
+
 Spectrographic Observations
 ===========================
 
 In order to correct spectral observations for atmospheric effects, observed
-spectra are devided by the atmospheric transmission function. For demonstration
-purposes, we consider the spectral energy distribution (SED) of a black body
-under the effects of atmospheric absorption. For a temperature of 8,000 K, and
- a PWV level of 15 mm, this can be found as::
+spectra are divided by the atmospheric transmission function. As an example,
+consider the spectral energy distribution (SED) of a black body under the
+effects of atmospheric absorption. For a temperature of 8,000 K, and a PWV
+level of 15 mm, this can be found as
 
     >>> from pwv_kpno import blackbody as bb_atm
     >>>
@@ -34,13 +38,12 @@ used to generate the black body, we use the `numpy` package to interpolate.
 
     >>> import numpy as np
     >>> trans_at_wavelength = np.interp(obs_wavelengths,
-    >>>     modeled_trans["wavelength"],
-    >>>     modeled_trans["transmission"])
+    >>>                                 modeled_trans["wavelength"],
+    >>>                                 modeled_trans["transmission"])
 
 Finally, the corrected spectrum can be found by dividing the observed flux
 by the transmission `trans_at_wavelength` on a wavelength by wavelength basis.
 
-    >>> corrected_spec = observed_spec.copy()
     >>> corrected_spec = np.divide(observed_spec["flux"], trans_at_wavelength)
 
 

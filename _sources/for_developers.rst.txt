@@ -13,17 +13,21 @@ Documentation for **pwv_kpno** is generated using sphinx with the "Read The
 Docs" theme. Source code can be found in the *gh-pages* branch of the project
 repository `here <https://github.com/mwvgroup/pwv_kpno/tree/gh-pages>`_.
 To update or modify package documentation, you will need to install the
-following::
+following
+
+.. code-block:: console
 
     pip install sphinx
     pip install sphinx_rtd_theme
 
 In order to automatically generate a new version of the documentation, from the
-`rst_source` directory use the command::
+`rst_source` directory use the command
+
+.. code-block:: console
 
     make gh-pages
 
-On Uix systems this will call the make file `rst_source/Makefile`. Currently
+On Unix systems this will call the make file `rst_source/Makefile`. Currently
 there is no make file for Windows.
 
 Note that the usage examples are hard coded, and the make file will not update

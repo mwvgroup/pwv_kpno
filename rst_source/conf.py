@@ -7,16 +7,17 @@ extensions = ['sphinx.ext.autodoc',      # auto-documentation
               'sphinx.ext.githubpages',  # creates .nojekyll file
               'sphinx.ext.napoleon']     # adds support for google doc style
 
-# The suffixes of source files.
+# The suffixes of source files
 source_suffix = ['.rst']
 
-# The master toctree document.
+# The document containing the master table of contents
 master_doc = 'index'
 
-# General information about the project.
+# General information about the project
 project = 'pwv_kpno'
-copyright = '2017, Daniel J. Perrefort'
+copyright = '2018, Daniel J. Perrefort'
 author = 'Daniel J. Perrefort'
+highlight_language = 'python3'
 
 # The version info for the project
 version = '0.10.1'
