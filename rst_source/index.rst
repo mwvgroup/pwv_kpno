@@ -31,22 +31,15 @@
 Overview
 ********
 
-**pwv_kpno** is a Python package for modeling the atmospheric transmission
-function at Kitt Peak National Observatory. It provides atmospheric models
-in the near-infrared (7,000 to 10,000 Angstroms) for years 2010 onward.
-Characterizing the atmospheric absorption is important when calibrating ground
+**pwv_kpno** is a Python package for modeling the atmospheric absorption due to
+H$_2$0 at Kitt Peak National Observatory. It provides atmospheric models
+in the near-infrared (from 7,000 to 10,000 Angstroms) for years 2010 onward.
+Understanding atmospheric absorption is important when calibrating ground
 based astronomical observations. Traditionally, determining the detailed
-atmospheric transmission function required dedicated spectrographic
-observations. **pwv_kpno** provides an alternative method that does not require
-dedicated observation time, and that can be run at the observer's convenience.
-
-When working in the optical and near-infrared, the atmospheric transmission
-function is highly dependent on the amount of precipitable water vapor (PWV)
-in the atmosphere. **pwv_kpno** models the atmospheric transmission using PWV
-measurements provided by the SuomiNet Project. SuomiNet measures PWV values
-by relating the delay in GPS signals to PWV levels in the atmosphere. This
-package uses measurements taken by GPS receivers located at Kitt Peak AZ,
-Amado AZ, Sahuarita AZ, Tucson AZ, and Tohono O'odham Community College.To seeHere
+atmospheric transmission function at a given date and time required performing
+dedicated spectrographic observations. **pwv_kpno** provides an alternative
+method that does not require dedicated observation time, and that can be
+performed at the user's convenience.
 
 ***********
 How to Cite
@@ -57,10 +50,25 @@ you cite Perrefort, Wood-Vasey et al. (`Arxiv <#>`_, `BibTeX <#>`_).
 If there is not an appropriate place to cite the source paper, please use the
 following standard acknowledgement:
 
-    *This research made use of the pwv_kpno python package, an open source project that provides models for the atmospheric transmission and related effects (Perrefort, Wood-Vasey et al. 2018)*
+    *This research made use of the pwv_kpno python package, an open source project that provides models for the atmospheric absorption due to precipitable water vapor in the near-infrared (Perrefort, Wood-Vasey et al. 2018)*
 
-If the publisher allows, you can also include a link pointing to the
-documentation page https://mwvgroup.github.io/pwv_kpno/ .
+If the publisher allows, you can also include a footnote with a link pointing
+to the documentation page
+`https://mwvgroup.github.io/pwv_kpno/ <https://mwvgroup.github.io/pwv_kpno/>`_.
+
+****************
+Acknowledgements
+****************
+
+This work is based in part on observations at Kitt Peak National Observatory,
+National Optical Astronomy Observatory (NOAO Prop. IDs: 2011B-0482 and
+2012B-0500; PI: Wood-Vasey), which is operated by the Association of
+Universities for Research in Astronomy (AURA) under a cooperative agreement
+with the National Science Foundation.
+
+This project uses data published by the SuomiNet project. We thank Teresa
+Vanhove and the SuomiNet team for their assistance in answering questions over
+the course of project development.
 
 ********************
 Additional Resources
