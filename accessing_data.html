@@ -178,8 +178,9 @@ data. Users can also access the local data as an <code class="docutils literal n
 <div class="section" id="checking-for-available-data">
 <h2>2.1. Checking For Available Data<a class="headerlink" href="#checking-for-available-data" title="Permalink to this headline">¶</a></h2>
 <p>Checking the years for which SuomiNet data is locally available can be achieved
-using the <code class="docutils literal notranslate"><span class="pre">available_data</span></code> function. By default, version 0.10.0 of <strong>pwv_kpno</strong>
-is distributed with all the necessary SuomiNet data from 2010 through 2017.</p>
+using the <code class="docutils literal notranslate"><span class="pre">available_data</span></code> function. By default, version 0.10.0 of
+<strong>pwv_kpno</strong> is distributed with all the necessary SuomiNet data from 2010
+through 2017.</p>
 <dl class="function">
 <dt id="pwv_kpno.pwv_atm.available_data">
 <code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">available_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/_pwv_data.html#available_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.available_data" title="Permalink to this definition">¶</a></dt>
@@ -200,7 +201,9 @@ been released by SuomiNet for a given year that is not locally available.</p>
 
 <div class="section" id="examples">
 <h3>2.1.1. Examples:<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_kpno</span><span class="o">.</span><span class="n">available_data</span><span class="p">()</span>
+<p>To check the years for which SuomiNet data is locally available, run the
+following:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_kpno</span><span class="o">.</span><span class="n">available_data</span><span class="p">()</span>
 
 <span class="go">  [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017]</span>
 </pre></div>
@@ -257,8 +260,8 @@ specific year:</p>
 <div class="section" id="measured-pwv-data">
 <h2>2.3. Measured PWV Data<a class="headerlink" href="#measured-pwv-data" title="Permalink to this headline">¶</a></h2>
 <p>To retrieve an astropy table of SuomiNet data available on the local machine,
-use the <code class="docutils literal notranslate"><span class="pre">measured_pwv</span></code> function. Results can be filtered independently by year,
-month, day, and hour</p>
+use the <code class="docutils literal notranslate"><span class="pre">measured_pwv</span></code> function. Results can be filtered independently by
+year, month, day, and hour</p>
 <dl class="function">
 <dt id="pwv_kpno.pwv_atm.measured_pwv">
 <code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">measured_pwv</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>hour=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/_pwv_data.html#measured_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.measured_pwv" title="Permalink to this definition">¶</a></dt>
@@ -359,8 +362,8 @@ year, month, day, and hour by using the key word arguments.</p>
 </table>
 </dd></dl>
 
-<div class="section" id="example">
-<h3>2.4.1. Example:<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id3">
+<h3>2.4.1. Examples:<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p>To retrieve the entire PWV model from 2010 onward:</p>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="k">import</span> <span class="n">pwv_atm</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">modeled_pwv</span><span class="p">()</span>

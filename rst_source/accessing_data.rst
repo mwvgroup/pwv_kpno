@@ -15,15 +15,17 @@ Checking For Available Data
 ===========================
 
 Checking the years for which SuomiNet data is locally available can be achieved
-using the ``available_data`` function. By default, version 0.10.0 of **pwv_kpno**
-is distributed with all the necessary SuomiNet data from 2010 through 2017.
+using the ``available_data`` function. By default, version 0.10.0 of
+**pwv_kpno** is distributed with all the necessary SuomiNet data from 2010
+through 2017.
 
 .. autofunction:: pwv_kpno.pwv_atm.available_data
 
 Examples:
 ---------
 
-.. code-block:: python
+To check the years for which SuomiNet data is locally available, run the
+following::
 
     >>> pwv_kpno.available_data()
 
@@ -63,13 +65,13 @@ Measured PWV Data
 =================
 
 To retrieve an astropy table of SuomiNet data available on the local machine,
-use the ``measured_pwv`` function. Results can be filtered independently by year,
-month, day, and hour
+use the ``measured_pwv`` function. Results can be filtered independently by
+year, month, day, and hour
 
 .. autofunction:: pwv_kpno.pwv_atm.measured_pwv
 
 Examples:
---------
+---------
 
 To retrieve all SuomiNet data available on the local machine as an ``astropy``
 table::
@@ -113,8 +115,8 @@ function is run. To retrieve this model as an astropy table, use the
 
 .. autofunction:: pwv_kpno.pwv_atm.modeled_pwv
 
-Example:
---------
+Examples:
+---------
 
 To retrieve the entire PWV model from 2010 onward::
 

@@ -2,7 +2,7 @@
 Installation and Setup
 **********************
 
-**pwv_kpno** is designed to be compatible with Python 2.7, 3.6, and 3.7.
+**pwv_kpno** is designed to be compatible with Python 2.7, and 3.6.
 The use of other python versions is possible, but not explicitly supported.
 If you experience installation problems that are not resolved by trying the
 suggestions below, please raise an issue on `GitHub

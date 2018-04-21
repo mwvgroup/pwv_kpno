@@ -12,18 +12,16 @@ Atmospheric modeling is available as part of the ``pwv_kpno.pwv_atm`` module.
 Transmission from Datetime
 ==========================
 
-Using measurements from the `SuomiNet <http://www.suominet.ucar.edu>`_ project,
-**pwv_kpno** is able to determine the PWV concentration along line of sight
-for a provided datetime and airmass. Note that this requires SuomiNet data for
-the desired datetime to be available on the local machine (See `updating data
-<updating_data.html>`_ for more details).
+Note that to model the atmospheric transmission function for a given datetime,
+SuomiNet data for that datetime must be available on the local machine
+(See `Accessing PWV Data <access_data.html>`_ for more details).
 
 To find the atmospheric transmission, use the ``trans_from_date`` method.
 
 .. autofunction:: pwv_kpno.pwv_atm.trans_from_date
 
-Example:
---------
+Examples:
+---------
 
 For an airmass of 1.2, the transmission function at 2013-12-15 05:35:00 is
 given by::
@@ -58,9 +56,11 @@ can be done using the ``transmission_pwv`` method.
 
 .. autofunction:: pwv_kpno.pwv_atm.trans_from_pwv
 
-Example:
---------
-.. code-block:: python
+Examples:
+---------
+
+For a 13.5 mm PWV column density along line of sight, the transmission function
+is given by::
 
     >>> pwv_trans.transmission_pwv(13.5)
 
