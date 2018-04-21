@@ -2,7 +2,7 @@
 Installation and Setup
 **********************
 
-**pwv_kpno** is designed to be compatible with both Python 2.7 and 3.6.
+**pwv_kpno** is designed to be compatible with Python 2.7, 3.6, and 3.7.
 The use of other python versions is possible, but not explicitly supported.
 If you experience installation problems that are not resolved by trying the
 suggestions below, please raise an issue on `GitHub
@@ -16,8 +16,8 @@ To install the package, please choose from one of the following options:
 Using PIP (Recommended)
 -----------------------
 
-Using the pip package manager is the recommended method for installing
-**pwv_kpno**. To install with pip, use::
+Using the `pip package manager <https://pip.pypa.io/en/stable/>`_ is the
+recommended method for installing **pwv_kpno**. To install with pip, use::
 
     pip install pwv_kpno
 
@@ -32,20 +32,19 @@ Dependencies can be installed with pip by running::
     pip install pytz
     pip install scipy
 
-|
 
 Using setup.py (Legacy)
 -----------------------
 
-If you don't have pip available on your system, **pwv_kpno** can be installed
-by directly running::
+If you don't have pip available on your system, the source code can be
+downloaded from `GitHub <https://github.com/mwvgroup/pwv_kpno>`_. **pwv_kpno**
+can be installed by directly running::
 
     python setup.py install --user
 
 As in the previous method, any missing dependencies in your Python environment
 should be installed automatically. If you have any issues installing the
 package, first install each dependency individually and then try again.
-
 
 Package Setup
 =============
@@ -57,20 +56,18 @@ all necessary SuomiNet data from 2010 through the end of 2017. It is
 recommended to update the local SuomiNet data after installing or updating the
 package, and periodically as necessary.
 
-To download any new SuomiNet data use the `update_models` function::
+To download any new SuomiNet data use the ``update_models`` function::
 
-    >>> from pwv_kpno import pwv_trans
-    >>> pwv_trans.update_models()
+    >>> from pwv_kpno import pwv_atm
+    >>> pwv_atm.update_models()
 
 Optionally, you can download data only for a specific year by passing the year
 as an argument::
 
-    >>> pwv_trans.update_models(year=2018)
+    >>> pwv_atm.update_models(year=2018)
 
 Note that updating the locally available data requires the user to have
 permission to write and modify files within the package directory.
-
-|
 
 Running Tests
 =============

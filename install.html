@@ -36,7 +36,7 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="pwv_kpno 0.10.1 documentation" href="index.html"/>
-        <link rel="next" title="2. Accessing PWV Data" href="updating_data.html"/>
+        <link rel="next" title="2. Accessing PWV Data" href="accessing_data.html"/>
         <link rel="prev" title="Overview" href="index.html"/> 
 
   
@@ -97,7 +97,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#running-tests">1.3. Running Tests</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="updating_data.html">2. Accessing PWV Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="accessing_data.html">2. Accessing PWV Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">3. Modeling the Atmosphere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">4. Modeling a Black Body</a></li>
 <li class="toctree-l1"><a class="reference internal" href="correcting_observations.html">5. Correcting Observations</a></li>
@@ -167,7 +167,7 @@
             
   <div class="section" id="installation-and-setup">
 <h1>1. Installation and Setup<a class="headerlink" href="#installation-and-setup" title="Permalink to this headline">¶</a></h1>
-<p><strong>pwv_kpno</strong> is designed to be compatible with both Python 2.7 and 3.6.
+<p><strong>pwv_kpno</strong> is designed to be compatible with Python 2.7, 3.6, and 3.7.
 The use of other python versions is possible, but not explicitly supported.
 If you experience installation problems that are not resolved by trying the
 suggestions below, please raise an issue on <a class="reference external" href="https://github.com/mwvgroup/pwv_kpno">GitHub</a>.</p>
@@ -176,8 +176,8 @@ suggestions below, please raise an issue on <a class="reference external" href="
 <p>To install the package, please choose from one of the following options:</p>
 <div class="section" id="using-pip-recommended">
 <h3>1.1.1. Using PIP (Recommended)<a class="headerlink" href="#using-pip-recommended" title="Permalink to this headline">¶</a></h3>
-<p>Using the pip package manager is the recommended method for installing
-<strong>pwv_kpno</strong>. To install with pip, use:</p>
+<p>Using the <a class="reference external" href="https://pip.pypa.io/en/stable/">pip package manager</a> is the
+recommended method for installing <strong>pwv_kpno</strong>. To install with pip, use:</p>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pwv_kpno</span>
 </pre></div>
 </div>
@@ -192,14 +192,12 @@ Dependencies can be installed with pip by running:</p>
 <span class="n">pip</span> <span class="n">install</span> <span class="n">scipy</span>
 </pre></div>
 </div>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
 </div>
 <div class="section" id="using-setup-py-legacy">
 <h3>1.1.2. Using setup.py (Legacy)<a class="headerlink" href="#using-setup-py-legacy" title="Permalink to this headline">¶</a></h3>
-<p>If you don’t have pip available on your system, <strong>pwv_kpno</strong> can be installed
-by directly running:</p>
+<p>If you don’t have pip available on your system, the source code can be
+downloaded from <a class="reference external" href="https://github.com/mwvgroup/pwv_kpno">GitHub</a>. <strong>pwv_kpno</strong>
+can be installed by directly running:</p>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span>
 </pre></div>
 </div>
@@ -216,21 +214,18 @@ date must be available on the host machine. By default, <strong>pwv_kpno</strong
 all necessary SuomiNet data from 2010 through the end of 2017. It is
 recommended to update the local SuomiNet data after installing or updating the
 package, and periodically as necessary.</p>
-<p>To download any new SuomiNet data use the <cite>update_models</cite> function:</p>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="k">import</span> <span class="n">pwv_trans</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_trans</span><span class="o">.</span><span class="n">update_models</span><span class="p">()</span>
+<p>To download any new SuomiNet data use the <code class="docutils literal notranslate"><span class="pre">update_models</span></code> function:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="k">import</span> <span class="n">pwv_atm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">update_models</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Optionally, you can download data only for a specific year by passing the year
 as an argument:</p>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_trans</span><span class="o">.</span><span class="n">update_models</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2018</span><span class="p">)</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">update_models</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2018</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Note that updating the locally available data requires the user to have
 permission to write and modify files within the package directory.</p>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
 </div>
 <div class="section" id="running-tests">
 <h2>1.3. Running Tests<a class="headerlink" href="#running-tests" title="Permalink to this headline">¶</a></h2>
@@ -253,7 +248,7 @@ internet (under 20 MB).</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="updating_data.html" class="btn btn-neutral float-right" title="2. Accessing PWV Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="accessing_data.html" class="btn btn-neutral float-right" title="2. Accessing PWV Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

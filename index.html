@@ -91,7 +91,7 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">1. Installation and Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="updating_data.html">2. Accessing PWV Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="accessing_data.html">2. Accessing PWV Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">3. Modeling the Atmosphere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">4. Modeling a Black Body</a></li>
 <li class="toctree-l1"><a class="reference internal" href="correcting_observations.html">5. Correcting Observations</a></li>
@@ -163,7 +163,7 @@
 <img alt="_static/LOGO.png" src="_static/LOGO.png" />
 </div>
 <a class="reference external image-reference" href="https://pypi.python.org/pypi/pwv-kpno/"><img alt="https://img.shields.io/badge/version-0.10.1-blue.svg" src="https://img.shields.io/badge/version-0.10.1-blue.svg" /></a>
-<a class="reference external image-reference" href="#"><img alt="https://img.shields.io/badge/python-2.7,%203.6-blue.svg" src="https://img.shields.io/badge/python-2.7,%203.6-blue.svg" /></a>
+<a class="reference external image-reference" href="#"><img alt="https://img.shields.io/badge/python-2.7,%203.6,%203.7-blue.svg" src="https://img.shields.io/badge/python-2.7,%203.6,%203.7-blue.svg" /></a>
 <a class="reference external image-reference" href="https://www.gnu.org/licenses/gpl-3.0.en.html"><img alt="https://img.shields.io/badge/license-GPL%20v3.0-blue.svg" src="https://img.shields.io/badge/license-GPL%20v3.0-blue.svg" /></a>
 <a class="reference external image-reference" href="https://travis-ci.org/mwvgroup/pwv_kpno"><img alt="https://travis-ci.org/mwvgroup/pwv_kpno.svg?branch=master" src="https://travis-ci.org/mwvgroup/pwv_kpno.svg?branch=master" /></a>
 <div class="toctree-wrapper compound">
@@ -174,21 +174,23 @@
 </div>
 <div class="section" id="overview">
 <h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
-<p><strong>pwv_kpno</strong> is a Python package for modeling the atmospheric transmission
-function at Kitt Peak National Observatory. It provides atmospheric models
-in the near-infrared (7,000 to 10,000 Angstroms) for years 2010 onward.
-Characterizing the atmospheric absorption is important when calibrating ground
+<p><strong>pwv_kpno</strong> is a Python package for modeling the atmospheric absorption due to
+H<sub>2</sub>O at Kitt Peak National Observatory. It provides atmospheric models
+in the near-infrared (from 7,000 to 10,000 Angstroms) for years 2010 onward.
+Understanding atmospheric absorption is important when calibrating ground
 based astronomical observations. Traditionally, determining the detailed
-atmospheric transmission function required dedicated spectrographic
-observations. <strong>pwv_kpno</strong> provides an alternative method that does not require
-dedicated observation time, and that can be run at the observer’s convenience.</p>
-<p>When working in the optical and near-infrared, the atmospheric transmission
-function is highly dependent on the amount of precipitable water vapor (PWV)
-in the atmosphere. <strong>pwv_kpno</strong> models the atmospheric transmission using PWV
-measurements provided by the SuomiNet Project. SuomiNet measures PWV values
-by relating the delay in GPS signals to PWV levels in the atmosphere. This
-package uses measurements taken by GPS receivers located at Kitt Peak AZ,
-Amado AZ, Sahuarita AZ, Tucson AZ, and Tohono O’odham Community College.To seeHere</p>
+atmospheric transmission function at a given date and time required performing
+dedicated spectrographic observations. <strong>pwv_kpno</strong> provides an alternative
+method that does not require dedicated observation time, and that can be
+performed at the user’s convenience.</p>
+<p>Atmospheric absorption in the near-infrared is highly dependent on the column
+density of precipitable water vapor (PWV). By measuring the delay of GPS signals
+through the atmosphere, the <a class="reference external" href="http://www.suominet.ucar.edu/overview.html">SuomiNet project</a> provides accurate PWV measurements
+for multiple, international locations. The <strong>pwv_kpno</strong> package uses published
+SuomiNet data in conjunction with MODTRAN models to determine the modeled
+atmospheric transmission function at Kitt Peak in close to real time.
+The package also provides automated retrieval and processing of SuomiNet data,
+allowing photometry to typically be corrected within an hour of observation.</p>
 </div>
 <div class="section" id="how-to-cite">
 <h1>How to Cite<a class="headerlink" href="#how-to-cite" title="Permalink to this headline">¶</a></h1>
@@ -197,9 +199,21 @@ you cite Perrefort, Wood-Vasey et al. (<a class="reference external" href="#">Ar
 If there is not an appropriate place to cite the source paper, please use the
 following standard acknowledgement:</p>
 <blockquote>
-<div><em>This research made use of the pwv_kpno python package, an open source project that provides models for the atmospheric transmission and related effects (Perrefort, Wood-Vasey et al. 2018)</em></div></blockquote>
-<p>If the publisher allows, you can also include a link pointing to the
-documentation page <a class="reference external" href="https://mwvgroup.github.io/pwv_kpno/">https://mwvgroup.github.io/pwv_kpno/</a> .</p>
+<div><em>This research made use of the pwv_kpno python package, an open source project that provides models for the atmospheric absorption due to precipitable water vapor in the near-infrared (Perrefort, Wood-Vasey et al. 2018)</em></div></blockquote>
+<p>If the publisher allows, you can also include a footnote with a link pointing
+to the documentation page
+<a class="reference external" href="https://mwvgroup.github.io/pwv_kpno/">https://mwvgroup.github.io/pwv_kpno/</a>.</p>
+</div>
+<div class="section" id="acknowledgements">
+<h1>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">¶</a></h1>
+<p>This work is based in part on observations at Kitt Peak National Observatory,
+National Optical Astronomy Observatory (NOAO Prop. IDs: 2011B-0482 and
+2012B-0500; PI: Wood-Vasey), which is operated by the Association of
+Universities for Research in Astronomy (AURA) under a cooperative agreement
+with the National Science Foundation.</p>
+<p>This project uses data published by the SuomiNet project. We thank Teresa
+Vanhove and the SuomiNet team for their assistance in answering questions over
+the course of project development.</p>
 </div>
 <div class="section" id="additional-resources">
 <h1>Additional Resources<a class="headerlink" href="#additional-resources" title="Permalink to this headline">¶</a></h1>

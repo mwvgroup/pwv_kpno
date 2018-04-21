@@ -7,6 +7,8 @@ Modeling the Atmosphere
 by providing either a datetime and airmass value or a precipitable water vapor
 concentration along line of sight.
 
+Atmospheric modeling is available as part of the ``pwv_kpno.pwv_atm`` module.
+
 Transmission from Datetime
 ==========================
 
@@ -16,9 +18,9 @@ for a provided datetime and airmass. Note that this requires SuomiNet data for
 the desired datetime to be available on the local machine (See `updating data
 <updating_data.html>`_ for more details).
 
-To find the atmospheric transmission, use the `transmission` method.
+To find the atmospheric transmission, use the ``trans_from_date`` method.
 
-.. autofunction:: pwv_kpno.pwv_trans.transmission
+.. autofunction:: pwv_kpno.pwv_atm.trans_from_date
 
 Example:
 --------
@@ -27,7 +29,7 @@ For an airmass of 1.2, the transmission function at 2013-12-15 05:35:00 is
 given by::
 
     >>> from datetime import datetime
-    >>> from pwv_kpno import pwv_trans
+    >>> from pwv_kpno import pwv_atm
     >>> import pytz
     >>>
     >>> obsv_date = datetime(year=2013,
@@ -37,7 +39,7 @@ given by::
     >>>                      minute=35,
     >>>                      tzinfo=pytz.utc)
     >>>
-    >>> pwv_trans.transmission(date=obsv_date, airmass=1.2)
+    >>> pwv_trans.trans_from_date(date=obsv_date, airmass=1.2)
 
       wavelength   transmission
        Angstrom         %
@@ -52,9 +54,9 @@ Transmission from PWV
 
 Instead of relying on SuomiNet measurements, users can also retrieve the
 modeled transmission function by directly specifying a PWV concentration. This
-can be done using the `transmission_pwv` method.
+can be done using the ``transmission_pwv`` method.
 
-.. autofunction:: pwv_kpno.pwv_trans.transmission_pwv
+.. autofunction:: pwv_kpno.pwv_atm.trans_from_pwv
 
 Example:
 --------

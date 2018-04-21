@@ -7,6 +7,8 @@ PWV absorption on a black body. This includes modeling the spectral energy
 distribution, the magnitude in a given band, and the error in photometric zero
 point. We suggest importing this module as `bb_atm`.
 
+Black body modeling is available as part of the ``pwv_kpno.blackbody_with_atm`` module.
+We suggest importing this module as ``bb_atm``
 
 Generating an SED
 =================
