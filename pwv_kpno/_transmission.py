@@ -91,7 +91,7 @@ def _raise_pwv(pwv):
         warn(warn_msg, RuntimeWarning)
 
 
-def transmission_pwv(pwv):
+def trans_from_pwv(pwv):
     """Return the atmospheric transmission due a given PWV concentration in mm
 
     For a given precipitable water vapor concentration, return the modeled
@@ -208,7 +208,7 @@ def _raise_available_data(date, pwv_model):
         raise ValueError(msg.format(timedelta(seconds=interval)))
 
 
-def transmission(date, airmass, test_model=None):
+def trans_from_date(date, airmass, test_model=None):
     """Return a model for the atmospheric transmission function due to PWV
 
     For a given datetime and airmass, return a model for the atmospheric
@@ -226,4 +226,4 @@ def transmission(date, airmass, test_model=None):
     """
 
     pwv = pwv_date(date, airmass, test_model)
-    return transmission_pwv(pwv)
+    return trans_from_pwv(pwv)

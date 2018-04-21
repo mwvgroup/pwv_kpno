@@ -26,13 +26,13 @@ An Incomplete Guide to Getting Started:
 
     To check what years data is locally available for:
 
-      >>> from pwv_kpno import pwv_trans
-      >>> pwv_trans.available_data()
+      >>> from pwv_kpno import pwv_atm
+      >>> pwv_atm.available_data()
 
 
     To update the locally available data with any new measurements:
 
-      >>> pwv_trans.update_models()
+      >>> pwv_atm.update_models()
 
 
     To determine the PWV concentration at Kitt Peak for a datetime:
@@ -47,35 +47,35 @@ An Incomplete Guide to Getting Started:
       >>>                      minute=35,
       >>>                      tzinfo=pytz.utc)
       >>>
-      >>> pwv = pwv_trans.pwv_date(obsv_date)
+      >>> pwv = pwv_atm.pwv_date(obsv_date)
 
 
     To retrieve the atmospheric model for a line of sight PWV concentration:
 
-      >>> pwv_trans.transmission_pwv(pwv)
+      >>> pwv_atm.trans_from_pwv(pwv)
 
 
     To retrieve the atmospheric model for a datetime:
 
-      >>> pwv_trans.transmission(date=obsv_date, airmass=1.2)
+      >>> pwv_atm.trans_from_date(date=obsv_date, airmass=1.2)
 
 
     To access the PWV measurements as an astropy table:
 
       >>> # All locally available PWV measurements
-      >>> pwv_trans.measured_pwv()
+      >>> pwv_atm.measured_pwv()
       >>>
       >>> # All PWV measurements taken on November 14, 2016
-      >>> pwv_trans.measured_pwv(year=2016, month=11, day=14)
+      >>> pwv_atm.measured_pwv(year=2016, month=11, day=14)
 
 
     To access the modeled PWV level at Kitt Peak as an astropy table:
 
       >>> # The entire model from 2010 to present
-      >>> pwv_trans.modeled_pwv()
+      >>> pwv_atm.modeled_pwv()
       >>>
       >>> # The modeled PWV level only for November 14, 2016
-      >>> pwv_trans.modeled_pwv(year=2016, month=11, day=14)
+      >>> pwv_atm.modeled_pwv(year=2016, month=11, day=14)
 """
 
 from ._pwv_data import available_data
@@ -83,5 +83,5 @@ from ._pwv_data import pwv_date
 from ._pwv_data import measured_pwv
 from ._pwv_data import modeled_pwv
 from ._pwv_data import update_models
-from ._transmission import transmission
-from ._transmission import transmission_pwv
+from ._transmission import trans_from_date
+from ._transmission import trans_from_pwv
