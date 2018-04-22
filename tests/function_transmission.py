@@ -163,4 +163,4 @@ class TransmissionResults(unittest.TestCase):
 
         error_msg = 'Wrong units for column "{}"'
         self.assertEqual(w_units, 'angstrom', error_msg.format('wavelength'))
-        self.assertEqual(t_units, '', error_msg.format('transmission'))
+        self.assertEqual(t_units, None, error_msg.format('transmission'))
