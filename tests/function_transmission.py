@@ -128,7 +128,6 @@ class TransmissionPwvErrors(unittest.TestCase):
         self.assertIsNone(_raise_pwv(30.5))
 
 
-
 class TransmissionResults(unittest.TestCase):
     """Test pwv_kpno.transmission for the expected returns"""
 
@@ -164,4 +163,4 @@ class TransmissionResults(unittest.TestCase):
 
         error_msg = 'Wrong units for column "{}"'
         self.assertEqual(w_units, 'angstrom', error_msg.format('wavelength'))
-        self.assertEqual(t_units, 'percent', error_msg.format('transmission'))
+        self.assertEqual(t_units, '', error_msg.format('transmission'))

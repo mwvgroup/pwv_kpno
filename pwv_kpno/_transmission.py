@@ -131,7 +131,6 @@ def trans_for_pwv(pwv):
                        dtype=[float, float])
 
     trans_func['wavelength'].unit = 'angstrom'
-    trans_func['transmission'].unit = 'percent'
     return trans_func
 
 
