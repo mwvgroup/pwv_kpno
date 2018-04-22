@@ -5,20 +5,19 @@ Modeling the Atmosphere
 **pwv_kpno** provides models for the atmospheric transmission due to H\
 :sub:`2`\ O at Kitt Peak National Observatory. These models can be retrieved
 by providing either a datetime and airmass value or a precipitable water vapor
-concentration along line of sight.
+concentration along line of sight. Atmospheric modeling is available as part of
+the ``pwv_kpno.pwv_atm`` module.
 
-Atmospheric modeling is available as part of the ``pwv_kpno.pwv_atm`` module.
-
-Transmission from Datetime
-==========================
+Transmission for Datetime
+=========================
 
 Note that to model the atmospheric transmission function for a given datetime,
 SuomiNet data for that datetime must be available on the local machine
 (See `Accessing PWV Data <access_data.html>`_ for more details).
 
-To find the atmospheric transmission, use the ``trans_from_date`` method.
+To find the atmospheric transmission, use the ``trans_for_date`` method.
 
-.. autofunction:: pwv_kpno.pwv_atm.trans_from_date
+.. autofunction:: pwv_kpno.pwv_atm.trans_for_date
 
 Examples:
 ---------
@@ -37,7 +36,7 @@ given by::
     >>>                      minute=35,
     >>>                      tzinfo=pytz.utc)
     >>>
-    >>> pwv_trans.trans_from_date(date=obsv_date, airmass=1.2)
+    >>> pwv_trans.trans_for_date(date=obsv_date, airmass=1.2)
 
       wavelength   transmission
        Angstrom         %
@@ -47,14 +46,14 @@ given by::
       7002.00066689 0.999832009999
                 ...            ...
 
-Transmission from PWV
-=====================
+Transmission for PWV
+====================
 
 Instead of relying on SuomiNet measurements, users can also retrieve the
 modeled transmission function by directly specifying a PWV concentration. This
-can be done using the ``transmission_pwv`` method.
+can be done using the ``trans_for_pwv`` method.
 
-.. autofunction:: pwv_kpno.pwv_atm.trans_from_pwv
+.. autofunction:: pwv_kpno.pwv_atm.trans_for_pwv
 
 Examples:
 ---------
@@ -62,7 +61,7 @@ Examples:
 For a 13.5 mm PWV column density along line of sight, the transmission function
 is given by::
 
-    >>> pwv_trans.transmission_pwv(13.5)
+    >>> pwv_trans.trans_for_pwv(13.5)
 
       wavelength   transmission
        Angstrom         %

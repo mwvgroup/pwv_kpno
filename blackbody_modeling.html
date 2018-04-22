@@ -167,12 +167,14 @@
             
   <div class="section" id="modeling-a-black-body">
 <h1>4. Modeling a Black Body<a class="headerlink" href="#modeling-a-black-body" title="Permalink to this headline">¶</a></h1>
-<p>The <cite>blackbody_with_atm</cite> module provides functions for modeling the effects of
-PWV absorption on a black body. Black body modeling is available as part of the
-<code class="docutils literal notranslate"><span class="pre">pwv_kpno.blackbody_with_atm</span></code> module, but we suggest importing this module as
-<code class="docutils literal notranslate"><span class="pre">bb_atm</span></code></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">blackbody_with_atm</span></code> module provides functions for modeling the effects
+of PWV absorption on a black body. We suggest importing this module as
+<code class="docutils literal notranslate"><span class="pre">bb_atm</span></code>.</p>
 <div class="section" id="generating-an-sed">
 <h2>4.1. Generating an SED<a class="headerlink" href="#generating-an-sed" title="Permalink to this headline">¶</a></h2>
+<p>For a given array of wavelengths in angstroms, the <code class="docutils literal notranslate"><span class="pre">sed</span></code> function returns
+the corresponding spectral energy distribution of a black body as seen through
+the atmosphere.</p>
 <dl class="function">
 <dt id="pwv_kpno.blackbody_with_atm.sed">
 <code class="descclassname">pwv_kpno.blackbody_with_atm.</code><code class="descname">sed</code><span class="sig-paren">(</span><em>temp</em>, <em>wavelengths</em>, <em>pwv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/blackbody_with_atm.html#sed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.blackbody_with_atm.sed" title="Permalink to this definition">¶</a></dt>
@@ -219,14 +221,36 @@ also be achieved by specifying a PWV level of zero.</p>
 </div>
 <div class="section" id="magnitude">
 <h2>4.2. Magnitude<a class="headerlink" href="#magnitude" title="Permalink to this headline">¶</a></h2>
-<p>The <cite>magnitude</cite> function returns the magnitude of a black body in a given band.
-Since <a href="#id1"><span class="problematic" id="id2">**</span></a>pwv_kpno only provides models for the atmospheric transmission between
-7,000 and 10,000 angstroms, if the specified band extends outside this range
-an error is raised.</p>
-<p><strong>Note:</strong> The magnitude of a blackbody without the effects of atmospheric
-absorption can be found by specifying a PWV level of zero.</p>
-<div class="section" id="id3">
-<h3>4.2.1. Example:<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">magnitude</span></code> function returns the absolute magnitude of a black body in a
+given band as seen under the effects of PWV absorption. Since <strong>pwv_kpno</strong> only
+provides models for the atmospheric transmission between 7,000 and 10,000
+angstroms, if the specified band extends outside this range an error is raised.</p>
+<dl class="function">
+<dt id="pwv_kpno.blackbody_with_atm.magnitude">
+<code class="descclassname">pwv_kpno.blackbody_with_atm.</code><code class="descname">magnitude</code><span class="sig-paren">(</span><em>temp</em>, <em>band</em>, <em>pwv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/blackbody_with_atm.html#magnitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.blackbody_with_atm.magnitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the magnitude of a black body with and without pwv absorption</p>
+<p>Magnitudes are calculated relative to a zero point of 3631 Jy</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>temp</strong> (<em>float</em>) – The temperature of the desired black body</li>
+<li><strong>band</strong> (<em>tuple</em>) – Tuple with the beginning and end wavelengths of the
+desired band in angstroms</li>
+<li><strong>pwv</strong> (<em>float</em>) – The PWV concentration along line of sight in mm</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The magnitude of the desired black body as effected by H2O absorption</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="section" id="examples">
+<h3>4.2.1. Examples:<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
 <p>In the <em>i</em> band from 7,000 to 8,500 Angstroms, the magnitude of a
 black body is found by running</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
@@ -240,24 +264,17 @@ black body is found by running</p>
  <span class="o">&gt;&gt;&gt;</span> <span class="n">bb_mag</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">magnitude</span><span class="p">(</span><span class="n">bb_temp</span><span class="p">,</span> <span class="n">i_band</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
-</div>
-<div class="section" id="id4">
-<h3>4.2.2. Example:<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
-<p>In the <em>i</em> band from 7,000 to 8,500 Angstroms, the magnitude of a
-black body is found by running</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="o">&gt;&gt;&gt;</span> <span class="n">bb_temp</span> <span class="o">=</span> <span class="mi">8000</span>
- <span class="o">&gt;&gt;&gt;</span> <span class="n">i_band</span> <span class="o">=</span> <span class="p">(</span><span class="mi">7000</span><span class="p">,</span> <span class="mi">8500</span><span class="p">)</span>
- <span class="o">&gt;&gt;&gt;</span>
- <span class="o">&gt;&gt;&gt;</span> <span class="n">bb_mag</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">magnitude</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">i_band</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-</pre></div>
-</td></tr></table></div>
+<p><strong>Note:</strong> If desired, the absolute magnitude of a black body without
+atmospheric effects can also be achieved by specifying a PWV level of zero.</p>
 </div>
 </div>
 <div class="section" id="estimating-zero-point-error">
 <h2>4.3. Estimating Zero Point Error<a class="headerlink" href="#estimating-zero-point-error" title="Permalink to this headline">¶</a></h2>
+<p>Correcting photometric observations using tabulated values of a standard star
+introduces residual error in the magnitudes of other stars with different
+spectral types. The error in photometric zero point introduced by not
+considering absorption by precipitable water vapor can be found using the
+<code class="docutils literal notranslate"><span class="pre">zp_bias</span></code> function.</p>
 <dl class="function">
 <dt id="pwv_kpno.blackbody_with_atm.zp_bias">
 <code class="descclassname">pwv_kpno.blackbody_with_atm.</code><code class="descname">zp_bias</code><span class="sig-paren">(</span><em>ref_temp</em>, <em>cal_temp</em>, <em>band</em>, <em>pwv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/blackbody_with_atm.html#zp_bias"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.blackbody_with_atm.zp_bias" title="Permalink to this definition">¶</a></dt>
@@ -286,8 +303,8 @@ of the desired band in angstroms</li>
 </table>
 </dd></dl>
 
-<div class="section" id="id5">
-<h3>4.3.1. Example:<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id1">
+<h3>4.3.1. Examples:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="o">&gt;&gt;&gt;</span> <span class="n">reference_star_temp</span> <span class="o">=</span> <span class="mi">4000</span>

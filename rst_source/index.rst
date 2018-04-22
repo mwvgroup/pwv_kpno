@@ -88,8 +88,11 @@ Additional Resources
 - The package source code is publicly available on
   `GitHub <https://github.com/mwvgroup/pwv_kpno>`_.
 
-- To learn more about the SuomiNet project, see their
-  `website <http://www.suominet.ucar.edu/overview.html>`_.
+- For more information on the Kitt Peak National Astronomy, see
+  `www.noao.edu/kpno/ <https://www.noao.edu/kpno/>`_
+
+- To learn more about the SuomiNet project, see
+  `www.suominet.ucar.edu/overview.html <http://www.suominet.ucar.edu/overview.html>`_.
 
 - For an additional example on the correlation between GPS signals and
   atmospheric modeling, see

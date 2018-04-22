@@ -66,6 +66,6 @@ New package releases should follow proceed as:
 4. Make sure that the build passes on `travis-ci.org <travis-ci.org>`_.
 5. Submit a pull request and merge any necessary branches.
 6. Run the `push_pypi` bash file from the root directory to automatically
-   upload the new version to the python package index (You will need the
+   upload the new version to the python package index (you will need the
    appropriate login information for this step).
 

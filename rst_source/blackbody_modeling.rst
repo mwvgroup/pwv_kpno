@@ -2,15 +2,16 @@
 Modeling a Black Body
 *********************
 
-The `blackbody_with_atm` module provides functions for modeling the effects of
-PWV absorption on a black body. Black body modeling is available as part of the
-``pwv_kpno.blackbody_with_atm`` module, but we suggest importing this module as
-``bb_atm``
+The ``blackbody_with_atm`` module provides functions for modeling the effects
+of PWV absorption on a black body. We suggest importing this module as
+``bb_atm``.
 
 Generating an SED
 =================
 
-
+For a given array of wavelengths in angstroms, the ``sed`` function returns
+the corresponding spectral energy distribution of a black body as seen through
+the atmosphere.
 
 .. autofunction:: pwv_kpno.blackbody_with_atm.sed
 
@@ -34,18 +35,16 @@ also be achieved by specifying a PWV level of zero.
 Magnitude
 =========
 
-The `magnitude` function returns the magnitude of a black body in a given band.
-Since **pwv_kpno only provides models for the atmospheric transmission between
-7,000 and 10,000 angstroms, if the specified band extends outside this range
-an error is raised.
+The ``magnitude`` function returns the absolute magnitude of a black body in a
+given band as seen under the effects of PWV absorption. Since **pwv_kpno** only
+provides models for the atmospheric transmission between 7,000 and 10,000
+angstroms, if the specified band extends outside this range an error is raised.
 
-**Note:** The magnitude of a blackbody without the effects of atmospheric
-absorption can be found by specifying a PWV level of zero.
 
-.. autofunction:: pwv_kpno.blackbody_with_atm.transmission_pwv
+.. autofunction:: pwv_kpno.blackbody_with_atm.magnitude
 
-Example:
---------
+Examples:
+---------
 
 In the *i* band from 7,000 to 8,500 Angstroms, the magnitude of a
 black body is found by running
@@ -59,27 +58,23 @@ black body is found by running
     >>>
     >>> bb_mag = bb_atm.magnitude(bb_temp, i_band, pwv)
 
-Example:
---------
 
-In the *i* band from 7,000 to 8,500 Angstroms, the magnitude of a
-black body is found by running
-
-.. code-block:: python
-   :linenos:
-
-    >>> bb_temp = 8000
-    >>> i_band = (7000, 8500)
-    >>>
-    >>> bb_mag = bb_atm.magnitude(temp, i_band, 0)
+**Note:** If desired, the absolute magnitude of a black body without
+atmospheric effects can also be achieved by specifying a PWV level of zero.
 
 Estimating Zero Point Error
 ===========================
 
+Correcting photometric observations using tabulated values of a standard star
+introduces residual error in the magnitudes of other stars with different
+spectral types. The error in photometric zero point introduced by not
+considering absorption by precipitable water vapor can be found using the
+``zp_bias`` function.
+
 .. autofunction:: pwv_kpno.blackbody_with_atm.zp_bias
 
-Example:
---------
+Examples:
+---------
 
 .. code-block:: python
    :linenos:
