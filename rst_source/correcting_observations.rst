@@ -19,7 +19,7 @@ a PWV level of 15 mm, this can be found as::
     >>> import numpy as np
     >>>
     >>> temp = 8000
-    >>> wavelength = np.arange(7000, 10000, 100)
+    >>> wavelength = np.arange(7000, 8500, 100)
     >>> pwv = 15
     >>>
     >>> sed = bb_atm.sed(temp, wavelength, pwv)
@@ -64,3 +64,25 @@ by the transmission on a wavelength by wavelength basis.
 
 Photometric Observations
 ========================
+
+For an atmospheric transmission :math:`T(\lambda)`, the photometric correction
+for an object with a spectral energy distribution :math:`S(\lambda)` is given
+by
+
+.. math::
+   C = \frac{\int S(\lambda) \cdot T(\lambda) \, d\lambda}
+             {\int S(\lambda) \, d\lambda}
+
+where the integration bounds are defined by the wavelength range of the
+photometric bandpass. Trapezoidal integration of array like objects in Python
+can be performed using the ``Numpy`` package. Using results from the
+spectrographic example we have::
+
+    >>> i_band = (7000, 85000)
+    >>>
+    >>> weighted_transmission = np.multiply(sampled_sed, modeled_trans["transmission"])
+    >>> numerator = np.trapz(weighted_transmission, i_band)
+    >>>
+    >>> denominator = np.trapz(sampled_sed, i_band)
+    >>>
+    >>> photo_corr = np.divide(numerator, denominator)

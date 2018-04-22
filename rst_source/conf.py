@@ -5,7 +5,8 @@
 extensions = ['sphinx.ext.autodoc',      # auto-documentation
               'sphinx.ext.viewcode',     # adds links to source code
               'sphinx.ext.githubpages',  # creates .nojekyll file
-              'sphinx.ext.napoleon']     # adds support for google doc style
+              'sphinx.ext.napoleon',     # adds support for google doc style
+              'sphinx.ext.mathjax']     # For rendering mathematical equations
 
 # The suffixes of source files
 source_suffix = ['.rst']
