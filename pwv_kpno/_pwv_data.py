@@ -298,8 +298,9 @@ def update_models(year=None):
     Update the locally available SuomiNet data by downloading new data from
     the SuomiNet website. Use this data to create an updated model for the PWV
     level at Kitt Peak. If a year is provided, only update data for that year.
-    If not, download all available data from 2017 onward. Data for years from
-    2010 through 2016 is included with this package version by default.
+    If not, download any published data that is not available on the local
+    machine. Data for years from 2010 through 2018 is included with this
+    package version by default.
 
     Args:
         year (int): A Year from 2010 onward
