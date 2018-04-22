@@ -52,12 +52,12 @@ An Incomplete Guide to Getting Started:
 
     To retrieve the atmospheric model for a line of sight PWV concentration:
 
-      >>> pwv_atm.trans_from_pwv(pwv)
+      >>> pwv_atm.trans_for_pwv(pwv)
 
 
     To retrieve the atmospheric model for a datetime:
 
-      >>> pwv_atm.trans_from_date(date=obsv_date, airmass=1.2)
+      >>> pwv_atm.trans_for_date(date=obsv_date, airmass=1.2)
 
 
     To access the PWV measurements as an astropy table:
@@ -83,5 +83,5 @@ from ._pwv_data import pwv_date
 from ._pwv_data import measured_pwv
 from ._pwv_data import modeled_pwv
 from ._pwv_data import update_models
-from ._transmission import trans_from_date
-from ._transmission import trans_from_pwv
+from ._transmission import trans_for_date
+from ._transmission import trans_for_pwv

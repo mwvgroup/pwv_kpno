@@ -41,7 +41,7 @@ from astropy.constants import c
 from astropy.modeling.blackbody import blackbody_lambda
 import numpy as np
 
-from pwv_kpno._transmission import trans_from_pwv
+from pwv_kpno._transmission import trans_for_pwv
 
 
 def sed(temp, wavelengths, pwv):
@@ -63,7 +63,7 @@ def sed(temp, wavelengths, pwv):
     bb_sed *= (4 * np.pi)  # Integrate over angular coordinates
 
     if pwv > 0:
-        transmission = trans_from_pwv(pwv)
+        transmission = trans_for_pwv(pwv)
         sampled_transmission = np.interp(wavelengths,
                                          transmission['wavelength'],
                                          transmission['transmission'])
