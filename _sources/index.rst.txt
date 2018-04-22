@@ -34,7 +34,7 @@ Overview
 **pwv_kpno** is a Python package for modeling the atmospheric absorption due
 to H\ :sub:`2`\ O at Kitt Peak National Observatory. It provides atmospheric
 models in the near-infrared (from 7,000 to 10,000 Angstroms) for years 2010
-onward. Understanding atmospheric absorption is important when calibrating
+onward. Understanding atmospheric effects is important when calibrating
 ground based astronomical observations. Traditionally, determining the detailed
 atmospheric transmission function at a given date and time required performing
 dedicated spectrographic observations. **pwv_kpno** provides an alternative
@@ -71,24 +71,24 @@ to the documentation page
 Acknowledgements
 ****************
 
-This work is based in part on observations at Kitt Peak National Observatory,
-National Optical Astronomy Observatory (NOAO Prop. IDs: 2011B-0482 and
-2012B-0500; PI: Wood-Vasey), which is operated by the Association of
+This work is based in part on observations taken at Kitt Peak National
+Observatory, National Optical Astronomy Observatory (NOAO Prop. IDs: 2011B-0482
+and 2012B-0500; PI: Wood-Vasey), which is operated by the Association of
 Universities for Research in Astronomy (AURA) under a cooperative agreement
 with the National Science Foundation.
 
-This project uses data published by the SuomiNet project. We thank Teresa
-Vanhove and the SuomiNet team for their assistance in answering questions over
-the course of project development.
+This project uses data published by the SuomiNet project. We thank the SuomiNet
+team for their assistance in answering questions over the course of project
+development.
 
 ********************
 Additional Resources
 ********************
 
-- The package source code is publicly available on
+- The source code of **pwv_kpno** is publicly available on
   `GitHub <https://github.com/mwvgroup/pwv_kpno>`_.
 
-- For more information on the Kitt Peak National Astronomy, see
+- For more information on the Kitt Peak National Observatory, see
   `www.noao.edu/kpno/ <https://www.noao.edu/kpno/>`_
 
 - To learn more about the SuomiNet project, see

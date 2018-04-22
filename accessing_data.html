@@ -97,6 +97,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#updating-data">2.2. Updating Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#measured-pwv-data">2.3. Measured PWV Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#modeled-pwv-data">2.4. Modeled PWV Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pwv-for-a-given-date">2.5. PWV For a Given Date:</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">3. Modeling the Atmosphere</a></li>
@@ -177,10 +178,9 @@ data. Users can also access the local data as an <code class="docutils literal n
 <p>Access to PWV data is available as part of the <code class="docutils literal notranslate"><span class="pre">pwv_kpno.pwv_atm</span></code> module.</p>
 <div class="section" id="checking-for-available-data">
 <h2>2.1. Checking For Available Data<a class="headerlink" href="#checking-for-available-data" title="Permalink to this headline">¶</a></h2>
-<p>Checking the years for which SuomiNet data is locally available can be achieved
-using the <code class="docutils literal notranslate"><span class="pre">available_data</span></code> function. By default, version 0.10.0 of
-<strong>pwv_kpno</strong> is distributed with all the necessary SuomiNet data from 2010
-through 2017.</p>
+<p>To check what years of SuomiNet data are locally available, use the
+<code class="docutils literal notranslate"><span class="pre">available_data</span></code> function. By default, version 0.10.0 ofc**pwv_kpno** is
+distributed with all the necessary SuomiNet data from 2010cthrough 2017.</p>
 <dl class="function">
 <dt id="pwv_kpno.pwv_atm.available_data">
 <code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">available_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/_pwv_data.html#available_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.available_data" title="Permalink to this definition">¶</a></dt>
@@ -378,7 +378,7 @@ year, month, day, and hour by using the key word arguments.</p>
 <span class="go">                        ...            ...</span>
 </pre></div>
 </div>
-<p>To retrieve the modeled PWV level for November 14, 2016:</p>
+<p>To retrieve the modeled PWV level over the course of November 14th, 2016:</p>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">modeled_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 
 <span class="go">               date                pwv</span>
@@ -389,6 +389,28 @@ year, month, day, and hour by using the key word arguments.</p>
 <span class="go">    2016-11-14 00:45:00+00:00 2.85828459218</span>
 <span class="go">    2016-11-14 01:14:00+00:00           3.9</span>
 <span class="go">                          ...           ...</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="pwv-for-a-given-date">
+<h2>2.5. PWV For a Given Date:<a class="headerlink" href="#pwv-for-a-given-date" title="Permalink to this headline">¶</a></h2>
+<p>In order to determine the PWV column density for a given datetime, users should
+interpolate from the modeled PWV table outlined above. For convenience, this
+can be done automatically using the <code class="docutils literal notranslate"><span class="pre">pwv_date</span></code> function.</p>
+<dl class="function">
+<dt id="pwv_kpno.pwv_atm.pwv_date">
+<code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">pwv_date</code><span class="sig-paren">(</span><em>date</em>, <em>airmass=1</em>, <em>test_model=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/_pwv_data.html#pwv_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.pwv_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<div class="section" id="id4">
+<h3>2.5.1. Examples:<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>To retrieve the modeled PWV level for November 14, 2016 at 11:00 AM:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pytz</span> <span class="k">import</span> <span class="n">utc</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">date</span> <span class="o">=</span> <span class="n">Datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">utc</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pwv</span> <span class="o">=</span> <span class="n">pwv_date</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

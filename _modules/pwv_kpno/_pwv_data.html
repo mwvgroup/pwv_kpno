@@ -210,7 +210,7 @@
 <span class="n">__status__</span> <span class="o">=</span> <span class="s1">&#39;Development&#39;</span>
 
 
-<span class="k">def</span> <span class="nf">pwv_date</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">airmass</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">test_model</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="pwv_date"><a class="viewcode-back" href="../../accessing_data.html#pwv_kpno.pwv_atm.pwv_date">[docs]</a><span class="k">def</span> <span class="nf">pwv_date</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">airmass</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">test_model</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
     <span class="k">if</span> <span class="n">test_model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">location_name</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span><span class="o">.</span><span class="n">current_location</span><span class="o">.</span><span class="n">name</span>
@@ -224,7 +224,7 @@
     <span class="n">utc_date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">utc</span><span class="p">)</span>
     <span class="n">timestamp</span> <span class="o">=</span> <span class="p">(</span><span class="n">utc_date</span> <span class="o">-</span> <span class="n">unix_epoch</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
 
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">pwv_model</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">],</span> <span class="n">pwv_model</span><span class="p">[</span><span class="s1">&#39;pwv&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">airmass</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">pwv_model</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">],</span> <span class="n">pwv_model</span><span class="p">[</span><span class="s1">&#39;pwv&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">airmass</span></div>
 
 
 <div class="viewcode-block" id="available_data"><a class="viewcode-back" href="../../accessing_data.html#pwv_kpno.pwv_atm.available_data">[docs]</a><span class="k">def</span> <span class="nf">available_data</span><span class="p">():</span>

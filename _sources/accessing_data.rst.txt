@@ -14,10 +14,9 @@ Access to PWV data is available as part of the ``pwv_kpno.pwv_atm`` module.
 Checking For Available Data
 ===========================
 
-Checking the years for which SuomiNet data is locally available can be achieved
-using the ``available_data`` function. By default, version 0.10.0 of
-**pwv_kpno** is distributed with all the necessary SuomiNet data from 2010
-through 2017.
+To check what years of SuomiNet data are locally available, use the
+``available_data`` function. By default, version 0.10.0 ofc**pwv_kpno** is
+distributed with all the necessary SuomiNet data from 2010cthrough 2017.
 
 .. autofunction:: pwv_kpno.pwv_atm.available_data
 
@@ -132,7 +131,7 @@ To retrieve the entire PWV model from 2010 onward::
       2010-01-01 01:14:00+00:00  0.62058536959
                             ...            ...
 
-To retrieve the modeled PWV level for November 14, 2016::
+To retrieve the modeled PWV level over the course of November 14th, 2016::
 
     >>> pwv_atm.modeled_pwv(year=2016, month=11, day=14)
 
@@ -144,3 +143,24 @@ To retrieve the modeled PWV level for November 14, 2016::
         2016-11-14 00:45:00+00:00 2.85828459218
         2016-11-14 01:14:00+00:00           3.9
                               ...           ...
+
+PWV For a Given Date:
+=====================
+
+In order to determine the PWV column density for a given datetime, users should
+interpolate from the modeled PWV table outlined above. For convenience, this
+can be done automatically using the ``pwv_date`` function.
+
+.. autofunction:: pwv_kpno.pwv_atm.pwv_date
+
+Examples:
+---------
+
+To retrieve the modeled PWV level for November 14, 2016 at 11:00 AM::
+
+   >>> from datetime import datetime
+   >>> from pytz import utc
+   >>>
+   >>> date = Datetime(2016, 11, 14, 11, 00, tzinfo=utc)
+   >>> pwv = pwv_date(date)
+

@@ -12,8 +12,8 @@ Transmission for Datetime
 =========================
 
 Note that to model the atmospheric transmission function for a given datetime,
-SuomiNet data for that datetime must be available on the local machine
-(See `Accessing PWV Data <access_data.html>`_ for more details).
+SuomiNet data for that datetime must be available on the local machine. See
+`Accessing PWV Data <access_data.html>`_ for more details.
 
 To find the atmospheric transmission, use the ``trans_for_date`` method.
 
@@ -38,8 +38,8 @@ given by::
     >>>
     >>> pwv_trans.trans_for_date(date=obsv_date, airmass=1.2)
 
-      wavelength   transmission
-       Angstrom         %
+        wavelength   transmission
+         Angstrom
       ------------- --------------
              7000.0 0.995667371031
       7001.00033344 0.992141802334
@@ -63,8 +63,8 @@ is given by::
 
     >>> pwv_trans.trans_for_pwv(13.5)
 
-      wavelength   transmission
-       Angstrom         %
+        wavelength   transmission
+         Angstrom
       ------------- --------------
              7000.0 0.927538932462
       7001.00033344  0.87218566827

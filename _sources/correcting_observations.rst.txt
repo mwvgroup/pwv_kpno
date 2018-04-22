@@ -29,7 +29,9 @@ a PWV level of 15 mm, this can be found as::
        30913697.9848318, 29947238.7968099]
 
 Since we know the PWV level used to generate this spectra, we can determine the
-corresponding transmission function using the ``trans_for_pwv`` function::
+corresponding transmission function using the ``trans_for_pwv`` function
+(although in a real world setting the ``trans_for_date`` function may be more
+appropriate)::
 
     >>> from pwv_kpno import pwv_atm
     >>>
@@ -45,10 +47,10 @@ corresponding transmission function using the ``trans_for_pwv`` function::
                          ...                ...
 
 In order to divide these two results, the SED at and the transmission function
-must both be known for the same wavelength values. Since the SED is a well
+must be known for the same wavelength values. Since the SED is a well
 behaved function, we interpolate the SED to match the wavelength sampling of
 the transmission function. In general the transmission function not a smooth
-function,which can yield innacuracies when interpolating.
+function, which can cause problems when interpolating.
 
 Using the ``numpy`` package, we interpolate as follows:
 
@@ -74,11 +76,19 @@ by
              {\int S(\lambda) \, d\lambda}
 
 where the integration bounds are defined by the wavelength range of the
-photometric bandpass. Trapezoidal integration of array like objects in Python
+photometric bandpass. In practice an SED of the desired object may not be
+available, meaning spectral templates should be used.
+
+Consider a photometric observation taken in the *i* band (7,000 to 8,500
+Angstroms). We can find :math:`T(\lambda)` and :math:`S(\lambda)` in the same
+manner as the previous example::
+
+
+Trapezoidal integration of array like objects in Python
 can be performed using the ``Numpy`` package. Using results from the
 spectrographic example we have::
 
-    >>> i_band = (7000, 85000)
+    >>>
     >>>
     >>> weighted_transmission = np.multiply(sampled_sed, modeled_trans["transmission"])
     >>> numerator = np.trapz(weighted_transmission, i_band)
@@ -86,3 +96,4 @@ spectrographic example we have::
     >>> denominator = np.trapz(sampled_sed, i_band)
     >>>
     >>> photo_corr = np.divide(numerator, denominator)
+

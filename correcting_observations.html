@@ -191,7 +191,9 @@ a PWV level of 15 mm, this can be found as:</p>
 </pre></div>
 </div>
 <p>Since we know the PWV level used to generate this spectra, we can determine the
-corresponding transmission function using the <code class="docutils literal notranslate"><span class="pre">trans_for_pwv</span></code> function:</p>
+corresponding transmission function using the <code class="docutils literal notranslate"><span class="pre">trans_for_pwv</span></code> function
+(although in a real world setting the <code class="docutils literal notranslate"><span class="pre">trans_for_date</span></code> function may be more
+appropriate):</p>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="k">import</span> <span class="n">pwv_atm</span>
 <span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">modeled_trans</span> <span class="o">=</span> <span class="n">pwv_atm</span><span class="o">.</span><span class="n">trans_for_pwv</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
@@ -207,10 +209,10 @@ corresponding transmission function using the <code class="docutils literal notr
 </pre></div>
 </div>
 <p>In order to divide these two results, the SED at and the transmission function
-must both be known for the same wavelength values. Since the SED is a well
+must be known for the same wavelength values. Since the SED is a well
 behaved function, we interpolate the SED to match the wavelength sampling of
 the transmission function. In general the transmission function not a smooth
-function,which can yield innacuracies when interpolating.</p>
+function, which can cause problems when interpolating.</p>
 <p>Using the <code class="docutils literal notranslate"><span class="pre">numpy</span></code> package, we interpolate as follows:</p>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sampled_sed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">modeled_trans</span><span class="p">[</span><span class="s2">&quot;wavelength&quot;</span><span class="p">],</span>
 <span class="gp">&gt;&gt;&gt; </span>                        <span class="n">obs_wavelengths</span><span class="p">,</span>
@@ -232,10 +234,15 @@ by</p>
 \[C = \frac{\int S(\lambda) \cdot T(\lambda) \, d\lambda}
           {\int S(\lambda) \, d\lambda}\]</div>
 <p>where the integration bounds are defined by the wavelength range of the
-photometric bandpass. Trapezoidal integration of array like objects in Python
+photometric bandpass. In practice an SED of the desired object may not be
+available, meaning spectral templates should be used.</p>
+<p>Consider a photometric observation taken in the <em>i</em> band (7,000 to 8,500
+Angstroms). We can find <span class="math notranslate">\(T(\lambda)\)</span> and <span class="math notranslate">\(S(\lambda)\)</span> in the same
+manner as the previous example:</p>
+<p>Trapezoidal integration of array like objects in Python
 can be performed using the <code class="docutils literal notranslate"><span class="pre">Numpy</span></code> package. Using results from the
 spectrographic example we have:</p>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">i_band</span> <span class="o">=</span> <span class="p">(</span><span class="mi">7000</span><span class="p">,</span> <span class="mi">85000</span><span class="p">)</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="go">&gt;&gt;&gt;</span>
 <span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">weighted_transmission</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">sampled_sed</span><span class="p">,</span> <span class="n">modeled_trans</span><span class="p">[</span><span class="s2">&quot;transmission&quot;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">numerator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">weighted_transmission</span><span class="p">,</span> <span class="n">i_band</span><span class="p">)</span>
