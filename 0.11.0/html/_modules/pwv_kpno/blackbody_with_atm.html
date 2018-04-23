@@ -222,7 +222,7 @@
 
     <span class="c1"># Returns ergs / (angstrom * cm2 * s * sr)</span>
     <span class="n">bb_sed</span> <span class="o">=</span> <span class="n">blackbody_lambda</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">,</span> <span class="n">temp</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
-    <span class="n">bb_sed</span> <span class="o">*=</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>  <span class="c1"># Integrate over angular coordinates</span>
+    <span class="n">bb_sed</span> <span class="o">*=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>  <span class="c1"># Integrate over angular coordinates</span>
 
     <span class="k">if</span> <span class="n">pwv</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">transmission</span> <span class="o">=</span> <span class="n">trans_for_pwv</span><span class="p">(</span><span class="n">pwv</span><span class="p">)</span>
