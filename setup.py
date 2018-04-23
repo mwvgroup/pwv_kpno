@@ -57,7 +57,7 @@ setup(name='pwv_kpno',
 
       author='Daniel Perrefort',
       author_email='djperrefort@pitt.edu',
-      url='https://github.com/mwvgroup/pwv_kpno',
+      url='https://mwvgroup.github.io/pwv_kpno/',
       license='GPL v3',
 
       python_requires='>=2.7',
