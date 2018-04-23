@@ -52,6 +52,7 @@ black body is found by running
 .. code-block:: python
    :linenos:
 
+    >>> from pwv_kpno import blackbody as bb_atm
     >>> bb_temp = 8000
     >>> i_band = (7000, 8500)
     >>> pwv = 15
@@ -79,6 +80,8 @@ Examples:
 .. code-block:: python
    :linenos:
 
+    >>> from pwv_kpno import blackbody as bb_atm
+    >>>
     >>> reference_star_temp = 4000
     >>> other_star_temps = 10000
-    >>> bias = zp_bias(reference_star_temp, other_star_temps, i_band, pwv)
+    >>> bias = bb_atm.zp_bias(reference_star_temp, other_star_temps, i_band, pwv)

@@ -26,7 +26,8 @@ Examples:
 To check the years for which SuomiNet data is locally available, run the
 following::
 
-    >>> pwv_kpno.available_data()
+    >>> from pwv_kpno import pwv_atm
+    >>> pwv_atm.available_data()
 
       [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017]
 
@@ -159,8 +160,9 @@ Examples:
 To retrieve the modeled PWV level for November 14, 2016 at 11:00 AM::
 
    >>> from datetime import datetime
+   >>> from pwv_kpno import pwv_atm
    >>> from pytz import utc
    >>>
    >>> date = Datetime(2016, 11, 14, 11, 00, tzinfo=utc)
-   >>> pwv = pwv_date(date)
+   >>> pwv = pwv_atm.pwv_date(date)
 

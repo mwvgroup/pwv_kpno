@@ -257,7 +257,9 @@ black body is found by running</p>
 2
 3
 4
-5</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="o">&gt;&gt;&gt;</span> <span class="n">bb_temp</span> <span class="o">=</span> <span class="mi">8000</span>
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">blackbody</span> <span class="k">as</span> <span class="n">bb_atm</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">bb_temp</span> <span class="o">=</span> <span class="mi">8000</span>
  <span class="o">&gt;&gt;&gt;</span> <span class="n">i_band</span> <span class="o">=</span> <span class="p">(</span><span class="mi">7000</span><span class="p">,</span> <span class="mi">8500</span><span class="p">)</span>
  <span class="o">&gt;&gt;&gt;</span> <span class="n">pwv</span> <span class="o">=</span> <span class="mi">15</span>
  <span class="o">&gt;&gt;&gt;</span>
@@ -307,9 +309,13 @@ of the desired band in angstroms</li>
 <h3>4.3.1. Examples:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
-3</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="o">&gt;&gt;&gt;</span> <span class="n">reference_star_temp</span> <span class="o">=</span> <span class="mi">4000</span>
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">blackbody</span> <span class="k">as</span> <span class="n">bb_atm</span>
+ <span class="o">&gt;&gt;&gt;</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">reference_star_temp</span> <span class="o">=</span> <span class="mi">4000</span>
  <span class="o">&gt;&gt;&gt;</span> <span class="n">other_star_temps</span> <span class="o">=</span> <span class="mi">10000</span>
- <span class="o">&gt;&gt;&gt;</span> <span class="n">bias</span> <span class="o">=</span> <span class="n">zp_bias</span><span class="p">(</span><span class="n">reference_star_temp</span><span class="p">,</span> <span class="n">other_star_temps</span><span class="p">,</span> <span class="n">i_band</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">bias</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">zp_bias</span><span class="p">(</span><span class="n">reference_star_temp</span><span class="p">,</span> <span class="n">other_star_temps</span><span class="p">,</span> <span class="n">i_band</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
 </div>

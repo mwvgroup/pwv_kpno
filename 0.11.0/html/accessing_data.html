@@ -203,7 +203,8 @@ been released by SuomiNet for a given year that is not locally available.</p>
 <h3>2.1.1. Examples:<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
 <p>To check the years for which SuomiNet data is locally available, run the
 following:</p>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_kpno</span><span class="o">.</span><span class="n">available_data</span><span class="p">()</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="k">import</span> <span class="n">pwv_atm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">available_data</span><span class="p">()</span>
 
 <span class="go">  [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017]</span>
 </pre></div>
@@ -426,10 +427,11 @@ the PWV column density for a given datetime and airmass.</p>
 <h3>2.5.1. Examples:<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>To retrieve the modeled PWV level for November 14, 2016 at 11:00 AM:</p>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="k">import</span> <span class="n">pwv_atm</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pytz</span> <span class="k">import</span> <span class="n">utc</span>
 <span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">date</span> <span class="o">=</span> <span class="n">Datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">utc</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pwv</span> <span class="o">=</span> <span class="n">pwv_date</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pwv</span> <span class="o">=</span> <span class="n">pwv_atm</span><span class="o">.</span><span class="n">pwv_date</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

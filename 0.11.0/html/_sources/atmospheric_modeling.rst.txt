@@ -36,7 +36,7 @@ given by::
     >>>                      minute=35,
     >>>                      tzinfo=pytz.utc)
     >>>
-    >>> pwv_trans.trans_for_date(date=obsv_date, airmass=1.2)
+    >>> pwv_atm.trans_for_date(date=obsv_date, airmass=1.2)
 
         wavelength   transmission
          Angstrom
@@ -61,7 +61,8 @@ Examples:
 For a 13.5 mm PWV column density along line of sight, the transmission function
 is given by::
 
-    >>> pwv_trans.trans_for_pwv(13.5)
+    >>> from pwv_kpno import pwv_atm
+    >>> pwv_atm.trans_for_pwv(13.5)
 
         wavelength   transmission
          Angstrom
