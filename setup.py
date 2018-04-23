@@ -16,7 +16,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
-# Because I know I will be looking for thread later on:
+# Because I know I will be looking for this thread later on:
 # https://stackoverflow.com/q/7522250
 
 from setuptools import setup
@@ -30,7 +30,7 @@ def long_description():
         description = readme.split('## 1) Package Description')[-1]
         description = description.replace('\n## 2) Documentation', '')
 
-        # Remove markdown formating
+        # Remove markdown formatting
         description = description.replace('*', '')
         description = description.replace('[here]', '')
         description = description.replace('[', '').replace(']', ' ')
@@ -38,7 +38,7 @@ def long_description():
 
 
 setup(name='pwv_kpno',
-      version='0.10.1',
+      version='0.11.0',
       packages=['pwv_kpno'],
       keywords='KPNO atmospheric transmission PWV precipitable water vapor',
       description='Models the atmospheric transmission function for KPNO',

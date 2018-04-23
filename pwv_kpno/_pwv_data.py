@@ -16,20 +16,28 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
-"""This document defines end user functions for accessing / updating PWV data.
-Functions contained in this document include `available_data`, `update_models`,
-`measured_pwv`, and `modeled_pwv`.
+"""This document defines functions for updating the PWV model for Kitt Peak.
+Using locally available SuomiNet data, first order polynomials are fitted to
+relate the PWV level at nearby locations to the PWV level at Kitt Peak. The
+resulting polynomials are then used to supplement the PWV measurements taken at
+Kitt Peak for times when no Kitt Peak data is available.
+
+End user functions defined in this document include:
+    - pwv_date
+    - available_data
+    - measured_pwv
+    - modeled_pwv
+    - update_models
 """
 
-import os
 from datetime import datetime
 
+from astropy.table import Table
 import numpy as np
 from pytz import utc
-from astropy.table import Table
 
-from .download_suomi_data import update_suomi_data
-from .settings import Settings
+from ._data_download import update_suomi_data
+from ._settings import Settings, PWV_MSRED_PATH, PWV_MODEL_PATH
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -40,10 +48,52 @@ __email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'
 
 
-# Define path of PWV data tables
-FILE_DIR = os.path.dirname(os.path.realpath(__file__))
-PWV_MSRED_PATH = os.path.join(FILE_DIR, 'locations/{}/measured_pwv.csv')
-PWV_MODEL_PATH = os.path.join(FILE_DIR, 'locations/{}/modeled_pwv.csv')
+# This function is a public wrapper for _pwv_date
+def pwv_date(date, airmass=1):
+    """Returns the modeled PWV column density at Kitt Peak for a given date
+
+    Interpolate from the modeled PWV column density at Kitt Peak and return
+    the PWV column density for a given datetime and airmass.
+
+    Args:
+        date (datetime): The date of the desired PWV column density
+        airmass (float): The airmass along line of sight
+
+    Returns:
+        The modeled PWV column density for Kitt Peak
+    """
+
+    return _pwv_date(date, airmass)
+
+
+def _pwv_date(date, airmass=1, test_model=None):
+    """Returns the modeled PWV column density at Kitt Peak for a given date
+
+    Interpolate from the modeled PWV column density at Kitt Peak and return
+    the PWV column density for a given datetime and airmass.
+
+    Args:
+        date    (datetime): The date of the desired PWV column density
+        airmass    (float): The airmass along line of sight
+        test_model (Table): A mock PWV model used by the test suite
+
+    Returns:
+        The modeled PWV column density for Kitt Peak
+    """
+
+    if test_model is None:
+        location_name = Settings().current_location.name
+        pwv_model = Table.read(PWV_MODEL_PATH.format(location_name))
+
+    else:
+        pwv_model = test_model
+
+    # Determine the PWV level along line of sight as pwv(zenith) * airmass
+    unix_epoch = datetime(1970, 1, 1, tzinfo=utc)
+    utc_date = date.astimezone(utc)
+    timestamp = (utc_date - unix_epoch).total_seconds()
+
+    return np.interp(timestamp, pwv_model['date'], pwv_model['pwv']) * airmass
 
 
 def available_data():
@@ -279,8 +329,9 @@ def update_models(year=None):
     Update the locally available SuomiNet data by downloading new data from
     the SuomiNet website. Use this data to create an updated model for the PWV
     level at Kitt Peak. If a year is provided, only update data for that year.
-    If not, download all available data from 2017 onward. Data for years from
-    2010 through 2016 is included with this package version by default.
+    If not, download any published data that is not available on the local
+    machine. Data for years from 2010 through 2017 is included with this
+    package version by default.
 
     Args:
         year (int): A Year from 2010 onward

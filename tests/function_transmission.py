@@ -24,11 +24,12 @@ from datetime import datetime, timedelta
 import numpy as np
 from pytz import utc
 
-from pwv_kpno import transmission
-from pwv_kpno.calc_transmission import _raise_transmission_args
-from pwv_kpno.calc_transmission import _raise_available_data
-from pwv_kpno.calc_transmission import _raise_pwv
-from create_mock_data import create_mock_pwv_model
+from pwv_kpno._transmission import _trans_for_date
+from pwv_kpno._transmission import trans_for_date
+from pwv_kpno._transmission import _raise_transmission_args
+from pwv_kpno._transmission import _raise_available_data
+from pwv_kpno._transmission import _raise_pwv
+from _create_mock_data import create_mock_pwv_model
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -38,7 +39,7 @@ __email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'
 
 
-class TestTransmissionErrors(unittest.TestCase):
+class TransmissionErrors(unittest.TestCase):
     """Test pwv_kpno.transmission for raised errors due to bad arguments"""
 
     def test_argument_types(self):
@@ -102,7 +103,7 @@ class TestTransmissionErrors(unittest.TestCase):
                           four_day_start, mock_model)
 
 
-class TestTransmissionPwvErrors(unittest.TestCase):
+class TransmissionPwvErrors(unittest.TestCase):
     """Test pwv_kpno.transmission_pwv for raised errors due to bad arguments"""
 
     def test_argument_types(self):
@@ -120,11 +121,15 @@ class TestTransmissionPwvErrors(unittest.TestCase):
         """
 
         self.assertRaises(ValueError, _raise_pwv, -1)
-        self.assertRaises(ValueError, _raise_pwv, 30.2)
+
+        # Check value that uses interpolation
         self.assertIsNone(_raise_pwv(15.0))
 
+        # Check value outside domain that uses extrapolation
+        self.assertIsNone(_raise_pwv(30.5))
 
-class TestTransmissionResults(unittest.TestCase):
+
+class TransmissionResults(unittest.TestCase):
     """Test pwv_kpno.transmission for the expected returns"""
 
     mock_model = create_mock_pwv_model(2010)
@@ -138,8 +143,8 @@ class TestTransmissionResults(unittest.TestCase):
         date_40 = self.mock_model['date'][40]
         date_40 = datetime.utcfromtimestamp(date_40).replace(tzinfo=utc)
 
-        airmass_2_transm = transmission(date_35, 2, self.mock_model)
-        airmass_1_transm = transmission(date_40, 1, self.mock_model)
+        airmass_2_transm = _trans_for_date(date_35, 2, self.mock_model)
+        airmass_1_transm = _trans_for_date(date_40, 1, self.mock_model)
 
         same_transmission = np.equal(airmass_1_transm['transmission'],
                                      airmass_2_transm['transmission'])
@@ -153,10 +158,10 @@ class TestTransmissionResults(unittest.TestCase):
         airmass of 1.
         """
 
-        sample_transm = transmission(datetime(2011, 1, 1, tzinfo=utc), 1)
+        sample_transm = trans_for_date(datetime(2011, 1, 1, tzinfo=utc), 1)
         w_units = sample_transm['wavelength'].unit
         t_units = sample_transm['transmission'].unit
 
         error_msg = 'Wrong units for column "{}"'
         self.assertEqual(w_units, 'angstrom', error_msg.format('wavelength'))
-        self.assertEqual(t_units, 'percent', error_msg.format('transmission'))
+        self.assertEqual(t_units, None, error_msg.format('transmission'))

@@ -27,9 +27,11 @@ for documentation purposes and for reference in future package development.
 
 import os
 
-import numpy as np
 from astropy.table import Table
+import numpy as np
 import scipy.interpolate as interpolate
+
+from ._settings import PHOSIM_DATA
 
 __authors__ = 'Azalee Bostroem'
 __copyright__ = 'Copyright 2016, Azalee Bostroem'
@@ -38,10 +40,6 @@ __editor__ = 'Daniel Perrefort'
 __license__ = 'GPL V3'
 __email__ = 'abostroem@gmail.com'
 __status__ = 'Development'
-
-# Define necessary directory paths
-PHOSIM_DATA = './sims_phosim/data/atmosphere'
-ATM_MODELS = '.'  # Where to write the atmospheric models
 
 
 def _load_cross_section(filename, x_fine):
@@ -183,11 +181,15 @@ def write_atm_models(output_dir):
 
     # If we decide to use the other elements in the atmospheric model then we
     # probably want to re-examine the values chosen here
-    xlf_dict = {'h2o': np.arange(0.1, 31, 1) * mol_cm_3,  # 0.1 - 30.1 mm in units of mol/cm^3
-                'o3': np.array([1.0]),  # 20-50% DU
-                'o2': np.array([1.]),  # 0.02%
-                'tau': np.array([0.05]),  # aerosol tau
-                'index': np.array([1.28])}  # aerosol index
+    xlf_dict = {
+        # 0.1 - 30.1 mm in units of mol/cm^3
+        'h2o': np.arange(0.1, 31, 1) * mol_cm_3,
+
+        'o3': np.array([1.0]),     # 20-50% DU
+        'o2': np.array([1.]),      # 0.02%
+        'tau': np.array([0.05]),   # aerosol tau
+        'index': np.array([1.28])  # aerosol index
+    }
 
     wl, atm_trans = _generate_atm_model(7000, 10000, 1, pint_list, xlf_dict)
 
@@ -205,12 +207,3 @@ def write_atm_models(output_dir):
         out_table.add_column(temp_table[pwv_as_str])
 
     out_table.write(os.path.join(output_dir, 'atm_model.csv'), overwrite=True)
-
-
-def main():
-    """Generate atmospheric models and write them to the ATM_MODELS"""
-    write_atm_models(ATM_MODELS)
-
-
-if __name__ == "__main__":
-    main()

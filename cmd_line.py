@@ -23,12 +23,12 @@ from datetime import datetime
 from pytz import utc
 
 from pwv_kpno import __version__ as version
-from pwv_kpno.calc_transmission import transmission
-from pwv_kpno.calc_transmission import transmission_pwv
-from pwv_kpno.end_user_utilities import available_data
-from pwv_kpno.end_user_utilities import measured_pwv
-from pwv_kpno.end_user_utilities import modeled_pwv
-from pwv_kpno.end_user_utilities import update_models
+from pwv_kpno._transmission import _trans_for_date
+from pwv_kpno._transmission import trans_for_pwv
+from pwv_kpno._pwv_data import available_data
+from pwv_kpno._pwv_data import measured_pwv
+from pwv_kpno._pwv_data import modeled_pwv
+from pwv_kpno._pwv_data import update_models
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -100,7 +100,7 @@ def transmission_pwv_wrapper(cli_args):
         cli_args (argparse.Namespace): Arguments from the command line
     """
 
-    model = transmission_pwv(cli_args.pwv)
+    model = trans_for_pwv(cli_args.pwv)
     model.write(cli_args.output, overwrite=cli_args.force, format='ascii.csv')
 
 
@@ -118,7 +118,7 @@ def transmission_wrapper(cli_args):
                     minute=cli_args.minute,
                     tzinfo=utc)
 
-    model = transmission(date, cli_args.airmass)
+    model = _trans_for_date(date, cli_args.airmass)
     model.write(cli_args.output, overwrite=cli_args.force, format='ascii.csv')
 
 

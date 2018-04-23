@@ -22,7 +22,7 @@ from datetime import datetime
 
 import unittest
 
-from pwv_kpno.end_user_utilities import update_models
+from pwv_kpno._pwv_data import update_models
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -32,7 +32,7 @@ __email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'
 
 
-class TestUpdateModelsArgs(unittest.TestCase):
+class UpdateModelsArgs(unittest.TestCase):
     """Test pwv_kpno.update_models for raised errors due to bad arguments"""
 
     def test_argument_errors(self):

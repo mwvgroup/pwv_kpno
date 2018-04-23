@@ -27,7 +27,7 @@ from datetime import datetime
 
 import unittest
 
-from pwv_kpno.end_user_utilities import available_data
+from pwv_kpno._pwv_data import available_data
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -41,21 +41,21 @@ PACKAGE_DATA_DIR = 'pwv_kpno/suomi_data/'
 CONFIG_PATH = 'pwv_kpno/CONFIG.txt'
 
 
-class TestCorrectDataFiles(unittest.TestCase):
+class CorrectDataFiles(unittest.TestCase):
     """Test appropriate SuomiNet data files are included with the package"""
 
     @classmethod
-    def setUpClass(self):
+    def setUpClass(cls):
         """Determine what data files are currently included in the package"""
 
-        self.data_file_years = set()
-        self.data_file_GPS_ids = set()
+        cls.data_file_years = set()
+        cls.data_file_GPS_ids = set()
 
         for fname in glob(os.path.join(PACKAGE_DATA_DIR, '*.plt')):
-            self.data_file_years.add(int(fname[-8: -4]))
-            self.data_file_GPS_ids.add(fname[-15: -11])
+            cls.data_file_years.add(int(fname[-8: -4]))
+            cls.data_file_GPS_ids.add(fname[-15: -11])
 
-    def test_correct_years(self):
+    def test_data_file_years(self):
         """Test that data files correspond to appropriate years"""
 
         expected_years = set(range(2010, datetime.now().year))
@@ -81,11 +81,7 @@ class TestCorrectDataFiles(unittest.TestCase):
         error_msg = 'Unexpected data file with SuomiNet id {}'
         self.assertFalse(bad_ids, error_msg.format(bad_ids))
 
-
-class TestConfigMatchesData(unittest.TestCase):
-    """Test config.txt has the appropriate data"""
-
-    def runTest(self):
+    def test_config_matches_data(self):
         """Compare years in config file with years of present data files"""
 
         config_data = set(available_data())

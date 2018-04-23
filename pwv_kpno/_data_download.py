@@ -17,16 +17,11 @@
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
 """This code downloads precipitable water vapor (PWV) measurements from
-from suominet.ucar.edu for Kitt Peak and other nearby locations. Using
-these values, first order polynomials are fitted to relate the PWV
-level at nearby locations to the PWV level at Kitt Peak. The resulting
-polynomials are then used to supplement the PWV measurements taken at
-Kitt Peak for times when no Kitt Peak data is available.
-
-Data downloaded from SuomiNet is added to a master table located at
-PWV_TAB_DIR/measured.csv. Supplemented PWV values are stored in a master table
-located at PWV_TAB_DIR/modeled.csv. All datetimes are recorded as timestamps
-and PWV measurements are represented in units of millimeters.
+from suominet.ucar.edu for Kitt Peak and other nearby locations. Data is added
+to a master table located at PWV_TAB_DIR/measured.csv. Supplemented PWV values
+are stored in a master table located at PWV_TAB_DIR/modeled.csv. All datetimes
+are recorded as timestamps and PWV measurements are represented in units of
+millimeters.
 
 For more details on the SuomiNet project see
 http://www.suominet.ucar.edu/overview.html.
@@ -40,7 +35,7 @@ from astropy.table import Table, join, vstack, unique
 import numpy as np
 import requests
 
-from .settings import Settings
+from ._settings import Settings, PWV_MSRED_PATH, SUOMI_DIR
 
 __authors__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2016, Daniel Perrefort'
@@ -49,11 +44,6 @@ __credits__ = 'Jessica Kroboth'
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'
-
-# Necessary directory paths
-FILE_DIR = os.path.dirname(os.path.realpath(__file__))
-MEAS_PATH = os.path.join(FILE_DIR, 'locations/{}/measured_pwv.csv')
-SUOMI_DIR = os.path.join(FILE_DIR, 'suomi_data')
 
 
 def _suomi_date_to_timestamp(year, days_str):
@@ -234,7 +224,7 @@ def update_suomi_data(year=None):
     # Get any local data that has already been downloaded
 
     location_name = Settings().current_location.name
-    local_data_path = MEAS_PATH.format(location_name)
+    local_data_path = PWV_MSRED_PATH.format(location_name)
     local_data = Table.read(local_data_path)
 
     current_location = Settings().current_location

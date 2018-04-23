@@ -24,8 +24,8 @@ from datetime import datetime
 from astropy.table import Table
 from pytz import utc
 
-from pwv_kpno import measured_pwv, modeled_pwv
-from pwv_kpno.end_user_utilities import _check_date_time_args
+from pwv_kpno.pwv_atm import measured_pwv, modeled_pwv, pwv_date
+from pwv_kpno._pwv_data import _check_date_time_args
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -58,7 +58,7 @@ def _check_attrs(iterable, **kwargs):
     return True
 
 
-class TestSearchArgumentErrors(unittest.TestCase):
+class SearchArgumentErrors(unittest.TestCase):
     """Test that _check_search_args raises the appropriate errors
 
     _check_search_args is responsible for checking the arguments for both
@@ -102,7 +102,7 @@ class TestSearchArgumentErrors(unittest.TestCase):
         self.assertRaises(TypeError, _check_date_time_args, hour=12.0)
 
 
-class TestMeasuredPWV(unittest.TestCase):
+class MeasuredPWV(unittest.TestCase):
     """Tests for the 'measured_pwv' function"""
 
     all_local_pwv_data = measured_pwv()
@@ -156,15 +156,15 @@ class TestMeasuredPWV(unittest.TestCase):
         self.assertTrue(all(bad_data['KITT'].mask))
 
 
-class TestModeledPWV(unittest.TestCase):
+class ModeledPWV(unittest.TestCase):
     """Tests for the 'modeled_pwv' function"""
 
-    pwv_model_for_kitt_peak = modeled_pwv()
+    kitt_peak_pwv_model = modeled_pwv()
 
     def test_returned_tz_info(self):
         """Test if datetimes in the returned data are timezone aware"""
 
-        tzinfo = self.pwv_model_for_kitt_peak[0][0].tzinfo
+        tzinfo = self.kitt_peak_pwv_model[0][0].tzinfo
         error_msg = 'Datetimes should be UTC aware (found "{}")'
         self.assertTrue(tzinfo == utc, error_msg.format(tzinfo))
 
@@ -172,8 +172,26 @@ class TestModeledPWV(unittest.TestCase):
         """Test columns for appropriate units"""
 
         error_msg = 'Wrong units for column {}. Found ({})'
-        date_unit = self.pwv_model_for_kitt_peak['date'].unit
-        pwv_unit = self.pwv_model_for_kitt_peak['pwv'].unit
+        date_unit = self.kitt_peak_pwv_model['date'].unit
+        pwv_unit = self.kitt_peak_pwv_model['pwv'].unit
 
         self.assertEqual(date_unit, 'UTC', error_msg.format('date', date_unit))
         self.assertEqual(pwv_unit, 'mm', error_msg.format('pwv', pwv_unit))
+
+
+class PwvDate(unittest.TestCase):
+    """Tests for the pwv_date function"""
+
+    kitt_peak_pwv_model = modeled_pwv()
+
+    def test_known_dates(self):
+        """Tests that pwv_date"""
+
+        test_date_0 = self.kitt_peak_pwv_model['date'][0]
+        test_pwv_0 = self.kitt_peak_pwv_model['pwv'][0]
+        test_date_100 = self.kitt_peak_pwv_model['date'][100]
+        test_pwv_100 = self.kitt_peak_pwv_model['pwv'][100]
+
+        error_msg = "pwv_date returned incorrect PWV value for tabulated date"
+        self.assertEqual(test_pwv_0, pwv_date(test_date_0), error_msg)
+        self.assertEqual(test_pwv_100, pwv_date(test_date_100), error_msg)
