@@ -2,25 +2,30 @@
 # -*- coding: utf-8 -*-
 
 # Specify extensions / features
-extensions = ['sphinx.ext.autodoc',      # auto-documentation
-              'sphinx.ext.viewcode',     # adds links to source code
-              'sphinx.ext.githubpages',  # creates .nojekyll file
-              'sphinx.ext.napoleon']     # adds support for google doc style
+extensions = ['sphinx.ext.autodoc',      # Auto-documentation
+              'sphinx.ext.viewcode',     # Adds links to source code
+              'sphinx.ext.napoleon',     # Adds support for google doc style
+              'sphinx.ext.mathjax',
+              'sphinx.ext.autosectionlabel']      # For rendering mathematical equations
 
-# The suffixes of source files.
+autosectionlabel_prefix_document=True
+
+# The suffixes of source files
 source_suffix = ['.rst']
 
-# The master toctree document.
+# The document containing the master table of contents
 master_doc = 'index'
 
-# General information about the project.
+# General information about the project
 project = 'pwv_kpno'
-copyright = '2017, Daniel J. Perrefort'
+copyright = '2018, Daniel J. Perrefort'
 author = 'Daniel J. Perrefort'
+highlight_language = 'python3'
 
 # The version info for the project
-version = '0.10.1'
-release = '0.10.1'
+from pwv_kpno import __version__ as pk_version
+version = pk_version
+release = pk_version
 
 # Patterns relative to source directory to ignore
 exclude_patterns = ['.build', '.DS_Store']
@@ -33,6 +38,9 @@ todo_include_todos = False
 
 # The theme to use for HTML and HTML Help pages.
 html_theme = 'sphinx_rtd_theme'
+html_theme_options = {
+    'navigation_depth': 2,  # Depth of the headers shown in the navigation bar
+}
 
 # Paths that contain custom static files
-html_static_path = ['LOGO.png']
+html_static_path = ['LOGO.png', 'pwv_kpno_demo.ipynb']
