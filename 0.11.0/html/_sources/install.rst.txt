@@ -17,7 +17,7 @@ Using PIP (Recommended)
 -----------------------
 
 Using the `pip package manager <https://pip.pypa.io/en/stable/>`_ is the
-recommended method for installing **pwv_kpno**. To install with pip, use::
+recommended method for installing **pwv_kpno**. To install with pip, run::
 
     pip install pwv_kpno
 

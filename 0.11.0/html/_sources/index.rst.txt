@@ -38,19 +38,17 @@ onward. Understanding atmospheric effects is important when calibrating
 ground based astronomical observations. Traditionally, determining the detailed
 atmospheric transmission function at a given date and time required performing
 dedicated spectrographic observations. **pwv_kpno** provides an alternative
-method that does not require dedicated observation time, and that can be
-performed at the user's convenience.
+that can be performed at the user's convenience.
 
 Atmospheric absorption in the near-infrared is highly dependent on the column
 density of precipitable water vapor (PWV). By measuring the delay of GPS
 signals through the atmosphere, the `SuomiNet project
-<http://www.suominet.ucar.edu/overview.html>`_ provides accurate PWV
-measurements for multiple, international locations. The **pwv_kpno** package
-uses published SuomiNet data in conjunction with MODTRAN models to determine
-the modeled atmospheric transmission function at Kitt Peak in close to real
-time. The package also provides automated retrieval and processing of SuomiNet
-data, allowing photometry to typically be corrected within an hour of
-observation.
+<http://www.suominet.ucar.edu>`_ provides accurate PWV measurements for
+multiple, international locations. The **pwv_kpno** package uses published
+SuomiNet data in conjunction with MODTRAN models to determine the modeled
+atmospheric transmission function at Kitt Peak in close to real time. The
+package also provides automated retrieval and processing of SuomiNet data,
+allowing photometry to typically be corrected within an hour of observation.
 
 ***********
 How to Cite
