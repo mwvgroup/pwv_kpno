@@ -247,4 +247,3 @@ def trans_for_date(date, airmass):
     """
 
     return _trans_for_date(date, airmass, test_model=None)
-

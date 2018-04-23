@@ -181,11 +181,15 @@ def write_atm_models(output_dir):
 
     # If we decide to use the other elements in the atmospheric model then we
     # probably want to re-examine the values chosen here
-    xlf_dict = {'h2o': np.arange(0.1, 31, 1) * mol_cm_3,  # 0.1 - 30.1 mm in units of mol/cm^3
-                'o3': np.array([1.0]),  # 20-50% DU
-                'o2': np.array([1.]),  # 0.02%
-                'tau': np.array([0.05]),  # aerosol tau
-                'index': np.array([1.28])}  # aerosol index
+    xlf_dict = {
+        # 0.1 - 30.1 mm in units of mol/cm^3
+        'h2o': np.arange(0.1, 31, 1) * mol_cm_3,
+
+        'o3': np.array([1.0]),     # 20-50% DU
+        'o2': np.array([1.]),      # 0.02%
+        'tau': np.array([0.05]),   # aerosol tau
+        'index': np.array([1.28])  # aerosol index
+    }
 
     wl, atm_trans = _generate_atm_model(7000, 10000, 1, pint_list, xlf_dict)
 

@@ -279,18 +279,6 @@ class Location:
 
         return enabled
 
-    def ignore_dates(self, rec_id, date_range):
-        # Todo (include type checks)
-
-        warn('`Location` class is under development. '
-             'This method is not functional.')
-
-    def use_dates(self, rec_id, date_range):
-        # Todo (include type checks)
-
-        warn('`Location` class is under development. '
-             'This method is not functional.')
-
     def save(self):
         """Save current settings for this locations to file"""
 
@@ -411,17 +399,3 @@ class Settings:
             ofile.seek(0)
             ofile.write(location)
             ofile.truncate()
-
-    def add_location(self):
-        """Create a new location with a unique atmospheric model"""
-        # Todo (First implement ability to generate new atmospheric models)
-
-        warn('`Settings` class is under development. '
-             'This method is not functional.')
-
-    def read(self, fpath):
-        """Read locations settings from file"""
-        # Todo (First implement add_location method)
-
-        warn('`Settings` class is under development. '
-             'This method is not functional.')
