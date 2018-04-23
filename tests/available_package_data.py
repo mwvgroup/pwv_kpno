@@ -55,7 +55,7 @@ class CorrectDataFiles(unittest.TestCase):
             self.data_file_years.add(int(fname[-8: -4]))
             self.data_file_GPS_ids.add(fname[-15: -11])
 
-    def test_correct_years(self):
+    def test_data_file_years(self):
         """Test that data files correspond to appropriate years"""
 
         expected_years = set(range(2010, datetime.now().year))
