@@ -30,7 +30,7 @@ def long_description():
         description = readme.split('## 1) Package Description')[-1]
         description = description.replace('\n## 2) Documentation', '')
 
-        # Remove markdown formating
+        # Remove markdown formatting
         description = description.replace('*', '')
         description = description.replace('[here]', '')
         description = description.replace('[', '').replace(']', ' ')

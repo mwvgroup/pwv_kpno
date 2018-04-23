@@ -57,7 +57,7 @@ An Incomplete Guide to Getting Started:
 
     To retrieve the atmospheric model for a datetime:
 
-      >>> pwv_atm.trans_for_date(date=obsv_date, airmass=1.2)
+      >>> pwv_atm._trans_for_date(date=obsv_date, airmass=1.2)
 
 
     To access the PWV measurements as an astropy table:
@@ -78,11 +78,8 @@ An Incomplete Guide to Getting Started:
       >>> pwv_atm.modeled_pwv(year=2016, month=11, day=14)
 """
 
-# _pwv_date is included for use by the test suite.
-# pwv_date is included for the end user
-
 from ._pwv_data import available_data
-from ._pwv_data import _pwv_date, pwv_date
+from ._pwv_data import pwv_date
 from ._pwv_data import measured_pwv
 from ._pwv_data import modeled_pwv
 from ._pwv_data import update_models

@@ -12,28 +12,38 @@ An Incomplete Guide to Getting Started:
     To determine the SED of a black body under the influence of atmospheric
     effects due to a known PWV concentration (in mm):
 
-      >>> from pwv_kpno import blackbody_with_atm
-      >>>
-      >>> temp = 8000  # Black Body temperature in Kelvin
-      >>> wavelengths = np.arange(7000, 10000, 100) # Wavelengths in Angstrom
-      >>> pwv = 17  # Integrated PWV concentration in mm
-      >>>
-      >>> blackbody_with_atm.sed(temp, wavelengths, pwv)
-
+    >>> import numpy as np
+    >>> from pwv_kpno import blackbody_with_atm as bb_atm
+    >>>
+    >>> bb_temp = 8000  # Black Body temperature in Kelvin
+    >>> wavelengths = np.arange(7000, 10000, 100)  # Wavelengths in Angstrom
+    >>> pwv = 15  # Integrated PWV concentration in mm
+    >>>
+    >>> sed = bb_atm.sed(bb_temp, wavelengths, pwv)
 
     To determine the magnitude of a black body both with and without
     atmospheric effects:
 
-    >>> band = (7000, 10000) # Units of Angstrom
-    >>> mag_without_atm, mag_with_atm = blackbody_with_atm.magnitude(temp, band, pwv)
+    >>> from pwv_kpno import blackbody_with_atm as bb_atm
+    >>>
+    >>> bb_temp = 8000
+    >>> i_band = (7000, 8500)
+    >>> pwv = 15
+    >>>
+    >>> bb_mag = bb_atm.magnitude(bb_temp, i_band, pwv)
 
 
     To determine the residual error in the zero point of a photometric image
     due to PWV:
 
+    >>> from pwv_kpno import blackbody_with_atm as bb_atm
+    >>>
     >>> reference_star_temp = 4000
-    >>> other_star_temps = 10000
-    >>> bias = zp_bias(reference_star_temp, other_star_temps, band, pwv)
+    >>> other_star_temp = 10000
+    >>> bias = bb_atm.zp_bias(reference_star_temp,
+    >>>                       other_star_temp,
+    >>>                       i_band,
+    >>>                       pwv)
 """
 
 from astropy import units as u

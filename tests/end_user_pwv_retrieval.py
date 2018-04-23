@@ -24,7 +24,7 @@ from datetime import datetime
 from astropy.table import Table
 from pytz import utc
 
-from pwv_kpno.pwv_atm import measured_pwv, modeled_pwv, _pwv_date
+from pwv_kpno.pwv_atm import measured_pwv, modeled_pwv, pwv_date
 from pwv_kpno._pwv_data import _check_date_time_args
 
 __author__ = 'Daniel Perrefort'
@@ -193,5 +193,5 @@ class PwvDate(unittest.TestCase):
         test_pwv_100 = self.kitt_peak_pwv_model['pwv'][100]
 
         error_msg = "pwv_date returned incorrect PWV value for tabulated date"
-        self.assertEqual(test_pwv_0, _pwv_date(test_date_0), error_msg)
-        self.assertEqual(test_pwv_100, _pwv_date(test_date_100), error_msg)
+        self.assertEqual(test_pwv_0, pwv_date(test_date_0), error_msg)
+        self.assertEqual(test_pwv_100, pwv_date(test_date_100), error_msg)

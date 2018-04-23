@@ -23,7 +23,7 @@ from datetime import datetime
 from pytz import utc
 
 from pwv_kpno import __version__ as version
-from pwv_kpno._transmission import trans_for_date
+from pwv_kpno._transmission import _trans_for_date
 from pwv_kpno._transmission import trans_for_pwv
 from pwv_kpno._pwv_data import available_data
 from pwv_kpno._pwv_data import measured_pwv
@@ -118,7 +118,7 @@ def transmission_wrapper(cli_args):
                     minute=cli_args.minute,
                     tzinfo=utc)
 
-    model = trans_for_date(date, cli_args.airmass)
+    model = _trans_for_date(date, cli_args.airmass)
     model.write(cli_args.output, overwrite=cli_args.force, format='ascii.csv')
 
 

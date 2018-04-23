@@ -45,15 +45,15 @@ class CorrectDataFiles(unittest.TestCase):
     """Test appropriate SuomiNet data files are included with the package"""
 
     @classmethod
-    def setUpClass(self):
+    def setUpClass(cls):
         """Determine what data files are currently included in the package"""
 
-        self.data_file_years = set()
-        self.data_file_GPS_ids = set()
+        cls.data_file_years = set()
+        cls.data_file_GPS_ids = set()
 
         for fname in glob(os.path.join(PACKAGE_DATA_DIR, '*.plt')):
-            self.data_file_years.add(int(fname[-8: -4]))
-            self.data_file_GPS_ids.add(fname[-15: -11])
+            cls.data_file_years.add(int(fname[-8: -4]))
+            cls.data_file_GPS_ids.add(fname[-15: -11])
 
     def test_data_file_years(self):
         """Test that data files correspond to appropriate years"""

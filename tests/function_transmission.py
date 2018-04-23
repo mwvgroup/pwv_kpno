@@ -24,7 +24,8 @@ from datetime import datetime, timedelta
 import numpy as np
 from pytz import utc
 
-from pwv_kpno.pwv_atm import trans_for_date
+from pwv_kpno._transmission import _trans_for_date
+from pwv_kpno._transmission import trans_for_date
 from pwv_kpno._transmission import _raise_transmission_args
 from pwv_kpno._transmission import _raise_available_data
 from pwv_kpno._transmission import _raise_pwv
@@ -142,8 +143,8 @@ class TransmissionResults(unittest.TestCase):
         date_40 = self.mock_model['date'][40]
         date_40 = datetime.utcfromtimestamp(date_40).replace(tzinfo=utc)
 
-        airmass_2_transm = trans_for_date(date_35, 2, self.mock_model)
-        airmass_1_transm = trans_for_date(date_40, 1, self.mock_model)
+        airmass_2_transm = _trans_for_date(date_35, 2, self.mock_model)
+        airmass_1_transm = _trans_for_date(date_40, 1, self.mock_model)
 
         same_transmission = np.equal(airmass_1_transm['transmission'],
                                      airmass_2_transm['transmission'])

@@ -19,7 +19,7 @@
 
 """This code allows for the modification of package settings. While some of
 this code is already being used in the package, much of it is provided as a
-framework for future development. It is not intended for end user visability.
+framework for future development. It is not intended for end user visibility.
 """
 
 # Todo: Transition from Settings class to multi-site classes
@@ -64,7 +64,7 @@ class Receiver:
     """Represents a single SuomiNet GPS receiver
 
     Attributes:
-        id                : The 4 character SuomiNet ID code for this receiver
+        rec_id            : The 4 character SuomiNet ID code for this receiver
         location          : The Location this receiver is associated with
         enabled           : If data from this receiver is being used for its
                             location
@@ -73,7 +73,7 @@ class Receiver:
     """
 
     def __init__(self):
-        self.id = None
+        self.rec_id = None
         self.enabled = None
         self.location = None
         self.ignore_timestamps = []
@@ -139,14 +139,14 @@ class Location:
         return rep.format(self.name, self.all_receivers)
 
     @staticmethod
-    def _check_receiver_args(id, enabled):
+    def _check_receiver_args(rec_id, enabled):
         """Raise errors if attributes have incorrect types"""
 
         type_err = "Attribute '{}' must be of type {}"
-        if type(id) is not str:
+        if type(rec_id) is not str:
             raise TypeError(type_err.format('id', 'str'))
 
-        elif len(id) != 4:
+        elif len(rec_id) != 4:
             raise ValueError('SuomiNet id codes should be 4 characters long.')
 
         if type(enabled) is not bool:
@@ -163,7 +163,7 @@ class Location:
 
         receiver_data = self._config_data['receivers'][key]
         receiver = Receiver()
-        receiver.id = key
+        receiver.rec_id = key
         receiver.enabled = receiver_data[0]
         receiver.ignore_timestamps = receiver_data[1]
         return receiver
@@ -192,49 +192,49 @@ class Location:
         self.name = self._original_name
         self.primary_receiver = self._original_primary_receiver
 
-    def add_receiver(self, id, enabled=False):
+    def add_receiver(self, rec_id, enabled=False):
         """Save the receiver instance to the package settings
 
         Args:
-            id       (str): The SuomiNet id code of the receiver
+            rec_id   (str): The SuomiNet id code of the receiver
             enabled (bool): Whether to use data from this receiver
         """
 
         # Todo : change this method to accept Receiver object
 
-        self._check_receiver_args(id, enabled)
+        self._check_receiver_args(rec_id, enabled)
 
-        if id in self._config_data['receivers']:
+        if rec_id in self._config_data['receivers']:
             err_msg = "Entry with id '{}' already exists for this location."
-            raise ValueError(err_msg.format(id))
+            raise ValueError(err_msg.format(rec_id))
 
         else:
-            self._config_data['receivers'][id] = [enabled, []]
+            self._config_data['receivers'][rec_id] = [enabled, []]
 
-    def delete_receiver(self, id):
+    def delete_receiver(self, rec_id):
         """Deletes a SuomiNet receiver from this location
 
         Only settings data is deleted. All PWV data downloaded from SuomiNet
         for the receiver will remain on disk.
 
         Args:
-            id (str): The id code for a receiver stored in settings
+            rec_id (str): The id code for a receiver stored in settings
         """
 
-        if id in self._config_data['receivers']:
-            del self._config_data['receivers'][id]
+        if rec_id in self._config_data['receivers']:
+            del self._config_data['receivers'][rec_id]
 
         else:
-            warn("No entry found with id '{}'".format(id))
+            warn("No entry found with id '{}'".format(rec_id))
 
-    def _raise_valid_id(self, id):
+    def _raise_valid_id(self, rec_id):
         """Raises ValueError if no settings are available for the given id"""
 
-        if id not in self._config_data['receivers']:
+        if rec_id not in self._config_data['receivers']:
             err_msg = "No receiver '{}' stored for location '{}'"
-            raise ValueError(err_msg.format(id, self.name))
+            raise ValueError(err_msg.format(rec_id, self.name))
 
-    def enable_receiver(self, id):
+    def enable_receiver(self, rec_id):
         """Set the status of a GPS receiver to enabled for this location
 
         Atmospheric models returned for a location only use data taken by
@@ -242,13 +242,13 @@ class Location:
         location does not effect other locations.
 
         Args:
-            id (str): The 4 character id code of a GPS receiver
+            rec_id (str): The 4 character id code of a GPS receiver
         """
 
-        self._raise_valid_id(id)
-        self._config_data['receivers'][id] = True
+        self._raise_valid_id(rec_id)
+        self._config_data['receivers'][rec_id] = True
 
-    def disable_receiver(self, id):
+    def disable_receiver(self, rec_id):
         """Set the status of a GPS receiver to disabled for this location
 
         Atmospheric models returned for a location only use data taken by
@@ -256,11 +256,11 @@ class Location:
         location does not effect other locations.
 
         Args:
-            id (str): The 4 character id code of a GPS receiver
+            rec_id (str): The 4 character id code of a GPS receiver
         """
 
-        self._raise_valid_id(id)
-        self._config_data['receivers'][id] = False
+        self._raise_valid_id(rec_id)
+        self._config_data['receivers'][rec_id] = False
 
     @property
     def all_receivers(self):
@@ -279,13 +279,13 @@ class Location:
 
         return enabled
 
-    def ignore_dates(self, id, date_range):
+    def ignore_dates(self, rec_id, date_range):
         # Todo (include type checks)
 
         warn('`Location` class is under development. '
              'This method is not functional.')
 
-    def use_dates(self, id, date_range):
+    def use_dates(self, rec_id, date_range):
         # Todo (include type checks)
 
         warn('`Location` class is under development. '

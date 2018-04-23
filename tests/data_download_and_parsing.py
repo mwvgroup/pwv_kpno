@@ -62,11 +62,11 @@ class SuomiNetDataDownload(unittest.TestCase):
     """Tests data is downloaded correctly by _download_suomi_data_for_year"""
 
     @classmethod
-    def setUpClass(self):
+    def setUpClass(cls):
         """Download data from SuomiNet for 2012 and 2015"""
 
-        self.data_2012 = _download_data_for_year(2012)
-        self.data_2015 = _download_data_for_year(2015)
+        cls.data_2012 = _download_data_for_year(2012)
+        cls.data_2015 = _download_data_for_year(2015)
 
     def test_column_names(self):
         """Test downloaded data for correct columns"""
