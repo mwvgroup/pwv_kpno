@@ -21,16 +21,3 @@ PACKAGE_VERSION=$(shell pip show pwv_kpno | grep Version | cut -f 2 -d ' ')
 
 gh-pages:
 	make html BUILDDIR=../$(PACKAGE_VERSION)
-
-	rm -fr ../$(PACKAGE_VERSION)/_modules
-	mv -f $(BUILDDIR)/html/_modules ../$(PACKAGE_VERSION)/_modules
-
-	rm -fr ../_sources
-	mv -f html/_sources ../_sources
-
-	rm -fr ../_static
-	mv -f html/_static ../_static
-
-	mv -f html/* ../
-	rm -fr html/
-	rm -fr doctrees/
