@@ -60,7 +60,7 @@ def sed(temp, wavelengths, pwv):
 
     # Returns ergs / (angstrom * cm2 * s * sr)
     bb_sed = blackbody_lambda(wavelengths, temp).value
-    bb_sed *= (4 * np.pi)  # Integrate over angular coordinates
+    bb_sed *= (2 * np.pi)  # Integrate over angular coordinates
 
     if pwv > 0:
         transmission = trans_for_pwv(pwv)
