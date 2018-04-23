@@ -15,8 +15,8 @@ Checking For Available Data
 ===========================
 
 To check what years of SuomiNet data are locally available, use the
-``available_data`` function. By default, version 0.10.0 ofc**pwv_kpno** is
-distributed with all the necessary SuomiNet data from 2010cthrough 2017.
+``available_data`` function. By default, version 0.10.0 of **pwv_kpno** is
+distributed with all the necessary SuomiNet data from 2010 through 2017.
 
 .. autofunction:: pwv_kpno.pwv_atm.available_data
 

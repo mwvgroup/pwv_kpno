@@ -25,26 +25,19 @@
   
 
   
-  
     <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="pwv_kpno 0.11.0 documentation" href="index.html"/>
-        <link rel="next" title="3. Modeling the Atmosphere" href="atmospheric_modeling.html"/>
-        <link rel="prev" title="1. Installation and Setup" href="install.html"/> 
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="3. Modeling the Atmosphere" href="atmospheric_modeling.html" />
+    <link rel="prev" title="1. Installation and Setup" href="install.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -115,7 +108,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">pwv_kpno</a>
@@ -123,9 +116,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -179,8 +173,8 @@ data. Users can also access the local data as an <code class="docutils literal n
 <div class="section" id="checking-for-available-data">
 <h2>2.1. Checking For Available Data<a class="headerlink" href="#checking-for-available-data" title="Permalink to this headline">¶</a></h2>
 <p>To check what years of SuomiNet data are locally available, use the
-<code class="docutils literal notranslate"><span class="pre">available_data</span></code> function. By default, version 0.10.0 ofc**pwv_kpno** is
-distributed with all the necessary SuomiNet data from 2010cthrough 2017.</p>
+<code class="docutils literal notranslate"><span class="pre">available_data</span></code> function. By default, version 0.10.0 of <strong>pwv_kpno</strong> is
+distributed with all the necessary SuomiNet data from 2010 through 2017.</p>
 <dl class="function">
 <dt id="pwv_kpno.pwv_atm.available_data">
 <code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">available_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/_pwv_data.html#available_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.available_data" title="Permalink to this definition">¶</a></dt>
@@ -440,9 +434,7 @@ the PWV column density for a given datetime and airmass.</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -464,7 +456,7 @@ the PWV column density for a given datetime and airmass.</p>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -483,6 +475,7 @@ the PWV column density for a given datetime and airmass.</p>
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
             VERSION:'0.11.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -501,14 +494,13 @@ the PWV column density for a given datetime and airmass.</p>
     <script type="text/javascript" src="_static/js/theme.js"></script>
   
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

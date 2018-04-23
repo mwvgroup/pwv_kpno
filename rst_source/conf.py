@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 
 # Specify extensions / features
-extensions = ['sphinx.ext.autodoc',      # auto-documentation
-              'sphinx.ext.viewcode',     # adds links to source code
-              'sphinx.ext.githubpages',  # creates .nojekyll file
-              'sphinx.ext.napoleon',     # adds support for google doc style
+extensions = ['sphinx.ext.autodoc',      # Auto-documentation
+              'sphinx.ext.viewcode',     # Adds links to source code
+              'sphinx.ext.napoleon',     # Adds support for google doc style
               'sphinx.ext.mathjax']      # For rendering mathematical equations
 
 # The suffixes of source files
