@@ -210,7 +210,38 @@
 <span class="n">__status__</span> <span class="o">=</span> <span class="s1">&#39;Development&#39;</span>
 
 
-<div class="viewcode-block" id="pwv_date"><a class="viewcode-back" href="../../accessing_data.html#pwv_kpno.pwv_atm.pwv_date">[docs]</a><span class="k">def</span> <span class="nf">pwv_date</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">airmass</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">test_model</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="c1"># This function is a public wrapper for _pwv_date</span>
+<div class="viewcode-block" id="pwv_date"><a class="viewcode-back" href="../../accessing_data.html#pwv_kpno.pwv_atm.pwv_date">[docs]</a><span class="k">def</span> <span class="nf">pwv_date</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">airmass</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the modeled PWV column density at Kitt Peak for a given date</span>
+
+<span class="sd">    Interpolate from the modeled PWV column density at Kitt Peak and return</span>
+<span class="sd">    the PWV column density for a given datetime and airmass.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        date (datetime): The date of the desired PWV column density</span>
+<span class="sd">        airmass (float): The airmass along line of sight</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The modeled PWV column density for Kitt Peak</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">_pwv_date</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">airmass</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_pwv_date</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">airmass</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">test_model</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the modeled PWV column density at Kitt Peak for a given date</span>
+
+<span class="sd">    Interpolate from the modeled PWV column density at Kitt Peak and return</span>
+<span class="sd">    the PWV column density for a given datetime and airmass.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        date    (datetime): The date of the desired PWV column density</span>
+<span class="sd">        airmass    (float): The airmass along line of sight</span>
+<span class="sd">        test_model (Table): A mock PWV model used by the test suite</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The modeled PWV column density for Kitt Peak</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">test_model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">location_name</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span><span class="o">.</span><span class="n">current_location</span><span class="o">.</span><span class="n">name</span>
@@ -224,7 +255,7 @@
     <span class="n">utc_date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">utc</span><span class="p">)</span>
     <span class="n">timestamp</span> <span class="o">=</span> <span class="p">(</span><span class="n">utc_date</span> <span class="o">-</span> <span class="n">unix_epoch</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
 
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">pwv_model</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">],</span> <span class="n">pwv_model</span><span class="p">[</span><span class="s1">&#39;pwv&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">airmass</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">pwv_model</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">],</span> <span class="n">pwv_model</span><span class="p">[</span><span class="s1">&#39;pwv&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">airmass</span>
 
 
 <div class="viewcode-block" id="available_data"><a class="viewcode-back" href="../../accessing_data.html#pwv_kpno.pwv_atm.available_data">[docs]</a><span class="k">def</span> <span class="nf">available_data</span><span class="p">():</span>
@@ -460,8 +491,9 @@
 <span class="sd">    Update the locally available SuomiNet data by downloading new data from</span>
 <span class="sd">    the SuomiNet website. Use this data to create an updated model for the PWV</span>
 <span class="sd">    level at Kitt Peak. If a year is provided, only update data for that year.</span>
-<span class="sd">    If not, download all available data from 2017 onward. Data for years from</span>
-<span class="sd">    2010 through 2016 is included with this package version by default.</span>
+<span class="sd">    If not, download any published data that is not available on the local</span>
+<span class="sd">    machine. Data for years from 2010 through 2018 is included with this</span>
+<span class="sd">    package version by default.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        year (int): A Year from 2010 onward</span>

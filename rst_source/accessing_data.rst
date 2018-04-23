@@ -144,8 +144,8 @@ To retrieve the modeled PWV level over the course of November 14th, 2016::
         2016-11-14 01:14:00+00:00           3.9
                               ...           ...
 
-PWV For a Given Date:
-=====================
+PWV For a Given Date
+====================
 
 In order to determine the PWV column density for a given datetime, users should
 interpolate from the modeled PWV table outlined above. For convenience, this

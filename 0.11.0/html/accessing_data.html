@@ -97,7 +97,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#updating-data">2.2. Updating Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#measured-pwv-data">2.3. Measured PWV Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#modeled-pwv-data">2.4. Modeled PWV Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pwv-for-a-given-date">2.5. PWV For a Given Date:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pwv-for-a-given-date">2.5. PWV For a Given Date</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">3. Modeling the Atmosphere</a></li>
@@ -225,8 +225,9 @@ locally available data.</p>
 <p>Update the locally available SuomiNet data by downloading new data from
 the SuomiNet website. Use this data to create an updated model for the PWV
 level at Kitt Peak. If a year is provided, only update data for that year.
-If not, download all available data from 2017 onward. Data for years from
-2010 through 2016 is included with this package version by default.</p>
+If not, download any published data that is not available on the local
+machine. Data for years from 2010 through 2018 is included with this
+package version by default.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -394,14 +395,32 @@ year, month, day, and hour by using the key word arguments.</p>
 </div>
 </div>
 <div class="section" id="pwv-for-a-given-date">
-<h2>2.5. PWV For a Given Date:<a class="headerlink" href="#pwv-for-a-given-date" title="Permalink to this headline">¶</a></h2>
+<h2>2.5. PWV For a Given Date<a class="headerlink" href="#pwv-for-a-given-date" title="Permalink to this headline">¶</a></h2>
 <p>In order to determine the PWV column density for a given datetime, users should
 interpolate from the modeled PWV table outlined above. For convenience, this
 can be done automatically using the <code class="docutils literal notranslate"><span class="pre">pwv_date</span></code> function.</p>
 <dl class="function">
 <dt id="pwv_kpno.pwv_atm.pwv_date">
-<code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">pwv_date</code><span class="sig-paren">(</span><em>date</em>, <em>airmass=1</em>, <em>test_model=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/_pwv_data.html#pwv_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.pwv_date" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">pwv_date</code><span class="sig-paren">(</span><em>date</em>, <em>airmass=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/_pwv_data.html#pwv_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.pwv_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the modeled PWV column density at Kitt Peak for a given date</p>
+<p>Interpolate from the modeled PWV column density at Kitt Peak and return
+the PWV column density for a given datetime and airmass.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>date</strong> (<em>datetime</em>) – The date of the desired PWV column density</li>
+<li><strong>airmass</strong> (<em>float</em>) – The airmass along line of sight</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The modeled PWV column density for Kitt Peak</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <div class="section" id="id4">
 <h3>2.5.1. Examples:<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>

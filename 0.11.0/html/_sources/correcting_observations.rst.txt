@@ -1,9 +1,12 @@
 ***********************
 Correcting Observations
 ***********************
+.. This will be uncommented once the jupyter notebook tutorial is completed
 
-**Note:** The following tutorial is available for download as a Jupyter Notebook
-:download:`here <_static/pwv_kpno_demo.ipynb>`
+    .. only:: builder_html
+
+        **Note:** The following tutorial is available for download as a
+        `Jupyter Notebook <_static/pwv_kpno_demo.ipynb>`_
 
 Examples are provided on how to correct astronomical observations for
 atmospheric effects. For demonstration purposes, the following examples
