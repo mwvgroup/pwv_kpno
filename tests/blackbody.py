@@ -41,7 +41,7 @@ class BlackbodySED(unittest.TestCase):
         returned_sed = sed(self.temp, self.wavelengths, 0)
 
         expected_sed = blackbody_lambda(self.wavelengths, self.temp).value
-        expected_sed *= (4 * np.pi)  # Integrate over angular coordinates
+        expected_sed *= (2 * np.pi)  # Integrate over angular coordinates
 
         sed_is_same = np.all(np.equal(returned_sed, expected_sed))
         self.assertTrue(sed_is_same,
