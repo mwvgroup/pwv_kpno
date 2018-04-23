@@ -17,14 +17,20 @@ Using PIP (Recommended)
 -----------------------
 
 Using the `pip package manager <https://pip.pypa.io/en/stable/>`_ is the
-recommended method for installing **pwv_kpno**. To install with pip, run::
+recommended method for installing **pwv_kpno**. To install with pip, run:
+
+.. code-block:: bash
+   :linenos:
 
     pip install pwv_kpno
 
 The pip package manager will automatically install any missing dependencies
 in your Python environment. If you have any issues installing the package,
 try installing each dependency individually and then reinstall **pwv_kpno**.
-Dependencies can be installed with pip by running::
+Dependencies can be installed with pip by running:
+
+.. code-block:: bash
+   :linenos:
 
     pip install numpy
     pip install astropy
@@ -38,7 +44,10 @@ Using setup.py (Legacy)
 
 If you don't have pip available on your system, the source code can be
 downloaded from `GitHub <https://github.com/mwvgroup/pwv_kpno>`_. **pwv_kpno**
-can be installed by directly running::
+can be installed by directly running:
+
+.. code-block:: bash
+   :linenos:
 
     python setup.py install --user
 
@@ -56,13 +65,19 @@ all necessary SuomiNet data from 2010 through the end of 2017. It is
 recommended to update the local SuomiNet data after installing or updating the
 package, and periodically as necessary.
 
-To download any new SuomiNet data use the ``update_models`` function::
+To download any new SuomiNet data use the ``update_models`` function:
+
+.. code-block:: python
+    :linenos:
 
     >>> from pwv_kpno import pwv_atm
     >>> pwv_atm.update_models()
 
 Optionally, you can download data only for a specific year by passing the year
-as an argument::
+as an argument:
+
+.. code-block:: python
+    :linenos:
 
     >>> pwv_atm.update_models(year=2018)
 
@@ -72,7 +87,10 @@ permission to write and modify files within the package directory.
 Running Tests
 =============
 
-If desired, the test suite can be run using::
+If desired, the test suite can be run using:
+
+.. code-block:: python
+    :linenos:
 
     python setup.py tests
 

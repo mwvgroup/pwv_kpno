@@ -24,7 +24,10 @@ Examples:
 ---------
 
 To check the years for which SuomiNet data is locally available, run the
-following::
+following:
+
+.. code-block:: python
+    :linenos:
 
     >>> from pwv_kpno import pwv_atm
     >>> pwv_atm.available_data()
@@ -46,7 +49,10 @@ locally available data.
 Examples:
 ---------
 
-To ensure that the PWV data for **pwv_kpno** is up to date run::
+To ensure that the PWV data for **pwv_kpno** is up to date run:
+
+.. code-block:: python
+    :linenos:
 
     >>> from pwv_kpno import pwv_atm
     >>> pwv_atm.update_models()
@@ -54,7 +60,10 @@ To ensure that the PWV data for **pwv_kpno** is up to date run::
       [2017, 2018]
 
 If desired, **pwv_kpno** can be forced to (re)download SuomiNet data for a
-specific year::
+specific year:
+
+.. code-block:: python
+    :linenos:
 
     >>> pwv_atm.update_models(2010)
 
@@ -74,7 +83,10 @@ Examples:
 ---------
 
 To retrieve all SuomiNet data available on the local machine as an ``astropy``
-table::
+table:
+
+.. code-block:: python
+    :linenos:
 
     >>> from pwv_kpno import pwv_atm
     >>> pwv_atm.measured_pwv()
@@ -89,7 +101,10 @@ table::
 
 To retrieve SuomiNet data taken on November 14, 2016, specify the datetime as
 keyword arguments. Note in the below example that there is no data available
-from the SA48 receiver for this date::
+from the SA48 receiver for this date:
+
+.. code-block:: python
+    :linenos:
 
     >>> pwv_atm.measured_pwv(year=2016, month=11, day=14)
 
@@ -118,7 +133,10 @@ function is run. To retrieve this model as an astropy table, use the
 Examples:
 ---------
 
-To retrieve the entire PWV model from 2010 onward::
+To retrieve the entire PWV model from 2010 onward:
+
+.. code-block:: python
+    :linenos:
 
     >>> from pwv_kpno import pwv_atm
     >>> pwv_atm.modeled_pwv()
@@ -132,7 +150,10 @@ To retrieve the entire PWV model from 2010 onward::
       2010-01-01 01:14:00+00:00 0.746607564877
                             ...            ...
 
-To retrieve the modeled PWV level over the course of November 14th, 2016::
+To retrieve the modeled PWV level over the course of November 14th, 2016:
+
+.. code-block:: python
+    :linenos:
 
     >>> pwv_atm.modeled_pwv(year=2016, month=11, day=14)
 
@@ -157,7 +178,10 @@ can be done automatically using the ``pwv_date`` function.
 Examples:
 ---------
 
-To retrieve the modeled PWV level for November 14, 2016 at 11:00 AM::
+To retrieve the modeled PWV level for November 14, 2016 at 11:00 AM:
+
+.. code-block:: python
+    :linenos:
 
    >>> from datetime import datetime
    >>> from pwv_kpno import pwv_atm

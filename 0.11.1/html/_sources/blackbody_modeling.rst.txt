@@ -19,7 +19,7 @@ Example:
 --------
 
 .. code-block:: python
-   :linenos:
+    :linenos:
 
     >>> import numpy as np
     >>> from pwv_kpno import blackbody_with_atm as bb_atm
@@ -51,7 +51,7 @@ In the *i* band from 7,000 to 8,500 Angstroms, the magnitude of a
 black body is found by running
 
 .. code-block:: python
-   :linenos:
+    :linenos:
 
     >>> from pwv_kpno import blackbody_with_atm as bb_atm
     >>>
@@ -80,7 +80,7 @@ Examples:
 ---------
 
 .. code-block:: python
-   :linenos:
+    :linenos:
 
     >>> from pwv_kpno import blackbody_with_atm as bb_atm
     >>>

@@ -24,7 +24,10 @@ Examples:
 ---------
 
 For an airmass of 1.2, the transmission function at 2013-12-15 05:35:00 is
-given by::
+given by:
+
+.. code-block:: python
+    :linenos:
 
     >>> from datetime import datetime
     >>> from pwv_kpno import pwv_atm
@@ -60,7 +63,10 @@ Examples:
 ---------
 
 For a 13.5 mm PWV column density along line of sight, the transmission function
-is given by::
+is given by:
+
+.. code-block:: python
+    :linenos:
 
     >>> from pwv_kpno import pwv_atm
     >>> pwv_atm.trans_for_pwv(13.5)

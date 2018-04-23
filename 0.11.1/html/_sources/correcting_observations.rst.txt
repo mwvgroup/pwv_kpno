@@ -19,7 +19,10 @@ In order to correct spectrographic observations for atmospheric effects,
 observed spectra are divided by the atmospheric transmission function. As
 an example, consider the spectral energy distribution (SED) of a black body
 under the effects of atmospheric absorption. For a temperature of 8,000 K, and
-a PWV level of 15 mm, this can be found as::
+a PWV level of 15 mm, this can be found as:
+
+.. code-block:: python
+    :linenos:
 
     >>> from pwv_kpno import blackbody_with_atm as bb_atm
     >>> import numpy as np
@@ -40,6 +43,7 @@ corresponding transmission function using the ``trans_for_pwv`` function
 appropriate).
 
 .. code-block:: python
+    :linenos:
 
     >>> from pwv_kpno import pwv_atm
     >>>
@@ -62,12 +66,18 @@ function, which can cause problems when interpolating.
 
 Using the ``numpy`` package, we interpolate as follows:
 
+.. code-block:: python
+    :linenos:
+
     >>> sampled_sed = np.interp(modeled_trans["wavelength"],
     >>>                         wavelengths,
     >>>                         sed)
 
 The corrected spectrum can then be found by dividing the observed flux
 by the transmission on a wavelength by wavelength basis.
+
+.. code-block:: python
+    :linenos:
 
     >>> corrected_spec = np.divide(sampled_sed, modeled_trans["transmission"])
 
@@ -92,6 +102,9 @@ represents the SED under the influence of atmospheric effects. For a
 photometric observation taken in the *i* band (7,000 to 8,500
 :math:`\unicode{x212B}`), the integration arguments can be found as:
 
+.. code-block:: python
+    :linenos:
+
     >>> from pwv_kpno import blackbody_with_atm as bb_atm
     >>> import numpy as np
     >>>
@@ -108,6 +121,9 @@ photometric observation taken in the *i* band (7,000 to 8,500
 
 Trapezoidal integration of array like objects in Python can be performed using
 the ``Numpy`` package. Using results from the spectrographic example we have:
+
+.. code-block:: python
+    :linenos:
 
     >>> numerator = np.trapz(sed_with_atm, i_band, sample_rate)
     >>> denominator = np.trapz(intrinsic_sed, i_band, sample_rate)
