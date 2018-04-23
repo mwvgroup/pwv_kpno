@@ -6,7 +6,7 @@ extensions = ['sphinx.ext.autodoc',      # auto-documentation
               'sphinx.ext.viewcode',     # adds links to source code
               'sphinx.ext.githubpages',  # creates .nojekyll file
               'sphinx.ext.napoleon',     # adds support for google doc style
-              'sphinx.ext.mathjax']     # For rendering mathematical equations
+              'sphinx.ext.mathjax']      # For rendering mathematical equations
 
 # The suffixes of source files
 source_suffix = ['.rst']
@@ -21,8 +21,9 @@ author = 'Daniel J. Perrefort'
 highlight_language = 'python3'
 
 # The version info for the project
-version = '0.10.1'
-release = '0.10.1'
+from pwv_kpno import __version__ as pk_version
+version = pk_version
+release = pk_version
 
 # Patterns relative to source directory to ignore
 exclude_patterns = ['.build', '.DS_Store']
@@ -40,4 +41,4 @@ html_theme_options = {
 }
 
 # Paths that contain custom static files
-html_static_path = ['LOGO.png']
+html_static_path = ['LOGO.png', 'pwv_kpno_demo.ipynb']

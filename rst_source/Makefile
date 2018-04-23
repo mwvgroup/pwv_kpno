@@ -1,12 +1,10 @@
-# Minimal makefile for Sphinx documentation
-#
+# This makefile is configured to generate Sphinx documentation for the pwv_kpno
+# python package.
 
-# You can set these variables from the command line.
-SPHINXOPTS    =
 SPHINXBUILD   = python -msphinx
 SPHINXPROJ    = pwv_kpno
 SOURCEDIR     = .
-BUILDDIR      = .
+BUILDDIR      = ./sphinx_build
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -19,12 +17,13 @@ help:
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
+PACKAGE_VERSION=$(shell pip show pwv_kpno | grep Version | cut -f 2 -d ' ')
 
 gh-pages:
-	make html
+	make html BUILDDIR=../$(PACKAGE_VERSION)
 
-	rm -fr ../_modules
-	mv -f html/_modules ../_modules
+	rm -fr ../$(PACKAGE_VERSION)/_modules
+	mv -f $(BUILDDIR)/html/_modules ../$(PACKAGE_VERSION)/_modules
 
 	rm -fr ../_sources
 	mv -f html/_sources ../_sources

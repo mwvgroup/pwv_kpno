@@ -1,5 +1,0 @@
-numpy
-astropy
-requests
-pytz
-scipy
