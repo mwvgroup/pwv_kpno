@@ -107,7 +107,8 @@ def zp_bias(ref_temp, cal_temp, band, pwv):
 
     Using a black body approximation, calculate the residual error in the zero
     point of a photometric image cause by not considering the PWV transmission
-    function.
+    function. Returned values are in units of magnitude relative to a zero
+    point of 3631 Jy.
 
     Args:
         ref_temp (float): The temperature of a star used to calibrate the image
