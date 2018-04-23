@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pwv_kpno.blackbody_with_atm &mdash; pwv_kpno 0.11.0 documentation</title>
+  <title>pwv_kpno.blackbody_with_atm &mdash; pwv_kpno 0.11.1 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.11.0
+                0.11.1
               </div>
             
           
@@ -165,28 +165,38 @@
 <span class="sd">    To determine the SED of a black body under the influence of atmospheric</span>
 <span class="sd">    effects due to a known PWV concentration (in mm):</span>
 
-<span class="sd">      &gt;&gt;&gt; from pwv_kpno import blackbody_with_atm</span>
-<span class="sd">      &gt;&gt;&gt;</span>
-<span class="sd">      &gt;&gt;&gt; temp = 8000  # Black Body temperature in Kelvin</span>
-<span class="sd">      &gt;&gt;&gt; wavelengths = np.arange(7000, 10000, 100) # Wavelengths in Angstrom</span>
-<span class="sd">      &gt;&gt;&gt; pwv = 17  # Integrated PWV concentration in mm</span>
-<span class="sd">      &gt;&gt;&gt;</span>
-<span class="sd">      &gt;&gt;&gt; blackbody_with_atm.sed(temp, wavelengths, pwv)</span>
-
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from pwv_kpno import blackbody_with_atm as bb_atm</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; bb_temp = 8000  # Black Body temperature in Kelvin</span>
+<span class="sd">    &gt;&gt;&gt; wavelengths = np.arange(7000, 10000, 100)  # Wavelengths in Angstrom</span>
+<span class="sd">    &gt;&gt;&gt; pwv = 15  # Integrated PWV concentration in mm</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; sed = bb_atm.sed(bb_temp, wavelengths, pwv)</span>
 
 <span class="sd">    To determine the magnitude of a black body both with and without</span>
 <span class="sd">    atmospheric effects:</span>
 
-<span class="sd">    &gt;&gt;&gt; band = (7000, 10000) # Units of Angstrom</span>
-<span class="sd">    &gt;&gt;&gt; mag_without_atm, mag_with_atm = blackbody_with_atm.magnitude(temp, band, pwv)</span>
+<span class="sd">    &gt;&gt;&gt; from pwv_kpno import blackbody_with_atm as bb_atm</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; bb_temp = 8000</span>
+<span class="sd">    &gt;&gt;&gt; i_band = (7000, 8500)</span>
+<span class="sd">    &gt;&gt;&gt; pwv = 15</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; bb_mag = bb_atm.magnitude(bb_temp, i_band, pwv)</span>
 
 
 <span class="sd">    To determine the residual error in the zero point of a photometric image</span>
 <span class="sd">    due to PWV:</span>
 
+<span class="sd">    &gt;&gt;&gt; from pwv_kpno import blackbody_with_atm as bb_atm</span>
+<span class="sd">    &gt;&gt;&gt;</span>
 <span class="sd">    &gt;&gt;&gt; reference_star_temp = 4000</span>
-<span class="sd">    &gt;&gt;&gt; other_star_temps = 10000</span>
-<span class="sd">    &gt;&gt;&gt; bias = zp_bias(reference_star_temp, other_star_temps, band, pwv)</span>
+<span class="sd">    &gt;&gt;&gt; other_star_temp = 10000</span>
+<span class="sd">    &gt;&gt;&gt; bias = bb_atm.zp_bias(reference_star_temp,</span>
+<span class="sd">    &gt;&gt;&gt;                       other_star_temp,</span>
+<span class="sd">    &gt;&gt;&gt;                       i_band,</span>
+<span class="sd">    &gt;&gt;&gt;                       pwv)</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">astropy</span> <span class="k">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
@@ -321,7 +331,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.11.0',
+            VERSION:'0.11.1',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
