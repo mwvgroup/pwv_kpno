@@ -48,7 +48,38 @@ __email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'
 
 
-def pwv_date(date, airmass=1, test_model=None):
+# This function is a public wrapper for _pwv_date
+def pwv_date(date, airmass=1):
+    """Returns the modeled PWV column density at Kitt Peak for a given date
+
+    Interpolate from the modeled PWV column density at Kitt Peak and return
+    the PWV column density for a given datetime and airmass.
+
+    Args:
+        date (datetime): The date of the desired PWV column density
+        airmass (float): The airmass along line of sight
+
+    Returns:
+        The modeled PWV column density for Kitt Peak
+    """
+
+    return _pwv_date(date, airmass)
+
+
+def _pwv_date(date, airmass=1, test_model=None):
+    """Returns the modeled PWV column density at Kitt Peak for a given date
+
+    Interpolate from the modeled PWV column density at Kitt Peak and return
+    the PWV column density for a given datetime and airmass.
+
+    Args:
+        date    (datetime): The date of the desired PWV column density
+        airmass    (float): The airmass along line of sight
+        test_model (Table): A mock PWV model used by the test suite
+
+    Returns:
+        The modeled PWV column density for Kitt Peak
+    """
 
     if test_model is None:
         location_name = Settings().current_location.name

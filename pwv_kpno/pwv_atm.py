@@ -47,7 +47,7 @@ An Incomplete Guide to Getting Started:
       >>>                      minute=35,
       >>>                      tzinfo=pytz.utc)
       >>>
-      >>> pwv = pwv_atm.pwv_date(obsv_date)
+      >>> pwv = pwv_atm._pwv_date(obsv_date)
 
 
     To retrieve the atmospheric model for a line of sight PWV concentration:
@@ -79,7 +79,7 @@ An Incomplete Guide to Getting Started:
 """
 
 from ._pwv_data import available_data
-from ._pwv_data import pwv_date
+from ._pwv_data import _pwv_date
 from ._pwv_data import measured_pwv
 from ._pwv_data import modeled_pwv
 from ._pwv_data import update_models
