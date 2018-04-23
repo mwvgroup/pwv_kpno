@@ -11,6 +11,8 @@ The following is provided as reference by current and future developers.
 Future Features
 ===============
 
+Some intended features to be included in future development include:
+
 * Include an option or function to return the atmospheric transmission
   binned at different wavelengths.
 * Add the ability to create new atmospheric models for an arbitrary SuomiNet
@@ -20,6 +22,8 @@ Future Features
 * Extend the atmospheric models to include a wider wavelength range.
 * Write a function to automatically download / delete new package data as
   necessary when preparing to push a new package version.
+* An upper limit could be imposed on the number of significant figures returned
+  by each function.
 
 **Note:** The **pwv_kpno** package depends on atmospheric models parsed by
 `create_atm_model.py`. These models only consider the effects of precipitable
@@ -59,7 +63,9 @@ running the following from the project root directory:
 
 The make file will automatically create new folder named with the current
 package version and fill it with newly generated documentation. Any
-documentation that amay lready exists for that version will be overwritten.
+documentation that may already exist for that version will be overwritten.
+To modify the default documentation version that appears on the project
+website, edit `index.html` in the root directory.
 
 Note that the usage examples in the documentation, including dates, are hard
 coded. The make file will not update any demonstrated code outputs to reflect

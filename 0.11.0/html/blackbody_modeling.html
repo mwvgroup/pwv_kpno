@@ -166,7 +166,7 @@ of PWV absorption on a black body. We suggest importing this module as
 <code class="docutils literal notranslate"><span class="pre">bb_atm</span></code>.</p>
 <div class="section" id="generating-an-sed">
 <h2>4.1. Generating an SED<a class="headerlink" href="#generating-an-sed" title="Permalink to this headline">¶</a></h2>
-<p>For a given array of wavelengths in angstroms, the <code class="docutils literal notranslate"><span class="pre">sed</span></code> function returns
+<p>For a given array of wavelengths in Angstroms, the <code class="docutils literal notranslate"><span class="pre">sed</span></code> function returns
 the corresponding spectral energy distribution of a black body as seen through
 the atmosphere.</p>
 <dl class="function">
@@ -200,13 +200,15 @@ the atmosphere.</p>
 4
 5
 6
-7</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">blackbody</span> <span class="k">as</span> <span class="n">bb_atm</span>
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">blackbody_with_atm</span> <span class="k">as</span> <span class="n">bb_atm</span>
  <span class="o">&gt;&gt;&gt;</span>
  <span class="o">&gt;&gt;&gt;</span> <span class="n">bb_temp</span> <span class="o">=</span> <span class="mi">8000</span>
- <span class="o">&gt;&gt;&gt;</span> <span class="n">wavelength</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">7000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">wavelengths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">7000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
  <span class="o">&gt;&gt;&gt;</span> <span class="n">pwv</span> <span class="o">=</span> <span class="mi">15</span>
  <span class="o">&gt;&gt;&gt;</span>
- <span class="o">&gt;&gt;&gt;</span> <span class="n">sed</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">sed</span><span class="p">(</span><span class="n">bb_temp</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">sed</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">sed</span><span class="p">(</span><span class="n">bb_temp</span><span class="p">,</span> <span class="n">wavelengths</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
 <p><strong>Note:</strong> If desired, the SED of a black body without atmospheric effects can
@@ -218,7 +220,7 @@ also be achieved by specifying a PWV level of zero.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">magnitude</span></code> function returns the absolute magnitude of a black body in a
 given band as seen under the effects of PWV absorption. Since <strong>pwv_kpno</strong> only
 provides models for the atmospheric transmission between 7,000 and 10,000
-angstroms, if the specified band extends outside this range an error is raised.</p>
+Angstroms, if the specified band extends outside this range an error is raised.</p>
 <dl class="function">
 <dt id="pwv_kpno.blackbody_with_atm.magnitude">
 <code class="descclassname">pwv_kpno.blackbody_with_atm.</code><code class="descname">magnitude</code><span class="sig-paren">(</span><em>temp</em>, <em>band</em>, <em>pwv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/blackbody_with_atm.html#magnitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.blackbody_with_atm.magnitude" title="Permalink to this definition">¶</a></dt>
@@ -252,7 +254,9 @@ black body is found by running</p>
 3
 4
 5
-6</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">blackbody</span> <span class="k">as</span> <span class="n">bb_atm</span>
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">blackbody_with_atm</span> <span class="k">as</span> <span class="n">bb_atm</span>
+ <span class="o">&gt;&gt;&gt;</span>
  <span class="o">&gt;&gt;&gt;</span> <span class="n">bb_temp</span> <span class="o">=</span> <span class="mi">8000</span>
  <span class="o">&gt;&gt;&gt;</span> <span class="n">i_band</span> <span class="o">=</span> <span class="p">(</span><span class="mi">7000</span><span class="p">,</span> <span class="mi">8500</span><span class="p">)</span>
  <span class="o">&gt;&gt;&gt;</span> <span class="n">pwv</span> <span class="o">=</span> <span class="mi">15</span>
@@ -305,11 +309,11 @@ of the desired band in angstroms</li>
 2
 3
 4
-5</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">blackbody</span> <span class="k">as</span> <span class="n">bb_atm</span>
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">blackbody_with_atm</span> <span class="k">as</span> <span class="n">bb_atm</span>
  <span class="o">&gt;&gt;&gt;</span>
  <span class="o">&gt;&gt;&gt;</span> <span class="n">reference_star_temp</span> <span class="o">=</span> <span class="mi">4000</span>
- <span class="o">&gt;&gt;&gt;</span> <span class="n">other_star_temps</span> <span class="o">=</span> <span class="mi">10000</span>
- <span class="o">&gt;&gt;&gt;</span> <span class="n">bias</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">zp_bias</span><span class="p">(</span><span class="n">reference_star_temp</span><span class="p">,</span> <span class="n">other_star_temps</span><span class="p">,</span> <span class="n">i_band</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">other_star_temp</span> <span class="o">=</span> <span class="mi">10000</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">bias</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">zp_bias</span><span class="p">(</span><span class="n">reference_star_temp</span><span class="p">,</span> <span class="n">other_star_temp</span><span class="p">,</span> <span class="n">i_band</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
 </div>

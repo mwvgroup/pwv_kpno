@@ -221,7 +221,7 @@ locally available data.</p>
 the SuomiNet website. Use this data to create an updated model for the PWV
 level at Kitt Peak. If a year is provided, only update data for that year.
 If not, download any published data that is not available on the local
-machine. Data for years from 2010 through 2018 is included with this
+machine. Data for years from 2010 through 2017 is included with this
 package version by default.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -255,8 +255,8 @@ specific year:</p>
 </div>
 <div class="section" id="measured-pwv-data">
 <h2>2.3. Measured PWV Data<a class="headerlink" href="#measured-pwv-data" title="Permalink to this headline">¶</a></h2>
-<p>To retrieve an astropy table of SuomiNet data available on the local machine,
-use the <code class="docutils literal notranslate"><span class="pre">measured_pwv</span></code> function. Results can be filtered independently by
+<p>The <code class="docutils literal notranslate"><span class="pre">measured_pwv</span></code> function returns an astropy table containing any SuomiNet
+data available on the local machine. Results can be filtered independently by
 year, month, day, and hour</p>
 <dl class="function">
 <dt id="pwv_kpno.pwv_atm.measured_pwv">
@@ -368,23 +368,23 @@ year, month, day, and hour by using the key word arguments.</p>
 <span class="go">             UTC                  mm</span>
 <span class="go">            object             float64</span>
 <span class="go">  ------------------------- --------------</span>
-<span class="go">  2010-01-01 00:15:00+00:00 0.898602350838</span>
-<span class="go">  2010-01-01 00:45:00+00:00 0.886046065367</span>
-<span class="go">  2010-01-01 01:14:00+00:00  0.62058536959</span>
+<span class="go">  2010-01-01 00:15:00+00:00 1.021057909034</span>
+<span class="go">  2010-01-01 00:45:00+00:00 1.007850543589</span>
+<span class="go">  2010-01-01 01:14:00+00:00 0.746607564877</span>
 <span class="go">                        ...            ...</span>
 </pre></div>
 </div>
 <p>To retrieve the modeled PWV level over the course of November 14th, 2016:</p>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">modeled_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 
-<span class="go">               date                pwv</span>
-<span class="go">               UTC                  mm</span>
-<span class="go">              object             float64</span>
-<span class="go">    ------------------------- -------------</span>
-<span class="go">    2016-11-14 00:15:00+00:00 2.94364012734</span>
-<span class="go">    2016-11-14 00:45:00+00:00 2.85828459218</span>
-<span class="go">    2016-11-14 01:14:00+00:00           3.9</span>
-<span class="go">                          ...           ...</span>
+<span class="go">               date             pwv</span>
+<span class="go">               UTC               mm</span>
+<span class="go">              object          float64</span>
+<span class="go">    ------------------------- -------</span>
+<span class="go">    2016-11-14 00:15:00+00:00     4.7</span>
+<span class="go">    2016-11-14 00:45:00+00:00     4.3</span>
+<span class="go">    2016-11-14 01:15:00+00:00     3.9</span>
+<span class="go">                          ...     ...</span>
 </pre></div>
 </div>
 </div>
@@ -422,9 +422,9 @@ the PWV column density for a given datetime and airmass.</p>
 <p>To retrieve the modeled PWV level for November 14, 2016 at 11:00 AM:</p>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="k">import</span> <span class="n">pwv_atm</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pytz</span> <span class="k">import</span> <span class="n">utc</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pytz</span>
 <span class="go">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">date</span> <span class="o">=</span> <span class="n">Datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">utc</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">00</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">pytz</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pwv</span> <span class="o">=</span> <span class="n">pwv_atm</span><span class="o">.</span><span class="n">pwv_date</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
 </pre></div>
 </div>

@@ -9,7 +9,7 @@ of PWV absorption on a black body. We suggest importing this module as
 Generating an SED
 =================
 
-For a given array of wavelengths in angstroms, the ``sed`` function returns
+For a given array of wavelengths in Angstroms, the ``sed`` function returns
 the corresponding spectral energy distribution of a black body as seen through
 the atmosphere.
 
@@ -21,13 +21,14 @@ Example:
 .. code-block:: python
    :linenos:
 
-    >>> from pwv_kpno import blackbody as bb_atm
+    >>> import numpy as np
+    >>> from pwv_kpno import blackbody_with_atm as bb_atm
     >>>
     >>> bb_temp = 8000
-    >>> wavelength = np.arange(7000, 10000, 100)
+    >>> wavelengths = np.arange(7000, 10000, 100)
     >>> pwv = 15
     >>>
-    >>> sed = bb_atm.sed(bb_temp, wavelength, pwv)
+    >>> sed = bb_atm.sed(bb_temp, wavelengths, pwv)
 
 **Note:** If desired, the SED of a black body without atmospheric effects can
 also be achieved by specifying a PWV level of zero.
@@ -38,7 +39,7 @@ Magnitude
 The ``magnitude`` function returns the absolute magnitude of a black body in a
 given band as seen under the effects of PWV absorption. Since **pwv_kpno** only
 provides models for the atmospheric transmission between 7,000 and 10,000
-angstroms, if the specified band extends outside this range an error is raised.
+Angstroms, if the specified band extends outside this range an error is raised.
 
 
 .. autofunction:: pwv_kpno.blackbody_with_atm.magnitude
@@ -52,7 +53,8 @@ black body is found by running
 .. code-block:: python
    :linenos:
 
-    >>> from pwv_kpno import blackbody as bb_atm
+    >>> from pwv_kpno import blackbody_with_atm as bb_atm
+    >>>
     >>> bb_temp = 8000
     >>> i_band = (7000, 8500)
     >>> pwv = 15
@@ -80,8 +82,8 @@ Examples:
 .. code-block:: python
    :linenos:
 
-    >>> from pwv_kpno import blackbody as bb_atm
+    >>> from pwv_kpno import blackbody_with_atm as bb_atm
     >>>
     >>> reference_star_temp = 4000
-    >>> other_star_temps = 10000
-    >>> bias = bb_atm.zp_bias(reference_star_temp, other_star_temps, i_band, pwv)
+    >>> other_star_temp = 10000
+    >>> bias = bb_atm.zp_bias(reference_star_temp, other_star_temp, i_band, pwv)

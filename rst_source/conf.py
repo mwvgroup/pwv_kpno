@@ -5,7 +5,10 @@
 extensions = ['sphinx.ext.autodoc',      # Auto-documentation
               'sphinx.ext.viewcode',     # Adds links to source code
               'sphinx.ext.napoleon',     # Adds support for google doc style
-              'sphinx.ext.mathjax']      # For rendering mathematical equations
+              'sphinx.ext.mathjax',
+              'sphinx.ext.autosectionlabel']      # For rendering mathematical equations
+
+autosectionlabel_prefix_document=True
 
 # The suffixes of source files
 source_suffix = ['.rst']

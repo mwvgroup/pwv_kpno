@@ -64,8 +64,8 @@ specific year::
 Measured PWV Data
 =================
 
-To retrieve an astropy table of SuomiNet data available on the local machine,
-use the ``measured_pwv`` function. Results can be filtered independently by
+The ``measured_pwv`` function returns an astropy table containing any SuomiNet
+data available on the local machine. Results can be filtered independently by
 year, month, day, and hour
 
 .. autofunction:: pwv_kpno.pwv_atm.measured_pwv
@@ -127,23 +127,23 @@ To retrieve the entire PWV model from 2010 onward::
                  UTC                  mm
                 object             float64
       ------------------------- --------------
-      2010-01-01 00:15:00+00:00 0.898602350838
-      2010-01-01 00:45:00+00:00 0.886046065367
-      2010-01-01 01:14:00+00:00  0.62058536959
+      2010-01-01 00:15:00+00:00 1.021057909034
+      2010-01-01 00:45:00+00:00 1.007850543589
+      2010-01-01 01:14:00+00:00 0.746607564877
                             ...            ...
 
 To retrieve the modeled PWV level over the course of November 14th, 2016::
 
     >>> pwv_atm.modeled_pwv(year=2016, month=11, day=14)
 
-                   date                pwv
-                   UTC                  mm
-                  object             float64
-        ------------------------- -------------
-        2016-11-14 00:15:00+00:00 2.94364012734
-        2016-11-14 00:45:00+00:00 2.85828459218
-        2016-11-14 01:14:00+00:00           3.9
-                              ...           ...
+                   date             pwv
+                   UTC               mm
+                  object          float64
+        ------------------------- -------
+        2016-11-14 00:15:00+00:00     4.7
+        2016-11-14 00:45:00+00:00     4.3
+        2016-11-14 01:15:00+00:00     3.9
+                              ...     ...
 
 PWV For a Given Date
 ====================
@@ -161,8 +161,8 @@ To retrieve the modeled PWV level for November 14, 2016 at 11:00 AM::
 
    >>> from datetime import datetime
    >>> from pwv_kpno import pwv_atm
-   >>> from pytz import utc
+   >>> import pytz
    >>>
-   >>> date = Datetime(2016, 11, 14, 11, 00, tzinfo=utc)
+   >>> date = datetime(2016, 11, 14, 11, 00, tzinfo=pytz.utc)
    >>> pwv = pwv_atm.pwv_date(date)
 

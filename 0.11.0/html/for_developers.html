@@ -166,6 +166,7 @@ GitHub and pull requests from contributors are welcome.</p>
 <p>The following is provided as reference by current and future developers.</p>
 <div class="section" id="future-features">
 <h2>6.1. Future Features<a class="headerlink" href="#future-features" title="Permalink to this headline">¶</a></h2>
+<p>Some intended features to be included in future development include:</p>
 <ul class="simple">
 <li>Include an option or function to return the atmospheric transmission
 binned at different wavelengths.</li>
@@ -176,6 +177,8 @@ so that resources can be shared between collaborators or made public.</li>
 <li>Extend the atmospheric models to include a wider wavelength range.</li>
 <li>Write a function to automatically download / delete new package data as
 necessary when preparing to push a new package version.</li>
+<li>An upper limit could be imposed on the number of significant figures returned
+by each function.</li>
 </ul>
 <p><strong>Note:</strong> The <strong>pwv_kpno</strong> package depends on atmospheric models parsed by
 <cite>create_atm_model.py</cite>. These models only consider the effects of precipitable
@@ -209,7 +212,9 @@ make gh-pages
 </div>
 <p>The make file will automatically create new folder named with the current
 package version and fill it with newly generated documentation. Any
-documentation that amay lready exists for that version will be overwritten.</p>
+documentation that may already exist for that version will be overwritten.
+To modify the default documentation version that appears on the project
+website, edit <cite>index.html</cite> in the root directory.</p>
 <p>Note that the usage examples in the documentation, including dates, are hard
 coded. The make file will not update any demonstrated code outputs to reflect
 new code changes. The sphinx configuration file <cite>rst_source/conf.py</cite> is also
