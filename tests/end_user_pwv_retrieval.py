@@ -188,9 +188,9 @@ class PwvDate(unittest.TestCase):
         """Tests that pwv_date"""
 
         test_date_0 = self.kitt_peak_pwv_model['date'][0]
-        test_pwv_0 = self.kitt_peak_pwv_model['date'][0]
+        test_pwv_0 = self.kitt_peak_pwv_model['pwv'][0]
         test_date_100 = self.kitt_peak_pwv_model['date'][100]
-        test_pwv_100 = self.kitt_peak_pwv_model['date'][100]
+        test_pwv_100 = self.kitt_peak_pwv_model['pwv'][100]
 
         error_msg = "pwv_date returned incorrect PWV value for tabulated date"
         self.assertEqual(test_pwv_0, _pwv_date(test_date_0), error_msg)
