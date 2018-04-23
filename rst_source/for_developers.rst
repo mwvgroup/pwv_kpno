@@ -89,8 +89,7 @@ release a new version, follow the following steps:
 3. Proofread package docstring for both spelling and accuracy.
 4. Generate new documentation using sphinx.
 5. Submit a pull request to merge the new source code into ``master``.
-6. Submit a second pull requests to merge the new documentation into
-   ``gh-pages``.
+6. Merge any new documentation into ``gh-pages``.
 7. Run the `push_pypi` bash file from the root directory to automatically
    upload the new version to the python package index (you will need the
    appropriate login information for this step).
