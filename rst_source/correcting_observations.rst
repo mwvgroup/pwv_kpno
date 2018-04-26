@@ -51,7 +51,7 @@ appropriate).
     >>> print(modeled_trans)
 
               wavelength        transmission
-               Angstrom              %
+               Angstrom
           ------------------ ------------------
                       7000.0 0.9198165020431311
            7001.000333444482 0.8590254136327501
