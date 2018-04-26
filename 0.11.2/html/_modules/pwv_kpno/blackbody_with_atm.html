@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pwv_kpno.blackbody_with_atm &mdash; pwv_kpno 0.11.1 documentation</title>
+  <title>pwv_kpno.blackbody_with_atm &mdash; pwv_kpno 0.11.2 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.11.1
+                0.11.2
               </div>
             
           
@@ -218,12 +218,11 @@
 <span class="sd">         pwv           (float): The PWV concentration along line of sight in mm</span>
 
 <span class="sd">     Returns:</span>
-<span class="sd">         An array of flux values in units of ergs / (angstrom * cm2 * s)</span>
+<span class="sd">         An array of flux values in units of ergs / (angstrom * cm2 * s * sr)</span>
 <span class="sd">     &quot;&quot;&quot;</span>
 
-    <span class="c1"># Returns ergs / (angstrom * cm2 * s * sr)</span>
+    <span class="c1"># blackbody_lambda returns ergs / (angstrom * cm2 * s * sr)</span>
     <span class="n">bb_sed</span> <span class="o">=</span> <span class="n">blackbody_lambda</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">,</span> <span class="n">temp</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
-    <span class="n">bb_sed</span> <span class="o">*=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>  <span class="c1"># Integrate over angular coordinates</span>
 
     <span class="k">if</span> <span class="n">pwv</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">transmission</span> <span class="o">=</span> <span class="n">trans_for_pwv</span><span class="p">(</span><span class="n">pwv</span><span class="p">)</span>
@@ -254,8 +253,10 @@
     <span class="n">wavelengths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">band</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">band</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
     <span class="n">lambda_over_c</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">band</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">AA</span><span class="p">)</span> <span class="o">/</span> <span class="n">c</span>
 
-    <span class="c1"># We reintroduce units here to make programmatic errors easier to spot</span>
-    <span class="n">flux_pwv</span> <span class="o">=</span> <span class="n">sed</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">wavelengths</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">erg</span> <span class="o">/</span> <span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">AA</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">cm</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">cm</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">)</span>
+    <span class="c1"># We reintroduce units here to make dimensional analysis easier</span>
+    <span class="n">flux_pwv</span> <span class="o">=</span> <span class="n">sed</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">wavelengths</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
+    <span class="n">flux_pwv</span> <span class="o">*=</span> <span class="n">u</span><span class="o">.</span><span class="n">erg</span> <span class="o">/</span> <span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">AA</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">cm</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">cm</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">sr</span><span class="p">)</span>
+    <span class="n">flux_pwv</span> <span class="o">*=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">sr</span>  <span class="c1"># integrate over angular coordinates</span>
     <span class="n">flux_pwv</span> <span class="o">*=</span> <span class="n">lambda_over_c</span><span class="o">.</span><span class="n">cgs</span>
 
     <span class="n">zero_point</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3631</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">jansky</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">erg</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">cm</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
@@ -331,7 +332,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.11.1',
+            VERSION:'0.11.2',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
