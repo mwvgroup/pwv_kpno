@@ -13,7 +13,7 @@ Kitt Peak National Observatory
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;
-[![release](https://img.shields.io/badge/version-0.11.1-blue.svg)]()
+[![release](https://img.shields.io/badge/version-0.11.2-blue.svg)]()
 [![python](https://img.shields.io/badge/python-2.7,%203.6-blue.svg)]()
 [![license](https://img.shields.io/badge/license-GPL%20v3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![Build Status](https://travis-ci.org/mwvgroup/pwv_kpno.svg?branch=master)](https://travis-ci.org/mwvgroup/pwv_kpno)

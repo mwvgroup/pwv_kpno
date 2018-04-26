@@ -65,12 +65,11 @@ def sed(temp, wavelengths, pwv):
          pwv           (float): The PWV concentration along line of sight in mm
 
      Returns:
-         An array of flux values in units of ergs / (angstrom * cm2 * s)
+         An array of flux values in units of ergs / (angstrom * cm2 * s * sr)
      """
 
-    # Returns ergs / (angstrom * cm2 * s * sr)
+    # blackbody_lambda returns ergs / (angstrom * cm2 * s * sr)
     bb_sed = blackbody_lambda(wavelengths, temp).value
-    bb_sed *= (2 * np.pi)  # Integrate over angular coordinates
 
     if pwv > 0:
         transmission = trans_for_pwv(pwv)
@@ -101,8 +100,10 @@ def magnitude(temp, band, pwv):
     wavelengths = np.arange(band[0], band[1])
     lambda_over_c = (np.median(band) * u.AA) / c
 
-    # We reintroduce units here to make programmatic errors easier to spot
-    flux_pwv = sed(temp, wavelengths, pwv) * u.erg / (u.AA * u.cm * u.cm * u.s)
+    # We reintroduce units here to make dimensional analysis easier
+    flux_pwv = sed(temp, wavelengths, pwv)
+    flux_pwv *= u.erg / (u.AA * u.cm * u.cm * u.s * u.sr)
+    flux_pwv *= 2 * np.pi * u.sr  # integrate over angular coordinates
     flux_pwv *= lambda_over_c.cgs
 
     zero_point = (3631 * u.jansky).to(u.erg / u.cm ** 2)
