@@ -28,6 +28,8 @@ Blake and Shaw, 2011 (https://arxiv.org/abs/1109.6703). For more details on the
 SuomiNet project see http://www.suominet.ucar.edu/overview.html.
 """
 
+from . import pwv_atm
+from . import blackbody_with_atm
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
