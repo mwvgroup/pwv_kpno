@@ -40,9 +40,9 @@ Amado AZ, Sahuarita AZ, Tucson AZ, and Tohono O'odham Community College.
 
 For more details on the correlation between GPS signals and PWV levels see
 [Blake and Shaw, 2011](https://arxiv.org/abs/1109.6703). To learn more about
-the SuomiNet project, see their website [here](http://www.suominet.ucar.edu/overview.html).
+the SuomiNet project, see [their website](http://www.suominet.ucar.edu/overview.html).
 
 ## 2) Documentation
 
 Documentation for **pwv_kpno**, including installation and setup instructions,
-can be found online [here](https://mwvgroup.github.io/pwv_kpno/).
+can be found [here](https://mwvgroup.github.io/pwv_kpno/).
