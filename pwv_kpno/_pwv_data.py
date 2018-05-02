@@ -305,12 +305,15 @@ def _update_pwv_model():
         matching_indices = np.logical_and(primary_index, receiver_index)
 
         # Generate and apply a first order fit
-        fit_data = pwv_data[primary, receiver][list(matching_indices)]
-        fit = np.polyfit(fit_data[receiver], fit_data[primary], 1)
-        pwv_data[receiver] = np.poly1d(fit)(pwv_data[receiver])
+        fit_data = pwv_data[primary, receiver][matching_indices]
+        fit = np.polyfit(fit_data[receiver], fit_data[primary], deg=1)
+
+        # np.poly1d does not maintain masks
+        pwv_data[receiver + '_fit'] = np.poly1d(fit)(pwv_data[receiver])
+        pwv_data[receiver + '_fit'].mask = pwv_data[receiver].mask
 
     # Average together the modeled PWV values from all receivers except KITT
-    cols = [c for c in pwv_data.itercols() if c.name not in ['date', primary]]
+    cols = [pwv_data[rec_name + '_fit'] for rec_name in gps_receivers]
     avg_pwv = np.ma.average(cols, axis=0)
 
     # Supplement KITT data with averaged fits
