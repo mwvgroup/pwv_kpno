@@ -17,13 +17,14 @@
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
 """This code downloads precipitable water vapor (PWV) measurements from
-from suominet.ucar.edu for Kitt Peak and other nearby locations. Data is added
-to a master table located at PWV_TAB_DIR/measured.csv. Supplemented PWV values
+suominet.ucar.edu for Kitt Peak and other nearby locations. Data is added to a
+master table located at PWV_TAB_DIR/measured.csv. Supplemented PWV values
 are stored in a master table located at PWV_TAB_DIR/modeled.csv. All datetimes
 are recorded as timestamps and PWV measurements are represented in units of
 millimeters.
-For more details on the SuomiNet project see
-http://www.suominet.ucar.edu/overview.html.
+
+For more details on the SuomiNet project see:
+    http://www.suominet.ucar.edu/overview.html
 """
 
 from datetime import datetime, timedelta
@@ -47,13 +48,16 @@ __status__ = 'Development'
 
 def _suomi_date_to_timestamp(year, days_str):
     """Return seconds since epoch of a datetime provided in DDD.YYYYY format
+
     Convert the datetime notation used by SuomiNet to a UTC timestamp. The
     SuomiNet format consists of the day of the year (1 to 365) followed by the
     decimal number of hours that have passed in the given day. For example,
     February 1st, 00:15 would be 36.01042.
+
     Args:
         year     (int): The year of the desired timestamp
         days_str (str): The number of days that have passed since january 1st
+
     Returns:
         The seconds from UTC epoch to the provided date as a float
     """
@@ -72,18 +76,22 @@ def _suomi_date_to_timestamp(year, days_str):
 
 def _read_file(path):
     """Return PWV measurements from a SuomiNet data file as an astropy table
+
     Expects data files from http://www.suominet.ucar.edu/data.html under the
     "Specific station - All year hourly" section. The returned astropy table
-    has one column with datetimes named 'date', and one with PWV measurements
-    named using the id code for the relevant GPS receiver. Datetimes are
-    expressed as UNIX timestamps and PWV is measured in millimeters.
-    Data is removed from the array for dates where the PWV level is negative.
-    This condition is equivalent to checking for dates when a GPS receiver is
-    offline. Data is also removed for dates with multiple, unequal entries.
-    Note that this may result in an empty table being returned. Credit goes to
-    Jessica Kroboth for identifying these conditions.
+    has columns 'date', 'pwv', and 'pwv_err'. Datetimes are expressed as UNIX
+    timestamps and PWV is measured in millimeters.
+
+    Data is removed from the array for dates where:
+        1. The PWV level is negative (the GPS receiver is offline)
+        2. The pressure is less than or equal to 775 mbar
+        3. Dates are duplicates with unequal measurements
+
+    Credit goes to Jessica Kroboth for identifying condition 1.
+
     Args:
         path (str): File path to be read
+
     Returns:
         An astropy Table with data from path
     """
@@ -116,12 +124,15 @@ def _read_file(path):
 
 def _download_data_for_site(year, site_id):
     """Download SuomiNet data for a given year and SuomiNet id
+
     For a given year and SuomiNet id, download data from the corresponding GPS
     receiver. Files are downloaded from both the daily and hourly data
     releases. Any existing data files are overwritten.
+
     Args:
         year    (int): A year to download data for
         site_id (str): A SuomiNet receiver id code (eg. KITT)
+
     Returns:
         A list of file paths containing downloaded data
     """
@@ -156,11 +167,14 @@ def _download_data_for_site(year, site_id):
 
 def _download_data_for_year(yr):
     """Download and return data from all five SuomiNet sites for a given year
+
     Downloaded data for the SuomiNet sites KITT, SA48, SA46, P014, and AZAM.
     Return this data as an astropy table with all available data from the daily
     data releases supplemented by the hourly release data.
+
     Args:
         yr (int): The year of the desired data
+
     Returns:
         An astropy Table of the combined downloaded data for the given year.
     """
@@ -194,12 +208,15 @@ def _download_data_for_year(yr):
 
 def update_suomi_data(year=None):
     """Download data from SuomiNet and update PWV_TAB_DIR/measured_pwv.csv
+
     If a year is provided, download SuomiNet data for that year to SUOMI_DIR.
     If not, download all available data not included with the release of this
     package version. Use this data to update the master table of PWV
     measurements located at PWV_TAB_DIR/measured_pwv.csv.
+
     Args:
         year (int): The year to update data for
+
     Returns:
         A list of years for which data was updated
     """
