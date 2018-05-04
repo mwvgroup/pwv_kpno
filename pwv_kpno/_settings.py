@@ -274,7 +274,7 @@ class Location:
 
         enabled = []
         for receiver, settings in self._config_data['receivers'].items():
-            if settings[0]:
+            if settings[0] and receiver != self.primary_receiver:
                 enabled.append(receiver)
 
         return enabled

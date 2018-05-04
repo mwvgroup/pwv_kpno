@@ -189,9 +189,8 @@ def _get_measured_data():
         An astropy table with all measured PWV data for the current location
     """
 
-    location_name = Settings().current_location.name
-    data = Table.read(PWV_MSRED_PATH.format(location_name))
     location = Settings().current_location
+    data = Table.read(PWV_MSRED_PATH.format(location.name))
 
     for site_id in data.colnames:
         if site_id != 'date' and not site_id.endswith('_err'):
@@ -294,11 +293,14 @@ def _update_pwv_model():
 
     # Read the local PWV data from file
     pwv_data = _get_measured_data()
-    primary = Settings().current_location.primary_receiver
-    gps_receivers = set(pwv_data.colnames) - {'date', primary}
+    current_location = Settings().current_location
+    primary = current_location.primary_receiver
+    secondary_receivers = current_location.enabled_receivers
+
+    print('Receivers:', primary, secondary_receivers)
 
     # Generate the fit parameters
-    for receiver in gps_receivers:
+    for receiver in secondary_receivers:
         # Identify rows with data for both KITT and receiver
         primary_index = np.logical_not(pwv_data[primary].mask)
         receiver_index = np.logical_not(pwv_data[receiver].mask)
@@ -313,7 +315,7 @@ def _update_pwv_model():
         pwv_data[receiver + '_fit'].mask = pwv_data[receiver].mask
 
     # Average together the modeled PWV values from all receivers except KITT
-    cols = [pwv_data[rec_name + '_fit'] for rec_name in gps_receivers]
+    cols = [pwv_data[rec_name + '_fit'] for rec_name in secondary_receivers]
     avg_pwv = np.ma.average(cols, axis=0)
 
     # Supplement KITT data with averaged fits
