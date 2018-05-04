@@ -194,7 +194,7 @@ def _get_measured_data():
     location = Settings().current_location
 
     for site_id in data.colnames:
-        if site_id != 'date':
+        if site_id != 'date' and not site_id.endswith('_err'):
             for start_time, end_time in location[site_id].ignore_timestamps:
                 i_start = start_time < data['date']
                 i_end = data['date'] < end_time

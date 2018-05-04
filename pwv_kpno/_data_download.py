@@ -96,18 +96,19 @@ def _read_file(path):
         An astropy Table with data from path
     """
 
-    site_name = path[-15:-11]
-    data = np.genfromtxt(path, usecols=[0, 1, 4],
-                         names=['date', site_name, 'press'],
-                         dtype=[float, float, float])
+    site_id = path[-15:-11]
+    data = np.genfromtxt(path, usecols=[0, 1, 2, 4],
+                         names=['date', site_id, site_id + '_err', 'press'],
+                         dtype=[float, float, float, float])
 
     data = Table(data)
-    data = data[data[site_name] > 0]
+    data = data[data[site_id] > 0]
+    np.place(data[site_id + '_err'], data[site_id + '_err'] == 0.0, 0.05)
 
     # Patch to remove bad SuomiNet pressure data for Kitt Peak
     # Do not use as permanent fix when developing multi-site
     ########################################################
-    if site_name == 'KITT':
+    if site_id == 'KITT':
         data = data[data['press'] > 775]
     ########################################################
 
@@ -122,7 +123,7 @@ def _read_file(path):
     return data
 
 
-def _download_data_for_site(year, site_id):
+def _download_suomi_files(year, site_id):
     """Download SuomiNet data for a given year and SuomiNet id
 
     For a given year and SuomiNet id, download data from the corresponding GPS
@@ -166,7 +167,7 @@ def _download_data_for_site(year, site_id):
 
 
 def _download_data_for_year(yr):
-    """Download and return data from all five SuomiNet sites for a given year
+    """Download and return data from available SuomiNet sites for a given year
 
     Downloaded data for the SuomiNet sites KITT, SA48, SA46, P014, and AZAM.
     Return this data as an astropy table with all available data from the daily
@@ -180,30 +181,28 @@ def _download_data_for_year(yr):
     """
 
     receiver_ids = Settings().current_location.enabled_receivers
-    names = ['date'].extend(receiver_ids)
-    combined_data = Table(names=names)
-    while receiver_ids:
-        site_id = receiver_ids.pop()
-        file_paths = _download_data_for_site(yr, site_id)
+    combined_data = []
+    for site_id in receiver_ids:
+        file_paths = _download_suomi_files(yr, site_id)
 
-        if file_paths:  # In case no data files were downloaded
+        if file_paths:
             site_data = vstack([_read_file(path) for path in file_paths])
 
-            if site_data:  # In case none of the data files have valid data
+            if site_data:
                 site_data = unique(site_data, keys=['date'], keep='first')
-
-                if combined_data:
-                    combined_data = join(combined_data, site_data,
-                                         join_type='outer', keys=['date'])
-
-                else:
-                    combined_data = site_data
+                combined_data.append(site_data)
 
     if not combined_data:
         msg = 'No SuomiNet data downloaded for year {}'.format(yr)
         warn(msg, RuntimeWarning)
+        return Table()
 
-    return combined_data
+    out_data = combined_data.pop()
+    while combined_data:
+        out_data = join(out_data, combined_data.pop(),
+                        join_type='outer', keys=['date'])
+
+    return out_data
 
 
 def update_suomi_data(year=None):
@@ -223,12 +222,11 @@ def update_suomi_data(year=None):
 
     # Get any local data that has already been downloaded
 
-    location_name = Settings().current_location.name
-    local_data_path = PWV_MSRED_PATH.format(location_name)
-    local_data = Table.read(local_data_path)
-
     current_location = Settings().current_location
+    local_data_path = PWV_MSRED_PATH.format(current_location.name)
+    local_data = Table.read(local_data_path)
     current_years = current_location.available_years
+
     if year is None:
         # Todo: Add test for this code block
         all_years = range(2010, datetime.now().year + 1)
@@ -238,14 +236,12 @@ def update_suomi_data(year=None):
     else:
         years = {year}
 
-    new_years = []
     # Download data from SuomiNet
+    new_years = []
     for yr in years:
         new_data = _download_data_for_year(yr)
-        local_data = unique(vstack([local_data, new_data]),
-                            keys=['date'],
-                            keep='last')
-
+        stacked_tables = vstack([local_data, new_data])
+        local_data = unique(stacked_tables, keys=['date'], keep='last')
         new_years.append(yr)
 
     # Update local files
