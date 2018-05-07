@@ -102,7 +102,10 @@ def _read_file(path):
 
     data = Table(data)
     data = data[data[site_id] > 0]
-    data[site_id + '_err'] += 0.05  # Account for decrease due to rounding
+
+    # Account for decrease in reported error due to rounding
+    data[site_id + '_err'] += 0.05
+    data[site_id + '_err'] = np.round(data[site_id + '_err'], 2)
 
     # Patch to remove bad SuomiNet pressure data for Kitt Peak
     # Do not use as permanent fix when developing multi-site
