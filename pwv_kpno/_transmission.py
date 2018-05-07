@@ -38,7 +38,7 @@ __copyright__ = 'Copyright 2017, Daniel Perrefort'
 __credits__ = ['Michael Wood-Vasey']
 
 __license__ = 'GPL V3'
-__email__ = 'djperrefort@gmail.com'
+__email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
 
@@ -215,7 +215,7 @@ def _trans_for_date(date, airmass, test_model=None):
     Args:
         date (datetime.datetime): The datetime of the desired model
         airmass          (float): The airmass of the desired model
-        test_model (Table): A mock PWV model used by the test suite
+        test_model       (Table): A mock PWV model used by the test suite
 
     Returns:
         The modeled transmission function as an astropy table

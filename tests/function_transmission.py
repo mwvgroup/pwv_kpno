@@ -35,7 +35,7 @@ __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
-__email__ = 'djperrefort@gmail.com'
+__email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
 

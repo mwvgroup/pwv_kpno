@@ -31,6 +31,25 @@ from ._download_pwv_data import update_local_data
 from ._read_pwv_data import _get_measured_data
 from ._settings import Settings, PWV_MODEL_PATH
 
+__author__ = 'Daniel Perrefort'
+__copyright__ = 'Copyright 2017, Daniel Perrefort'
+
+__license__ = 'GPL V3'
+__email__ = 'djperrefort@pitt.edu'
+__status__ = 'Development'
+
+
+def _fit_data(primary_rec, secondary_rec, pwv_data):
+
+    # Identify rows with data for both KITT and receiver
+    primary_index = np.logical_not(pwv_data[primary_rec].mask)
+    receiver_index = np.logical_not(pwv_data[secondary_rec].mask)
+    matching_indices = np.logical_and(primary_index, receiver_index)
+
+    # Generate and apply a first order fit
+    fit_params = pwv_data[primary_rec, secondary_rec][matching_indices]
+    return fit_params
+
 
 def _update_pwv_model():
     """Create a new model for the PWV level at Kitt Peak
@@ -56,17 +75,11 @@ def _update_pwv_model():
     # Generate the fit parameters
     for receiver in receiver_list:
         if receiver != primary:
-            # Identify rows with data for both KITT and receiver
-            primary_index = np.logical_not(pwv_data[primary].mask)
-            receiver_index = np.logical_not(pwv_data[receiver].mask)
-            matching_indices = np.logical_and(primary_index, receiver_index)
-
-            # Generate and apply a first order fit
-            fit_data = pwv_data[primary, receiver][matching_indices]
-            fit = np.polyfit(fit_data[receiver], fit_data[primary], deg=1)
+            fit_params = _fit_data(primary, pwv_data, receiver)
+            fit_func = np.poly1d(fit_params)
 
             # np.poly1d does not maintain masks
-            pwv_data[receiver + '_fit'] = np.poly1d(fit)(pwv_data[receiver])
+            pwv_data[receiver + '_fit'] = fit_func(pwv_data[receiver])
             pwv_data[receiver + '_fit'].mask = pwv_data[receiver].mask
 
     # Average together the modeled PWV values from all receivers except KITT

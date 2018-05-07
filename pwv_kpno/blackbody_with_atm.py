@@ -53,6 +53,13 @@ import numpy as np
 
 from pwv_kpno._transmission import trans_for_pwv
 
+__author__ = 'Daniel Perrefort'
+__copyright__ = 'Copyright 2017, Daniel Perrefort'
+
+__license__ = 'GPL V3'
+__email__ = 'djperrefort@pitt.edu'
+__status__ = 'Development'
+
 
 def sed(temp, wavelengths, pwv):
     """Return the flux of a black body under the influence of pwv absorption

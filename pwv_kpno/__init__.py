@@ -38,5 +38,5 @@ __credits__ = ['Azalee Bostroem', 'Jessica Kroboth',
 
 __license__ = 'GPL V3'
 __version__ = '0.11.4'
-__email__ = 'djperrefort@gmail.com'
+__email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'

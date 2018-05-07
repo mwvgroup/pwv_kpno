@@ -42,7 +42,7 @@ __copyright__ = 'Copyright 2016, Daniel Perrefort'
 __credits__ = 'Jessica Kroboth'
 
 __license__ = 'GPL V3'
-__email__ = 'djperrefort@gmail.com'
+__email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
 CURRENT_LOCATION = Settings().current_location
