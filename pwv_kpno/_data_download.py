@@ -45,13 +45,13 @@ __license__ = 'GPL V3'
 __email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'
 
+CURRENT_LOCATION = Settings().current_location
+
 
 def _suomi_date_to_timestamp(year, days_str):
-    """Return seconds since epoch of a datetime provided in DDD.YYYYY format
+    """Convert the SuomiNet date format to UTC timestamp
 
-    Convert the datetime notation used by SuomiNet to a UTC timestamp. The
-    SuomiNet format consists of the day of the year (1 to 365) followed by the
-    decimal number of hours that have passed in the given day. For example,
+    SuomiNet dates are stored as decimal days in a given year. For example,
     February 1st, 00:15 would be 36.01042.
 
     Args:
@@ -78,9 +78,8 @@ def _read_file(path):
     """Return PWV measurements from a SuomiNet data file as an astropy table
 
     Expects data files from http://www.suominet.ucar.edu/data.html under the
-    "Specific station - All year hourly" section. The returned astropy table
-    has columns 'date', 'pwv', and 'pwv_err'. Datetimes are expressed as UNIX
-    timestamps and PWV is measured in millimeters.
+    "Specific station - All year hourly" section. Datetimes are expressed as
+    UNIX timestamps and PWV is measured in millimeters.
 
     Data is removed from the array for dates where:
         1. The PWV level is negative (the GPS receiver is offline)
@@ -103,7 +102,7 @@ def _read_file(path):
 
     data = Table(data)
     data = data[data[site_id] > 0]
-    np.place(data[site_id + '_err'], data[site_id + '_err'] == 0.0, 0.05)
+    data[site_id + '_err'] += 0.05  # Account for decrease due to rounding
 
     # Patch to remove bad SuomiNet pressure data for Kitt Peak
     # Do not use as permanent fix when developing multi-site
@@ -123,7 +122,7 @@ def _read_file(path):
     return data
 
 
-def _download_suomi_files(year, site_id):
+def _download_data_for_site(year, site_id):
     """Download SuomiNet data for a given year and SuomiNet id
 
     For a given year and SuomiNet id, download data from the corresponding GPS
@@ -150,8 +149,9 @@ def _download_suomi_files(year, site_id):
     for general_path, url in ((day_path, day_url), (hour_path, hour_url)):
         response = requests.get(url.format(site_id, year))
 
-        try:
+        if response.status_code != 404:
             response.raise_for_status()
+
             path = general_path.format(site_id, year)
             with open(path, 'wb') as ofile:
                 ofile.write(response.content)
@@ -159,19 +159,15 @@ def _download_suomi_files(year, site_id):
             # The preferred data file should be first in the list
             downloaded_paths.append(path)
 
-        except requests.exceptions.HTTPError:
-            if response.status_code != 404:
-                raise
-
     return downloaded_paths
 
 
 def _download_data_for_year(yr):
-    """Download and return data from available SuomiNet sites for a given year
+    """Download and return data for a given year from available SuomiNet sites
 
-    Downloaded data for the SuomiNet sites KITT, SA48, SA46, P014, and AZAM.
-    Return this data as an astropy table with all available data from the daily
-    data releases supplemented by the hourly release data.
+    Downloaded data for each enabled SuomiNet sites. Return this data as an
+    astropy table with all available data from the daily data releases
+    supplemented by the hourly release data.
 
     Args:
         yr (int): The year of the desired data
@@ -180,10 +176,10 @@ def _download_data_for_year(yr):
         An astropy Table of the combined downloaded data for the given year.
     """
 
-    receiver_ids = Settings().current_location.enabled_receivers
+    receiver_ids = CURRENT_LOCATION.enabled_receivers
     combined_data = []
     for site_id in receiver_ids:
-        file_paths = _download_suomi_files(yr, site_id)
+        file_paths = _download_data_for_site(yr, site_id)
 
         if file_paths:
             site_data = vstack([_read_file(path) for path in file_paths])
@@ -193,8 +189,7 @@ def _download_data_for_year(yr):
                 combined_data.append(site_data)
 
     if not combined_data:
-        msg = 'No SuomiNet data downloaded for year {}'.format(yr)
-        warn(msg, RuntimeWarning)
+        warn('No SuomiNet data found for year {}'.format(yr), RuntimeWarning)
         return Table()
 
     out_data = combined_data.pop()
@@ -205,7 +200,7 @@ def _download_data_for_year(yr):
     return out_data
 
 
-def update_suomi_data(year=None):
+def update_local_data(year=None):
     """Download data from SuomiNet and update PWV_TAB_DIR/measured_pwv.csv
 
     If a year is provided, download SuomiNet data for that year to SUOMI_DIR.
@@ -221,14 +216,12 @@ def update_suomi_data(year=None):
     """
 
     # Get any local data that has already been downloaded
-
-    current_location = Settings().current_location
-    local_data_path = PWV_MSRED_PATH.format(current_location.name)
+    local_data_path = PWV_MSRED_PATH.format(CURRENT_LOCATION.name)
     local_data = Table.read(local_data_path)
-    current_years = current_location.available_years
 
+    # Determine what years to download
+    current_years = CURRENT_LOCATION.available_years
     if year is None:
-        # Todo: Add test for this code block
         all_years = range(2010, datetime.now().year + 1)
         years = [yr for yr in all_years if yr not in current_years]
         years.append(max(current_years))
@@ -236,7 +229,7 @@ def update_suomi_data(year=None):
     else:
         years = {year}
 
-    # Download data from SuomiNet
+    # Download new data from SuomiNet
     new_years = []
     for yr in years:
         new_data = _download_data_for_year(yr)
@@ -247,7 +240,6 @@ def update_suomi_data(year=None):
     # Update local files
     local_data.write(local_data_path, overwrite=True)
     current_years.extend(new_years)
-    current_years = list(set(current_years))
-    current_location._replace_years(current_years)
+    CURRENT_LOCATION._replace_years(current_years)
 
     return new_years

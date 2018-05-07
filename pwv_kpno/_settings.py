@@ -174,7 +174,7 @@ class Location:
         path = CONFIG_PATH.format(self.name)
         with open(path, 'r+') as ofile:
             current_data = json.load(ofile)
-            current_data['years'] = yr_list
+            current_data['years'] = list(set(yr_list))
             ofile.seek(0)
             json.dump(current_data, ofile, indent=2, sort_keys=True)
             ofile.truncate()
@@ -274,7 +274,7 @@ class Location:
 
         enabled = []
         for receiver, settings in self._config_data['receivers'].items():
-            if settings[0] and receiver != self.primary_receiver:
+            if settings[0]:
                 enabled.append(receiver)
 
         return enabled
