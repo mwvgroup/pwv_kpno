@@ -35,7 +35,6 @@ __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
-
 SPATH = 'pwv_kpno/suomi_data/'  # Package directory of SuomiNet data files
 
 
@@ -72,16 +71,19 @@ class SuomiNetDataDownload(unittest.TestCase):
         """Test downloaded data for correct columns"""
 
         bad_column_msg = 'Wrong columns for year={}'
-        expected_2012_cols = {'date', 'AZAM', 'P014', 'SA46', 'SA48'}
-        expected_2015_cols = {'date', 'KITT', 'P014', 'SA46', 'SA48', 'AZAM'}
+        expected_2015_cols = {'date', 'KITT', 'KITT_err', 'P014', 'P014_err',
+                              'SA46', 'SA46_err', 'SA48', 'SA48_err', 'AZAM',
+                              'AZAM_err'}
 
-        retrieved_2012_cols = set(self.data_2012.colnames)
-        self.assertEqual(retrieved_2012_cols, expected_2012_cols,
-                         bad_column_msg.format(2012))
+        expected_2012_cols = expected_2015_cols - {'KITT', 'KITT_err'}
 
         retrieved_2015_cols = set(self.data_2015.colnames)
         self.assertEqual(retrieved_2015_cols, expected_2015_cols,
                          bad_column_msg.format(2015))
+
+        retrieved_2012_cols = set(self.data_2012.colnames)
+        self.assertEqual(retrieved_2012_cols, expected_2012_cols,
+                         bad_column_msg.format(2012))
 
     def test_year_values(self):
         """Test data was downloaded for the correct years"""
@@ -159,13 +161,13 @@ class SuomiNetFileParsing(unittest.TestCase):
         p014_cols = self.p014_hr_data.colnames
 
         msg = 'Wrong column names returned for {}: ({}).'
-        self.assertEqual(kitt_cols, ['date', 'KITT'],
+        self.assertEqual(kitt_cols, ['date', 'KITT', 'KITT_err'],
                          msg.format(self.kitt_hr_path, kitt_cols))
 
-        self.assertEqual(azam_cols, ['date', 'AZAM'],
+        self.assertEqual(azam_cols, ['date', 'AZAM', 'AZAM_err'],
                          msg.format(self.azam_hr_path, azam_cols))
 
-        self.assertEqual(p014_cols, ['date', 'P014'],
+        self.assertEqual(p014_cols, ['date', 'P014', 'P014_err'],
                          msg.format(self.p014_dy_path, p014_cols))
 
     def test_dates_are_unique(self):

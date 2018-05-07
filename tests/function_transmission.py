@@ -85,22 +85,15 @@ class TransmissionErrors(unittest.TestCase):
 
         # Start dates for data gaps
         one_day_start = datetime(year=2010, month=1, day=11, tzinfo=utc)
-        two_day_start = datetime(year=2010, month=2, day=10, tzinfo=utc)
         three_day_start = datetime(year=2010, month=4, day=11, tzinfo=utc)
-        four_day_start = datetime(year=2010, month=8, day=4, tzinfo=utc)
 
-        gaps = [(one_day_start, 1), (two_day_start, 2),
-                (three_day_start, 3), (four_day_start, 4)]
-
+        gaps = [(one_day_start, 1), (three_day_start, 3)]
         mock_model = create_mock_pwv_model(year=2010, gaps=gaps)
 
-        self.assertIsNone(_raise_available_data(one_day_start, mock_model))
-        self.assertIsNone(_raise_available_data(two_day_start, mock_model))
+        self.assertRaises(ValueError, _raise_available_data,
+                          one_day_start, mock_model)
         self.assertRaises(ValueError, _raise_available_data,
                           three_day_start, mock_model)
-
-        self.assertRaises(ValueError, _raise_available_data,
-                          four_day_start, mock_model)
 
 
 class TransmissionPwvErrors(unittest.TestCase):
