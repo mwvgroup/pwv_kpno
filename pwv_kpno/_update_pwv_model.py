@@ -26,6 +26,7 @@ from datetime import datetime
 
 from astropy.table import Table
 import numpy as np
+from scipy.odr import Model, RealData, ODR
 
 from ._download_pwv_data import update_local_data
 from ._read_pwv_data import _get_measured_data
@@ -39,16 +40,52 @@ __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
 
-def _fit_data(primary_rec, secondary_rec, pwv_data):
+def _linear_func(params, x):
+    """Apply a linear function to a given array
+
+    Args:
+        params (tuple): The slope and intercept of the linear function
+        x      (Array): The data to be mapped by the linear function
+
+    Returns:
+        params[0] * x + params[1]
+    """
+
+    return np.poly1d(params)(x)
+
+
+def _gen_pwv_model(x, y, sx, sy):
+    """Optimize and apply a linear regression
+
+    Generates a linear model f using orthogonal distance regression and returns
+    the applied model f(x)
+
+    Args:
+        x  (Column): The independent variable of the regression
+        y  (Column): The dependent variable of the regression
+        x  (Column): Standard deviations of x
+        y  (Column): Standard deviations of y
+
+    Returns:
+        The applied linear regression on x
+    """
 
     # Identify rows with data for both KITT and receiver
-    primary_index = np.logical_not(pwv_data[primary_rec].mask)
-    receiver_index = np.logical_not(pwv_data[secondary_rec].mask)
+    primary_index = np.logical_not(y.mask)
+    receiver_index = np.logical_not(x.mask)
     matching_indices = np.logical_and(primary_index, receiver_index)
 
-    # Generate and apply a first order fit
-    fit_params = pwv_data[primary_rec, secondary_rec][matching_indices]
-    return fit_params
+    # Create objects for orthogonal distance regression (ODR)
+    linear_model = Model(_linear_func)
+    data = RealData(x=x[matching_indices],
+                    y=y[matching_indices],
+                    sx=sx[matching_indices],
+                    sy=sy[matching_indices])
+
+    odr = ODR(data, linear_model, beta0=[1., 0.])
+    fit_results = odr.run()
+
+    return _linear_func(fit_results.beta, x)
 
 
 def _update_pwv_model():
@@ -69,24 +106,26 @@ def _update_pwv_model():
     current_location = Settings().current_location
     primary = current_location.primary_receiver
     receiver_list = current_location.enabled_receivers
-    print(pwv_data.colnames)
-    print(receiver_list)
 
     # Generate the fit parameters
     for receiver in receiver_list:
         if receiver != primary:
-            fit_params = _fit_data(primary, pwv_data, receiver)
-            fit_func = np.poly1d(fit_params)
+            modeled_pwv = _gen_pwv_model(x=pwv_data[receiver],
+                                         y=pwv_data[primary],
+                                         sx=pwv_data[receiver + '_err'],
+                                         sy=pwv_data[primary + '_err'])
 
-            # np.poly1d does not maintain masks
-            pwv_data[receiver + '_fit'] = fit_func(pwv_data[receiver])
+            pwv_data[receiver + '_fit'] = modeled_pwv
             pwv_data[receiver + '_fit'].mask = pwv_data[receiver].mask
 
-    # Average together the modeled PWV values from all receivers except KITT
-    cols = [pwv_data[rec_name + '_fit'] for rec_name in receiver_list]
-    avg_pwv = np.ma.average(cols, axis=0)
+    # Collect the modeled PWV values from all receivers except KITT
+    cols = []
+    for rec_name in receiver_list:
+        if rec_name != 'KITT':
+            cols.append(pwv_data[rec_name + '_fit'])
 
     # Supplement KITT data with averaged fits
+    avg_pwv = np.ma.average(cols, axis=0)
     sup_data = np.ma.where(pwv_data[primary].mask, avg_pwv, pwv_data[primary])
 
     out = Table([pwv_data['date'], sup_data], names=['date', 'pwv'])
