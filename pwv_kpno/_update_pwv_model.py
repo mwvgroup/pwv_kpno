@@ -39,6 +39,8 @@ __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
+CURRENT_LOCATION = Settings().current_location
+
 
 def _linear_func(params, x):
     """Apply a linear function to a given array
@@ -107,11 +109,11 @@ def _update_pwv_model():
 
     # Read the local PWV data from file
     pwv_data = _get_measured_data()
-    current_location = Settings().current_location
-    primary = current_location.primary_receiver
-    receiver_list = current_location.enabled_receivers
+    primary = CURRENT_LOCATION.primary_receiver
+    receiver_list = CURRENT_LOCATION.enabled_receivers
 
     # Generate the fit parameters
+    site_models = []
     for receiver in receiver_list:
         if receiver != primary:
             modeled_pwv = _gen_pwv_model(x=pwv_data[receiver],
@@ -119,23 +121,20 @@ def _update_pwv_model():
                                          sx=pwv_data[receiver + '_err'],
                                          sy=pwv_data[primary + '_err'])
 
-            pwv_data[receiver + '_fit'] = modeled_pwv
-            pwv_data[receiver + '_fit'].mask = modeled_pwv.mask
-
-    # Collect the modeled PWV values from all receivers except KITT
-    cols = []
-    for rec_name in receiver_list:
-        if rec_name != 'KITT':
-            cols.append(pwv_data[rec_name + '_fit'])
+            site_models.append(modeled_pwv)
 
     # Supplement KITT data with averaged fits
-    avg_pwv = np.ma.average(cols, axis=0)
+    avg_pwv = np.ma.average(site_models, axis=0)
     sup_data = np.ma.where(pwv_data[primary].mask, avg_pwv, pwv_data[primary])
 
-    out = Table([pwv_data['date'], sup_data], names=['date', 'pwv'])
-    out = out[out['pwv'] > 0]
+    out = Table([pwv_data['date'], sup_data, pwv_data['KITT_err']],
+                names=['date', 'pwv', 'pwv_err'])
 
-    location_name = Settings().current_location.name
+    out = out[out['pwv'] > 0]
+    out['pwv'] = np.round(out['pwv'], 2)
+    out['pwv_err'] = np.round(out['pwv_err'], 2)
+
+    location_name = CURRENT_LOCATION.name
     out.write(PWV_MODEL_PATH.format(location_name), overwrite=True)
 
 
