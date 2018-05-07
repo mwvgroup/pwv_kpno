@@ -67,7 +67,7 @@ def _gen_pwv_model(x, y, sx, sy):
         y  (Column): Standard deviations of y
 
     Returns:
-        The applied linear regression on x
+        The applied linear regression on x as a masked array
     """
 
     # Identify rows with data for both KITT and receiver
@@ -85,7 +85,11 @@ def _gen_pwv_model(x, y, sx, sy):
     odr = ODR(data, linear_model, beta0=[1., 0.])
     fit_results = odr.run()
 
-    return _linear_func(fit_results.beta, x)
+    applied_fit = _linear_func(fit_results.beta, x)
+    applied_fit = np.round(applied_fit, 1)
+    applied_fit = np.ma.masked_where(x.mask, applied_fit)
+
+    return applied_fit
 
 
 def _update_pwv_model():
@@ -116,7 +120,7 @@ def _update_pwv_model():
                                          sy=pwv_data[primary + '_err'])
 
             pwv_data[receiver + '_fit'] = modeled_pwv
-            pwv_data[receiver + '_fit'].mask = pwv_data[receiver].mask
+            pwv_data[receiver + '_fit'].mask = modeled_pwv.mask
 
     # Collect the modeled PWV values from all receivers except KITT
     cols = []
