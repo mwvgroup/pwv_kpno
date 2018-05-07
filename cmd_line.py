@@ -10,8 +10,8 @@
 #
 #    The pwv_kpno package is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+#    Public License for more details.
 #
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
@@ -23,24 +23,22 @@ from datetime import datetime
 from pytz import utc
 
 from pwv_kpno import __version__ as version
-from pwv_kpno._transmission import _trans_for_date
+from pwv_kpno._transmission import trans_for_date
 from pwv_kpno._transmission import trans_for_pwv
-from pwv_kpno._pwv_data import available_data
-from pwv_kpno._pwv_data import measured_pwv
-from pwv_kpno._pwv_data import modeled_pwv
-from pwv_kpno._pwv_data import update_models
+from pwv_kpno._read_pwv_data import available_data
+from pwv_kpno._read_pwv_data import measured_pwv
+from pwv_kpno._read_pwv_data import modeled_pwv
+from pwv_kpno._update_pwv_model import update_models
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
-__email__ = 'djperrefort@gmail.com'
+__email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
 
-# We create wrapper functions that pass command line arguments to functions
-# imported from calc_transmission.py. For more information on these functions
-# documentation is included in calc_transmission.py and also in README.MD
+# We create wrapper functions to pass command line arguments
 
 def available_data_wrapper(cli_args):
     """Print a set of years for which SuomiNet data is locally available
@@ -118,7 +116,7 @@ def transmission_wrapper(cli_args):
                     minute=cli_args.minute,
                     tzinfo=utc)
 
-    model = _trans_for_date(date, cli_args.airmass)
+    model = trans_for_date(date, cli_args.airmass)
     model.write(cli_args.output, overwrite=cli_args.force, format='ascii.csv')
 
 
