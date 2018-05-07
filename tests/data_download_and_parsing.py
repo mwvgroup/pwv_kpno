@@ -24,9 +24,9 @@ from datetime import datetime
 import unittest
 from pytz import utc
 
-from pwv_kpno._data_download import _download_data_for_year
-from pwv_kpno._data_download import _read_file
-from pwv_kpno._data_download import _suomi_date_to_timestamp
+from pwv_kpno._download_pwv_data import _download_data_for_year
+from pwv_kpno._download_pwv_data import _read_file
+from pwv_kpno._download_pwv_data import _suomi_date_to_timestamp
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'

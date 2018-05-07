@@ -16,18 +16,9 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
-"""This document defines functions for updating the PWV model for Kitt Peak.
-Using locally available SuomiNet data, first order polynomials are fitted to
-relate the PWV level at nearby locations to the PWV level at Kitt Peak. The
-resulting polynomials are then used to supplement the PWV measurements taken at
-Kitt Peak for times when no Kitt Peak data is available.
-
-End user functions defined in this document include:
-    - pwv_date
-    - available_data
-    - measured_pwv
-    - modeled_pwv
-    - update_models
+"""This document contains functions for searching and returning the locally
+available PWV data. Functions are also provided to determine what years of
+SuomiNet data files have been downloaded to the local machine.
 """
 
 from datetime import datetime
@@ -36,7 +27,6 @@ from astropy.table import Table
 import numpy as np
 from pytz import utc
 
-from ._data_download import update_suomi_data
 from ._settings import Settings, PWV_MSRED_PATH, PWV_MODEL_PATH
 
 __author__ = 'Daniel Perrefort'
@@ -46,6 +36,8 @@ __credits__ = ['Alexander Afanasyev']
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@gmail.com'
 __status__ = 'Development'
+
+CURRENT_LOCATION = Settings().current_location
 
 
 # This function is a public wrapper for _pwv_date
@@ -82,7 +74,7 @@ def _pwv_date(date, airmass=1, test_model=None):
     """
 
     if test_model is None:
-        location_name = Settings().current_location.name
+        location_name = CURRENT_LOCATION.name
         pwv_model = Table.read(PWV_MODEL_PATH.format(location_name))
 
     else:
@@ -108,7 +100,7 @@ def available_data():
         A list of years with locally available SuomiNet data
     """
 
-    return sorted(Settings().current_location.available_years)
+    return sorted(CURRENT_LOCATION.available_years)
 
 
 def _check_date_time_args(year=None, month=None, day=None, hour=None):
@@ -189,16 +181,20 @@ def _get_measured_data():
         An astropy table with all measured PWV data for the current location
     """
 
-    location = Settings().current_location
+    location = CURRENT_LOCATION
     data = Table.read(PWV_MSRED_PATH.format(location.name))
+    receiver_list = location.enabled_receivers
 
-    for site_id in data.colnames:
-        if site_id != 'date' and not site_id.endswith('_err'):
-            for start_time, end_time in location[site_id].ignore_timestamps:
+    for receivers in receiver_list:
+        if receivers != 'date' and (not receivers.endswith('_err')):
+            for start_time, end_time in location[receivers].ignore_timestamps:
                 i_start = start_time < data['date']
                 i_end = data['date'] < end_time
-                mask = np.logical_and(i_start, i_end)
-                data[site_id].mask = np.logical_or(data[site_id].mask, mask)
+                in_date_range = np.logical_and(i_start, i_end)
+
+                mask = np.logical_or(data[receivers].mask, in_date_range)
+                data[receivers].mask = mask
+                data[receivers + '_err'].mask = mask
 
     return data
 
@@ -207,12 +203,10 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
     """Return an astropy table of PWV measurements taken by SuomiNet
 
     Return an astropy table of precipitable water vapor (PWV) measurements
-    taken by the SuomiNet project. The first column is named 'date' and
-    contains the UTC datetime of each measurement. Successive columns are
-    named using the SuomiNet IDs for different locations and contain PWV
-    measurements for that location in millimeters. By default the returned
-    table contains all locally available SuomiNet data. Results can be
-    refined by year, month, day, and hour by using the keyword arguments.
+    taken by the SuomiNet project. Columns are named using the SuomiNet IDs for
+    different locations and contain PWV measurements for that location in
+    millimeters. Results can be optionally refined by year, month, day, and
+    hour.
 
     Args:
         year  (int): The year of the desired PWV data
@@ -245,11 +239,8 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
     """Return an astropy table of the modeled PWV at Kitt Peak
 
     Return a model for the precipitable water vapor level at Kitt Peak as an
-    astropy table. The first column of the table is named 'date' and contains
-    the UTC datetime of each modeled value. The second column is named 'pwv',
-    and contains PWV values in millimeters. By default this function returns
-    modeled values from 2010 onward. Results can be restricted to a specific
-    year, month, day, and hour by using the key word arguments.
+    astropy table. PWV measurements are reported in units of millimeters.
+    Results can be optionally refined by year, month, day, and hour.
 
     Args:
         year  (int): The year of the desired PWV data
@@ -261,11 +252,10 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
         An astropy table of modeled PWV values in mm
     """
 
-    # Check for valid arg types
     _check_date_time_args(year, month, day, hour)
 
     # Read in SuomiNet measurements from the master table
-    location_name = Settings().current_location.name
+    location_name = CURRENT_LOCATION.name
     data = Table.read(PWV_MODEL_PATH.format(location_name))
 
     # Convert UNIX timestamps to UTC
@@ -276,88 +266,3 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
 
     # Refine results to only include datetimes indicated by kwargs
     return _search_dt_table(data, year=year, month=month, day=day, hour=hour)
-
-
-def _update_pwv_model():
-    """Create a new model for the PWV level at Kitt Peak
-
-    Create first order polynomials relating the PWV measured by GPS receivers
-    near Kitt Peak to the PWV measured at Kitt Peak (one per off site receiver)
-    Use these polynomials to supplement PWV measurements taken at Kitt Peak for
-    times when no Kitt Peak data is available. Write the supplemented PWV
-    data to a csv file at PWV_TAB_DIR/measured.csv.
-    """
-
-    # Credit belongs to Jessica Kroboth for suggesting the use of a linear fit
-    # to supplement PWV measurements when no Kitt Peak data is available.
-
-    # Read the local PWV data from file
-    pwv_data = _get_measured_data()
-    current_location = Settings().current_location
-    primary = current_location.primary_receiver
-    secondary_receivers = current_location.enabled_receivers
-
-    print('Receivers:', primary, secondary_receivers)
-
-    # Generate the fit parameters
-    for receiver in secondary_receivers:
-        # Identify rows with data for both KITT and receiver
-        primary_index = np.logical_not(pwv_data[primary].mask)
-        receiver_index = np.logical_not(pwv_data[receiver].mask)
-        matching_indices = np.logical_and(primary_index, receiver_index)
-
-        # Generate and apply a first order fit
-        fit_data = pwv_data[primary, receiver][matching_indices]
-        fit = np.polyfit(fit_data[receiver], fit_data[primary], deg=1)
-
-        # np.poly1d does not maintain masks
-        pwv_data[receiver + '_fit'] = np.poly1d(fit)(pwv_data[receiver])
-        pwv_data[receiver + '_fit'].mask = pwv_data[receiver].mask
-
-    # Average together the modeled PWV values from all receivers except KITT
-    cols = [pwv_data[rec_name + '_fit'] for rec_name in secondary_receivers]
-    avg_pwv = np.ma.average(cols, axis=0)
-
-    # Supplement KITT data with averaged fits
-    sup_data = np.ma.where(pwv_data[primary].mask, avg_pwv, pwv_data[primary])
-
-    out = Table([pwv_data['date'], sup_data], names=['date', 'pwv'])
-    out = out[out['pwv'] > 0]
-
-    location_name = Settings().current_location.name
-    out.write(PWV_MODEL_PATH.format(location_name), overwrite=True)
-
-
-def update_models(year=None):
-    """Download data from SuomiNet and update the locally stored PWV model
-
-    Update the locally available SuomiNet data by downloading new data from
-    the SuomiNet website. Use this data to create an updated model for the PWV
-    level at Kitt Peak. If a year is provided, only update data for that year.
-    If not, download any published data that is not available on the local
-    machine. Data for years from 2010 through 2017 is included with this
-    package version by default.
-
-    Args:
-        year (int): A Year from 2010 onward
-
-    Returns:
-        A list of years for which models where updated
-    """
-
-    # Check for valid args
-    if not (isinstance(year, int) or year is None):
-        raise TypeError("Argument 'year' must be an integer")
-
-    if isinstance(year, int):
-        if year < 2010:
-            raise ValueError('Cannot update models for years prior to 2010')
-
-        elif year > datetime.now().year:
-            msg = 'Cannot update models for years greater than current year'
-            raise ValueError(msg)
-
-    # Update the local SuomiData and PWV models
-    updated_years = update_suomi_data(year)
-    _update_pwv_model()
-    return sorted(updated_years)
