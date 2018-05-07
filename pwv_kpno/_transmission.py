@@ -167,8 +167,8 @@ def _raise_available_data(date, pwv_model):
     """Check if a date falls within the range of data in an astropy table
 
     Checks if a datetime falls within the range of available data in an astropy
-    table. If not, or if no data is available near that datetime within three
-    days, an exception is raised
+    table. If not, or if no data is available near that datetime within a day,
+    an exception is raised
 
     Args:
         date   (datetime): A timezone aware datetime
@@ -195,11 +195,11 @@ def _raise_available_data(date, pwv_model):
     # Check for SuomiNet data available near the given date
     diff = pwv_model['date'] - timestamp
     interval = min(diff[diff > 0]) - max(diff[diff < 0])
-    three_days_in_seconds = 3 * 24 * 60 * 60
+    one_day_in_seconds = 24 * 60 * 60
 
-    if three_days_in_seconds < interval:
+    if one_day_in_seconds <= interval:
         msg = ('Specified datetime falls within interval of missing SuomiNet' +
-               ' data larger than 3 days ({0} interval found).')
+               ' data larger than 1 day ({0} interval found).')
         raise ValueError(msg.format(timedelta(seconds=interval)))
 
 
