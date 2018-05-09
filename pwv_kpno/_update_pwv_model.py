@@ -91,7 +91,11 @@ def _gen_pwv_model(x, y, sx, sy):
     applied_fit = np.round(applied_fit, 1)
     applied_fit = np.ma.masked_where(x.mask, applied_fit)
 
-    return applied_fit
+    m, b = fit_results.beta
+    sm, sb = fit_results.sd_beta
+    error = np.sqrt((x * sm) ** 2 + (m * sx) ** 2 + sb ** 2)
+
+    return applied_fit, np.ma.array(error)
 
 
 def _update_pwv_model():
@@ -113,21 +117,30 @@ def _update_pwv_model():
     receiver_list = CURRENT_LOCATION.enabled_receivers
 
     # Generate the fit parameters
-    site_models = []
+    modeled_pwv = []
+    modeled_pwv_mask = []
+    modeled_err_2 = []
     for receiver in receiver_list:
         if receiver != primary:
-            modeled_pwv = _gen_pwv_model(x=pwv_data[receiver],
-                                         y=pwv_data[primary],
-                                         sx=pwv_data[receiver + '_err'],
-                                         sy=pwv_data[primary + '_err'])
-
-            site_models.append(modeled_pwv)
+            mod_pwv, mod_err = _gen_pwv_model(x=pwv_data[receiver],
+                                              y=pwv_data[primary],
+                                              sx=pwv_data[receiver + '_err'],
+                                              sy=pwv_data[primary + '_err'])
+            modeled_pwv.append(mod_pwv)
+            modeled_pwv_mask.append(mod_pwv.mask)
+            modeled_err_2.append(mod_err ** 2)
 
     # Supplement KITT data with averaged fits
-    avg_pwv = np.ma.average(site_models, axis=0)
-    sup_data = np.ma.where(pwv_data[primary].mask, avg_pwv, pwv_data[primary])
+    avg_pwv = np.ma.average(modeled_pwv, axis=0)
+    sum_quad = np.ma.sum(modeled_err_2, axis=0)
+    n = np.sum(modeled_pwv_mask, axis=0)
+    avg_pwv_err = np.ma.divide(np.ma.sqrt(sum_quad), n)
 
-    out = Table([pwv_data['date'], sup_data, pwv_data['KITT_err']],
+    mask = pwv_data[primary].mask
+    sup_data = np.ma.where(mask, avg_pwv, pwv_data[primary])
+    sup_err = np.ma.where(mask, avg_pwv_err, pwv_data[primary + '_err'])
+
+    out = Table([pwv_data['date'], sup_data, sup_err],
                 names=['date', 'pwv', 'pwv_err'])
 
     out = out[out['pwv'] > 0]
