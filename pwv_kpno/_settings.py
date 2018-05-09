@@ -279,6 +279,17 @@ class Location:
 
         return enabled
 
+    @property
+    def off_site_receivers(self):
+        """A list of all enabled, off sight GPS receivers for this location"""
+
+        enabled = []
+        for receiver, settings in self._config_data['receivers'].items():
+            if settings[0] and receiver != self.primary_receiver:
+                enabled.append(receiver)
+
+        return enabled
+
     def save(self):
         """Save current settings for this locations to file"""
 

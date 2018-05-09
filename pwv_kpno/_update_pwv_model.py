@@ -113,32 +113,34 @@ def _update_pwv_model():
 
     # Read the local PWV data from file
     pwv_data = _get_measured_data()
-    primary = CURRENT_LOCATION.primary_receiver
-    receiver_list = CURRENT_LOCATION.enabled_receivers
+    primary_rec = CURRENT_LOCATION.primary_receiver
+    off_site_receivers = CURRENT_LOCATION.off_site_receivers
 
     # Generate the fit parameters
-    modeled_pwv = []
-    modeled_pwv_mask = []
-    modeled_err_2 = []
-    for receiver in receiver_list:
-        if receiver != primary:
-            mod_pwv, mod_err = _gen_pwv_model(x=pwv_data[receiver],
-                                              y=pwv_data[primary],
-                                              sx=pwv_data[receiver + '_err'],
-                                              sy=pwv_data[primary + '_err'])
-            modeled_pwv.append(mod_pwv)
-            modeled_pwv_mask.append(mod_pwv.mask)
-            modeled_err_2.append(mod_err ** 2)
+    rec = off_site_receivers.pop()
+    modeled_pwv, modeled_err = _gen_pwv_model(x=pwv_data[rec],
+                                              y=pwv_data[primary_rec],
+                                              sx=pwv_data[rec + '_err'],
+                                              sy=pwv_data[rec + '_err'])
+
+    for secondary_rec in off_site_receivers:
+        mod_pwv, mod_err = _gen_pwv_model(x=pwv_data[secondary_rec],
+                                          y=pwv_data[primary_rec],
+                                          sx=pwv_data[secondary_rec + '_err'],
+                                          sy=pwv_data[primary_rec + '_err'])
+
+        modeled_pwv = np.ma.vstack((modeled_pwv, mod_pwv))
+        modeled_err = np.ma.vstack((modeled_err, mod_err))
 
     # Supplement KITT data with averaged fits
     avg_pwv = np.ma.average(modeled_pwv, axis=0)
-    sum_quad = np.ma.sum(modeled_err_2, axis=0)
-    n = np.sum(modeled_pwv_mask, axis=0)
+    sum_quad = np.ma.sum(modeled_err ** 2, axis=0)
+    n = np.sum(modeled_pwv.mask, axis=0)
     avg_pwv_err = np.ma.divide(np.ma.sqrt(sum_quad), n)
 
-    mask = pwv_data[primary].mask
-    sup_data = np.ma.where(mask, avg_pwv, pwv_data[primary])
-    sup_err = np.ma.where(mask, avg_pwv_err, pwv_data[primary + '_err'])
+    mask = pwv_data[primary_rec].mask
+    sup_data = np.ma.where(mask, avg_pwv, pwv_data[primary_rec])
+    sup_err = np.ma.where(mask, avg_pwv_err, pwv_data[primary_rec + '_err'])
 
     out = Table([pwv_data['date'], sup_data, sup_err],
                 names=['date', 'pwv', 'pwv_err'])
