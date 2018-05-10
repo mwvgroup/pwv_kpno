@@ -35,7 +35,7 @@ from astropy.table import Table, join, vstack, unique
 import numpy as np
 import requests
 
-from ._settings import Settings, PWV_MSRED_PATH, SUOMI_DIR
+from ._settings import Settings
 
 __authors__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2016, Daniel Perrefort'
@@ -45,7 +45,7 @@ __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
-CURRENT_LOCATION = Settings().current_location
+SETTINGS = Settings()
 
 
 def _suomi_date_to_timestamp(year, days_str):
@@ -139,13 +139,10 @@ def _download_data_for_site(year, site_id):
     """
 
     downloaded_paths = []
-    day_path = os.path.join(SUOMI_DIR, '{0}dy_{1}.plt')
+    day_path = os.path.join(SETTINGS._suomi_dir, '{0}dy_{1}.plt')
     day_url = 'http://www.suominet.ucar.edu/data/staYrDay/{0}pp_{1}.plt'
-    hour_path = os.path.join(SUOMI_DIR, '{0}hr_{1}.plt')
+    hour_path = os.path.join(SETTINGS._suomi_dir, '{0}hr_{1}.plt')
     hour_url = 'http://www.suominet.ucar.edu/data/staYrHr/{0}nrt_{1}.plt'
-
-    if not os.path.exists(SUOMI_DIR):
-        os.mkdir(SUOMI_DIR)
 
     for general_path, url in ((day_path, day_url), (hour_path, hour_url)):
         response = requests.get(url.format(site_id, year))
@@ -177,9 +174,8 @@ def _download_data_for_year(yr):
         An astropy Table of the combined downloaded data for the given year.
     """
 
-    receiver_ids = CURRENT_LOCATION.enabled_receivers
     combined_data = []
-    for site_id in receiver_ids:
+    for site_id in SETTINGS.receivers:
         file_paths = _download_data_for_site(yr, site_id)
 
         if file_paths:
@@ -217,11 +213,10 @@ def update_local_data(year=None):
     """
 
     # Get any local data that has already been downloaded
-    local_data_path = PWV_MSRED_PATH.format(CURRENT_LOCATION.name)
-    local_data = Table.read(local_data_path)
+    local_data = Table.read(SETTINGS._pwv_msred_path)
 
     # Determine what years to download
-    current_years = CURRENT_LOCATION.available_years
+    current_years = SETTINGS.available_years
     if year is None:
         all_years = range(2010, datetime.now().year + 1)
         years = [yr for yr in all_years if yr not in current_years]
@@ -239,8 +234,8 @@ def update_local_data(year=None):
         new_years.append(yr)
 
     # Update local files
-    local_data.write(local_data_path, overwrite=True)
+    local_data.write(SETTINGS._pwv_msred_path, overwrite=True)
     current_years.extend(new_years)
-    CURRENT_LOCATION._replace_years(current_years)
+    SETTINGS._replace_years(current_years)
 
     return new_years

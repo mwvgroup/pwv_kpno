@@ -30,7 +30,7 @@ from scipy.odr import Model, RealData, ODR
 
 from ._download_pwv_data import update_local_data
 from ._read_pwv_data import _get_measured_data
-from ._settings import Settings, PWV_MODEL_PATH
+from ._settings import Settings
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -39,7 +39,7 @@ __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
-CURRENT_LOCATION = Settings().current_location
+SETTINGS = Settings()
 
 
 def _linear_regression(x, y, sx, sy):
@@ -95,7 +95,7 @@ def _fit_offsite_receiver(pwv_data, receiver):
         The error in the modeled values
     """
 
-    primary_rec = CURRENT_LOCATION.primary_receiver
+    primary_rec = SETTINGS.primary_receiver
     assert primary_rec != receiver, 'Cannot fit primary receiver to itself.'
     mod_pwv, mod_err = _linear_regression(x=pwv_data[receiver],
                                           y=pwv_data[primary_rec],
@@ -119,7 +119,7 @@ def _update_pwv_model():
     """
 
     pwv_data = _get_measured_data()
-    off_site_receivers = CURRENT_LOCATION.off_site_receivers
+    off_site_receivers = SETTINGS.off_site_receivers
     if not off_site_receivers:
         return pwv_data
 
@@ -138,7 +138,7 @@ def _update_pwv_model():
     avg_pwv_err.mask = avg_pwv.mask
 
     # Supplement KITT data with averaged fits
-    primary_rec = CURRENT_LOCATION.primary_receiver
+    primary_rec = SETTINGS.primary_receiver
     mask = pwv_data[primary_rec].mask
     sup_data = np.ma.where(mask, avg_pwv, pwv_data[primary_rec])
     sup_err = np.ma.where(mask, avg_pwv_err, pwv_data[primary_rec + '_err'])
@@ -150,8 +150,7 @@ def _update_pwv_model():
     sup_err = np.round(sup_err[indices], 2)
 
     out = Table([dates, sup_data, sup_err], names=['date', 'pwv', 'pwv_err'])
-    out_path = PWV_MODEL_PATH.format(CURRENT_LOCATION.name)
-    out.write(out_path, overwrite=True)
+    out.write(SETTINGS._pwv_model_path, overwrite=True)
 
 
 def update_models(year=None):

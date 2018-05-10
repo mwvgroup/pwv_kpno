@@ -27,7 +27,7 @@ from astropy.table import Table
 import numpy as np
 from pytz import utc
 
-from ._settings import Settings, PWV_MSRED_PATH, PWV_MODEL_PATH
+from ._settings import Settings
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -37,7 +37,7 @@ __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
-CURRENT_LOCATION = Settings().current_location
+SETTINGS = Settings()
 
 
 # This function is a public wrapper for _pwv_date
@@ -74,8 +74,7 @@ def _pwv_date(date, airmass=1, test_model=None):
     """
 
     if test_model is None:
-        location_name = CURRENT_LOCATION.name
-        pwv_model = Table.read(PWV_MODEL_PATH.format(location_name))
+        pwv_model = Table.read(SETTINGS._pwv_model_path)
 
     else:
         pwv_model = test_model
@@ -100,7 +99,7 @@ def available_data():
         A list of years with locally available SuomiNet data
     """
 
-    return sorted(CURRENT_LOCATION.available_years)
+    return sorted(SETTINGS.available_years)
 
 
 def _check_date_time_args(year=None, month=None, day=None, hour=None):
@@ -181,20 +180,20 @@ def _get_measured_data():
         An astropy table with all measured PWV data for the current location
     """
 
-    location = CURRENT_LOCATION
-    data = Table.read(PWV_MSRED_PATH.format(location.name))
-    receiver_list = location.enabled_receivers
+    data = Table.read(SETTINGS._pwv_msred_path)
+    receiver_list = SETTINGS.receivers
 
-    for receivers in receiver_list:
-        if receivers != 'date' and (not receivers.endswith('_err')):
-            for start_time, end_time in location[receivers].ignore_timestamps:
+    for receiver in receiver_list:
+        if receiver != 'date' and (not receiver.endswith('_err')):
+            ignore_times = SETTINGS.ignored_timestamps(receiver)
+            for start_time, end_time in ignore_times:
                 i_start = start_time < data['date']
                 i_end = data['date'] < end_time
                 in_date_range = np.logical_and(i_start, i_end)
 
-                mask = np.logical_or(data[receivers].mask, in_date_range)
-                data[receivers].mask = mask
-                data[receivers + '_err'].mask = mask
+                mask = np.logical_or(data[receiver].mask, in_date_range)
+                data[receiver].mask = mask
+                data[receiver + '_err'].mask = mask
 
     return data
 
@@ -255,8 +254,7 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
     _check_date_time_args(year, month, day, hour)
 
     # Read in SuomiNet measurements from the master table
-    location_name = CURRENT_LOCATION.name
-    data = Table.read(PWV_MODEL_PATH.format(location_name))
+    data = Table.read(SETTINGS._pwv_model_path)
 
     # Convert UNIX timestamps to UTC
     to_datetime = lambda date: datetime.fromtimestamp(date, utc)

@@ -31,7 +31,7 @@ from astropy.table import Table
 import numpy as np
 import scipy.interpolate as interpolate
 
-from ._settings import PHOSIM_DATA
+from ._settings import Settings
 
 __authors__ = 'Azalee Bostroem'
 __copyright__ = 'Copyright 2016, Azalee Bostroem'
@@ -40,6 +40,8 @@ __editor__ = 'Daniel Perrefort'
 __license__ = 'GPL V3'
 __email__ = 'abostroem@gmail.com'
 __status__ = 'Development'
+
+PHOSIM_DATA = Settings()._phosim_dir
 
 
 def _load_cross_section(filename, x_fine):

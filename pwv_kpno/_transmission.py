@@ -30,7 +30,7 @@ from pytz import utc
 from astropy.table import Table
 from scipy.interpolate import interpn
 
-from ._settings import Settings, ATM_MODEL_PATH
+from ._settings import Settings
 from ._read_pwv_data import _pwv_date
 
 __author__ = 'Daniel Perrefort'
@@ -40,6 +40,8 @@ __credits__ = ['Michael Wood-Vasey']
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
+
+SETTINGS = Settings()
 
 
 def _timestamp(date):
@@ -104,8 +106,7 @@ def trans_for_pwv(pwv):
 
     _raise_pwv(pwv)
 
-    location_name = Settings().current_location.name
-    atm_model = Table.read(ATM_MODEL_PATH.format(location_name))
+    atm_model = Table.read(SETTINGS._atm_model_path)
     wavelengths = atm_model['wavelength']
     atm_model.remove_column('wavelength')
 
