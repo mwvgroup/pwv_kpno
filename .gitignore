@@ -1,20 +1,24 @@
-.cache/
-.eggs/
-.idea/
+# Distribution / packaging / building
+*.pyc
+env/
 build/
 dist/
+.eggs/
 pwv_kpno.egg-info/
 pwv_kpno-*/
 pwv_kpno/__pycache__/
-pwv_kpno/spect_20150708_matheson/
-scrap_work/
 
-tests/*.csv
-tests/*.plt
+# Unit tests / coverage reports
+.cache/
 
+# IDE / Notebook files
 *.ipynb
-*.pyc
-*.DS_Store
-*stackdump
+.idea/
 
-profile_tests.py
+# Opperating system files
+*.DS_Store
+
+# Used by developer for data analysis
+analysis_plotting/
+create_figures.py
+figs/
