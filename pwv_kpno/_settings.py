@@ -125,10 +125,12 @@ class Settings:
             rec_id (str): The id code of a SuomiNet GPS receiver
         """
 
-        try:
-            rec_data = self._config_data[rec_id]
+        all_rec_data = self._config_data['receivers']
 
-        except IndexError:
+        try:
+            rec_data = all_rec_data[rec_id]
+
+        except KeyError:
             err_msg = 'Receiver id {} is not affiliated with location {}'
             raise ValueError(err_msg.format(rec_id, self.location_name))
 
