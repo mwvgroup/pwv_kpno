@@ -27,6 +27,7 @@ from pytz import utc
 from pwv_kpno._download_pwv_data import _download_data_for_year
 from pwv_kpno._download_pwv_data import _read_file
 from pwv_kpno._download_pwv_data import _suomi_date_to_timestamp
+from pwv_kpno._settings import Settings
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -34,8 +35,6 @@ __copyright__ = 'Copyright 2017, Daniel Perrefort'
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
-
-SPATH = 'pwv_kpno/suomi_data/'  # Package directory of SuomiNet data files
 
 
 def _timestamp(date):
@@ -148,10 +147,11 @@ class SuomiNetFileParsing(unittest.TestCase):
         cls.azam_hr_path = 'AZAMhr_2015.plt'
         cls.p014_dy_path = 'P014dy_2012.plt'
 
-        cls.kitt_hr_data = _read_file(os.path.join(SPATH, cls.kitt_hr_path))
-        cls.kitt_dy_data = _read_file(os.path.join(SPATH, cls.kitt_dy_path))
-        cls.azam_hr_data = _read_file(os.path.join(SPATH, cls.azam_hr_path))
-        cls.p014_hr_data = _read_file(os.path.join(SPATH, cls.p014_dy_path))
+        data_dir = Settings()._suomi_dir
+        cls.kitt_hr_data = _read_file(os.path.join(data_dir, cls.kitt_hr_path))
+        cls.kitt_dy_data = _read_file(os.path.join(data_dir, cls.kitt_dy_path))
+        cls.azam_hr_data = _read_file(os.path.join(data_dir, cls.azam_hr_path))
+        cls.p014_hr_data = _read_file(os.path.join(data_dir, cls.p014_dy_path))
 
     def test_column_names(self):
         """Test returned data has correct columns"""
@@ -199,7 +199,7 @@ class SuomiNetFileParsing(unittest.TestCase):
         to have a different number of columns from the second half of the year.
         """
 
-        hr_path = os.path.join(SPATH, 'SA48dy_2010.plt')
+        hr_path = os.path.join(Settings()._suomi_dir, 'SA48dy_2010.plt')
 
         try:
             _read_file(hr_path)

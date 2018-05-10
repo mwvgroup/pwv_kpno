@@ -16,7 +16,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno. If not, see <http://www.gnu.org/licenses/>.
 
-"""This file tests the functions "measured_pwv" and "modeled_pwv"."""
+"""This file tests the functions `measured_pwv` and `modeled_pwv`."""
 
 import unittest
 from datetime import datetime
@@ -24,8 +24,10 @@ from datetime import datetime
 from astropy.table import Table
 from pytz import utc
 
-from pwv_kpno.pwv_atm import measured_pwv, modeled_pwv, pwv_date
 from pwv_kpno._read_pwv_data import _check_date_time_args
+from pwv_kpno._read_pwv_data import measured_pwv
+from pwv_kpno._read_pwv_data import modeled_pwv
+from pwv_kpno._read_pwv_data import pwv_date
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
