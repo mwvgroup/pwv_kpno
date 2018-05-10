@@ -86,14 +86,14 @@ def _read_file(path):
         2. The pressure is less than or equal to 775 mbar
         3. Dates are duplicates with unequal measurements
 
-    Credit goes to Jessica Kroboth for identifying condition 1.
-
     Args:
         path (str): File path to be read
 
     Returns:
         An astropy Table with data from path
     """
+
+    # Credit goes to Jessica Kroboth for identifying conditions 1 and 2
 
     site_id = path[-15:-11]
     data = np.genfromtxt(path, usecols=[0, 1, 2, 4],
@@ -102,9 +102,7 @@ def _read_file(path):
 
     data = Table(data)
     data = data[data[site_id] > 0]
-
-    # Account for decrease in reported error due to rounding
-    data[site_id + '_err'] += 0.05
+    data[site_id + '_err'] += 0.05  # Correct SuomiNet rounding error
     data[site_id + '_err'] = np.round(data[site_id + '_err'], 2)
 
     # Patch to remove bad SuomiNet pressure data for Kitt Peak

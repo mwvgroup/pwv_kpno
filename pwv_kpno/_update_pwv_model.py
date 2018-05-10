@@ -42,60 +42,70 @@ __status__ = 'Development'
 CURRENT_LOCATION = Settings().current_location
 
 
-def _linear_func(params, x):
-    """Apply a linear function to a given array
-
-    Args:
-        params (tuple): The slope and intercept of the linear function
-        x      (Array): The data to be mapped by the linear function
-
-    Returns:
-        params[0] * x + params[1]
-    """
-
-    return np.poly1d(params)(x)
-
-
-def _gen_pwv_model(x, y, sx, sy):
+def _linear_regression(x, y, sx, sy):
     """Optimize and apply a linear regression
 
-    Generates a linear model f using orthogonal distance regression and returns
-    the applied model f(x)
+    Generates a linear fit f using orthogonal distance regression and returns
+    the applied model f(x).
 
     Args:
-        x  (Column): The independent variable of the regression
-        y  (Column): The dependent variable of the regression
-        x  (Column): Standard deviations of x
-        y  (Column): Standard deviations of y
+        x  (ndarray): The independent variable of the regression
+        y  (ndarray): The dependent variable of the regression
+        x  (ndarray): Standard deviations of x
+        y  (ndarray): Standard deviations of y
 
     Returns:
         The applied linear regression on x as a masked array
+        The uncertainty in the applied linear regression as a masked array
     """
 
     # Identify rows with data for both KITT and receiver
-    primary_index = np.logical_not(y.mask)
-    receiver_index = np.logical_not(x.mask)
-    matching_indices = np.logical_and(primary_index, receiver_index)
+    indices = ~np.logical_or(x.mask, y.mask)
+    data = RealData(x=x[indices], y=y[indices], sx=sx[indices], sy=sy[indices])
 
-    # Create objects for orthogonal distance regression (ODR)
-    linear_model = Model(_linear_func)
-    data = RealData(x=x[matching_indices],
-                    y=y[matching_indices],
-                    sx=sx[matching_indices],
-                    sy=sy[matching_indices])
-
+    # Fit data with orthogonal distance regression (ODR)
+    linear_func = lambda params, xx: np.poly1d(params)(xx)
+    linear_model = Model(linear_func)
     odr = ODR(data, linear_model, beta0=[1., 0.])
     fit_results = odr.run()
 
-    applied_fit = _linear_func(fit_results.beta, x)
-    applied_fit = np.round(applied_fit, 1)
+    applied_fit = linear_func(fit_results.beta, x)
     applied_fit = np.ma.masked_where(x.mask, applied_fit)
 
     m, b = fit_results.beta
     sm, sb = fit_results.sd_beta
     error = np.sqrt((x * sm) ** 2 + (m * sx) ** 2 + sb ** 2)
 
-    return applied_fit, np.ma.array(error)
+    applied_fit.mask = np.logical_or(applied_fit.mask, applied_fit < 0)
+    error.mask = np.logical_or(error.mask, applied_fit < 0)
+    assert np.array_equal(applied_fit.mask, error.mask)
+
+    return applied_fit, error
+
+
+def _fit_offsite_receiver(pwv_data, receiver):
+    """Model the primary location's PWV using data from a secondary receiver
+
+    Args:
+        pwv_data (Table): A table of PWV measurements
+        receiver   (str): SuomiNet id code for the secondary receiver
+
+    Returns:
+        The modeled PWV level at the primary location
+        The error in the modeled values
+    """
+
+    primary_rec = CURRENT_LOCATION.primary_receiver
+    assert primary_rec != receiver, 'Cannot fit primary receiver to itself.'
+    mod_pwv, mod_err = _linear_regression(x=pwv_data[receiver],
+                                          y=pwv_data[primary_rec],
+                                          sx=pwv_data[receiver + '_err'],
+                                          sy=pwv_data[primary_rec + '_err'])
+
+    mod_pwv.mask = np.logical_and(mod_pwv.mask, [mod_pwv < 0])
+    mod_err.mask = mod_pwv.mask  # _linear_regression returns identical masks
+
+    return mod_pwv, mod_err
 
 
 def _update_pwv_model():
@@ -108,60 +118,49 @@ def _update_pwv_model():
     data to a csv file at PWV_TAB_DIR/measured.csv.
     """
 
-    # Credit belongs to Jessica Kroboth for suggesting the use of a linear fit
-    # to supplement PWV measurements when no Kitt Peak data is available.
-
-    # Read the local PWV data from file
     pwv_data = _get_measured_data()
-    primary_rec = CURRENT_LOCATION.primary_receiver
     off_site_receivers = CURRENT_LOCATION.off_site_receivers
+    if not off_site_receivers:
+        return pwv_data
 
-    # Generate the fit parameters
-    rec = off_site_receivers.pop()
-    modeled_pwv, modeled_err = _gen_pwv_model(x=pwv_data[rec],
-                                              y=pwv_data[primary_rec],
-                                              sx=pwv_data[rec + '_err'],
-                                              sy=pwv_data[rec + '_err'])
-
-    for secondary_rec in off_site_receivers:
-        mod_pwv, mod_err = _gen_pwv_model(x=pwv_data[secondary_rec],
-                                          y=pwv_data[primary_rec],
-                                          sx=pwv_data[secondary_rec + '_err'],
-                                          sy=pwv_data[primary_rec + '_err'])
-
+    receiver = off_site_receivers.pop()
+    modeled_pwv, modeled_err = _fit_offsite_receiver(pwv_data, receiver)
+    for receiver in off_site_receivers:
+        mod_pwv, mod_err = _fit_offsite_receiver(pwv_data, receiver)
         modeled_pwv = np.ma.vstack((modeled_pwv, mod_pwv))
         modeled_err = np.ma.vstack((modeled_err, mod_err))
 
-    # Supplement KITT data with averaged fits
-    avg_pwv = np.ma.average(modeled_pwv, axis=0)
+    # Average PWV models from different sites
+    avg_pwv = np.average(modeled_pwv, axis=0)
     sum_quad = np.ma.sum(modeled_err ** 2, axis=0)
-    n = np.sum(modeled_pwv.mask, axis=0)
+    n = len(off_site_receivers) - np.ma.sum(modeled_pwv.mask, axis=0)
     avg_pwv_err = np.ma.divide(np.ma.sqrt(sum_quad), n)
+    avg_pwv_err.mask = avg_pwv.mask
 
+    # Supplement KITT data with averaged fits
+    primary_rec = CURRENT_LOCATION.primary_receiver
     mask = pwv_data[primary_rec].mask
     sup_data = np.ma.where(mask, avg_pwv, pwv_data[primary_rec])
     sup_err = np.ma.where(mask, avg_pwv_err, pwv_data[primary_rec + '_err'])
 
-    out = Table([pwv_data['date'], sup_data, sup_err],
-                names=['date', 'pwv', 'pwv_err'])
+    # Remove any masked values
+    indices = ~sup_data.mask
+    dates = pwv_data['date'][indices]
+    sup_data = np.round(sup_data[indices], 2)
+    sup_err = np.round(sup_err[indices], 2)
 
-    out = out[out['pwv'] > 0]
-    out['pwv'] = np.round(out['pwv'], 2)
-    out['pwv_err'] = np.round(out['pwv_err'], 2)
-
-    location_name = CURRENT_LOCATION.name
-    out.write(PWV_MODEL_PATH.format(location_name), overwrite=True)
+    out = Table([dates, sup_data, sup_err], names=['date', 'pwv', 'pwv_err'])
+    out_path = PWV_MODEL_PATH.format(CURRENT_LOCATION.name)
+    out.write(out_path, overwrite=True)
 
 
 def update_models(year=None):
     """Download data from SuomiNet and update the locally stored PWV model
 
-    Update the locally available SuomiNet data by downloading new data from
-    the SuomiNet website. Use this data to create an updated model for the PWV
-    level at Kitt Peak. If a year is provided, only update data for that year.
-    If not, download any published data that is not available on the local
-    machine. Data for years from 2010 through 2017 is included with this
-    package version by default.
+    Update the modeled PWV column density for Kitt Peak by downloading new data
+    releases from the SuomiNet website. If a year is provided, use only data
+    for that year. If not, download any published data that is not available on
+    the local machine.
 
     Args:
         year (int): A Year from 2010 onward
@@ -183,6 +182,7 @@ def update_models(year=None):
             raise ValueError(msg)
 
     # Update the local SuomiData and PWV models
-    updated_years = update_local_data(year)
+    updated_years = sorted(update_local_data(year))
     _update_pwv_model()
-    return sorted(updated_years)
+
+    return updated_years
