@@ -26,7 +26,7 @@ from datetime import datetime
 
 from astropy.table import Table
 import numpy as np
-from scipy.odr import Model, RealData, ODR
+from scipy.odr import RealData, ODR, polynomial
 
 from ._download_pwv_data import update_local_data
 from ._read_pwv_data import _get_measured_data
@@ -43,42 +43,40 @@ SETTINGS = Settings()
 
 
 def _linear_regression(x, y, sx, sy):
-    """Optimize and apply a linear regression
+    """Optimize and apply a linear regression using masked arrays
 
     Generates a linear fit f using orthogonal distance regression and returns
     the applied model f(x).
 
     Args:
-        x  (ndarray): The independent variable of the regression
-        y  (ndarray): The dependent variable of the regression
-        x  (ndarray): Standard deviations of x
-        y  (ndarray): Standard deviations of y
+        x  (MaskedArray): The independent variable of the regression
+        y  (MaskedArray): The dependent variable of the regression
+        x  (MaskedArray): Standard deviations of x
+        y  (MaskedArray): Standard deviations of y
 
     Returns:
-        The applied linear regression on x as a masked array
-        The uncertainty in the applied linear regression as a masked array
+        The applied linear regression on x
+        The uncertainty in the applied linear regression
     """
 
-    # Identify rows with data for both KITT and receiver
     indices = ~np.logical_or(x.mask, y.mask)
     data = RealData(x=x[indices], y=y[indices], sx=sx[indices], sy=sy[indices])
+    x = np.ma.array(x)  # Type cast will propagate into returns
 
     # Fit data with orthogonal distance regression (ODR)
-    linear_func = lambda params, xx: np.poly1d(params)(xx)
-    linear_model = Model(linear_func)
-    odr = ODR(data, linear_model, beta0=[1., 0.])
+    odr = ODR(data, polynomial(1), beta0=[0., 1.])
     fit_results = odr.run()
 
-    applied_fit = linear_func(fit_results.beta, x)
-    applied_fit = np.ma.masked_where(x.mask, applied_fit)
+    fit_pass = 'Numerical error detected' not in fit_results.stopreason
+    assert fit_pass, 'Numerical error detected'
 
-    m, b = fit_results.beta
-    sm, sb = fit_results.sd_beta
+    b, m = fit_results.beta
+    sb, sm = fit_results.sd_beta
+
+    applied_fit = m * x + b
+    applied_fit.mask = np.logical_or(x.mask, applied_fit < 0)
     error = np.sqrt((x * sm) ** 2 + (m * sx) ** 2 + sb ** 2)
-
-    applied_fit.mask = np.logical_or(applied_fit.mask, applied_fit < 0)
-    error.mask = np.logical_or(error.mask, applied_fit < 0)
-    assert np.array_equal(applied_fit.mask, error.mask)
+    error.mask = applied_fit.mask
 
     return applied_fit, error
 
@@ -108,6 +106,37 @@ def _fit_offsite_receiver(pwv_data, receiver):
     return mod_pwv, mod_err
 
 
+def calc_avg_pwv_model(pwv_data):
+    """Determines a PWV model using each off site receiver and averages them
+
+    Expects an input table similar to that returned by
+    pwv_kpno._read_pwv_data import _get_measured_data
+
+    Args:
+        pwv_data (Table): A table of pwv data
+
+    Returns:
+        A masked array of the averaged PWV model
+        A masked array of the error in the averaged model
+    """
+
+    receiver = off_site_receivers.pop()
+    modeled_pwv, modeled_err = _fit_offsite_receiver(pwv_data, receiver)
+    for receiver in off_site_receivers:
+        mod_pwv, mod_err = _fit_offsite_receiver(pwv_data, receiver)
+        modeled_pwv = np.ma.vstack((modeled_pwv, mod_pwv))
+        modeled_err = np.ma.vstack((modeled_err, mod_err))
+
+    # Average PWV models from different sites
+    avg_pwv = np.ma.average(modeled_pwv, axis=0)
+    sum_quad = np.ma.sum(modeled_err ** 2, axis=0)
+    n = len(off_site_receivers) - np.ma.sum(modeled_pwv.mask, axis=0)
+    avg_pwv_err = np.ma.divide(np.ma.sqrt(sum_quad), n)
+    avg_pwv_err.mask = avg_pwv.mask
+
+    return avg_pwv, avg_pwv_err
+
+
 def _update_pwv_model():
     """Create a new model for the PWV level at Kitt Peak
 
@@ -123,25 +152,14 @@ def _update_pwv_model():
     if not off_site_receivers:
         return pwv_data
 
-    receiver = off_site_receivers.pop()
-    modeled_pwv, modeled_err = _fit_offsite_receiver(pwv_data, receiver)
-    for receiver in off_site_receivers:
-        mod_pwv, mod_err = _fit_offsite_receiver(pwv_data, receiver)
-        modeled_pwv = np.ma.vstack((modeled_pwv, mod_pwv))
-        modeled_err = np.ma.vstack((modeled_err, mod_err))
-
-    # Average PWV models from different sites
-    avg_pwv = np.average(modeled_pwv, axis=0)
-    sum_quad = np.ma.sum(modeled_err ** 2, axis=0)
-    n = len(off_site_receivers) - np.ma.sum(modeled_pwv.mask, axis=0)
-    avg_pwv_err = np.ma.divide(np.ma.sqrt(sum_quad), n)
-    avg_pwv_err.mask = avg_pwv.mask
+    avg_pwv, avg_pwv_err = calc_avg_pwv_model(pwv_data)
 
     # Supplement KITT data with averaged fits
     primary_rec = SETTINGS.primary_receiver
     mask = pwv_data[primary_rec].mask
     sup_data = np.ma.where(mask, avg_pwv, pwv_data[primary_rec])
     sup_err = np.ma.where(mask, avg_pwv_err, pwv_data[primary_rec + '_err'])
+    sup_data.mask = np.logical_and(mask, avg_pwv.mask)
 
     # Remove any masked values
     indices = ~sup_data.mask

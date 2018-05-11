@@ -20,8 +20,10 @@
 
 from datetime import datetime
 
+import numpy as np
 import unittest
 
+from pwv_kpno._update_pwv_model import _linear_regression
 from pwv_kpno._update_pwv_model import update_models
 
 __author__ = 'Daniel Perrefort'
@@ -32,8 +34,43 @@ __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
 
+class LinearRegression(unittest.TestCase):
+    """Test _linear_regression function fits for correct parameters and mask"""
+
+    def test_mask_handling(self):
+        """Test returned values are masked correctly"""
+
+        m, b = 5, 2  # Slope and y-intercept
+        x = np.ma.array([1, 3, 100, 7, 9, -12, 13, 15, 17, 19])
+        x.mask = [0, 0, 1, 0, 0, 1, 0, 0, 0, 0]
+        y = m * x + b
+        sy = sx = np.ma.zeros(x.shape) + .1
+
+        fit, fit_err = _linear_regression(x, y, sx, sy)
+        self.assertTrue(np.array_equal(x.mask, fit.mask),
+                        'Incorrect mask returned for fit data')
+
+        self.assertTrue(np.array_equal(fit.mask, fit_err.mask),
+                        'Fit and fit error have different masks')
+
+    def test_regression(self):
+        """Test linear regression determines correct fit parameters"""
+
+        m, b = 5, 2  # Slope and y-intercept
+        x = np.ma.arange(1, 20, 2)
+        y = m * x + b
+        sy = sx = np.ma.zeros(x.shape) + .1
+
+        fit, fit_err = _linear_regression(x, y, sx, sy)
+        fit_matches_data = np.all(np.isclose(y, fit))
+        self.assertTrue(fit_matches_data)
+
+# Todo: test _fit_offsite_receiver
+# Todo: test calc_avg_pwv_model (Test model for negative values)
+
+
 class UpdateModelsArgs(unittest.TestCase):
-    """Test pwv_kpno.update_models for raised errors due to bad arguments"""
+    """Test update_models function for raised errors due to bad arguments"""
 
     def test_argument_errors(self):
         """Test errors raised from function call with wrong argument types"""
