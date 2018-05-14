@@ -30,13 +30,17 @@ SuomiNet project see http://www.suominet.ucar.edu/overview.html.
 
 from . import pwv_atm
 from . import blackbody_with_atm
+from ._settings import settings as _settings
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
-__credits__ = ['Azalee Bostroem', 'Jessica Kroboth',
-               'Michael Wood-Vasey', 'Alexander Afanasyev']
+__credits__ = ['Michael Wood-Vasey', 'Azalee Bostroem',
+               'Jessica Kroboth', 'Alexander Afanasyev']
 
 __license__ = 'GPL V3'
 __version__ = '0.11.4'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
+
+# Sets up package to model Kitt Peak
+_settings.set_location('kitt_peak')

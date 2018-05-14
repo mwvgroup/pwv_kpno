@@ -30,7 +30,7 @@ from scipy.odr import RealData, ODR, polynomial
 
 from ._download_pwv_data import update_local_data
 from ._read_pwv_data import _get_measured_data
-from ._settings import Settings
+from ._settings import settings
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -38,8 +38,6 @@ __copyright__ = 'Copyright 2017, Daniel Perrefort'
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
-
-SETTINGS = Settings()
 
 
 def _linear_regression(x, y, sx, sy):
@@ -148,10 +146,10 @@ def _update_pwv_model():
     """
 
     pwv_data = _get_measured_data()
-    if not SETTINGS.off_site_receivers:
+    if not settings.off_site_receivers:
         return pwv_data
 
-    primary_rec = SETTINGS.primary_receiver
+    primary_rec = settings.primary_rec
     avg_pwv, avg_pwv_err = calc_avg_pwv_model(pwv_data, primary_rec)
 
     # Supplement KITT data with averaged fits
@@ -167,7 +165,7 @@ def _update_pwv_model():
     sup_err = np.round(sup_err[indices], 2)
 
     out = Table([dates, sup_data, sup_err], names=['date', 'pwv', 'pwv_err'])
-    out.write(SETTINGS._pwv_model_path, overwrite=True)
+    out.write(settings._pwv_model_path, overwrite=True)
 
 
 def update_models(year=None):

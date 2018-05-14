@@ -35,7 +35,7 @@ from astropy.table import Table, join, vstack, unique
 import numpy as np
 import requests
 
-from ._settings import Settings
+from ._settings import settings
 
 __authors__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2016, Daniel Perrefort'
@@ -44,8 +44,6 @@ __credits__ = 'Jessica Kroboth'
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
-
-SETTINGS = Settings()
 
 
 def _suomi_date_to_timestamp(year, days_str):
@@ -139,9 +137,9 @@ def _download_data_for_site(year, site_id):
     """
 
     downloaded_paths = []
-    day_path = os.path.join(SETTINGS._suomi_dir, '{0}dy_{1}.plt')
+    day_path = os.path.join(settings._suomi_dir, '{0}dy_{1}.plt')
     day_url = 'http://www.suominet.ucar.edu/data/staYrDay/{0}pp_{1}.plt'
-    hour_path = os.path.join(SETTINGS._suomi_dir, '{0}hr_{1}.plt')
+    hour_path = os.path.join(settings._suomi_dir, '{0}hr_{1}.plt')
     hour_url = 'http://www.suominet.ucar.edu/data/staYrHr/{0}nrt_{1}.plt'
 
     for general_path, url in ((day_path, day_url), (hour_path, hour_url)):
@@ -175,7 +173,7 @@ def _download_data_for_year(yr):
     """
 
     combined_data = []
-    for site_id in SETTINGS.receivers:
+    for site_id in settings.receivers:
         file_paths = _download_data_for_site(yr, site_id)
 
         if file_paths:
@@ -213,10 +211,10 @@ def update_local_data(year=None):
     """
 
     # Get any local data that has already been downloaded
-    local_data = Table.read(SETTINGS._pwv_msred_path)
+    local_data = Table.read(settings._pwv_msred_path)
 
     # Determine what years to download
-    current_years = SETTINGS.available_years
+    current_years = settings.available_years
     if year is None:
         all_years = range(2010, datetime.now().year + 1)
         years = [yr for yr in all_years if yr not in current_years]
@@ -234,8 +232,8 @@ def update_local_data(year=None):
         new_years.append(yr)
 
     # Update local files
-    local_data.write(SETTINGS._pwv_msred_path, overwrite=True)
+    local_data.write(settings._pwv_msred_path, overwrite=True)
     current_years.extend(new_years)
-    SETTINGS._replace_years(current_years)
+    settings._replace_years(current_years)
 
     return new_years

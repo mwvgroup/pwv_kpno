@@ -1,0 +1,17 @@
+{
+  "primary": "TEST",
+  "receivers": {
+    "AZAM": [
+      true,
+      []
+    ],
+    "TEST": [
+      true,
+      []
+    ]
+  },
+  "years": [
+    2014,
+    2015
+  ]
+}
