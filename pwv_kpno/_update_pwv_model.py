@@ -51,19 +51,20 @@ def _linear_regression(x, y, sx, sy):
     Args:
         x  (MaskedArray): The independent variable of the regression
         y  (MaskedArray): The dependent variable of the regression
-        x  (MaskedArray): Standard deviations of x
-        y  (MaskedArray): Standard deviations of y
+        sx  (MaskedArray): Standard deviations of x
+        sy  (MaskedArray): Standard deviations of y
 
     Returns:
-        The applied linear regression on x
-        The uncertainty in the applied linear regression
+        The applied linear regression on x as a masked array
+        The uncertainty in the applied linear regression as a masked array
     """
 
-    indices = ~np.logical_or(x.mask, y.mask)
-    data = RealData(x=x[indices], y=y[indices], sx=sx[indices], sy=sy[indices])
-    x = np.ma.array(x)  # Type cast will propagate into returns
+    x = np.ma.array(x)  # This type cast will propagate into returns
+    y = np.ma.array(y)
 
     # Fit data with orthogonal distance regression (ODR)
+    indices = ~np.logical_or(x.mask, y.mask)
+    data = RealData(x=x[indices], y=y[indices], sx=sx[indices], sy=sy[indices])
     odr = ODR(data, polynomial(1), beta0=[0., 1.])
     fit_results = odr.run()
 
@@ -81,7 +82,7 @@ def _linear_regression(x, y, sx, sy):
     return applied_fit, error
 
 
-def _fit_offsite_receiver(pwv_data, receiver):
+def _fit_offsite_receiver(pwv_data, primary_rec, receiver):
     """Model the primary location's PWV using data from a secondary receiver
 
     Args:
@@ -93,8 +94,7 @@ def _fit_offsite_receiver(pwv_data, receiver):
         The error in the modeled values
     """
 
-    primary_rec = SETTINGS.primary_receiver
-    assert primary_rec != receiver, 'Cannot fit primary receiver to itself.'
+    assert primary_rec != receiver, 'Cannot fit a receiver to itself.'
     mod_pwv, mod_err = _linear_regression(x=pwv_data[receiver],
                                           y=pwv_data[primary_rec],
                                           sx=pwv_data[receiver + '_err'],
@@ -106,7 +106,7 @@ def _fit_offsite_receiver(pwv_data, receiver):
     return mod_pwv, mod_err
 
 
-def calc_avg_pwv_model(pwv_data):
+def calc_avg_pwv_model(pwv_data, primary_rec):
     """Determines a PWV model using each off site receiver and averages them
 
     Expects an input table similar to that returned by
@@ -121,9 +121,9 @@ def calc_avg_pwv_model(pwv_data):
     """
 
     receiver = off_site_receivers.pop()
-    modeled_pwv, modeled_err = _fit_offsite_receiver(pwv_data, receiver)
+    modeled_pwv, modeled_err = _fit_offsite_receiver(pwv_data, primary_rec, receiver)
     for receiver in off_site_receivers:
-        mod_pwv, mod_err = _fit_offsite_receiver(pwv_data, receiver)
+        mod_pwv, mod_err = _fit_offsite_receiver(pwv_data, primary_rec, receiver)
         modeled_pwv = np.ma.vstack((modeled_pwv, mod_pwv))
         modeled_err = np.ma.vstack((modeled_err, mod_err))
 
@@ -148,14 +148,13 @@ def _update_pwv_model():
     """
 
     pwv_data = _get_measured_data()
-    off_site_receivers = SETTINGS.off_site_receivers
-    if not off_site_receivers:
+    if not SETTINGS.off_site_receivers:
         return pwv_data
 
-    avg_pwv, avg_pwv_err = calc_avg_pwv_model(pwv_data)
+    primary_rec = SETTINGS.primary_receiver
+    avg_pwv, avg_pwv_err = calc_avg_pwv_model(pwv_data, primary_rec)
 
     # Supplement KITT data with averaged fits
-    primary_rec = SETTINGS.primary_receiver
     mask = pwv_data[primary_rec].mask
     sup_data = np.ma.where(mask, avg_pwv, pwv_data[primary_rec])
     sup_err = np.ma.where(mask, avg_pwv_err, pwv_data[primary_rec + '_err'])
