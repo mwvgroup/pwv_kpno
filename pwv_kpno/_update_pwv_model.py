@@ -98,7 +98,7 @@ def _fit_offsite_receiver(pwv_data, primary_rec, receiver):
                                           sx=pwv_data[receiver + '_err'],
                                           sy=pwv_data[primary_rec + '_err'])
 
-    mod_pwv.mask = np.logical_and(mod_pwv.mask, [mod_pwv < 0])
+    mod_pwv.mask = np.logical_and(mod_pwv.mask, [mod_pwv <= 0])
     mod_err.mask = mod_pwv.mask  # _linear_regression returns identical masks
 
     return mod_pwv, mod_err
@@ -131,7 +131,7 @@ def calc_avg_pwv_model(pwv_data, primary_rec):
     sum_quad = np.ma.sum(modeled_err ** 2, axis=0)
     n = len(off_site_receivers) - np.ma.sum(modeled_pwv.mask, axis=0)
     avg_pwv_err = np.ma.divide(np.ma.sqrt(sum_quad), n)
-    avg_pwv_err.mask = avg_pwv.mask
+    avg_pwv_err.mask = avg_pwv.mask  # np.ma.divide throws off the mask
 
     return avg_pwv, avg_pwv_err
 
