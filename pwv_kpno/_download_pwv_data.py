@@ -121,7 +121,7 @@ def _read_file(path):
     return data
 
 
-def _download_data_for_site(year, site_id):
+def _download_data_for_site(year, site_id, timeout):
     """Download SuomiNet data for a given year and SuomiNet id
 
     For a given year and SuomiNet id, download data from the corresponding GPS
@@ -131,6 +131,7 @@ def _download_data_for_site(year, site_id):
     Args:
         year    (int): A year to download data for
         site_id (str): A SuomiNet receiver id code (eg. KITT)
+        timeout (float): Optional seconds to wait while connecting to SuomiNet
 
     Returns:
         A list of file paths containing downloaded data
@@ -143,7 +144,7 @@ def _download_data_for_site(year, site_id):
     hour_url = 'http://www.suominet.ucar.edu/data/staYrHr/{0}nrt_{1}.plt'
 
     for general_path, url in ((day_path, day_url), (hour_path, hour_url)):
-        response = requests.get(url.format(site_id, year))
+        response = requests.get(url.format(site_id, year), timeout=timeout)
 
         if response.status_code != 404:
             response.raise_for_status()
@@ -158,7 +159,7 @@ def _download_data_for_site(year, site_id):
     return downloaded_paths
 
 
-def _download_data_for_year(yr):
+def _download_data_for_year(yr, timeout):
     """Download and return data for a given year from available SuomiNet sites
 
     Downloaded data for each enabled SuomiNet sites. Return this data as an
@@ -167,6 +168,7 @@ def _download_data_for_year(yr):
 
     Args:
         yr (int): The year of the desired data
+        timeout (float): Optional seconds to wait while connecting to SuomiNet
 
     Returns:
         An astropy Table of the combined downloaded data for the given year.
@@ -174,7 +176,7 @@ def _download_data_for_year(yr):
 
     combined_data = []
     for site_id in settings.receivers:
-        file_paths = _download_data_for_site(yr, site_id)
+        file_paths = _download_data_for_site(yr, site_id, timeout)
 
         if file_paths:
             site_data = vstack([_read_file(path) for path in file_paths])
@@ -195,7 +197,7 @@ def _download_data_for_year(yr):
     return out_data
 
 
-def update_local_data(year=None):
+def update_local_data(year=None, timeout=None):
     """Download data from SuomiNet and update PWV_TAB_DIR/measured_pwv.csv
 
     If a year is provided, download SuomiNet data for that year to SUOMI_DIR.
@@ -205,6 +207,7 @@ def update_local_data(year=None):
 
     Args:
         year (int): The year to update data for
+        timeout (float): Optional seconds to wait while connecting to SuomiNet
 
     Returns:
         A list of years for which data was updated
@@ -226,7 +229,7 @@ def update_local_data(year=None):
     # Download new data from SuomiNet
     new_years = []
     for yr in years:
-        new_data = _download_data_for_year(yr)
+        new_data = _download_data_for_year(yr, timeout)
         stacked_tables = vstack([local_data, new_data])
         local_data = unique(stacked_tables, keys=['date'], keep='last')
         new_years.append(yr)

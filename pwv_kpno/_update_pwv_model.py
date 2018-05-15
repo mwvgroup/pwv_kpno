@@ -168,7 +168,7 @@ def _update_pwv_model():
     out.write(settings._pwv_model_path, overwrite=True)
 
 
-def update_models(year=None):
+def update_models(year=None, timeout=None):
     """Download data from SuomiNet and update the locally stored PWV model
 
     Update the modeled PWV column density for Kitt Peak by downloading new data
@@ -177,7 +177,8 @@ def update_models(year=None):
     the local machine.
 
     Args:
-        year (int): A Year from 2010 onward
+        year      (int): A Year from 2010 onward
+        timeout (float): Optional seconds to wait while connecting to SuomiNet
 
     Returns:
         A list of years for which models where updated
@@ -196,7 +197,7 @@ def update_models(year=None):
             raise ValueError(msg)
 
     # Update the local SuomiData and PWV models
-    updated_years = sorted(update_local_data(year))
+    updated_years = sorted(update_local_data(year, timeout))
     _update_pwv_model()
 
     return updated_years
