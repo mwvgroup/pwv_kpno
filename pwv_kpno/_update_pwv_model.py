@@ -118,6 +118,7 @@ def calc_avg_pwv_model(pwv_data, primary_rec):
         A masked array of the error in the averaged model
     """
 
+    off_site_receivers = settings.off_site_recs
     receiver = off_site_receivers.pop()
     modeled_pwv, modeled_err = _fit_offsite_receiver(pwv_data, primary_rec, receiver)
     for receiver in off_site_receivers:
@@ -146,7 +147,7 @@ def _update_pwv_model():
     """
 
     pwv_data = _get_measured_data()
-    if not settings.off_site_receivers:
+    if not settings.off_site_recs:
         return pwv_data
 
     primary_rec = settings.primary_rec
