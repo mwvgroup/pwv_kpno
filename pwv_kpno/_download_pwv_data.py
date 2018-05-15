@@ -121,7 +121,7 @@ def _read_file(path):
     return data
 
 
-def _download_data_for_site(year, site_id, timeout):
+def _download_data_for_site(year, site_id, timeout=None):
     """Download SuomiNet data for a given year and SuomiNet id
 
     For a given year and SuomiNet id, download data from the corresponding GPS
@@ -129,8 +129,8 @@ def _download_data_for_site(year, site_id, timeout):
     releases. Any existing data files are overwritten.
 
     Args:
-        year    (int): A year to download data for
-        site_id (str): A SuomiNet receiver id code (eg. KITT)
+        year      (int): A year to download data for
+        site_id   (str): A SuomiNet receiver id code (eg. KITT)
         timeout (float): Optional seconds to wait while connecting to SuomiNet
 
     Returns:
@@ -159,7 +159,7 @@ def _download_data_for_site(year, site_id, timeout):
     return downloaded_paths
 
 
-def _download_data_for_year(yr, timeout):
+def _download_data_for_year(yr, timeout=None):
     """Download and return data for a given year from available SuomiNet sites
 
     Downloaded data for each enabled SuomiNet sites. Return this data as an
@@ -167,7 +167,7 @@ def _download_data_for_year(yr, timeout):
     supplemented by the hourly release data.
 
     Args:
-        yr (int): The year of the desired data
+        yr        (int): The year of the desired data
         timeout (float): Optional seconds to wait while connecting to SuomiNet
 
     Returns:
@@ -206,7 +206,7 @@ def update_local_data(year=None, timeout=None):
     measurements located at PWV_TAB_DIR/measured_pwv.csv.
 
     Args:
-        year (int): The year to update data for
+        year      (int): The year to update data for
         timeout (float): Optional seconds to wait while connecting to SuomiNet
 
     Returns:
