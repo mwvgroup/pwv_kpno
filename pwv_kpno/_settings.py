@@ -31,12 +31,17 @@ __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
 
+class ModelingConfigError(Exception):
+    pass
+
+
 def location_property(f):
     @property
     def wrapper(self, *args, **kwargs):
         
         if self._location is None:
-            raise ValueError('No location set to model.')
+            raise ModelingConfigError(
+                'No location has been set for pwv_kpno model.')
 
         return f(self, *args, **kwargs)
     return wrapper
@@ -192,8 +197,7 @@ class Settings:
             out_path (str): The desired output directory
         """
 
-        # Todo: Combine data to a single .fits file and write to out_path
-        pass
+        pass  # Todo
 
     def import_location(self, in_path):
         """Import package settings from a custom configuration file
@@ -202,8 +206,7 @@ class Settings:
             in_path (str): The path of the desired
         """
 
-        # Todo: Unpack data from .fits file and write to pwv_kpno/locations
-        pass
+        pass  # Todo:
 
 
 # This instance is used package wide to access site settings
