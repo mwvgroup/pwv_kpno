@@ -56,7 +56,7 @@ class CorrectDataFiles(unittest.TestCase):
             cls.data_file_GPS_ids.add(fname[-15: -11])
 
     def test_data_file_years(self):
-        """Test that data files correspond to appropriate years"""
+        """Test SuomiNet data files correspond to appropriate years"""
 
         expected_years = set(range(2010, datetime.now().year))
         missing_years = expected_years - self.data_file_years
@@ -69,7 +69,7 @@ class CorrectDataFiles(unittest.TestCase):
         self.assertFalse(extra_years, error_msg.format(extra_years))
 
     def test_correct_gps_ids(self):
-        """Test data files correspond to appropriate GPS receivers"""
+        """Test SuomiNet data files correspond to appropriate GPS receivers"""
 
         expected_ids = {'KITT', 'P014', 'SA46', 'SA48', 'AZAM'}
         missing_ids = expected_ids - self.data_file_GPS_ids
@@ -94,3 +94,5 @@ class CorrectDataFiles(unittest.TestCase):
 
         error_msg = 'Extra years in config file ({})'
         self.assertFalse(extra_years, error_msg.format(extra_years))
+
+# Todo: test model dates and that model has no masked values

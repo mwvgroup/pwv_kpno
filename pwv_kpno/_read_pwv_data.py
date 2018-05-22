@@ -183,8 +183,7 @@ def _get_measured_data():
 
     for receiver in receiver_list:
         if receiver != 'date' and (not receiver.endswith('_err')):
-            ignore_times = settings.ignored_timestamps(receiver)
-            for start_time, end_time in ignore_times:
+            for start_time, end_time in settings.ignored_timestamps(receiver):
                 i_start = start_time < data['date']
                 i_end = data['date'] < end_time
                 in_date_range = np.logical_and(i_start, i_end)

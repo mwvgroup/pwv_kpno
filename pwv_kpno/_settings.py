@@ -22,6 +22,7 @@
 
 import json
 import os
+import shutil
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -38,13 +39,30 @@ class ModelingConfigError(Exception):
 def location_property(f):
     @property
     def wrapper(self, *args, **kwargs):
-        
         if self._location is None:
             raise ModelingConfigError(
                 'No location has been set for pwv_kpno model.')
 
         return f(self, *args, **kwargs)
+
     return wrapper
+
+
+def raise_missing_files(dir_path):
+    """Raises an error if a given directory is missing package config files
+
+    Args:
+         dir_path: A directory to check for missing config files
+    """
+
+    files = os.listdir(dir_path)
+    err_msg = 'Missing {} in loc_dir.'
+    file_list = ['atm_model.csv', 'config.json',
+                 'measured_pwv.csv', 'modeled_pwv.csv']
+
+    for fname in file_list:
+        if fname not in files:
+            raise FileNotFoundError(err_msg.format(fname))
 
 
 class Settings:
@@ -70,20 +88,21 @@ class Settings:
     _config_data = None
     primary_rec = None
 
-    _file_dir = os.path.dirname(os.path.realpath(__file__))
-    _suomi_dir = os.path.join(_file_dir, 'suomi_data')
+    def __init__(self):
+        _file_dir = os.path.dirname(os.path.realpath(__file__))
+        self._suomi_dir = os.path.join(_file_dir, 'suomi_data')
 
-    # Unformatted paths for various package data
-    _loc_dir_unf = os.path.join(_file_dir, 'locations/{}')
-    _phosim_dir_unf = os.path.join(_loc_dir_unf, 'atmosphere')
-    _config_path_unf = os.path.join(_loc_dir_unf, 'config.json')
-    _atm_model_path_unf = os.path.join(_loc_dir_unf, 'atm_model.csv')
-    _pwv_model_path_unf = os.path.join(_loc_dir_unf, 'modeled_pwv.csv')
-    _pwv_msred_path_unf = os.path.join(_loc_dir_unf, 'measured_pwv.csv')
+        # Unformatted paths for various package data
+        self._loc_dir_unf = os.path.join(_file_dir, 'locations/{}')
+        self._phosim_dir_unf = os.path.join(self._loc_dir_unf, 'atmosphere')
+        self._config_path_unf = os.path.join(self._loc_dir_unf, 'config.json')
+        self._atm_model_path_unf = os.path.join(self._loc_dir_unf, 'atm_model.csv')
+        self._pwv_model_path_unf = os.path.join(self._loc_dir_unf, 'modeled_pwv.csv')
+        self._pwv_msred_path_unf = os.path.join(self._loc_dir_unf, 'measured_pwv.csv')
 
     @property
     def location(self):
-        # Property prevents user from directly setting self.location
+        # To prevent user from directly setting self.location
         return self._location
 
     @location_property
@@ -117,20 +136,37 @@ class Settings:
         self._loc_dir_unf.format('')
         return next(os.walk(self._loc_dir_unf.format('')))[1]
 
-    def set_location(self, loc_name):
+    def set_location(self, loc_name=None, loc_dir=None):
         """Configure pwv_kpno to model the atmosphere at a given location
+
+        Specify loc_name to use a builtin location OR loc_dir to use a set of
+        custom configuration files.
 
         Args:
             loc_name (str): The name of a builtin location
+            loc_dir  (str): The path of a directory with custom config files
         """
 
-        if loc_name not in self.available_loc:
+        if loc_name is None and loc_dir is None:
+            raise ValueError('No location specified to model.')
+
+        if loc_name and loc_dir:
+            raise ValueError('Cannot specify loc_name and loc_dir.')
+
+        if loc_dir:
+            raise_missing_files(loc_dir)
+            config_path = os.path.join(loc_dir, 'config.json')
+
+        elif loc_name not in self.available_loc:
             raise ValueError("No location found for '{}'.".format(loc_name))
 
-        self._location = loc_name
-        with open(self._config_path, 'r') as ofile:
+        else:
+            config_path = self._config_path_unf.format(loc_name)
+
+        with open(config_path, 'r') as ofile:
             self._config_data = json.load(ofile)
 
+        self._location = self._config_data['loc_name']
         self.primary_rec = self._config_data['primary']
 
     @location_property
@@ -184,29 +220,28 @@ class Settings:
         all_rec_data = self._config_data['receivers']
 
         try:
-            return all_rec_data[rec_id][0]
+            return all_rec_data[rec_id]
 
         except KeyError:
             err_msg = 'Receiver id {} is not affiliated with location {}'
             raise ValueError(err_msg.format(rec_id, self.location))
 
-    def export_location(self, out_path):
-        """Export package settings for the current location to a fits file
+    def export_location(self, out_dir):
+        """Export package settings for the current location to a new directory
 
         Args:
-            out_path (str): The desired output directory
+            out_dir (str): The desired output directory
         """
 
-        pass  # Todo
-
-    def import_location(self, in_path):
-        """Import package settings from a custom configuration file
-
-        Args:
-            in_path (str): The path of the desired
-        """
-
-        pass  # Todo:
+        os.mkdir(out_dir)
+        atm_path = os.path.join(out_dir, 'atm_model.csv')
+        shutil.copyfile(self._atm_model_path, atm_path)
+        config_path = os.path.join(out_dir, 'config.json')
+        shutil.copyfile(self._atm_model_path, config_path)
+        measured_path = os.path.join(out_dir, 'measured_pwv.csv')
+        shutil.copyfile(self._atm_model_path, measured_path)
+        model_path = os.path.join(out_dir, 'modeled_pwv.csv')
+        shutil.copyfile(self._atm_model_path, model_path)
 
 
 # This instance is used package wide to access site settings
