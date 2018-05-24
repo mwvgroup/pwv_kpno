@@ -162,8 +162,8 @@ def _update_pwv_model():
     # Remove any masked values
     indices = ~sup_data.mask
     dates = pwv_data['date'][indices]
-    sup_data = np.round(sup_data[indices], 2)
-    sup_err = np.round(sup_err[indices], 2)
+    sup_data = np.round(sup_data[indices], 3)
+    sup_err = np.round(sup_err[indices], 3)
 
     out = Table([dates, sup_data, sup_err], names=['date', 'pwv', 'pwv_err'])
     out.write(settings._pwv_model_path, overwrite=True)
