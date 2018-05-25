@@ -17,8 +17,7 @@
 #    along with pwv_kpno. If not, see <http://www.gnu.org/licenses/>.
 
 
-"""This code provides access to package settings through the Settings class.
-"""
+"""This code provides access to package settings through the Settings class."""
 
 import json
 import os
@@ -86,7 +85,7 @@ class Settings:
 
     _location = None
     _config_data = None
-    primary_rec = None
+    _primary_rec = None
 
     def __init__(self):
         _file_dir = os.path.dirname(os.path.realpath(__file__))
@@ -104,6 +103,11 @@ class Settings:
     def location(self):
         # To prevent user from directly setting self.location
         return self._location
+
+    @location_property
+    def primary_rec(self):
+        # To prevent user from directly setting self.primary_rec
+        return self._primary_rec
 
     @location_property
     def _loc_dir(self):
@@ -136,38 +140,31 @@ class Settings:
         self._loc_dir_unf.format('')
         return next(os.walk(self._loc_dir_unf.format('')))[1]
 
-    def set_location(self, loc_name=None, loc_dir=None):
+    def set_location(self, loc):
         """Configure pwv_kpno to model the atmosphere at a given location
 
-        Specify loc_name to use a builtin location OR loc_dir to use a set of
-        custom configuration files.
+        Accepts the name of a builtin location OR a directory containing custom
+        configuration files.
 
         Args:
-            loc_name (str): The name of a builtin location
-            loc_dir  (str): The path of a directory with custom config files
+            loc (str): The name or directory of location to model
         """
 
-        if loc_name is None and loc_dir is None:
-            raise ValueError('No location specified to model.')
+        if loc in self.available_loc:
+            config_path = self._config_path_unf.format(loc)
 
-        if loc_name and loc_dir:
-            raise ValueError('Cannot specify loc_name and loc_dir.')
-
-        if loc_dir:
-            raise_missing_files(loc_dir)
-            config_path = os.path.join(loc_dir, 'config.json')
-
-        elif loc_name not in self.available_loc:
-            raise ValueError("No location found for '{}'.".format(loc_name))
+        elif os.path.isdir(loc):
+            raise_missing_files(loc)
+            config_path = os.path.join(loc, 'config.json')
 
         else:
-            config_path = self._config_path_unf.format(loc_name)
+            raise ValueError('err msg')
 
         with open(config_path, 'r') as ofile:
             self._config_data = json.load(ofile)
 
         self._location = self._config_data['loc_name']
-        self.primary_rec = self._config_data['primary']
+        self._primary_rec = self._config_data['primary']
 
     @location_property
     def available_years(self):
@@ -198,7 +195,7 @@ class Settings:
 
         enabled = []
         for receiver, values in self._config_data['receivers'].items():
-            if receiver != self.primary_rec:
+            if receiver != self._primary_rec:
                 enabled.append(receiver)
 
         return enabled
