@@ -65,7 +65,7 @@ def _suomi_date_to_timestamp(year, days_str):
 
     # Correct for round off error in SuomiNet date format
     date = date.replace(second=0, microsecond=0)
-    if date.minute % 5:
+    while date.minute % 5:
         date += timedelta(minutes=1)
 
     timestamp = (date - datetime(1970, 1, 1)).total_seconds()
@@ -103,18 +103,29 @@ def _read_file(path):
     data[site_id + '_err'] += 0.025  # Correct SuomiNet rounding error
     data[site_id + '_err'] = np.round(data[site_id + '_err'], 3)
 
-    # Patch to remove bad SuomiNet pressure data for Kitt Peak
-    # Do not use as permanent fix when developing multi-site
-    ########################################################
+    # Remove outlier pressure data for each receiver
+    # Todo: Do not use this method when developing multi-site
     if site_id == 'KITT':
         data = data[data['press'] > 775]
-    ########################################################
+
+    elif site_id == 'SA48':
+        data = data[data['press'] > 910]
+
+    elif site_id == 'AZAM':
+        indices = np.logical_and(data['press'] > 880, data['press'] < 925)
+        data = data[indices]
+
+    elif site_id == 'P014':
+        data = data[data['press'] > 850]
+
+    elif site_id == 'SA46':
+        data = data[data['press'] > 900]
 
     data.remove_column('press')
 
     if data:
         data = unique(unique(data), keys='date', keep='none')
-        year = int(path[-8:-4])
+        year = int(path[-8: -4])
         to_timestamp_vectorized = np.vectorize(_suomi_date_to_timestamp)
         data['date'] = to_timestamp_vectorized(year, data['date'])
 

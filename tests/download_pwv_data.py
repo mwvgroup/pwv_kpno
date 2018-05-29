@@ -38,7 +38,7 @@ __status__ = 'Development'
 
 
 def _timestamp(date):
-    """Returns seconds since epoch of a UTC datetime in %Y-%m-%dT%H:%M format
+    """Returns seconds since epoch of a UTC datetime
 
     This function provides comparability for Python 2.7, for which the
     datetime.timestamp method was not yet available.
