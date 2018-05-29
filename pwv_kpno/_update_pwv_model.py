@@ -58,7 +58,7 @@ def _linear_regression(x, y, sx, sy):
     """
 
     x = np.ma.array(x)  # This type cast will propagate into returns
-    y = np.ma.array(y)
+    y = np.ma.array(y)  # It also ensures that x, y have a .mask attribute
 
     # Fit data with orthogonal distance regression (ODR)
     indices = ~np.logical_or(x.mask, y.mask)
@@ -73,38 +73,14 @@ def _linear_regression(x, y, sx, sy):
     sb, sm = fit_results.sd_beta
 
     applied_fit = m * x + b
-    applied_fit.mask = np.logical_or(x.mask, applied_fit < 0)
+    applied_fit.mask = np.logical_or(x.mask, applied_fit <= 0)
     error = np.sqrt((x * sm) ** 2 + (m * sx) ** 2 + sb ** 2)
     error.mask = applied_fit.mask
 
     return applied_fit, error
 
 
-def _fit_offsite_receiver(pwv_data, primary_rec, receiver):
-    """Model the primary location's PWV using data from a secondary receiver
-
-    Args:
-        pwv_data (Table): A table of PWV measurements
-        receiver   (str): SuomiNet id code for the secondary receiver
-
-    Returns:
-        The modeled PWV level at the primary location
-        The error in the modeled values
-    """
-
-    assert primary_rec != receiver, 'Cannot fit a receiver to itself.'
-    mod_pwv, mod_err = _linear_regression(x=pwv_data[receiver],
-                                          y=pwv_data[primary_rec],
-                                          sx=pwv_data[receiver + '_err'],
-                                          sy=pwv_data[primary_rec + '_err'])
-
-    mod_pwv.mask = np.logical_and(mod_pwv.mask, [mod_pwv <= 0])
-    mod_err.mask = mod_pwv.mask  # _linear_regression returns identical masks
-
-    return mod_pwv, mod_err
-
-
-def calc_avg_pwv_model(pwv_data, primary_rec):
+def _calc_avg_pwv_model(pwv_data, primary_rec):
     """Determines a PWV model using each off site receiver and averages them
 
     Expects an input table similar to that returned by
@@ -120,9 +96,16 @@ def calc_avg_pwv_model(pwv_data, primary_rec):
 
     off_site_receivers = settings.off_site_recs
     receiver = off_site_receivers.pop()
-    modeled_pwv, modeled_err = _fit_offsite_receiver(pwv_data, primary_rec, receiver)
+    modeled_pwv, modeled_err = _linear_regression(x=pwv_data[receiver],
+                                                  y=pwv_data[primary_rec],
+                                                  sx=pwv_data[receiver + '_err'],
+                                                  sy=pwv_data[primary_rec + '_err'])
     for receiver in off_site_receivers:
-        mod_pwv, mod_err = _fit_offsite_receiver(pwv_data, primary_rec, receiver)
+        mod_pwv, mod_err = _linear_regression(x=pwv_data[receiver],
+                                              y=pwv_data[primary_rec],
+                                              sx=pwv_data[receiver + '_err'],
+                                              sy=pwv_data[primary_rec + '_err'])
+
         modeled_pwv = np.ma.vstack((modeled_pwv, mod_pwv))
         modeled_err = np.ma.vstack((modeled_err, mod_err))
 
@@ -136,7 +119,7 @@ def calc_avg_pwv_model(pwv_data, primary_rec):
     return avg_pwv, avg_pwv_err
 
 
-def _update_pwv_model():
+def _create_new_pwv_model(debug=False):
     """Create a new model for the PWV level at Kitt Peak
 
     Create first order polynomials relating the PWV measured by GPS receivers
@@ -151,7 +134,7 @@ def _update_pwv_model():
         return pwv_data
 
     primary_rec = settings.primary_rec
-    avg_pwv, avg_pwv_err = calc_avg_pwv_model(pwv_data, primary_rec)
+    avg_pwv, avg_pwv_err = _calc_avg_pwv_model(pwv_data, primary_rec)
 
     # Supplement KITT data with averaged fits
     mask = pwv_data[primary_rec].mask
@@ -166,6 +149,9 @@ def _update_pwv_model():
     sup_err = np.round(sup_err[indices], 3)
 
     out = Table([dates, sup_data, sup_err], names=['date', 'pwv', 'pwv_err'])
+    if debug:
+        return out
+
     out.write(settings._pwv_model_path, overwrite=True)
 
 
@@ -199,6 +185,6 @@ def update_models(year=None, timeout=None):
 
     # Update the local SuomiData and PWV models
     updated_years = sorted(update_local_data(year, timeout))
-    _update_pwv_model()
+    _create_new_pwv_model()
 
     return updated_years

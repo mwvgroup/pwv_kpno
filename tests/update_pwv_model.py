@@ -20,13 +20,12 @@
 
 from datetime import datetime
 
-from astropy.table import Table
 import numpy as np
 import unittest
 
+from pwv_kpno._update_pwv_model import _create_new_pwv_model
 from pwv_kpno._update_pwv_model import _linear_regression
 from pwv_kpno._update_pwv_model import update_models
-from pwv_kpno._update_pwv_model import _fit_offsite_receiver
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -43,8 +42,8 @@ class LinearRegression(unittest.TestCase):
         """Test returned values are masked correctly"""
 
         m, b = 5, 2  # Slope and y-intercept
-        x = np.ma.array([1, 3, 100, 7, 9, -12, 13, 15, 17, 19])
-        x.mask = [0, 0, 1, 0, 0, 1, 0, 0, 0, 0]
+        x = np.ma.array([1, 7, 9, 100, -2, -12])
+        x.mask = [0, 0, 0, 0, 1, 1]
         y = m * x + b
         sy = sx = np.ma.zeros(x.shape) + .1
 
@@ -68,36 +67,16 @@ class LinearRegression(unittest.TestCase):
         self.assertTrue(fit_matches_data)
 
 
-class FitOffsiteReceiver(unittest.TestCase):
-    """Tests for pwv_kpno._update_pwv_model._fit_offsite_receiver"""
+class CalcAvgPwvModel(unittest.TestCase):
+    """Tests for pwv_kpno._update_pwv_model._create_new_pwv_model"""
 
-    def setUp(self):
+    def test_positive_pwv(self):
+        """Test all PWV values are >= 0"""
 
-        m, b = 5, 2  # Slope and y-intercept
-        test_data = Table()
-        test_data['primary'] = np.arange(-5, 20, 2)
-        test_data['secondary'] = m * test_data['primary'] + b
-        test_data['primary_err'] = np.zeros(13) + 0.1
-        test_data['secondary_err'] = test_data['primary_err']
+        model = _create_new_pwv_model(debug=True)
+        are_negative_values = np.any(model['pwv'] <= 0)
+        self.assertFalse(are_negative_values)
 
-        self.mod_pwv, self.mod_err = \
-            _fit_offsite_receiver(test_data, 'primary', 'secondary')
-
-    def test_mask_neative_pwv(self):
-        """Test for correct masking of negative PWV values"""
-
-        indices = np.where(self.mod_pwv < 0)
-        correct_mask = np.all(self.mod_pwv.mask[indices])
-        self.assertTrue(correct_mask, 'Found unmasked negative values.')
-
-    def test_same_returned_masks(self):
-        """Test the returned PWV values and their errors have the same mask"""
-
-        same_mask = np.array_equal(self.mod_pwv.mask, self.mod_err.mask)
-        self.assertTrue(same_mask,
-                        'Returned different masks for PWV and error values')
-
-# Todo: test calc_avg_pwv_model (Test model for negative values)
 
 class UpdateModelsArgs(unittest.TestCase):
     """Test update_models function for raised errors due to bad arguments"""
