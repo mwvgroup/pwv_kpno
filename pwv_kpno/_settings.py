@@ -184,7 +184,7 @@ class Settings:
     def receivers(self):
         """A list of all GPS receivers associated with this location"""
 
-        rec_list = self._config_data['sup_rec'].copy()
+        rec_list = list(self._config_data['sup_rec'])
         rec_list.append(self._config_data['primary_rec'])
         return sorted(rec_list)
 
