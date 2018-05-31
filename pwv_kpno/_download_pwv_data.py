@@ -81,8 +81,7 @@ def _read_file(path):
 
     Data is removed from the array for dates where:
         1. The PWV level is negative (the GPS receiver is offline)
-        2. The pressure is less than or equal to 775 mbar
-        3. Dates are duplicates with unequal measurements
+        2. Dates are duplicates with unequal measurements
 
     Args:
         path (str): File path to be read
@@ -94,37 +93,32 @@ def _read_file(path):
     # Credit goes to Jessica Kroboth for identifying conditions 1 and 2
 
     site_id = path[-15:-11]
-    data = np.genfromtxt(path, usecols=[0, 1, 2, 4],
-                         names=['date', site_id, site_id + '_err', 'press'],
-                         dtype=[float, float, float, float])
+    usecols = range(0, 7)
+    names = ['date', site_id, site_id + '_err', 'ZenithDelay',
+             'SrfcPress', 'SrfcTemp', 'SrfcRH']
+
+    data = np.genfromtxt(path, usecols=usecols, names=names,
+                         dtype=[float for col in usecols])
 
     data = Table(data)
     data = data[data[site_id] > 0]
-    data[site_id + '_err'] += 0.025  # Correct SuomiNet rounding error
+
+    # Correct SuomiNet rounding error
+    data[site_id + '_err'] += 0.025
     data[site_id + '_err'] = np.round(data[site_id + '_err'], 3)
 
-    # Remove outlier pressure data for each receiver
-    # Todo: Do not use this method when developing multi-site
-    if site_id == 'KITT':
-        data = data[data['press'] > 775]
-
-    elif site_id == 'SA48':
-        data = data[data['press'] > 910]
-
-    elif site_id == 'AZAM':
-        indices = np.logical_and(data['press'] > 880, data['press'] < 925)
+    # Apply data cuts stored in current location's config file
+    for key, cut_range in settings._data_cuts(site_id).items():
+        indices = np.logical_and(data[key] > cut_range[0],
+                                 data[key] < cut_range[1])
         data = data[indices]
 
-    elif site_id == 'P014':
-        data = data[data['press'] > 850]
+    for start_time, end_time in settings._date_cuts(site_id):
+        indices = np.logical_or(start_time < data['date'],
+                                data['date'] < end_time)
+        data = data[indices]
 
-    elif site_id == 'SA46':
-        data = data[data['press'] > 900]
-
-    else:
-        raise ValueError('Unknown ID code {}'.format(site_id))
-
-    data.remove_column('press')
+    data.keep_columns(['date', site_id, site_id + '_err'])
 
     if data:
         data = unique(unique(data), keys='date', keep='none')
@@ -189,11 +183,14 @@ def _download_data_for_year(yr, timeout=None):
     """
 
     combined_data = []
+    print(settings.receivers)
     for site_id in settings.receivers:
         file_paths = _download_data_for_site(yr, site_id, timeout)
+        print(site_id, file_paths)
 
         if file_paths:
             site_data = vstack([_read_file(path) for path in file_paths])
+            print(site_data)
 
             if site_data:
                 site_data = unique(site_data, keys=['date'], keep='first')
@@ -203,11 +200,13 @@ def _download_data_for_year(yr, timeout=None):
         warn('No SuomiNet data found for year {}'.format(yr), RuntimeWarning)
         return Table()
 
+    print(combined_data)
     out_data = combined_data.pop()
     while combined_data:
         out_data = join(out_data, combined_data.pop(),
                         join_type='outer', keys=['date'])
 
+    print(out_data)
     return out_data
 
 

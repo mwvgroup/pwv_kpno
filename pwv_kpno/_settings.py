@@ -79,13 +79,11 @@ class Settings:
 
     Methods:
         set_location       : Configure pwv_kpno to model a given location
-        ignored_timestamps : Returns a 2d list of data cuts for a given receiver
         export_location    : Export package settings for the current location
     """
 
     _location = None
     _config_data = None
-    _primary_rec = None
 
     def __init__(self):
         _file_dir = os.path.dirname(os.path.realpath(__file__))
@@ -107,7 +105,7 @@ class Settings:
     @location_property
     def primary_rec(self):
         # To prevent user from directly setting self.primary_rec
-        return self._primary_rec
+        return self._config_data['primary_rec']
 
     @location_property
     def _loc_dir(self):
@@ -164,7 +162,6 @@ class Settings:
             self._config_data = json.load(ofile)
 
         self._location = self._config_data['loc_name']
-        self._primary_rec = self._config_data['primary']
 
     @location_property
     def available_years(self):
@@ -180,31 +177,40 @@ class Settings:
             current_data = json.load(ofile)
             current_data['years'] = list(set(yr_list))
             ofile.seek(0)
-            json.dump(current_data, ofile, indent=2, sort_keys=True)
+            json.dump(current_data, ofile, indent=4, sort_keys=True)
             ofile.truncate()
 
     @location_property
     def receivers(self):
         """A list of all GPS receivers associated with this location"""
 
-        return list(self._config_data['receivers'].keys())
+        rec_list = self._config_data['sup_rec'].copy()
+        rec_list.append(self._config_data['primary_rec'])
+        return sorted(rec_list)
 
     @location_property
     def off_site_recs(self):
         """A list of all enabled, off sight GPS receivers for this location"""
 
-        enabled = []
-        for receiver, values in self._config_data['receivers'].items():
-            if receiver != self._primary_rec:
-                enabled.append(receiver)
-
-        return enabled
+        return sorted(self._config_data['sup_rec'])
 
     def __repr__(self):
         rep = '<pwv_kpno.Settings, Current Location Name: {}>'
         return rep.format(self.location)
 
-    def ignored_timestamps(self, rec_id):
+    def _data_cuts(self, rec_id):
+        """Returns restrictions on what SuomiNet measurements to include
+
+        Args:
+            rec_id (str): The id code of a SuomiNet GPS receiver
+        """
+
+        if self._location is None:
+            raise ValueError('No location set to model.')
+
+        return self._config_data['data_cuts'][rec_id]
+
+    def _date_cuts(self, rec_id):
         """Returns time periods when data from a given receiver is ignored
 
         Args:
@@ -214,14 +220,7 @@ class Settings:
         if self._location is None:
             raise ValueError('No location set to model.')
 
-        all_rec_data = self._config_data['receivers']
-
-        try:
-            return all_rec_data[rec_id]
-
-        except KeyError:
-            err_msg = 'Receiver id {} is not affiliated with location {}'
-            raise ValueError(err_msg.format(rec_id, self.location))
+        return self._config_data['date_cuts'][rec_id]
 
     def export_location(self, out_dir):
         """Export package settings for the current location to a new directory

@@ -168,33 +168,6 @@ def _search_dt_table(data_tab, **kwargs):
     return data_tab[np.where(indexing_func(data_tab['date']))[0]]
 
 
-def _get_measured_data():
-    """Reads in measured PWV data and removes flagged values
-
-    Reads in all measured PWV data for the current location. Remove any data
-    for datetimes flagged to ignore. Return results as an astropy table.
-
-    Returns:
-        An astropy table with all measured PWV data for the current location
-    """
-
-    data = Table.read(settings._pwv_msred_path)
-    receiver_list = settings.receivers
-
-    for receiver in receiver_list:
-        if receiver != 'date' and (not receiver.endswith('_err')):
-            for start_time, end_time in settings.ignored_timestamps(receiver):
-                i_start = start_time < data['date']
-                i_end = data['date'] < end_time
-                in_date_range = np.logical_and(i_start, i_end)
-
-                mask = np.logical_or(data[receiver].mask, in_date_range)
-                data[receiver].mask = mask
-                data[receiver + '_err'].mask = mask
-
-    return data
-
-
 def measured_pwv(year=None, month=None, day=None, hour=None):
     """Return an astropy table of PWV measurements taken by SuomiNet
 
@@ -215,7 +188,7 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
     """
 
     _check_date_time_args(year, month, day, hour)
-    data = _get_measured_data()
+    data = Table.read(settings._pwv_msred_path)
 
     # Convert UNIX timestamps to UTC
     to_datetime = lambda date: datetime.fromtimestamp(date, utc)

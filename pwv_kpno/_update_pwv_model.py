@@ -29,7 +29,6 @@ import numpy as np
 from scipy.odr import RealData, ODR, polynomial
 
 from ._download_pwv_data import update_local_data
-from ._read_pwv_data import _get_measured_data
 from ._settings import settings
 
 __author__ = 'Daniel Perrefort'
@@ -83,9 +82,6 @@ def _linear_regression(x, y, sx, sy):
 def _calc_avg_pwv_model(pwv_data, primary_rec):
     """Determines a PWV model using each off site receiver and averages them
 
-    Expects an input table similar to that returned by
-    pwv_kpno._read_pwv_data import _get_measured_data
-
     Args:
         pwv_data (Table): A table of pwv data
 
@@ -129,7 +125,7 @@ def _create_new_pwv_model(debug=False):
     data to a csv file at PWV_TAB_DIR/measured.csv.
     """
 
-    pwv_data = _get_measured_data()
+    pwv_data = Table.read(settings._pwv_msred_path)
     if not settings.off_site_recs:
         return pwv_data
 
