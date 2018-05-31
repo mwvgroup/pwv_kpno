@@ -121,6 +121,9 @@ def _read_file(path):
     elif site_id == 'SA46':
         data = data[data['press'] > 900]
 
+    else:
+        raise ValueError('Unknown ID code {}'.format(site_id))
+
     data.remove_column('press')
 
     if data:
