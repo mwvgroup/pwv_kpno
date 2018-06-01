@@ -12,7 +12,7 @@ scrap_work/
 tests/*.csv
 tests/*.plt
 
-*.ipynb_checkpoints/
+*.checkpoint.ipynb
 
 *.pyc
 *.DS_Store
