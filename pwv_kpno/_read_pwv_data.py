@@ -195,7 +195,6 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
     data['date'] = np.vectorize(to_datetime)(data['date'])
     data['date'].unit = 'UTC'
 
-    # Assign units to the remaining columns
     for colname in data.colnames:
         if colname != 'date':
             data[colname].unit = 'mm'
@@ -230,7 +229,10 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
     to_datetime = lambda date: datetime.fromtimestamp(date, utc)
     data['date'] = np.vectorize(to_datetime)(data['date'])
     data['date'].unit = 'UTC'
-    data['pwv'].unit = 'mm'
+
+    for colname in data.colnames:
+        if colname != 'date':
+            data[colname].unit = 'mm'
 
     # Refine results to only include datetimes indicated by kwargs
     return _search_dt_table(data, year=year, month=month, day=day, hour=hour)

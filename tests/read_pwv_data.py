@@ -173,12 +173,12 @@ class ModeledPWV(unittest.TestCase):
     def test_units(self):
         """Test columns for appropriate units"""
 
-        error_msg = 'Wrong units for column {}. Found ({})'
-        date_unit = self.kitt_peak_pwv_model['date'].unit
-        pwv_unit = self.kitt_peak_pwv_model['pwv'].unit
+        for column in self.kitt_peak_pwv_model.itercols():
+            if column.name == 'date':
+                self.assertEqual(column.unit, 'UTC')
 
-        self.assertEqual(date_unit, 'UTC', error_msg.format('date', date_unit))
-        self.assertEqual(pwv_unit, 'mm', error_msg.format('pwv', pwv_unit))
+            else:
+                self.assertEqual(column.unit, 'mm')
 
 
 class PwvDate(unittest.TestCase):
