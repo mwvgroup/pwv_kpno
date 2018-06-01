@@ -12,6 +12,8 @@ scrap_work/
 tests/*.csv
 tests/*.plt
 
+*.ipynb_checkpoints/
+
 *.pyc
 *.DS_Store
 *stackdump
