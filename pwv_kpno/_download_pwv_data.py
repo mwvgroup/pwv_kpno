@@ -183,14 +183,11 @@ def _download_data_for_year(yr, timeout=None):
     """
 
     combined_data = []
-    print(settings.receivers)
     for site_id in settings.receivers:
         file_paths = _download_data_for_site(yr, site_id, timeout)
-        print(site_id, file_paths)
 
         if file_paths:
             site_data = vstack([_read_file(path) for path in file_paths])
-            print(site_data)
 
             if site_data:
                 site_data = unique(site_data, keys=['date'], keep='first')
@@ -200,13 +197,11 @@ def _download_data_for_year(yr, timeout=None):
         warn('No SuomiNet data found for year {}'.format(yr), RuntimeWarning)
         return Table()
 
-    print(combined_data)
     out_data = combined_data.pop()
     while combined_data:
         out_data = join(out_data, combined_data.pop(),
                         join_type='outer', keys=['date'])
 
-    print(out_data)
     return out_data
 
 
