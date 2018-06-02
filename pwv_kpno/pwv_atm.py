@@ -47,7 +47,7 @@ An Incomplete Guide to Getting Started:
       >>>                      minute=35,
       >>>                      tzinfo=pytz.utc)
       >>>
-      >>> pwv = pwv_atm._pwv_date(obsv_date)
+      >>> pwv = pwv_atm.pwv_date(obsv_date)
 
 
     To retrieve the atmospheric model for a line of sight PWV concentration:
@@ -57,7 +57,7 @@ An Incomplete Guide to Getting Started:
 
     To retrieve the atmospheric model for a datetime:
 
-      >>> pwv_atm._trans_for_date(date=obsv_date, airmass=1.2)
+      >>> pwv_atm.trans_for_date(date=obsv_date, airmass=1.2)
 
 
     To access the PWV measurements as an astropy table:
