@@ -92,15 +92,20 @@ def _calc_avg_pwv_model(pwv_data, primary_rec):
 
     off_site_receivers = settings.off_site_recs
     receiver = off_site_receivers.pop()
-    modeled_pwv, modeled_err = _linear_regression(x=pwv_data[receiver],
-                                                  y=pwv_data[primary_rec],
-                                                  sx=pwv_data[receiver + '_err'],
-                                                  sy=pwv_data[primary_rec + '_err'])
+    modeled_pwv, modeled_err = _linear_regression(
+        x=pwv_data[receiver],
+        y=pwv_data[primary_rec],
+        sx=pwv_data[receiver + '_err'],
+        sy=pwv_data[primary_rec + '_err']
+    )
+
     for receiver in off_site_receivers:
-        mod_pwv, mod_err = _linear_regression(x=pwv_data[receiver],
-                                              y=pwv_data[primary_rec],
-                                              sx=pwv_data[receiver + '_err'],
-                                              sy=pwv_data[primary_rec + '_err'])
+        mod_pwv, mod_err = _linear_regression(
+            x=pwv_data[receiver],
+            y=pwv_data[primary_rec],
+            sx=pwv_data[receiver + '_err'],
+            sy=pwv_data[primary_rec + '_err']
+        )
 
         modeled_pwv = np.ma.vstack((modeled_pwv, mod_pwv))
         modeled_err = np.ma.vstack((modeled_err, mod_err))
@@ -171,13 +176,12 @@ def update_models(year=None, timeout=None):
     if not (isinstance(year, int) or year is None):
         raise TypeError("Argument 'year' must be an integer")
 
-    if isinstance(year, int):
-        if year < 2010:
-            raise ValueError('Cannot update models for years prior to 2010')
+    if year < 2010:
+        raise ValueError('Cannot update models for years prior to 2010')
 
-        elif year > datetime.now().year:
-            msg = 'Cannot update models for years greater than current year'
-            raise ValueError(msg)
+    elif year > datetime.now().year:
+        msg = 'Cannot update models for years greater than current year'
+        raise ValueError(msg)
 
     # Update the local SuomiData and PWV models
     updated_years = sorted(update_local_data(year, timeout))
