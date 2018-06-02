@@ -28,14 +28,14 @@ a PWV level of 15 mm, this can be found as:
     >>> import numpy as np
     >>>
     >>> temp = 8000
-    >>> wavelengths = np.arange(7000, 1000, 100)
+    >>> wavelengths = np.arange(7000, 10000, 100)
     >>> pwv = 15
     >>>
     >>> sed = bb_atm.sed(temp, wavelengths, pwv)
     >>> print(sed)
 
-      [67943236.6960908, 70958962.4114214, ...,
-       30913697.9848318, 29947238.7968099]
+      [5406750.98492275, 5646734.81222486, ...,
+       2460033.92176797  2383125.54323284]
 
 Since we know the PWV level used to generate this spectra, we can determine the
 corresponding transmission function using the ``trans_for_pwv`` function
@@ -129,4 +129,3 @@ the ``Numpy`` package. Using results from the spectrographic example we have:
     >>> denominator = np.trapz(intrinsic_sed, i_band, sample_rate)
     >>>
     >>> photo_corr = np.divide(numerator, denominator)
-

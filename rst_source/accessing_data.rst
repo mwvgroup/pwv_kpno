@@ -91,13 +91,13 @@ table:
     >>> from pwv_kpno import pwv_atm
     >>> pwv_atm.measured_pwv()
 
-                 date             KITT    P014    SA46    SA48    AZAM
-                 UTC               mm      mm      mm      mm      mm
-      ------------------------- ------- ------- ------- ------- -------
-      2010-01-01 00:15:00+00:00      --     3.6     4.2     4.7      --
-      2010-01-01 00:45:00+00:00      --     3.7     4.0     4.7      --
-      2010-01-01 01:14:00+00:00      --     3.7     3.4     3.6      --
-                            ...     ...     ...     ...     ...     ...
+                 date     KITT KITT_err P014 ... SA48 SA48_err AZAM AZAM_err
+                 UTC       mm     mm     mm  ...  mm     mm     mm     mm
+      ------------------- ---- -------- ---- ... ---- -------- ---- --------
+      2010-01-01 00:15:00   --       --  3.6 ...  4.7    0.125   --       --
+      2010-01-01 00:45:00   --       --  3.7 ...  4.7    0.125   --       --
+      2010-01-01 01:15:00   --       --  3.7 ...  3.6    0.125   --       --
+                      ...  ...      ...  ... ...  ...      ...  ...      ...
 
 To retrieve SuomiNet data taken on November 14, 2016, specify the datetime as
 keyword arguments. Note in the below example that there is no data available
@@ -108,13 +108,13 @@ from the SA48 receiver for this date:
 
     >>> pwv_atm.measured_pwv(year=2016, month=11, day=14)
 
-                 date             KITT    P014    SA46    SA48    AZAM
-                 UTC               mm      mm      mm      mm      mm
-      ------------------------- ------- ------- ------- ------- -------
-      2016-11-14 00:15:00+00:00     4.7     6.9     9.8      --     8.4
-      2016-11-14 00:45:00+00:00     4.3     6.7     9.9      --     8.0
-      2016-11-14 01:14:00+00:00     3.9     6.7     9.7      --     8.0
-                            ...     ...     ...     ...     ...     ...
+                 date     KITT KITT_err P014 ... SA48 SA48_err AZAM AZAM_err
+                 UTC       mm     mm     mm  ...  mm     mm     mm     mm
+      ------------------- ---- -------- ---- ... ---- -------- ---- --------
+      2016-11-14 00:15:00  4.7    1.025  6.9 ...   --       --  8.4    0.525
+      2016-11-14 00:45:00  4.3    1.025  6.7 ...   --       --  8.0    0.425
+      2016-11-14 01:15:00  3.9    0.925  6.7 ...   --       --  8.0    0.425
+                      ...  ...      ...  ... ...  ...      ...  ...      ...
 
 If no SuomiNet data is available at all during the specified datetime, then the
 returned table will be empty.
@@ -141,14 +141,13 @@ To retrieve the entire PWV model from 2010 onward:
     >>> from pwv_kpno import pwv_atm
     >>> pwv_atm.modeled_pwv()
 
-                 date                pwv
-                 UTC                  mm
-                object             float64
-      ------------------------- --------------
-      2010-01-01 00:15:00+00:00 1.021057909034
-      2010-01-01 00:45:00+00:00 1.007850543589
-      2010-01-01 01:14:00+00:00 0.746607564877
-                            ...            ...
+                 date      pwv  pwv_err
+                 UTC        mm
+      ------------------- ----- -------
+      2010-01-01 00:15:00 1.744   0.078
+      2010-01-01 00:45:00 1.726   0.078
+      2010-01-01 01:15:00 1.374   0.065
+                      ...   ...     ...
 
 To retrieve the modeled PWV level over the course of November 14th, 2016:
 
@@ -157,21 +156,21 @@ To retrieve the modeled PWV level over the course of November 14th, 2016:
 
     >>> pwv_atm.modeled_pwv(year=2016, month=11, day=14)
 
-                   date             pwv
-                   UTC               mm
-                  object          float64
-        ------------------------- -------
-        2016-11-14 00:15:00+00:00     4.7
-        2016-11-14 00:45:00+00:00     4.3
-        2016-11-14 01:15:00+00:00     3.9
-                              ...     ...
+                 date     pwv pwv_err
+                 UTC       mm
+      ------------------- --- -------
+      2016-11-14 00:15:00 4.7   1.025
+      2016-11-14 00:45:00 4.3   1.025
+      2016-11-14 01:15:00 3.9   0.925
+                      ... ...    ...
 
 PWV For a Given Date
 ====================
 
-In order to determine the PWV column density for a given datetime, users should
-interpolate from the modeled PWV table outlined above. For convenience, this
-can be done automatically using the ``pwv_date`` function.
+In order to determine the PWV column density at Kitt Peak for a given datetime,
+users should interpolate from the modeled PWV table outlined above. For
+convenience, this can be done automatically using the ``pwv_date`` function.
+Note that this function does not return the error on the interpolation.
 
 .. autofunction:: pwv_kpno.pwv_atm.pwv_date
 
