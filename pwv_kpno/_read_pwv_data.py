@@ -168,6 +168,31 @@ def _search_dt_table(data_tab, **kwargs):
     return data_tab[np.where(indexing_func(data_tab['date']))[0]]
 
 
+def _read_and_format(path):
+    """Reads a PWV data table from file and formats the table / data
+
+    Adds units and converts 'date' column from timestamps to datetimes.
+
+    Args:
+        path (str): The path of the file to read
+
+    Returns:
+        An astropy table with PWV data
+    """
+
+    data = Table.read(path)
+
+    # Convert UNIX timestamps to UTC
+    to_datetime = lambda date: datetime.fromtimestamp(date, utc)
+    data['date'] = np.vectorize(to_datetime)(data['date'])
+    data['date'].unit = 'UTC'
+
+    for colname in data.colnames:
+        if colname != 'date':
+            data[colname].unit = 'mm'
+
+    return data
+
 def measured_pwv(year=None, month=None, day=None, hour=None):
     """Return an astropy table of PWV measurements taken by SuomiNet
 
@@ -188,18 +213,7 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
     """
 
     _check_date_time_args(year, month, day, hour)
-    data = Table.read(settings._pwv_msred_path)
-
-    # Convert UNIX timestamps to UTC
-    to_datetime = lambda date: datetime.fromtimestamp(date, utc)
-    data['date'] = np.vectorize(to_datetime)(data['date'])
-    data['date'].unit = 'UTC'
-
-    for colname in data.colnames:
-        if colname != 'date':
-            data[colname].unit = 'mm'
-
-    # Refine results to only include datetimes indicated by kwargs
+    data = _read_and_format(settings._pwv_msred_path)
     return _search_dt_table(data, year=year, month=month, day=day, hour=hour)
 
 
@@ -221,18 +235,5 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
     """
 
     _check_date_time_args(year, month, day, hour)
-
-    # Read in SuomiNet measurements from the master table
-    data = Table.read(settings._pwv_model_path)
-
-    # Convert UNIX timestamps to UTC
-    to_datetime = lambda date: datetime.fromtimestamp(date, utc)
-    data['date'] = np.vectorize(to_datetime)(data['date'])
-    data['date'].unit = 'UTC'
-
-    for colname in data.colnames:
-        if colname != 'date':
-            data[colname].unit = 'mm'
-
-    # Refine results to only include datetimes indicated by kwargs
+    data = _read_and_format(settings._pwv_model_path)
     return _search_dt_table(data, year=year, month=month, day=day, hour=hour)
