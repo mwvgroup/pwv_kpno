@@ -78,8 +78,8 @@ class Settings:
         available_years : A list of years with locally available SuomiNet data
 
     Methods:
-        set_location       : Configure pwv_kpno to model a given location
-        export_location    : Export package settings for the current location
+        set_location    : Configure pwv_kpno to model a given location
+        export_location : Export package settings for the current location
     """
 
     _location = None
@@ -88,14 +88,8 @@ class Settings:
     def __init__(self):
         _file_dir = os.path.dirname(os.path.realpath(__file__))
         self._suomi_dir = os.path.join(_file_dir, 'suomi_data')
-
-        # Unformatted paths for various package data
         self._loc_dir_unf = os.path.join(_file_dir, 'locations/{}')
-        self._phosim_dir_unf = os.path.join(self._loc_dir_unf, 'atmosphere')
         self._config_path_unf = os.path.join(self._loc_dir_unf, 'config.json')
-        self._atm_model_path_unf = os.path.join(self._loc_dir_unf, 'atm_model.csv')
-        self._pwv_model_path_unf = os.path.join(self._loc_dir_unf, 'modeled_pwv.csv')
-        self._pwv_msred_path_unf = os.path.join(self._loc_dir_unf, 'measured_pwv.csv')
 
     @property
     def location(self):
@@ -112,24 +106,24 @@ class Settings:
         return self._loc_dir_unf.format(self.location)
 
     @location_property
-    def _phosim_dir(self):
-        return self._phosim_dir_unf.format(self.location)
-
-    @location_property
     def _config_path(self):
         return self._config_path_unf.format(self.location)
 
-    @location_property
+    @property
+    def _phosim_dir(self):
+        return os.path.join(self._loc_dir, 'atmosphere')
+
+    @property
     def _atm_model_path(self):
-        return self._atm_model_path_unf.format(self.location)
+        return os.path.join(self._loc_dir, 'atm_model.csv')
 
-    @location_property
+    @property
     def _pwv_model_path(self):
-        return self._pwv_model_path_unf.format(self.location)
+        return os.path.join(self._loc_dir, 'modeled_pwv.csv')
 
-    @location_property
+    @property
     def _pwv_msred_path(self):
-        return self._pwv_msred_path_unf.format(self.location)
+        return os.path.join(self._loc_dir, 'measured_pwv.csv')
 
     @property
     def available_loc(self):
@@ -184,6 +178,7 @@ class Settings:
     def receivers(self):
         """A list of all GPS receivers associated with this location"""
 
+        # list used instead of .copy for python 2.7 compatibility
         rec_list = list(self._config_data['sup_rec'])
         rec_list.append(self._config_data['primary_rec'])
         return sorted(rec_list)
@@ -233,11 +228,11 @@ class Settings:
         atm_path = os.path.join(out_dir, 'atm_model.csv')
         shutil.copyfile(self._atm_model_path, atm_path)
         config_path = os.path.join(out_dir, 'config.json')
-        shutil.copyfile(self._atm_model_path, config_path)
+        shutil.copyfile(self._config_path, config_path)
         measured_path = os.path.join(out_dir, 'measured_pwv.csv')
-        shutil.copyfile(self._atm_model_path, measured_path)
+        shutil.copyfile(self._pwv_msred_path, measured_path)
         model_path = os.path.join(out_dir, 'modeled_pwv.csv')
-        shutil.copyfile(self._atm_model_path, model_path)
+        shutil.copyfile(self._pwv_model_path, model_path)
 
 
 # This instance is used package wide to access site settings
