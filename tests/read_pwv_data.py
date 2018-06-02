@@ -149,14 +149,6 @@ class MeasuredPWV(unittest.TestCase):
             else:
                 self.assertEqual(column.unit, 'mm')
 
-    def test_removed_bad_kitt_data(self):
-        """Test for the removal of Kitt Peak data from jan through mar 2016"""
-
-        data_2016 = measured_pwv(2016)
-        april_2016 = datetime(2016, 4, 1, tzinfo=utc)
-        bad_data = data_2016[data_2016['date'] < april_2016]
-        self.assertTrue(all(bad_data['KITT'].mask))
-
 
 class ModeledPWV(unittest.TestCase):
     """Tests for the 'modeled_pwv' function"""

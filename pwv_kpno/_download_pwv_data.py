@@ -113,11 +113,6 @@ def _read_file(path):
                                  data[key] < cut_range[1])
         data = data[indices]
 
-    for start_time, end_time in settings._date_cuts(site_id):
-        indices = np.logical_or(start_time < data['date'],
-                                data['date'] < end_time)
-        data = data[indices]
-
     data.keep_columns(['date', site_id, site_id + '_err'])
 
     if data:
@@ -125,6 +120,11 @@ def _read_file(path):
         year = int(path[-8: -4])
         to_timestamp_vectorized = np.vectorize(_suomi_date_to_timestamp)
         data['date'] = to_timestamp_vectorized(year, data['date'])
+
+    for start_time, end_time in settings._date_cuts(site_id):
+        indices = np.logical_or(data['date'] < start_time,
+                                data['date'] > end_time)
+        data = data[indices]
 
     return data
 
