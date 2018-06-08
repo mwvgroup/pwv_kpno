@@ -104,13 +104,11 @@ def _read_file(path):
     data = data[data[site_id] > 0]
 
     # Correct SuomiNet rounding error
-    data[site_id + '_err'] += 0.025
-    data[site_id + '_err'] = np.round(data[site_id + '_err'], 3)
+    data[site_id + '_err'] = np.round(data[site_id + '_err'] + 0.025, 3)
 
     # Apply data cuts stored in current location's config file
-    for key, cut_range in settings._data_cuts(site_id).items():
-        indices = np.logical_and(data[key] > cut_range[0],
-                                 data[key] < cut_range[1])
+    for key, (start, end) in settings._data_cuts(site_id).items():
+        indices = np.logical_and(data[key] > start, data[key] < end)
         data = data[indices]
 
     data.keep_columns(['date', site_id, site_id + '_err'])
@@ -122,8 +120,7 @@ def _read_file(path):
         data['date'] = to_timestamp_vectorized(year, data['date'])
 
     for start_time, end_time in settings._date_cuts(site_id):
-        indices = np.logical_or(data['date'] < start_time,
-                                data['date'] > end_time)
+        indices = (data['date'] < start_time) | (data['date'] > end_time)
         data = data[indices]
 
     return data
