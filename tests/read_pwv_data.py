@@ -96,12 +96,12 @@ class SearchArgumentErrors(unittest.TestCase):
 class MeasuredPWV(unittest.TestCase):
     """Tests for the 'measured_pwv' function"""
 
-    all_local_pwv_data = measured_pwv()
+    data_table = measured_pwv()
 
     def test_returned_tz_info(self):
         """Test if datetimes in the returned data are timezone aware"""
 
-        tzinfo = self.all_local_pwv_data[0][0].tzinfo
+        tzinfo = self.data_table[0][0].tzinfo
         error_msg = 'Datetimes should be UTC aware (found "{}")'
         self.assertTrue(tzinfo == utc, error_msg.format(tzinfo))
 
@@ -111,8 +111,8 @@ class MeasuredPWV(unittest.TestCase):
         The first two columns should be 'date' and 'KITT'
         """
 
-        col_0 = self.all_local_pwv_data.colnames[0]
-        col_1 = self.all_local_pwv_data.colnames[1]
+        col_0 = self.data_table.colnames[0]
+        col_1 = self.data_table.colnames[1]
         error_msg = 'column {} should be "{}", found "{}"'
         self.assertEqual(col_0, 'date', error_msg.format(0, 'date', col_0))
         self.assertEqual(col_1, 'KITT', error_msg.format(1, 'KITT', col_1))
@@ -131,7 +131,7 @@ class MeasuredPWV(unittest.TestCase):
     def test_units(self):
         """Test columns for appropriate units"""
 
-        for column in self.all_local_pwv_data.itercols():
+        for column in self.data_table.itercols():
             if column.name == 'date':
                 self.assertEqual(column.unit, 'UTC')
 
@@ -142,24 +142,9 @@ class MeasuredPWV(unittest.TestCase):
 class ModeledPWV(unittest.TestCase):
     """Tests for the 'modeled_pwv' function"""
 
-    kitt_peak_pwv_model = modeled_pwv()
-
-    def test_returned_tz_info(self):
-        """Test if datetimes in the returned data are timezone aware"""
-
-        tzinfo = self.kitt_peak_pwv_model[0][0].tzinfo
-        error_msg = 'Datetimes should be UTC aware (found "{}")'
-        self.assertTrue(tzinfo == utc, error_msg.format(tzinfo))
-
-    def test_units(self):
-        """Test columns for appropriate units"""
-
-        for column in self.kitt_peak_pwv_model.itercols():
-            if column.name == 'date':
-                self.assertEqual(column.unit, 'UTC')
-
-            else:
-                self.assertEqual(column.unit, 'mm')
+    data_table = modeled_pwv()
+    test_returned_tz_info = MeasuredPWV.__dict__["test_returned_tz_info"]
+    test_units = MeasuredPWV.__dict__["test_units"]
 
 
 class PwvDate(unittest.TestCase):
