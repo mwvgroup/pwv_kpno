@@ -183,12 +183,13 @@ def _download_data_for_year(yr, timeout=None):
     for site_id in settings.receivers:
         file_paths = _download_data_for_site(yr, site_id, timeout)
 
-        if file_paths:
+        try:
             site_data = vstack([_read_file(path) for path in file_paths])
+            site_data = unique(site_data, keys=['date'], keep='first')
+            combined_data.append(site_data)
 
-            if site_data:
-                site_data = unique(site_data, keys=['date'], keep='first')
-                combined_data.append(site_data)
+        except (TypeError, IndexError):
+            continue
 
     if not combined_data:
         warn('No SuomiNet data found for year {}'.format(yr), RuntimeWarning)
