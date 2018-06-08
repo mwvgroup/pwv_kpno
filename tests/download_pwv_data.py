@@ -67,13 +67,13 @@ def _timestamp(date):
 class SuomiNetDataDownload(unittest.TestCase):
     """Tests data is downloaded correctly by _download_suomi_data_for_year"""
 
-    @unittest.skipIf(SUOMINET_OFFLINE, 'SuomiNet Offline')
-    def setUpClass(self):
+    @classmethod
+    def setUpClass(cls):
         """Download data from SuomiNet for 2012 and 2015"""
 
         if not SUOMINET_OFFLINE:
-            self.data_2012 = _download_data_for_year(2012)
-            self.data_2015 = _download_data_for_year(2015)
+            cls.data_2012 = _download_data_for_year(2012)
+            cls.data_2015 = _download_data_for_year(2015)
 
     @unittest.skipIf(SUOMINET_OFFLINE, 'SuomiNet Offline')
     def test_column_names(self):
