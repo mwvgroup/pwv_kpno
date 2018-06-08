@@ -66,42 +66,31 @@ class SearchArgumentErrors(unittest.TestCase):
     _check_search_args is responsible for checking the arguments for both
     pwv_kpno.measured_pwv and pwv_kpno.modeled_pwv"""
 
+    def assert_raises_iter(self, iterable, error):
+
+        for val in iterable:
+            self.assertRaises(error, _check_date_time_args, val)
+
     def test_checks_for_valid_year(self):
         """Test for correct errors due to bad year argument"""
 
         next_year = datetime.now().year + 1
-        self.assertRaises(ValueError, _check_date_time_args, -2010)
-        self.assertRaises(ValueError, _check_date_time_args, 2009)
-        self.assertRaises(ValueError, _check_date_time_args, next_year)
-        self.assertRaises(TypeError, _check_date_time_args, '2009')
-        self.assertRaises(TypeError, _check_date_time_args, 2009.0)
+        self.assert_raises_iter([-2010, 2009, next_year], ValueError)
 
     def test_checks_for_valid_month(self):
         """Test for correct errors due to bad month argument"""
 
-        self.assertRaises(ValueError, _check_date_time_args, month=-3)
-        self.assertRaises(ValueError, _check_date_time_args, month=0)
-        self.assertRaises(ValueError, _check_date_time_args, month=13)
-        self.assertRaises(TypeError, _check_date_time_args, month='12')
-        self.assertRaises(TypeError, _check_date_time_args, month=12.0)
+        self.assert_raises_iter([-3, 0, 13], ValueError)
 
     def test_checks_for_valid_day(self):
         """Test for correct errors due to bad day argument"""
 
-        self.assertRaises(ValueError, _check_date_time_args, day=-3)
-        self.assertRaises(ValueError, _check_date_time_args, day=0)
-        self.assertRaises(ValueError, _check_date_time_args, day=32)
-        self.assertRaises(TypeError, _check_date_time_args, day='17')
-        self.assertRaises(TypeError, _check_date_time_args, day=17.0)
+        self.assert_raises_iter([-3, 0, 32], ValueError)
 
     def test_checks_for_valid_hour(self):
         """Test for correct errors due to bad hour argument"""
 
-        self.assertRaises(ValueError, _check_date_time_args, hour=-3)
-        self.assertRaises(ValueError, _check_date_time_args, hour=24)
-        self.assertRaises(ValueError, _check_date_time_args, hour=30)
-        self.assertRaises(TypeError, _check_date_time_args, hour='12')
-        self.assertRaises(TypeError, _check_date_time_args, hour=12.0)
+        self.assert_raises_iter([-3, 24, 30], ValueError)
 
 
 class MeasuredPWV(unittest.TestCase):

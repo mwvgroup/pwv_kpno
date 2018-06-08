@@ -88,10 +88,3 @@ class UpdateModelsArgs(unittest.TestCase):
         self.assertRaises(TypeError, update_models, 2011.5)
         self.assertRaises(ValueError, update_models, 2009)
         self.assertRaises(ValueError, update_models, datetime.now().year + 1)
-
-    def test_returns(self):
-        """Tests that update_models returns the correct objects"""
-
-        self.assertEquals(update_models(2010), [2010])
-        self.assertEquals(update_models(2013), [2013])
-        self.assertEquals(update_models(2015), [2015])

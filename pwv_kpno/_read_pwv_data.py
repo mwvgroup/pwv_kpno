@@ -116,28 +116,19 @@ def _check_date_time_args(year=None, month=None, day=None, hour=None):
         None
     """
 
-    if not (isinstance(year, int) or year is None):
-        raise TypeError("Argument 'year' (pos 1) must be an integer")
-
-    elif isinstance(year, int) and year < 2010:
+    if year is not None and year < 2010:
         raise ValueError('pwv_kpno does not provide data years prior to 2010')
 
-    elif isinstance(year, int) and year > datetime.now().year:
+    elif year is not None and year > datetime.now().year:
         raise ValueError("Argument 'year' (pos 1) is larger than current year")
 
-    def check_type(arg, value, pos, bounds):
-        """Check an argument is of an appropriate type and value"""
+    arg_constraints = [('month', month, (1, 12)),
+                       ('day', day, (1, 31)),
+                       ('hour', hour, (0, 23))]
 
-        if not (isinstance(value, int) or value is None):
-            msg = "Argument '{0}' (pos {1}) must be an integer"
-            raise TypeError(msg.format(arg, pos))
-
-        if isinstance(value, int) and not (bounds[0] <= value <= bounds[1]):
+    for arg, value, bounds in arg_constraints:
+        if value is not None and not (bounds[0] <= value <= bounds[1]):
             raise ValueError('Invalid value for {0}: {1}'.format(arg, value))
-
-    check_type('month', month, 2, (1, 12))
-    check_type('day', day, 3, (1, 31))
-    check_type('hour', hour, 4, (0, 23))
 
 
 def _search_dt_table(data_tab, **kwargs):
@@ -192,6 +183,7 @@ def _read_and_format(path):
             data[colname].unit = 'mm'
 
     return data
+
 
 def measured_pwv(year=None, month=None, day=None, hour=None):
     """Return an astropy table of PWV measurements taken by SuomiNet
