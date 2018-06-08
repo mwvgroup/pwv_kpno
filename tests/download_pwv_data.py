@@ -23,6 +23,7 @@ from datetime import datetime
 
 import unittest
 from pytz import utc
+import requests
 
 from pwv_kpno._download_pwv_data import _download_data_for_year
 from pwv_kpno._download_pwv_data import _read_file
@@ -35,6 +36,13 @@ __copyright__ = 'Copyright 2017, Daniel Perrefort'
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
+
+try:
+    req = requests.get('http://www.suominet.ucar.edu')
+    SUOMINET_OFFLINE = False
+
+except requests.exceptions.ConnectionError:
+    SUOMINET_OFFLINE = True
 
 
 def _timestamp(date):
@@ -59,13 +67,15 @@ def _timestamp(date):
 class SuomiNetDataDownload(unittest.TestCase):
     """Tests data is downloaded correctly by _download_suomi_data_for_year"""
 
-    @classmethod
-    def setUpClass(cls):
+    @unittest.skipIf(SUOMINET_OFFLINE, 'SuomiNet Offline')
+    def setUpClass(self):
         """Download data from SuomiNet for 2012 and 2015"""
 
-        cls.data_2012 = _download_data_for_year(2012)
-        cls.data_2015 = _download_data_for_year(2015)
+        if not SUOMINET_OFFLINE:
+            self.data_2012 = _download_data_for_year(2012)
+            self.data_2015 = _download_data_for_year(2015)
 
+    @unittest.skipIf(SUOMINET_OFFLINE, 'SuomiNet Offline')
     def test_column_names(self):
         """Test downloaded data for correct columns"""
 
@@ -84,6 +94,7 @@ class SuomiNetDataDownload(unittest.TestCase):
         self.assertEqual(retrieved_2012_cols, expected_2012_cols,
                          bad_column_msg.format(2012))
 
+    @unittest.skipIf(SUOMINET_OFFLINE, 'SuomiNet Offline')
     def test_year_values(self):
         """Test data was downloaded for the correct years"""
 
@@ -200,9 +211,4 @@ class SuomiNetFileParsing(unittest.TestCase):
         """
 
         hr_path = os.path.join(Settings()._suomi_dir, 'SA48dy_2010.plt')
-
-        try:
-            _read_file(hr_path)
-
-        except:
-            self.fail('Could not parse format of SA48dy_2010.plt')
+        _read_file(hr_path)
