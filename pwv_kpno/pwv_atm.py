@@ -78,10 +78,10 @@ An Incomplete Guide to Getting Started:
       >>> pwv_atm.modeled_pwv(year=2016, month=11, day=14)
 """
 
-from ._read_pwv_data import available_data
-from ._read_pwv_data import pwv_date
-from ._read_pwv_data import measured_pwv
-from ._read_pwv_data import modeled_pwv
+from ._serve_pwv_data import available_data
+from ._serve_pwv_data import pwv_date
+from ._serve_pwv_data import measured_pwv
+from ._serve_pwv_data import modeled_pwv
 from ._update_pwv_model import update_models
 from ._transmission import trans_for_date
 from ._transmission import trans_for_pwv

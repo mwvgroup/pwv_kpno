@@ -21,7 +21,7 @@ An Incomplete Guide to Getting Started:
     >>>
     >>> sed = bb_atm.sed(bb_temp, wavelengths, pwv)
 
-    To determine the magnitude of a black body both with and without
+    To determine the magnitude of a black body either with or without
     atmospheric effects:
 
     >>> from pwv_kpno import blackbody_with_atm as bb_atm

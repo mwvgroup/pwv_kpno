@@ -24,10 +24,10 @@ from datetime import datetime
 from astropy.table import Table
 from pytz import utc
 
-from pwv_kpno._read_pwv_data import _check_date_time_args
-from pwv_kpno._read_pwv_data import measured_pwv
-from pwv_kpno._read_pwv_data import modeled_pwv
-from pwv_kpno._read_pwv_data import pwv_date
+from pwv_kpno._serve_pwv_data import _check_date_time_args
+from pwv_kpno._serve_pwv_data import measured_pwv
+from pwv_kpno._serve_pwv_data import modeled_pwv
+from pwv_kpno._serve_pwv_data import pwv_date
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -45,7 +45,7 @@ def _check_attrs(iterable, **kwargs):
 
     Args:
         table    (Table): A table with a 'date' column
-        **kwargs      (): datetime attributes and values
+        **kwargs        : datetime attributes and values
 
     Returns:
         True or False

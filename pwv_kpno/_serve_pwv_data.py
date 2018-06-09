@@ -38,22 +38,23 @@ __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
 
-# This function is a public wrapper for _pwv_date
-def pwv_date(date, airmass=1):
-    """Returns the modeled PWV column density at Kitt Peak for a given date
+def timestamp(date):
+    """Returns seconds since epoch of a UTC datetime in %Y-%m-%dT%H:%M format
 
-    Interpolate from the modeled PWV column density at Kitt Peak and return
-    the PWV column density for a given datetime and airmass.
+    This function provides comparability for Python 2.7, for which the
+    datetime.timestamp method was not yet available.
 
     Args:
-        date (datetime): The date of the desired PWV column density
-        airmass (float): The airmass along line of sight
+        date (datetime.datetime): A datetime to find the timestamp for
 
     Returns:
-        The modeled PWV column density for Kitt Peak
+        The timestamp of the provided datetime as a float
     """
 
-    return _pwv_date(date, airmass)
+    unix_epoch = datetime(1970, 1, 1, tzinfo=utc)
+    utc_date = date.astimezone(utc)
+    timestamp = (utc_date - unix_epoch).total_seconds()
+    return timestamp
 
 
 def _pwv_date(date, airmass=1, test_model=None):
@@ -78,11 +79,27 @@ def _pwv_date(date, airmass=1, test_model=None):
         pwv_model = test_model
 
     # Determine the PWV level along line of sight as pwv(zenith) * airmass
-    unix_epoch = datetime(1970, 1, 1, tzinfo=utc)
-    utc_date = date.astimezone(utc)
-    timestamp = (utc_date - unix_epoch).total_seconds()
+    time_stamp = timestamp(date)
+    pwv = np.interp(time_stamp, pwv_model['date'], pwv_model['pwv']) * airmass
+    return pwv
 
-    return np.interp(timestamp, pwv_model['date'], pwv_model['pwv']) * airmass
+
+def pwv_date(date, airmass=1):
+    # This function is a public wrapper for _pwv_date
+    """Returns the modeled PWV column density at Kitt Peak for a given date
+
+    Interpolate from the modeled PWV column density at Kitt Peak and return
+    the PWV column density for a given datetime and airmass.
+
+    Args:
+        date (datetime): The date of the desired PWV column density
+        airmass (float): The airmass along line of sight
+
+    Returns:
+        The modeled PWV column density for Kitt Peak
+    """
+
+    return _pwv_date(date, airmass)
 
 
 def available_data():
@@ -111,9 +128,6 @@ def _check_date_time_args(year=None, month=None, day=None, hour=None):
         month (int): An integer value between 1 and 12 (inclusive)
         day   (int): An integer value between 1 and 31 (inclusive)
         hour  (int): An integer value between 0 and 23 (inclusive)
-
-    Returns:
-        None
     """
 
     if year is not None and year < 2010:
@@ -132,11 +146,11 @@ def _check_date_time_args(year=None, month=None, day=None, hour=None):
 
 
 def _search_dt_table(data_tab, **kwargs):
-    """Search an astropy table
+    """Search an astropy table of dates
 
     Given an astropy table with column 'date', return all entries in the table
-    for which there is an object in date with attributes matching the values
-    specified in params
+    for which there is an object in that column with attributes matching the
+    given kwargs.
 
     Args:
         data_tab (astropy.table.Table): An astropy table to search
@@ -160,7 +174,7 @@ def _search_dt_table(data_tab, **kwargs):
 
 
 def _read_and_format(path):
-    """Reads a PWV data table from file and formats the table / data
+    """Reads a PWV data table from file and formats the table and data
 
     Adds units and converts 'date' column from timestamps to datetimes.
 

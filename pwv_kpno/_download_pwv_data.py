@@ -18,13 +18,7 @@
 
 """This code downloads precipitable water vapor (PWV) measurements from
 suominet.ucar.edu for Kitt Peak and other nearby locations. Data is added to a
-master table located at PWV_TAB_DIR/measured.csv. Supplemented PWV values
-are stored in a master table located at PWV_TAB_DIR/modeled.csv. All datetimes
-are recorded as timestamps and PWV measurements are represented in units of
-millimeters.
-
-For more details on the SuomiNet project see:
-    http://www.suominet.ucar.edu/overview.html
+master table located at PWV_TAB_DIR/measured.csv.
 """
 
 from datetime import datetime, timedelta
@@ -39,7 +33,7 @@ from ._settings import settings
 
 __authors__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2016, Daniel Perrefort'
-__credits__ = 'Jessica Kroboth'
+__credits__ = ['Jessica Kroboth']
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
@@ -93,28 +87,23 @@ def _read_file(path):
     # Credit goes to Jessica Kroboth for identifying conditions 1 and 2
 
     site_id = path[-15:-11]
-    usecols = range(0, 7)
     names = ['date', site_id, site_id + '_err', 'ZenithDelay',
              'SrfcPress', 'SrfcTemp', 'SrfcRH']
 
-    data = np.genfromtxt(path, usecols=usecols, names=names,
-                         dtype=[float for col in usecols])
+    data = np.genfromtxt(path,
+                         names=names,
+                         usecols=range(0, len(names)),
+                         dtype=[float for col in names])
 
-    data = Table(data)
     data = data[data[site_id] > 0]
-
-    # Correct SuomiNet rounding error
     data[site_id + '_err'] = np.round(data[site_id + '_err'] + 0.025, 3)
-
-    # Apply data cuts stored in current location's config file
     for key, (start, end) in settings._data_cuts(site_id).items():
-        indices = np.logical_and(data[key] > start, data[key] < end)
+        indices = (data[key] > start) & (data[key] < end)
         data = data[indices]
 
-    data.keep_columns(['date', site_id, site_id + '_err'])
-
+    data = Table(data)['date', site_id, site_id + '_err']
     if data:
-        data = unique(unique(data), keys='date', keep='none')
+        data = unique(data, keys='date', keep='none')
         year = int(path[-8: -4])
         to_timestamp_vectorized = np.vectorize(_suomi_date_to_timestamp)
         data['date'] = to_timestamp_vectorized(year, data['date'])
@@ -189,7 +178,7 @@ def _download_data_for_year(yr, timeout=None):
             combined_data.append(site_data)
 
         except (TypeError, IndexError):
-            continue
+            continue # Data files had no unmasked data
 
     if not combined_data:
         warn('No SuomiNet data found for year {}'.format(yr), RuntimeWarning)

@@ -28,6 +28,7 @@ import requests
 from pwv_kpno._download_pwv_data import _download_data_for_year
 from pwv_kpno._download_pwv_data import _read_file
 from pwv_kpno._download_pwv_data import _suomi_date_to_timestamp
+from pwv_kpno._serve_pwv_data import timestamp
 from pwv_kpno._settings import Settings
 
 __author__ = 'Daniel Perrefort'
@@ -39,31 +40,13 @@ __status__ = 'Development'
 
 try:
     req = requests.get('http://www.suominet.ucar.edu')
-    SUOMINET_OFFLINE = False
+    SUOMINET_OFFLINE = req.status_code != 200
 
 except requests.exceptions.ConnectionError:
     SUOMINET_OFFLINE = True
 
 
-def _timestamp(date):
-    """Returns seconds since epoch of a UTC datetime
-
-    This function provides comparability for Python 2.7, for which the
-    datetime.timestamp method was not yet available.
-
-    Args:
-        date (datetime.datetime): A datetime to find the timestamp of
-
-    Returns:
-        The timestamp of the provided datetime as a float
-    """
-
-    unix_epoch = datetime(1970, 1, 1, tzinfo=utc)
-    utc_date = date.astimezone(utc)
-    timestamp = (utc_date - unix_epoch).total_seconds()
-    return timestamp
-
-
+@unittest.skipIf(SUOMINET_OFFLINE, 'SuomiNet.ucar.edu Unreachable')
 class SuomiNetDataDownload(unittest.TestCase):
     """Tests data is downloaded correctly by _download_suomi_data_for_year"""
 
@@ -71,11 +54,9 @@ class SuomiNetDataDownload(unittest.TestCase):
     def setUpClass(cls):
         """Download data from SuomiNet for 2012 and 2015"""
 
-        if not SUOMINET_OFFLINE:
-            cls.data_2012 = _download_data_for_year(2012)
-            cls.data_2015 = _download_data_for_year(2015)
+        cls.data_2012 = _download_data_for_year(2012)
+        cls.data_2015 = _download_data_for_year(2015)
 
-    @unittest.skipIf(SUOMINET_OFFLINE, 'SuomiNet Offline')
     def test_column_names(self):
         """Test downloaded data for correct columns"""
 
@@ -94,7 +75,6 @@ class SuomiNetDataDownload(unittest.TestCase):
         self.assertEqual(retrieved_2012_cols, expected_2012_cols,
                          bad_column_msg.format(2012))
 
-    @unittest.skipIf(SUOMINET_OFFLINE, 'SuomiNet Offline')
     def test_year_values(self):
         """Test data was downloaded for the correct years"""
 
@@ -119,15 +99,15 @@ class DateFormatConversion(unittest.TestCase):
 
         error_msg = 'Incorrect timestamp for {}'
         self.assertEqual(_suomi_date_to_timestamp(2010, '1.05208'),
-                         _timestamp(jan_01_2010_01_15),
+                         timestamp(jan_01_2010_01_15),
                          error_msg.format(jan_01_2010_01_15))
 
         self.assertEqual(_suomi_date_to_timestamp(2010, '1.11458'),
-                         _timestamp(jan_01_2010_02_45),
+                         timestamp(jan_01_2010_02_45),
                          error_msg.format(jan_01_2010_02_45))
 
         self.assertEqual(_suomi_date_to_timestamp(2010, '1.17708'),
-                         _timestamp(jan_01_2010_04_15),
+                         timestamp(jan_01_2010_04_15),
                          error_msg.format(jan_01_2010_04_15))
 
     def test_dates_out_of_data_range(self):
@@ -138,11 +118,11 @@ class DateFormatConversion(unittest.TestCase):
 
         error_msg = 'Incorrect timestamp for {}'
         self.assertEqual(_suomi_date_to_timestamp(2000, '1.01042'),
-                         _timestamp(jan_01_2000_00_15),
+                         timestamp(jan_01_2000_00_15),
                          error_msg.format(jan_01_2000_00_15))
 
         self.assertEqual(_suomi_date_to_timestamp(2021, '365.96875'),
-                         _timestamp(dec_31_2021_23_15),
+                         timestamp(dec_31_2021_23_15),
                          error_msg.format(dec_31_2021_23_15))
 
 
@@ -171,15 +151,9 @@ class SuomiNetFileParsing(unittest.TestCase):
         azam_cols = self.azam_hr_data.colnames
         p014_cols = self.p014_hr_data.colnames
 
-        msg = 'Wrong column names returned for {}: ({}).'
-        self.assertEqual(kitt_cols, ['date', 'KITT', 'KITT_err'],
-                         msg.format(self.kitt_hr_path, kitt_cols))
-
-        self.assertEqual(azam_cols, ['date', 'AZAM', 'AZAM_err'],
-                         msg.format(self.azam_hr_path, azam_cols))
-
-        self.assertEqual(p014_cols, ['date', 'P014', 'P014_err'],
-                         msg.format(self.p014_dy_path, p014_cols))
+        self.assertEqual(kitt_cols, ['date', 'KITT', 'KITT_err'])
+        self.assertEqual(azam_cols, ['date', 'AZAM', 'AZAM_err'])
+        self.assertEqual(p014_cols, ['date', 'P014', 'P014_err'])
 
     def test_dates_are_unique(self):
         """Test for the removal of any duplicate dates"""

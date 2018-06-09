@@ -176,12 +176,13 @@ def update_models(year=None, timeout=None):
     if not (isinstance(year, int) or year is None):
         raise TypeError("Argument 'year' must be an integer")
 
-    if year < 2010:
-        raise ValueError('Cannot update models for years prior to 2010')
+    if year is not None:
+        if year < 2010:
+            raise ValueError('Cannot update models for years prior to 2010')
 
-    elif year > datetime.now().year:
-        msg = 'Cannot update models for years greater than current year'
-        raise ValueError(msg)
+        elif year > datetime.now().year:
+            msg = 'Cannot update models for years greater than current year'
+            raise ValueError(msg)
 
     # Update the local SuomiData and PWV models
     updated_years = sorted(update_local_data(year, timeout))

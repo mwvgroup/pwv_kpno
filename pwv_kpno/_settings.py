@@ -82,8 +82,8 @@ class Settings:
         export_location : Export package settings for the current location
     """
 
-    _location = None
-    _config_data = None
+    _location = None  # The name of the current location
+    _config_data = None  # Data from the locations config file
 
     def __init__(self):
         _file_dir = os.path.dirname(os.path.realpath(__file__))
@@ -93,12 +93,10 @@ class Settings:
 
     @property
     def location(self):
-        # To prevent user from directly setting self.location
         return self._location
 
     @location_property
     def primary_rec(self):
-        # To prevent user from directly setting self.primary_rec
         return self._config_data['primary_rec']
 
     @location_property
@@ -235,5 +233,5 @@ class Settings:
         shutil.copyfile(self._pwv_model_path, model_path)
 
 
-# This instance is used package wide to access site settings
+# This instance should be used package wide to access site settings
 settings = Settings()
