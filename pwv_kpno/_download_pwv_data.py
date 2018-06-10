@@ -178,7 +178,7 @@ def _download_data_for_year(yr, timeout=None):
             combined_data.append(site_data)
 
         except (TypeError, IndexError):
-            continue # Data files had no unmasked data
+            continue  # Data files had no unmasked data
 
     if not combined_data:
         warn('No SuomiNet data found for year {}'.format(yr), RuntimeWarning)
