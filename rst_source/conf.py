@@ -44,4 +44,4 @@ html_theme_options = {
 }
 
 # Paths that contain custom static files
-html_static_path = ['LOGO.png', 'pwv_kpno_demo.ipynb']
+html_static_path = ['LOGO.png']
