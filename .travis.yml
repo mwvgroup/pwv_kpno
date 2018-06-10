@@ -2,7 +2,6 @@ language: python
 
 os:
   - linux
-  # - osx # travis does not currently support python on osx
 
 python:
   - "2.7"
