@@ -5,11 +5,8 @@ Accessing PWV Data
 In order to model the PWV absorption for a given date and time, SuomiNet data
 for that date must be available on your local machine. By default, each release
 of **pwv_kpno** contains all necessary SuomiNet data from 2010 through the end
-of the previous year. For convenience, functions are provided to check what
-data is available on the local machine, and to download any newly published
-data. Users can also access the local data as an ``astropy`` table.
-
-Access to PWV data is available as part of the ``pwv_kpno.pwv_atm`` module.
+of the previous year. Access to PWV data is available as part of the
+``pwv_atm`` module.
 
 Checking For Available Data
 ===========================

@@ -73,14 +73,15 @@ and 2012B-0500; PI: Wood-Vasey), which is operated by the Association of
 Universities for Research in Astronomy (AURA) under a cooperative agreement
 with the National Science Foundation.
 
-This work is also based in part on data published by the SuomiNet project.
-
 ********************
 Additional Resources
 ********************
 
 - The source code of **pwv_kpno** is publicly available on
   `GitHub <https://github.com/mwvgroup/pwv_kpno>`_.
+
+- An up time monitor for the SuomiNet website can be found
+  `here <https://stats.uptimerobot.com/gn1xqsJvj>`_.
 
 - For more information on the Kitt Peak National Observatory, see
   `www.noao.edu/kpno/ <https://www.noao.edu/kpno/>`_

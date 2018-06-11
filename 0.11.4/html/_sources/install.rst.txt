@@ -60,10 +60,10 @@ Package Setup
 
 **pwv_kpno** relies on PWV measurements taken by the SuomiNet project. In order
 to model the PWV transmission function for a given date, SuomiNet data for that
-date must be available on the host machine. By default, **pwv_kpno** contains
-all necessary SuomiNet data from 2010 through the end of 2017. It is
-recommended to update the local SuomiNet data after installing or updating the
-package, and periodically as necessary.
+date must be available on the host machine. By default, each release of
+**pwv_kpno** contains all necessary SuomiNet data from 2010 through the end of
+the previous year. It is recommended to update the local SuomiNet data after
+installing or updating the package, and periodically as necessary.
 
 To download any new SuomiNet data use the ``update_models`` function:
 
@@ -95,4 +95,5 @@ If desired, the test suite can be run using:
     python setup.py tests
 
 Note that **pwv_kpno** includes tests that download SuomiNet data from the
-internet (under 20 MB).
+internet (under 20 MB). If a connection cannot be established, these tests are
+skipped.
