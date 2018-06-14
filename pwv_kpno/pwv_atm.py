@@ -10,8 +10,8 @@
 #
 #    The pwv_kpno package is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+#    Public License for more details.
 #
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
@@ -47,7 +47,7 @@ An Incomplete Guide to Getting Started:
       >>>                      minute=35,
       >>>                      tzinfo=pytz.utc)
       >>>
-      >>> pwv = pwv_atm._pwv_date(obsv_date)
+      >>> pwv = pwv_atm.pwv_date(obsv_date)
 
 
     To retrieve the atmospheric model for a line of sight PWV concentration:
@@ -57,7 +57,7 @@ An Incomplete Guide to Getting Started:
 
     To retrieve the atmospheric model for a datetime:
 
-      >>> pwv_atm._trans_for_date(date=obsv_date, airmass=1.2)
+      >>> pwv_atm.trans_for_date(date=obsv_date, airmass=1.2)
 
 
     To access the PWV measurements as an astropy table:
@@ -78,10 +78,17 @@ An Incomplete Guide to Getting Started:
       >>> pwv_atm.modeled_pwv(year=2016, month=11, day=14)
 """
 
-from ._pwv_data import available_data
-from ._pwv_data import pwv_date
-from ._pwv_data import measured_pwv
-from ._pwv_data import modeled_pwv
-from ._pwv_data import update_models
+from ._serve_pwv_data import available_data
+from ._serve_pwv_data import pwv_date
+from ._serve_pwv_data import measured_pwv
+from ._serve_pwv_data import modeled_pwv
+from ._update_pwv_model import update_models
 from ._transmission import trans_for_date
 from ._transmission import trans_for_pwv
+
+__author__ = 'Daniel Perrefort'
+__copyright__ = 'Copyright 2017, Daniel Perrefort'
+
+__license__ = 'GPL V3'
+__email__ = 'djperrefort@pitt.edu'
+__status__ = 'Development'

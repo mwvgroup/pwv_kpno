@@ -10,392 +10,228 @@
 #
 #    The pwv_kpno package is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+#    Public License for more details.
 #
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno. If not, see <http://www.gnu.org/licenses/>.
 
 
-"""This code allows for the modification of package settings. While some of
-this code is already being used in the package, much of it is provided as a
-framework for future development. It is not intended for end user visibility.
-"""
+"""This code provides access to package settings through the Settings class."""
 
-# Todo: Transition from Settings class to multi-site classes
-
-from datetime import datetime
 import json
 import os
 import shutil
-from warnings import warn
-
-from astropy.table import Table
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
-__email__ = 'djperrefort@gmail.com'
+__email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
-FILE_DIR = os.path.dirname(os.path.realpath(__file__))
-LOC_PATH = os.path.join(FILE_DIR, 'locations')
-PHOSIM_DATA = os.path.join(FILE_DIR, '/sims_phosim/data/atmosphere')
-SUOMI_DIR = os.path.join(FILE_DIR, 'suomi_data')
-CONFIG_PATH = os.path.join(LOC_PATH, '{}/config.json')
-ATM_MODEL_PATH = os.path.join(FILE_DIR, 'locations/{}/atm_model.csv')
-PWV_MSRED_PATH = os.path.join(FILE_DIR, 'locations/{}/measured_pwv.csv')
-PWV_MODEL_PATH = os.path.join(FILE_DIR, 'locations/{}/modeled_pwv.csv')
+
+class ModelingConfigError(Exception):
+    pass
 
 
-def _get_config_data(location_name):
-    """Retrieves settings from a location's config file
+def location_property(f):
+    @property
+    def wrapper(self, *args, **kwargs):
+        if self._location is None:
+            raise ModelingConfigError(
+                'No location has been set for pwv_kpno model.')
 
-    Each location has its own directory in pwv_kpno/locations/
+        return f(self, *args, **kwargs)
+
+    return wrapper
+
+
+def raise_missing_files(dir_path):
+    """Raises an error if a given directory is missing package config files
+
+    Args:
+         dir_path: A directory to check for missing config files
     """
 
-    path = CONFIG_PATH.format(location_name)
-    with open(path, 'r') as ofile:
-        return json.load(ofile)
-
-
-class Receiver:
-    """Represents a single SuomiNet GPS receiver
-
-    Attributes:
-        rec_id            : The 4 character SuomiNet ID code for this receiver
-        location          : The Location this receiver is associated with
-        enabled           : If data from this receiver is being used for its
-                            location
-        ignore_timestamps : A 2d list of timestamps to ignore data for
-        ignore_datetimes  : ignore_timestamps represented as datetime objects
-    """
-
-    def __init__(self):
-        self.rec_id = None
-        self.enabled = None
-        self.location = None
-        self.ignore_timestamps = []
-
-    @property
-    def ignore_datetimes(self):
-        """A 2d list of datetimes for which data from this receiver is ignored
-
-        eg. [[start_datetime, end_datetime], ...]
-        """
-
-        out_list = []
-        for end_time, start_time in self.ignore_timestamps:
-            out_list.append([datetime.utcfromtimestamp(end_time),
-                             datetime.utcfromtimestamp(start_time)])
-
-        return out_list
-
-
-class Location:
-    """Package settings for a collection of SuomiNet GPS receivers
-
-    Entries with an asterisk are underdevelopment and not functional
-
-    Attributes:
-        name              : The name of this location (eg. 'kitt_peak')
-        available_years   : A list of Years for which SuomiNet data has been
-                            downloaded for this location
-        primary_receiver  : The id code of this location's primary GPS receiver
-        all_receivers     : A list of all GPS receiver ids associated with
-                            this location - both enabled and disabled
-        enabled_receivers : A list of enabled GPS receivers associated with
-                            this location
-
-    Methods:
-        restore          : Overwrites instance attributes with saved settings
-        add_receiver     : Add a new GPS receiver to this location
-        delete_receiver  : Delete a GPS receiver from this location
-        enable_receiver  : Enable a GPS receiver for this location
-        disable_receiver : Disable a GPS receiver for this location
-        * ignore_dates   : Ignore data from a GPS receiver for specified dates
-        * use_dates      : Undoes the ignore_dates method
-        save             : Save location settings (attribute values)
-        export           : Export saved settings to an ecsv file
-
-    Indexing:
-        Instances can be indexed using the id code of an associated GPS
-        receiver. This returns a Receiver type object. See `all_receivers` for
-        a list of available indices. For example:
-
-            Location()['KITT']
-    """
-
-    def __init__(self, name=None):
-        self.name = name
-        self._original_name = self.name
-        self._config_data = _get_config_data(name)
-        self.primary_receiver = self._config_data['primary']
-        self._original_primary_receiver = self.primary_receiver
-
-    def __repr__(self):
-        rep = "<Location (name='{}', gps_receivers='{}')>"
-        return rep.format(self.name, self.all_receivers)
-
-    @staticmethod
-    def _check_receiver_args(rec_id, enabled):
-        """Raise errors if attributes have incorrect types"""
-
-        type_err = "Attribute '{}' must be of type {}"
-        if type(rec_id) is not str:
-            raise TypeError(type_err.format('id', 'str'))
-
-        elif len(rec_id) != 4:
-            raise ValueError('SuomiNet id codes should be 4 characters long.')
-
-        if type(enabled) is not bool:
-            raise TypeError(type_err.format('enabled', 'bool'))
-
-    def __getitem__(self, key):
-
-        if not isinstance(key, str):
-            raise TypeError('Expected string index')
-
-        if key not in self.all_receivers:
-            err_msg = "No stored settings for GPS receiver '{}'".format(key)
-            raise ValueError(err_msg)
-
-        receiver_data = self._config_data['receivers'][key]
-        receiver = Receiver()
-        receiver.rec_id = key
-        receiver.enabled = receiver_data[0]
-        receiver.ignore_timestamps = receiver_data[1]
-        return receiver
-
-    def _replace_years(self, yr_list):
-        """Replaces the list of years in the location's config file"""
-
-        path = CONFIG_PATH.format(self.name)
-        with open(path, 'r+') as ofile:
-            current_data = json.load(ofile)
-            current_data['years'] = yr_list
-            ofile.seek(0)
-            json.dump(current_data, ofile, indent=2, sort_keys=True)
-            ofile.truncate()
-
-    @property
-    def available_years(self):
-        """A list of years for which SuomiNet data has been downloaded"""
-
-        return self._config_data['years']
-
-    def restore(self):
-        """Overwrite any currently unsaved settings with saved values"""
-
-        self._config_data = _get_config_data(self._original_name)
-        self.name = self._original_name
-        self.primary_receiver = self._original_primary_receiver
-
-    def add_receiver(self, rec_id, enabled=False):
-        """Save the receiver instance to the package settings
-
-        Args:
-            rec_id   (str): The SuomiNet id code of the receiver
-            enabled (bool): Whether to use data from this receiver
-        """
-
-        # Todo : change this method to accept Receiver object
-
-        self._check_receiver_args(rec_id, enabled)
-
-        if rec_id in self._config_data['receivers']:
-            err_msg = "Entry with id '{}' already exists for this location."
-            raise ValueError(err_msg.format(rec_id))
-
-        else:
-            self._config_data['receivers'][rec_id] = [enabled, []]
-
-    def delete_receiver(self, rec_id):
-        """Deletes a SuomiNet receiver from this location
-
-        Only settings data is deleted. All PWV data downloaded from SuomiNet
-        for the receiver will remain on disk.
-
-        Args:
-            rec_id (str): The id code for a receiver stored in settings
-        """
-
-        if rec_id in self._config_data['receivers']:
-            del self._config_data['receivers'][rec_id]
-
-        else:
-            warn("No entry found with id '{}'".format(rec_id))
-
-    def _raise_valid_id(self, rec_id):
-        """Raises ValueError if no settings are available for the given id"""
-
-        if rec_id not in self._config_data['receivers']:
-            err_msg = "No receiver '{}' stored for location '{}'"
-            raise ValueError(err_msg.format(rec_id, self.name))
-
-    def enable_receiver(self, rec_id):
-        """Set the status of a GPS receiver to enabled for this location
-
-        Atmospheric models returned for a location only use data taken by
-        receivers that are enabled. Changing the status of a receiver for one
-        location does not effect other locations.
-
-        Args:
-            rec_id (str): The 4 character id code of a GPS receiver
-        """
-
-        self._raise_valid_id(rec_id)
-        self._config_data['receivers'][rec_id] = True
-
-    def disable_receiver(self, rec_id):
-        """Set the status of a GPS receiver to disabled for this location
-
-        Atmospheric models returned for a location only use data taken by
-        receivers that are enabled. Changing the status of a receiver for one
-        location does not effect other locations.
-
-        Args:
-            rec_id (str): The 4 character id code of a GPS receiver
-        """
-
-        self._raise_valid_id(rec_id)
-        self._config_data['receivers'][rec_id] = False
-
-    @property
-    def all_receivers(self):
-        """A list of all GPS receivers associated with this location"""
-
-        return list(self._config_data['receivers'].keys())
-
-    @property
-    def enabled_receivers(self):
-        """A list of all enabled GPS receivers associated with this location"""
-
-        enabled = []
-        for receiver, settings in self._config_data['receivers'].items():
-            if settings[0]:
-                enabled.append(receiver)
-
-        return enabled
-
-    def save(self):
-        """Save current settings for this locations to file"""
-
-        path = CONFIG_PATH.format(self._original_name)
-        with open(path, 'w') as ofile:
-            json.dump(self._config_data, ofile, indent=2, sort_keys=True)
-            ofile.truncate()
-
-        old_dir = os.path.join(LOC_PATH, self._original_name)
-        new_dir = os.path.join(LOC_PATH, self.name)
-        shutil.move(old_dir, new_dir)
-        self._original_name = self.name
-
-    def export(self, out_dir, overwrite=False):
-        """Write the current package settings to file
-
-        Existing files will not be overwritten unless the `overwrite` argument
-        is set to `True`
-
-        Args:
-            out_dir    (str): The desired output directory
-            overwrite (bool): Whether to overwrite existing files
-        """
-
-        if not os.path.isdir(out_dir):
-            raise ValueError('Output directory does not exist')
-
-        atm_model_path = os.path.join(LOC_PATH, self.name, 'atm_model.csv')
-        if not os.path.exists(atm_model_path):
-            err_msg = 'No stored settings for location {}'
-            raise ValueError(err_msg.format(self.name))
-
-        atm_model = Table.read(atm_model_path)
-        meta = _get_config_data(self.name)
-        del meta['years']
-        atm_model.meta = meta
-
-        # Todo: Should the user specify a directory or file path?
-        out_path = os.path.join(out_dir, '{}_settings.ecsv'.format(self.name))
-        atm_model.write(out_path, format='ascii.ecsv', overwrite=overwrite)
+    files = os.listdir(dir_path)
+    err_msg = 'Missing {} in loc_dir.'
+    file_list = ['atm_model.csv', 'config.json',
+                 'measured_pwv.csv', 'modeled_pwv.csv']
+
+    for fname in file_list:
+        if fname not in files:
+            raise FileNotFoundError(err_msg.format(fname))
 
 
 class Settings:
-    """Represents package settings for pwv_kpno
+    """Represents pwv_kpno settings for a particular geographical location
 
-    Entries with an asterisk are underdevelopment and not functional
+    Represents settings for Kitt Peak by default
 
     Attributes:
-        locations        : A list of locations with stored settings
-        current_location : The default location used when providing
-                           atmospheric models
+        current_loc     : The current location being modeled
+        available_loc   : A list of built in locations that can be modeled
+        receivers       : A list of SuomiNet receivers used by this location
+        primary_rec     : The SuomiNet id code for the primary GPS receiver
+        off_site_recs   : Same as receivers but without the primary receiver
+        available_years : A list of years with locally available SuomiNet data
 
     Methods:
-        * add_location : Create a new location with a unique atmospheric model
-        * read         : Read locations settings from file
-
-    Indexing:
-        Instances can be indexed using the name of a location with stored
-        settings. This returns a Location type object. See `locations` for a
-        list of available indices. For example:
-
-            Settings()['kitt_peak']
+        set_location    : Configure pwv_kpno to model a given location
+        export_location : Export package settings for the current location
     """
 
-    def __iter__(self):
-        location_objects = (self[site] for site in self.locations)
-        self._iter_locations = iter(location_objects)
-        return self._iter_locations
+    _location = None  # The name of the current location
+    _config_data = None  # Data from the locations config file
 
-    def __next__(self):
-        return next(self._iter_locations)
-
-    def __getitem__(self, key):
-        if not isinstance(key, str):
-            raise TypeError('Expected string index')
-
-        if key not in self.locations:
-            err_msg = "No stored settings for location '{}'"
-            raise ValueError(err_msg.format(key))
-
-        config_data = _get_config_data(key)
-        location = Location(key)
-        location.primary_receiver = config_data['primary']
-        location.gps_receivers = list(config_data['receivers'].keys())
-        return location
-
-    def __repr__(self):
-        rep = "<pwv_kpno Settings>\n\n"
-        rep += "Available Locations:\n"
-        rep += "--------------------\n"
-        for i, loc in enumerate(self.locations):
-            rep += '  {}. {}\n'.format(i + 1, loc)
-
-        return rep
+    def __init__(self):
+        _file_dir = os.path.dirname(os.path.realpath(__file__))
+        self._suomi_dir = os.path.join(_file_dir, 'suomi_data')
+        self._loc_dir_unf = os.path.join(_file_dir, 'locations/{}')
+        self._config_path_unf = os.path.join(self._loc_dir_unf, 'config.json')
 
     @property
-    def locations(self):
+    def location(self):
+        return self._location
+
+    @location_property
+    def primary_rec(self):
+        return self._config_data['primary_rec']
+
+    @location_property
+    def _loc_dir(self):
+        return self._loc_dir_unf.format(self.location)
+
+    @location_property
+    def _config_path(self):
+        return self._config_path_unf.format(self.location)
+
+    @property
+    def _phosim_dir(self):
+        return os.path.join(self._loc_dir, 'atmosphere')
+
+    @property
+    def _atm_model_path(self):
+        return os.path.join(self._loc_dir, 'atm_model.csv')
+
+    @property
+    def _pwv_model_path(self):
+        return os.path.join(self._loc_dir, 'modeled_pwv.csv')
+
+    @property
+    def _pwv_msred_path(self):
+        return os.path.join(self._loc_dir, 'measured_pwv.csv')
+
+    @property
+    def available_loc(self):
         """A list of locations for which pwv_kpno has stored settings"""
 
-        return next(os.walk(LOC_PATH))[1]
+        self._loc_dir_unf.format('')
+        return next(os.walk(self._loc_dir_unf.format('')))[1]
 
-    @property
-    def current_location(self):
-        """The current location being modeled by pwv_kpno"""
+    def set_location(self, loc):
+        """Configure pwv_kpno to model the atmosphere at a given location
 
-        with open(os.path.join(FILE_DIR, 'CONFIG.txt'), 'r') as ofile:
-            return self[ofile.readline()]
+        Accepts the name of a builtin location OR a directory containing custom
+        configuration files.
 
-    @current_location.setter
-    def current_location(self, location):
-        """The current location being modeled by pwv_kpno"""
+        Args:
+            loc (str): The name or directory of location to model
+        """
 
-        if location not in self.locations:
-            err_msg = 'No stored settings for location {}'
-            raise ValueError(err_msg.format(location))
+        if loc in self.available_loc:
+            config_path = self._config_path_unf.format(loc)
 
-        with open(os.path.join(FILE_DIR, 'CONFIG.txt'), 'w') as ofile:
+        elif os.path.isdir(loc):
+            raise_missing_files(loc)
+            config_path = os.path.join(loc, 'config.json')
+
+        else:
+            raise ValueError('err msg')
+
+        with open(config_path, 'r') as ofile:
+            self._config_data = json.load(ofile)
+
+        self._location = self._config_data['loc_name']
+
+    @location_property
+    def available_years(self):
+        """A list of years for which SuomiNet data has been downloaded"""
+
+        return sorted(self._config_data['years'])
+
+    def _replace_years(self, yr_list):
+        # Replaces the list of years in the location's config file
+
+        # Note: self._config_path calls @location_property decorator
+        with open(self._config_path, 'r+') as ofile:
+            current_data = json.load(ofile)
+            current_data['years'] = list(set(yr_list))
             ofile.seek(0)
-            ofile.write(location)
+            json.dump(current_data, ofile, indent=4, sort_keys=True)
             ofile.truncate()
+
+    @location_property
+    def receivers(self):
+        """A list of all GPS receivers associated with this location"""
+
+        # list used instead of .copy for python 2.7 compatibility
+        rec_list = list(self._config_data['sup_rec'])
+        rec_list.append(self._config_data['primary_rec'])
+        return sorted(rec_list)
+
+    @location_property
+    def off_site_recs(self):
+        """A list of all enabled, off sight GPS receivers for this location"""
+
+        return sorted(self._config_data['sup_rec'])
+
+    def __repr__(self):
+        rep = '<pwv_kpno.Settings, Current Location Name: {}>'
+        return rep.format(self.location)
+
+    def _data_cuts(self, rec_id):
+        """Returns restrictions on what SuomiNet measurements to include
+
+        Args:
+            rec_id (str): The id code of a SuomiNet GPS receiver
+        """
+
+        if self._location is None:
+            raise ValueError('No location set to model.')
+
+        return self._config_data['data_cuts'][rec_id]
+
+    def _date_cuts(self, rec_id):
+        """Returns time periods when data from a given receiver is ignored
+
+        Args:
+            rec_id (str): The id code of a SuomiNet GPS receiver
+        """
+
+        if self._location is None:
+            raise ValueError('No location set to model.')
+
+        return self._config_data['date_cuts'][rec_id]
+
+    def export_location(self, out_dir):
+        """Export package settings for the current location to a new directory
+
+        Args:
+            out_dir (str): The desired output directory
+        """
+
+        os.mkdir(out_dir)
+        atm_path = os.path.join(out_dir, 'atm_model.csv')
+        shutil.copyfile(self._atm_model_path, atm_path)
+        config_path = os.path.join(out_dir, 'config.json')
+        shutil.copyfile(self._config_path, config_path)
+        measured_path = os.path.join(out_dir, 'measured_pwv.csv')
+        shutil.copyfile(self._pwv_msred_path, measured_path)
+        model_path = os.path.join(out_dir, 'modeled_pwv.csv')
+        shutil.copyfile(self._pwv_model_path, model_path)
+
+
+# This instance should be used package wide to access site settings
+settings = Settings()

@@ -10,8 +10,8 @@
 #
 #    The pwv_kpno package is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+#    Public License for more details.
 #
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
@@ -23,24 +23,22 @@ from datetime import datetime
 from pytz import utc
 
 from pwv_kpno import __version__ as version
-from pwv_kpno._transmission import _trans_for_date
+from pwv_kpno._transmission import trans_for_date
 from pwv_kpno._transmission import trans_for_pwv
-from pwv_kpno._pwv_data import available_data
-from pwv_kpno._pwv_data import measured_pwv
-from pwv_kpno._pwv_data import modeled_pwv
-from pwv_kpno._pwv_data import update_models
+from pwv_kpno._serve_pwv_data import available_data
+from pwv_kpno._serve_pwv_data import measured_pwv
+from pwv_kpno._serve_pwv_data import modeled_pwv
+from pwv_kpno._update_pwv_model import update_models
 
 __author__ = 'Daniel Perrefort'
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
-__email__ = 'djperrefort@gmail.com'
+__email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
 
-# We create wrapper functions that pass command line arguments to functions
-# imported from calc_transmission.py. For more information on these functions
-# documentation is included in calc_transmission.py and also in README.MD
+# We create wrapper functions to pass command line arguments
 
 def available_data_wrapper(cli_args):
     """Print a set of years for which SuomiNet data is locally available
@@ -49,7 +47,7 @@ def available_data_wrapper(cli_args):
         cli_args (argparse.Namespace): Arguments from the command line
     """
 
-    print('Found data for: {0}\n'.format(available_data()))
+    print('Local data for: {0}\n'.format(available_data()))
 
 
 def update_models_wrapper(cli_args):
@@ -93,7 +91,7 @@ def modeled_pwv_wrapper(cli_args):
     data.write(cli_args.output, overwrite=cli_args.force, format='ascii.csv')
 
 
-def transmission_pwv_wrapper(cli_args):
+def trans_for_pwv_wrapper(cli_args):
     """Write to file the modeled transmission due to PWV for a given datetime
 
     args:
@@ -104,7 +102,7 @@ def transmission_pwv_wrapper(cli_args):
     model.write(cli_args.output, overwrite=cli_args.force, format='ascii.csv')
 
 
-def transmission_wrapper(cli_args):
+def trans_for_date_wrapper(cli_args):
     """Write to file the modeled transmission due to PWV for a given datetime
 
     args:
@@ -118,7 +116,7 @@ def transmission_wrapper(cli_args):
                     minute=cli_args.minute,
                     tzinfo=utc)
 
-    model = _trans_for_date(date, cli_args.airmass)
+    model = trans_for_date(date, cli_args.airmass)
     model.write(cli_args.output, overwrite=cli_args.force, format='ascii.csv')
 
 
@@ -178,7 +176,7 @@ MO_PRSR.add_argument('-m', '--month', type=int, default=None, help=MO_MHLP)
 MO_PRSR.add_argument('-d', '--day', type=int, default=None, help=MO_DHLP)
 MO_PRSR.add_argument('-H', '--hour', type=int, default=None, help=MO_HHLP)
 
-# Create command line sub-parser for the transmission_wrapper function
+# Create command line sub-parser for the trans_for_date_wrapper function
 TRD_DESC = ('Get the modeled atmospheric transmission spectrum for' +
             ' a given date and airmass.')
 TRD_OHLP = 'The desired output file path'
@@ -191,18 +189,17 @@ TRD_HHLP = 'The hour of the desired model spectrum (default 0)'
 TRD_MIHLP = 'The minute of the desired model spectrum (default 0)'
 
 TRD_PRSR = SUBPARSERS.add_parser('transmission', description=TRD_DESC)
-TRD_PRSR.set_defaults(func=transmission_wrapper)
+TRD_PRSR.set_defaults(func=trans_for_date_wrapper)
 TRD_PRSR.add_argument('-o', '--output', type=str, required=True, help=TRD_OHLP)
 TRD_PRSR.add_argument('-f', '--force', type=bool, default=False, help=TRD_FHLP)
-TRD_PRSR.add_argument('-a', '--airmass', type=float,
-                      required=True, help=TRD_AHLP)
+TRD_PRSR.add_argument('-a', '--airmass', type=float, required=True, help=TRD_AHLP)
 TRD_PRSR.add_argument('-y', '--year', type=int, required=True, help=TRD_YHLP)
 TRD_PRSR.add_argument('-m', '--month', type=int, required=True, help=TRD_MHLP)
 TRD_PRSR.add_argument('-d', '--day', type=int, required=True, help=TRD_DHLP)
 TRD_PRSR.add_argument('-H', '--hour', type=int, default=0, help=TRD_HHLP)
 TRD_PRSR.add_argument('-M', '--minute', type=int, default=0, help=TRD_MIHLP)
 
-# Create command line sub-parser for the transmission_pwv_wrapper function
+# Create command line sub-parser for the trans_for_pwv_wrapper function
 TRP_DESC = ('Get the modeled atmospheric transmission spectrum for' +
             ' a known PWV concentration along line of sight in mm.')
 TRP_OHLP = 'The desired output file path'
@@ -210,7 +207,7 @@ TRP_FHLP = 'Whether to overwrite an existing file (default false)'
 TRP_PHLP = 'The PWV concentration along line of sight in mm'
 
 TRP_PRSR = SUBPARSERS.add_parser('transmission_pwv', description=TRP_DESC)
-TRP_PRSR.set_defaults(func=transmission_pwv_wrapper)
+TRP_PRSR.set_defaults(func=trans_for_pwv_wrapper)
 TRP_PRSR.add_argument('-o', '--output', type=str, required=True, help=TRP_OHLP)
 TRP_PRSR.add_argument('-f', '--force', type=bool, default=False, help=TRP_FHLP)
 TRP_PRSR.add_argument('-p', '--pwv', type=float, required=True, help=TRP_PHLP)
