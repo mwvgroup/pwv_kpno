@@ -57,8 +57,10 @@ class LinearRegression(unittest.TestCase):
     def test_regression(self):
         """Test linear regression determines correct fit parameters"""
 
+        x = np.ma.arange(1, 20, 2)
+        x.mask = np.zeros(x.shape)
+
         m, b = 5, 2  # Slope and y-intercept
-        x = np.arange(1, 20, 2)
         y = m * x + b
         sy = sx = np.zeros(x.shape) + .1
 

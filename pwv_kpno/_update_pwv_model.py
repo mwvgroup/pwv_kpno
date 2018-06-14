@@ -27,6 +27,7 @@ from datetime import datetime
 from astropy.table import Table
 import numpy as np
 from scipy.odr import RealData, ODR, polynomial
+from scipy.stats import binned_statistic
 
 from ._download_pwv_data import update_local_data
 from ._settings import settings
@@ -69,11 +70,10 @@ def _linear_regression(x, y, sx, sy):
     assert fit_pass, 'Numerical error detected'
 
     b, m = fit_results.beta
-    sb, sm = fit_results.sd_beta
-
     applied_fit = m * x + b
     applied_fit.mask = np.logical_or(x.mask, applied_fit <= 0)
-    error = np.sqrt((x * sm) ** 2 + (m * sx) ** 2 + sb ** 2)
+
+    error = np.minimum(1 + 0.1 * x, 3)
     error.mask = applied_fit.mask
 
     return applied_fit, error
@@ -113,7 +113,7 @@ def _calc_avg_pwv_model(pwv_data, primary_rec):
     # Average PWV models from different sites
     avg_pwv = np.ma.average(modeled_pwv, axis=0)
     sum_quad = np.ma.sum(modeled_err ** 2, axis=0)
-    n = len(off_site_receivers) - np.ma.sum(modeled_pwv.mask, axis=0)
+    n = len(off_site_receivers) - np.sum(modeled_pwv.mask, axis=0)
     avg_pwv_err = np.ma.divide(np.ma.sqrt(sum_quad), n)
     avg_pwv_err.mask = avg_pwv.mask  # np.ma.divide throws off the mask
 
