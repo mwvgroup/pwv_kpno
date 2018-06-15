@@ -180,6 +180,7 @@
 <span class="kn">from</span> <span class="nn">astropy.table</span> <span class="k">import</span> <span class="n">Table</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.odr</span> <span class="k">import</span> <span class="n">RealData</span><span class="p">,</span> <span class="n">ODR</span><span class="p">,</span> <span class="n">polynomial</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">binned_statistic</span>
 
 <span class="kn">from</span> <span class="nn">._download_pwv_data</span> <span class="k">import</span> <span class="n">update_local_data</span>
 <span class="kn">from</span> <span class="nn">._settings</span> <span class="k">import</span> <span class="n">settings</span>
@@ -222,11 +223,10 @@
     <span class="k">assert</span> <span class="n">fit_pass</span><span class="p">,</span> <span class="s1">&#39;Numerical error detected&#39;</span>
 
     <span class="n">b</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="n">fit_results</span><span class="o">.</span><span class="n">beta</span>
-    <span class="n">sb</span><span class="p">,</span> <span class="n">sm</span> <span class="o">=</span> <span class="n">fit_results</span><span class="o">.</span><span class="n">sd_beta</span>
-
     <span class="n">applied_fit</span> <span class="o">=</span> <span class="n">m</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">b</span>
     <span class="n">applied_fit</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">applied_fit</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">x</span> <span class="o">*</span> <span class="n">sm</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">m</span> <span class="o">*</span> <span class="n">sx</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">sb</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
     <span class="n">error</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">applied_fit</span><span class="o">.</span><span class="n">mask</span>
 
     <span class="k">return</span> <span class="n">applied_fit</span><span class="p">,</span> <span class="n">error</span>
@@ -266,7 +266,7 @@
     <span class="c1"># Average PWV models from different sites</span>
     <span class="n">avg_pwv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">modeled_pwv</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">sum_quad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">modeled_err</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">off_site_receivers</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">modeled_pwv</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">off_site_receivers</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">modeled_pwv</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">avg_pwv_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sum_quad</span><span class="p">),</span> <span class="n">n</span><span class="p">)</span>
     <span class="n">avg_pwv_err</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">avg_pwv</span><span class="o">.</span><span class="n">mask</span>  <span class="c1"># np.ma.divide throws off the mask</span>
 

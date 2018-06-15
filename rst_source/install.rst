@@ -92,7 +92,7 @@ If desired, the test suite can be run using:
 .. code-block:: bash
     :linenos:
 
-    python setup.py tests
+    $ python setup.py tests
 
 Note that **pwv_kpno** includes tests that download SuomiNet data from the
 internet (under 20 MB). If a connection cannot be established, these tests are

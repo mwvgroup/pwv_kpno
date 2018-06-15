@@ -166,8 +166,8 @@
 <p>In order to model the PWV absorption for a given date and time, SuomiNet data
 for that date must be available on your local machine. By default, each release
 of <strong>pwv_kpno</strong> contains all necessary SuomiNet data from 2010 through the end
-of the previous year. Access to PWV data is available as part of the
-<code class="docutils literal notranslate"><span class="pre">pwv_atm</span></code> module.</p>
+of the previous year. Access to the locally available PWV data is available
+through the <code class="docutils literal notranslate"><span class="pre">pwv_atm</span></code> module.</p>
 <div class="section" id="checking-for-available-data">
 <h2>2.1. Checking For Available Data<a class="headerlink" href="#checking-for-available-data" title="Permalink to this headline">¶</a></h2>
 <p>To check what years of SuomiNet data are locally available, use the
@@ -206,8 +206,9 @@ been released by SuomiNet for a given year that is not locally available.</p>
 <div class="section" id="updating-data">
 <h2>2.2. Updating Data<a class="headerlink" href="#updating-data" title="Permalink to this headline">¶</a></h2>
 <p>To download new SuomiNet data to your local machine, use the <code class="docutils literal notranslate"><span class="pre">update_models</span></code>
-function. This function will also update the modeled precipitable water vapor
-for Kitt Peak National Observatory to represent the new measurements.</p>
+function. This function will download new data from the SuomiNet web server,
+and use that data to update the modeled precipitable water vapor for Kitt Peak
+National Observatory.</p>
 <dl class="function">
 <dt id="pwv_kpno.pwv_atm.update_models">
 <code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">update_models</code><span class="sig-paren">(</span><em>year=None</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/_update_pwv_model.html#update_models"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.update_models" title="Permalink to this definition">¶</a></dt>
@@ -304,18 +305,18 @@ table:</p>
 10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">measured_pwv</span><span class="p">()</span>
 
-<span class="go">             date     KITT KITT_err P014 ... SA48 SA48_err AZAM AZAM_err</span>
-<span class="go">             UTC       mm     mm     mm  ...  mm     mm     mm     mm</span>
-<span class="go">  ------------------- ---- -------- ---- ... ---- -------- ---- --------</span>
-<span class="go">  2010-01-01 00:15:00   --       --  3.6 ...  4.7    0.125   --       --</span>
-<span class="go">  2010-01-01 00:45:00   --       --  3.7 ...  4.7    0.125   --       --</span>
-<span class="go">  2010-01-01 01:15:00   --       --  3.7 ...  3.6    0.125   --       --</span>
-<span class="go">                  ...  ...      ...  ... ...  ...      ...  ...      ...</span>
+<span class="go">           date       KITT KITT_err P014 P014_err SA46 SA46_err SA48 ...</span>
+<span class="go">           UTC         mm     mm     mm     mm     mm     mm     mm  ...</span>
+<span class="go">  ------------------- ---- -------- ---- -------- ---- -------- ---- ...</span>
+<span class="go">  2010-01-01 00:15:00   --       --  3.6    0.125  4.2    0.125  4.7 ...</span>
+<span class="go">  2010-01-01 00:45:00   --       --  3.7    0.125  4.0    0.125  4.7 ...</span>
+<span class="go">  2010-01-01 01:15:00   --       --  3.7    0.025  3.4    0.125  3.6 ...</span>
+<span class="go">               ...     ...      ...  ...      ...  ...      ...  ... ...</span>
 </pre></div>
 </td></tr></table></div>
-<p>To retrieve SuomiNet data taken on November 14, 2016, specify the datetime as
-keyword arguments. Note in the below example that there is no data available
-from the SA48 receiver for this date:</p>
+<p>To retrieve SuomiNet data taken on a specific date, specify the desired
+datetime using keyword arguments. Note in the below example that there is no
+data available from the SA48 receiver for this date:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -326,13 +327,13 @@ from the SA48 receiver for this date:</p>
 8
 9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">measured_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 
-<span class="go">             date     KITT KITT_err P014 ... SA48 SA48_err AZAM AZAM_err</span>
-<span class="go">             UTC       mm     mm     mm  ...  mm     mm     mm     mm</span>
-<span class="go">  ------------------- ---- -------- ---- ... ---- -------- ---- --------</span>
-<span class="go">  2016-11-14 00:15:00  4.7    1.025  6.9 ...   --       --  8.4    0.525</span>
-<span class="go">  2016-11-14 00:45:00  4.3    1.025  6.7 ...   --       --  8.0    0.425</span>
-<span class="go">  2016-11-14 01:15:00  3.9    0.925  6.7 ...   --       --  8.0    0.425</span>
-<span class="go">                  ...  ...      ...  ... ...  ...      ...  ...      ...</span>
+<span class="go">           date       KITT KITT_err P014 P014_err SA46 SA46_err SA48 ...</span>
+<span class="go">           UTC         mm     mm     mm     mm     mm     mm     mm  ...</span>
+<span class="go">  ------------------- ---- -------- ---- -------- ---- -------- ---- ...</span>
+<span class="go">  2016-11-14 00:15:00  4.7    1.025  6.9    0.525  9.8    0.725   -- ...</span>
+<span class="go">  2016-11-14 00:45:00  4.3    1.025  6.7    0.425  9.9    0.525   -- ...</span>
+<span class="go">  2016-11-14 01:15:00  3.9    0.925  6.7    0.425  9.7    0.525   -- ...</span>
+<span class="go">               ...     ...      ...  ...      ...  ...      ...  ... ...</span>
 </pre></div>
 </td></tr></table></div>
 <p>If no SuomiNet data is available at all during the specified datetime, then the
@@ -341,10 +342,8 @@ returned table will be empty.</p>
 </div>
 <div class="section" id="modeled-pwv-data">
 <h2>2.4. Modeled PWV Data<a class="headerlink" href="#modeled-pwv-data" title="Permalink to this headline">¶</a></h2>
-<p>Using SuomiNet data, <strong>pwv_kpno</strong> creates a model for the PWV level at Kitt
-Peak. This model is used exclusively when modeling the atmospheric absorption,
-and is updated to reflect new measurements every time the <code class="docutils literal notranslate"><span class="pre">update_models</span></code>
-function is run. To retrieve this model, use the <code class="docutils literal notranslate"><span class="pre">modeled_pwv</span></code> function.</p>
+<p>To retrieve the modeled PWV level at Kitt Peak National Observatory, use the
+<code class="docutils literal notranslate"><span class="pre">modeled_pwv</span></code> function.</p>
 <dl class="function">
 <dt id="pwv_kpno.pwv_atm.modeled_pwv">
 <code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">modeled_pwv</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>hour=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/_serve_pwv_data.html#modeled_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.modeled_pwv" title="Permalink to this definition">¶</a></dt>
@@ -386,16 +385,16 @@ Results can be optionally refined by year, month, day, and hour.</p>
 10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">modeled_pwv</span><span class="p">()</span>
 
-<span class="go">             date      pwv  pwv_err</span>
-<span class="go">             UTC        mm</span>
+<span class="go">           date       pwv   pwv_err</span>
+<span class="go">           UTC         mm     mm</span>
 <span class="go">  ------------------- ----- -------</span>
-<span class="go">  2010-01-01 00:15:00 1.744   0.078</span>
-<span class="go">  2010-01-01 00:45:00 1.726   0.078</span>
-<span class="go">  2010-01-01 01:15:00 1.374   0.065</span>
+<span class="go">  2010-01-01 00:15:00 1.55    1.227</span>
+<span class="go">  2010-01-01 00:45:00 1.532   1.225</span>
+<span class="go">  2010-01-01 01:15:00 1.178   1.175</span>
 <span class="go">                  ...   ...     ...</span>
 </pre></div>
 </td></tr></table></div>
-<p>To retrieve the modeled PWV level over for November 14th, 2016:</p>
+<p>To retrieve the modeled PWV level for November 14th, 2016:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -406,8 +405,8 @@ Results can be optionally refined by year, month, day, and hour.</p>
 8
 9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">modeled_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 
-<span class="go">             date     pwv pwv_err</span>
-<span class="go">             UTC       mm</span>
+<span class="go">           date       pwv pwv_err</span>
+<span class="go">           UTC         mm   mm</span>
 <span class="go">  ------------------- --- -------</span>
 <span class="go">  2016-11-14 00:15:00 4.7   1.025</span>
 <span class="go">  2016-11-14 00:45:00 4.3   1.025</span>

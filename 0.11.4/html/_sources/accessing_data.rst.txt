@@ -5,8 +5,8 @@ Accessing PWV Data
 In order to model the PWV absorption for a given date and time, SuomiNet data
 for that date must be available on your local machine. By default, each release
 of **pwv_kpno** contains all necessary SuomiNet data from 2010 through the end
-of the previous year. Access to PWV data is available as part of the
-``pwv_atm`` module.
+of the previous year. Access to the locally available PWV data is available
+through the ``pwv_atm`` module.
 
 Checking For Available Data
 ===========================
@@ -31,8 +31,9 @@ Updating Data
 =============
 
 To download new SuomiNet data to your local machine, use the ``update_models``
-function. This function will also update the modeled precipitable water vapor
-for Kitt Peak National Observatory to represent the new measurements.
+function. This function will download new data from the SuomiNet web server,
+and use that data to update the modeled precipitable water vapor for Kitt Peak
+National Observatory.
 
 .. autofunction:: pwv_kpno.pwv_atm.update_models
 
@@ -80,30 +81,30 @@ table:
     >>> from pwv_kpno import pwv_atm
     >>> pwv_atm.measured_pwv()
 
-                 date     KITT KITT_err P014 ... SA48 SA48_err AZAM AZAM_err
-                 UTC       mm     mm     mm  ...  mm     mm     mm     mm
-      ------------------- ---- -------- ---- ... ---- -------- ---- --------
-      2010-01-01 00:15:00   --       --  3.6 ...  4.7    0.125   --       --
-      2010-01-01 00:45:00   --       --  3.7 ...  4.7    0.125   --       --
-      2010-01-01 01:15:00   --       --  3.7 ...  3.6    0.125   --       --
-                      ...  ...      ...  ... ...  ...      ...  ...      ...
+               date       KITT KITT_err P014 P014_err SA46 SA46_err SA48 ...
+               UTC         mm     mm     mm     mm     mm     mm     mm  ...
+      ------------------- ---- -------- ---- -------- ---- -------- ---- ...
+      2010-01-01 00:15:00   --       --  3.6    0.125  4.2    0.125  4.7 ...
+      2010-01-01 00:45:00   --       --  3.7    0.125  4.0    0.125  4.7 ...
+      2010-01-01 01:15:00   --       --  3.7    0.025  3.4    0.125  3.6 ...
+                   ...     ...      ...  ...      ...  ...      ...  ... ...
 
-To retrieve SuomiNet data taken on November 14, 2016, specify the datetime as
-keyword arguments. Note in the below example that there is no data available
-from the SA48 receiver for this date:
+To retrieve SuomiNet data taken on a specific date, specify the desired
+datetime using keyword arguments. Note in the below example that there is no
+data available from the SA48 receiver for this date:
 
 .. code-block:: python
     :linenos:
 
     >>> pwv_atm.measured_pwv(year=2016, month=11, day=14)
 
-                 date     KITT KITT_err P014 ... SA48 SA48_err AZAM AZAM_err
-                 UTC       mm     mm     mm  ...  mm     mm     mm     mm
-      ------------------- ---- -------- ---- ... ---- -------- ---- --------
-      2016-11-14 00:15:00  4.7    1.025  6.9 ...   --       --  8.4    0.525
-      2016-11-14 00:45:00  4.3    1.025  6.7 ...   --       --  8.0    0.425
-      2016-11-14 01:15:00  3.9    0.925  6.7 ...   --       --  8.0    0.425
-                      ...  ...      ...  ... ...  ...      ...  ...      ...
+               date       KITT KITT_err P014 P014_err SA46 SA46_err SA48 ...
+               UTC         mm     mm     mm     mm     mm     mm     mm  ...
+      ------------------- ---- -------- ---- -------- ---- -------- ---- ...
+      2016-11-14 00:15:00  4.7    1.025  6.9    0.525  9.8    0.725   -- ...
+      2016-11-14 00:45:00  4.3    1.025  6.7    0.425  9.9    0.525   -- ...
+      2016-11-14 01:15:00  3.9    0.925  6.7    0.425  9.7    0.525   -- ...
+                   ...     ...      ...  ...      ...  ...      ...  ... ...
 
 If no SuomiNet data is available at all during the specified datetime, then the
 returned table will be empty.
@@ -111,10 +112,8 @@ returned table will be empty.
 Modeled PWV Data
 ================
 
-Using SuomiNet data, **pwv_kpno** creates a model for the PWV level at Kitt
-Peak. This model is used exclusively when modeling the atmospheric absorption,
-and is updated to reflect new measurements every time the ``update_models``
-function is run. To retrieve this model, use the ``modeled_pwv`` function.
+To retrieve the modeled PWV level at Kitt Peak National Observatory, use the
+``modeled_pwv`` function.
 
 .. autofunction:: pwv_kpno.pwv_atm.modeled_pwv
 
@@ -129,23 +128,23 @@ To retrieve the entire PWV model from 2010 onward:
     >>> from pwv_kpno import pwv_atm
     >>> pwv_atm.modeled_pwv()
 
-                 date      pwv  pwv_err
-                 UTC        mm
+               date       pwv   pwv_err
+               UTC         mm     mm
       ------------------- ----- -------
-      2010-01-01 00:15:00 1.744   0.078
-      2010-01-01 00:45:00 1.726   0.078
-      2010-01-01 01:15:00 1.374   0.065
+      2010-01-01 00:15:00 1.55    1.227
+      2010-01-01 00:45:00 1.532   1.225
+      2010-01-01 01:15:00 1.178   1.175
                       ...   ...     ...
 
-To retrieve the modeled PWV level over for November 14th, 2016:
+To retrieve the modeled PWV level for November 14th, 2016:
 
 .. code-block:: python
     :linenos:
 
     >>> pwv_atm.modeled_pwv(year=2016, month=11, day=14)
 
-                 date     pwv pwv_err
-                 UTC       mm
+               date       pwv pwv_err
+               UTC         mm   mm
       ------------------- --- -------
       2016-11-14 00:15:00 4.7   1.025
       2016-11-14 00:45:00 4.3   1.025
