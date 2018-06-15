@@ -22,7 +22,6 @@
     atmospheric_modeling
     blackbody_modeling
     correcting_observations
-    for_developers
 
 |
 |
@@ -33,7 +32,7 @@ Overview
 
 **pwv_kpno** is a Python package for modeling the atmospheric absorption due
 to H\ :sub:`2`\ O at Kitt Peak National Observatory. It provides atmospheric
-models in the near-infrared (from 7,000 to 10,000 Angstroms) for years 2010
+models in the near-infrared (from 700 to 1,000 nm) for years 2010
 onward. Understanding atmospheric effects is important when calibrating
 ground based astronomical observations. Traditionally, determining the detailed
 atmospheric transmission function at a given date and time required performing
@@ -49,6 +48,10 @@ SuomiNet data in conjunction with MODTRAN models to determine the modeled
 atmospheric transmission function at Kitt Peak in close to real time. The
 package also provides automated retrieval and processing of SuomiNet data,
 allowing photometry to typically be corrected within an hour of observation.
+
+pwv_kpno is open source software released under the GNU General Public License.
+Issues raised on `GitHub <https://github.com/mwvgroup/pwv_kpno>`_ and pull
+requests from contributors are welcome.
 
 ***********
 How to Cite
@@ -76,9 +79,6 @@ with the National Science Foundation.
 ********************
 Additional Resources
 ********************
-
-- The source code of **pwv_kpno** is publicly available on
-  `GitHub <https://github.com/mwvgroup/pwv_kpno>`_.
 
 - An up time monitor for the SuomiNet website can be found
   `here <https://stats.uptimerobot.com/gn1xqsJvj>`_.

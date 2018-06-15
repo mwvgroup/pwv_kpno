@@ -106,7 +106,7 @@ data available from the SA48 receiver for this date:
       2016-11-14 01:15:00  3.9    0.925  6.7    0.425  9.7    0.525   -- ...
                    ...     ...      ...  ...      ...  ...      ...  ... ...
 
-If no SuomiNet data is available at all during the specified datetime, then the
+**Note:** If no SuomiNet data is available at all during the specified datetime, then the
 returned table will be empty.
 
 Modeled PWV Data

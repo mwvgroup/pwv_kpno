@@ -61,8 +61,7 @@ appropriate).
 In order to divide these two results, the SED at and the transmission function
 must be known for the same wavelength values. Since the SED is a well
 behaved function, we interpolate the SED to match the wavelength sampling of
-the transmission function. In general the transmission function not a smooth
-function, which can cause problems when interpolating.
+the transmission function.
 
 Using the ``numpy`` package, we interpolate as follows:
 

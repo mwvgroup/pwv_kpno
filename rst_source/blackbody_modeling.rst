@@ -31,7 +31,7 @@ Example:
     >>> sed = bb_atm.sed(bb_temp, wavelengths, pwv)
 
 **Note:** If desired, the SED of a black body without atmospheric effects can
-also be achieved by specifying a PWV level of zero.
+be achieved by specifying a PWV level of zero.
 
 Magnitude
 =========

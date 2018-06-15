@@ -14,7 +14,7 @@ SuomiNet data to be available on the local machine. See the
 :ref:`accessing_data:Updating Data` section for more details.
 
 To find the atmospheric transmission for a given datetime, use the
-``trans_for_date`` method.
+``trans_for_date`` function.
 
 .. autofunction:: pwv_kpno.pwv_atm.trans_for_date
 
