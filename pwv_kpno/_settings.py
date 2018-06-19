@@ -43,7 +43,7 @@ class ModelingConfigError(Exception):
 def location_property(f):
     @property
     def wrapper(self, *args, **kwargs):
-        if self._location is None:
+        if self._loc_name is None:
             raise ModelingConfigError(
                 'No loc_name has been set for pwv_kpno model.')
 
