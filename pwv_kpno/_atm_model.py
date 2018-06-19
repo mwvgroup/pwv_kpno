@@ -31,70 +31,66 @@ from astropy.table import Table
 import numpy as np
 import scipy.interpolate as interpolate
 
-from ._settings import Settings
+from ._settings import settings
 
-__authors__ = 'Azalee Bostroem'
+__authors__ = ['Azalee Bostroem', 'Daniel Perrefort']
 __copyright__ = 'Copyright 2016, Azalee Bostroem'
 __editor__ = 'Daniel Perrefort'
 
 __license__ = 'GPL V3'
-__email__ = 'abostroem@gmail.com'
+__email__ = 'djperrefort@pitt.com'
 __status__ = 'Development'
 
-PHOSIM_DATA = Settings()._phosim_dir
+PHOSIM_DATA = settings._phosim_dir
 
 
 def _load_cross_section(filename, x_fine):
-    """Interpolate cross-section to fine wavelength grid (x_fine)
+    """Interpolate cross sections to fine wavelength grid
 
     Args:
-        filename: name of cross-section file
+        filename   (str): The path of a file with MODTRAN cross-sections
+        x_fine (ndarray): An array of wavelengths in microns
 
     Returns:
-        Cross-section data interpolated to input wavelength scale
+        A 2d array of wavelengths (microns) and cross sections (cm^2)
     """
 
     cs = np.loadtxt(filename)
     y_func = interpolate.interp1d(cs[:, 0], cs[:, 1], kind='nearest')
     cs = np.transpose(np.array([x_fine, y_func(x_fine)]))
-    return cs[:, :2]  # slice to the first two columns
+    return cs[:, :2]  # Only keep wavelength and cross section columns
 
 
 def _construct_atm_sys(x_fine):
-    """Create an array of interpolated cross section for H20, O3, and O2
-    at each wavelength in the fine wavelength array. Cross sections
-    are stacked into a single array
+    """Create an array of interpolated cross sections for H20, O3, and O2
+
+    Cross sections are interpolated for a given array of wavelengths
 
     Args:
-        x_fine: fine wavelength array
+        x_fine (ndarray): An array of wavelengths in microns
 
     Returns:
-        tuple with:
-            array of cross-sections stacked together
+        Array of wavelengths (microns) and cross sections (cm^2) for each site
     """
 
-    filelist = ['h2ocs.txt', 'o3cs.txt', 'o2cs.txt']  # cross section in cm^2
-
-    a_h2o = _load_cross_section(os.path.join(PHOSIM_DATA, filelist[0]), x_fine)
-    a_o3 = _load_cross_section(os.path.join(PHOSIM_DATA, filelist[1]), x_fine)
-    a_o2 = _load_cross_section(os.path.join(PHOSIM_DATA, filelist[2]), x_fine)
-
-    atm_list = np.array([a_h2o, a_o3, a_o2])
-    return atm_list
+    file_list = ['h2ocs.txt', 'o3cs.txt', 'o2cs.txt']
+    h2o = _load_cross_section(os.path.join(PHOSIM_DATA, file_list[0]), x_fine)
+    o3 = _load_cross_section(os.path.join(PHOSIM_DATA, file_list[1]), x_fine)
+    o2 = _load_cross_section(os.path.join(PHOSIM_DATA, file_list[2]), x_fine)
+    return np.array([h2o, o3, o2])
 
 
-def _calculate_atm(atm_list, x_fine, xlf_dict, pint_list):
+def _calculate_trans(x_fine, xlf_dict, pint_list):
     """Calculate the atmospheric transmission
 
     Args:
-        atm_list: array of cross-sections of H2O, O2, and O3
-        x_fine: wavelength array
-        xlf_dict: dictionary of values to be used to scale of p_int for
-                      different levels of H2O, O2, and O3
-        pint_list: list of initial p_int values
+        x_fine   (ndarray): An array of wavelengths in microns
+        xlf_dict    (dict): Values to be used to scale of p_int for different
+                             levels of H2O, O2, and O3
+        pint_list   (list): A list of initial p_int values
 
     Returns:
-        transmission of all species
+        An array of the H2O transmission for each wavelength in x_fine
     """
 
     # The following code allows for the modeling for atmospheric
@@ -112,60 +108,56 @@ def _calculate_atm(atm_list, x_fine, xlf_dict, pint_list):
     # O2 transmission
     # + -cross-section*pint*tune?*x1f
     o2_len = len(xlf_dict['o2'])
-    tau_aero_o2 = tau_aero + (-atm_list[2, :, 1] * pint_list[2] *
+    tau_aero_o2 = tau_aero + (-cross_sections[2, :, 1] * pint_list[2] *
                               xlf_dict['o2'].reshape((1, 1, o2_len, 1, 1, 1)))
 
     # X O3 transmission
     o3_len = len(xlf_dict['o3'])
-    tau_aero_o3 = (-atm_list[1, :, 1] * pint_list[1] *
+    tau_aero_o3 = (-cross_sections[1, :, 1] * pint_list[1] *
                    xlf_dict['o3'].reshape((1, o3_len, 1, 1, 1, 1)))
     tau_aero_o2_o3 = tau_aero_o2 + tau_aero_o3
 
     # X H2o transmission
     h2o_len = len(xlf_dict['h2o'])
-    tau_aero_h2o = (-atm_list[0, :, 1] * pint_list[0] *
+    tau_aero_h2o = (-cross_sections[0, :, 1] * pint_list[0] *
                     xlf_dict['h2o'].reshape((h2o_len, 1, 1, 1, 1, 1)))
     tau_aero_o2_o3_h2o = tau_aero_o2_o3 + tau_aero_h2o
     """
 
     # X H2o transmission
+    cross_sections = _construct_atm_sys(x_fine)
     h2o_len = len(xlf_dict['h2o'])
-    tau_aero_o2_o3_h2o = (-atm_list[0, :, 1] * pint_list[0] *
-                          xlf_dict['h2o'].reshape((h2o_len, 1, 1, 1, 1, 1)))
+    tau_h2o = (-cross_sections[0, :, 1] * pint_list[0] *
+               xlf_dict['h2o'].reshape((h2o_len, 1, 1, 1, 1, 1)))
 
-    return np.exp(tau_aero_o2_o3_h2o)
+    return np.exp(tau_h2o)
 
 
 def _generate_atm_model(wl_start, wl_end, dispersion, pint_list, xlf_dict):
     """Generate a model of atmospheric absorption
 
     Args:
-        wl_start: starting wavelength of model in angstroms
-        wl_end: ending wavelength of model in angstroms
-        dispersion: dispersion of model (angstroms/pix)
+        wl_start   (float): Starting wavelength of the model in angstroms
+        wl_end     (float): Ending wavelength of the model in angstroms
+        dispersion (float): Dispersion of the model (angstroms / pix)
 
     Returns:
-        atm_transmission: the atmospheric transmission
+        An array of wavelengths in Angstroms
+        An array of the H2O transmission for each wavelength
     """
 
-    num_pts = (wl_end - wl_start)/float(dispersion)
-
+    num_pts = (wl_end - wl_start) / float(dispersion)
     x_fine_ang = np.linspace(wl_start, wl_end, num_pts)
-    x_fine = x_fine_ang / 10000.  # In microns
-
-    atm_list = _construct_atm_sys(x_fine)
-    atm_transmission = _calculate_atm(atm_list, x_fine, xlf_dict, pint_list)
+    x_fine = x_fine_ang / 10000.  # Convert to microns
+    atm_transmission = _calculate_trans(x_fine, xlf_dict, pint_list)
     return x_fine_ang, atm_transmission
 
 
 def write_atm_models(output_dir):
-    """Uses the function _generate_atm_model to create an atmospheric
-    model, and writes the results to disk as csv files in the directory
-    output_dir. CSV files are named 'atm_trans_mod_VAL_pwv' where VAL
-    is the PWV value in mm.
+    """Create an atmospheric model and write it to atm_model.csv
 
     Args:
-        output_dir (str): The directory each generated file is written to
+        output_dir (str): The directory where atm_model.csv will be written
     """
 
     if not os.path.isdir(output_dir):
@@ -196,8 +188,7 @@ def write_atm_models(output_dir):
     wl, atm_trans = _generate_atm_model(7000, 10000, 1, pint_list, xlf_dict)
 
     # Asserts that transmission is 100% for all wavelengths when PWV is 0
-    out_table = Table(names=['wavelength', '00.0'],
-                      data=[wl, [1 for i in wl]])
+    out_table = Table(data=[wl, [1 for i in wl]], names=['wavelength', '00.0'])
 
     for model_num, model in enumerate(xlf_dict['h2o']):
         temp_table = Table(data=[wl, atm_trans[model_num, 0, 0, 0, 0, :]],
