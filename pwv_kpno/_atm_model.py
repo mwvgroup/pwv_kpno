@@ -185,7 +185,7 @@ def write_atm_models(output_dir):
         'index': np.array([1.28])  # aerosol index
     }
 
-    wl, atm_trans = _generate_atm_model(7000, 10000, 1, pint_list, xlf_dict)
+    wl, atm_trans = _generate_atm_model(3000, 12000, 1, pint_list, xlf_dict)
 
     # Asserts that transmission is 100% for all wavelengths when PWV is 0
     out_table = Table(data=[wl, [1 for i in wl]], names=['wavelength', '00.0'])
