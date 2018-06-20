@@ -48,8 +48,10 @@ def calc_num_density_conversion():
     n_a = 6.02214129E23       # 1 / mol (Avogadro's constant)
     h2o_molar_mass = 18.0152  # g / mol
     h2o_density = 0.99997     # g / cm^3
-    one_mm_in_cm = 10         # cm
-    mm_to_num_dens = n_a / (h2o_molar_mass * h2o_density * one_mm_in_cm)
+    one_mm_in_cm = 10         # mm / cm
+
+    # Conversion factor 1 / (mm * cm^2)
+    mm_to_num_dens = (n_a * h2o_density) / (h2o_molar_mass * one_mm_in_cm)
 
     return mm_to_num_dens
 
