@@ -28,7 +28,6 @@ from warnings import warn
 import numpy as np
 from pytz import utc
 from astropy.table import Table
-from scipy.interpolate import interpn
 
 from ._settings import settings
 from ._serve_pwv_data import _pwv_date, timestamp
@@ -43,17 +42,13 @@ __status__ = 'Development'
 
 
 def _raise_pwv(pwv):
-    """Raise exception if pwv argument has wrong type or value
+    """Raise exception if pwv argument has wrong value
 
-    Provides type and value checking for a PWV concentration. PWV values should
-    be wither a float or int in the range 0 <= pwv <= 30.1
+    PWV values should be in the range 0 <= pwv <= 30.1
 
     Args:
         pwv (int, float): A PWV concentration in mm
     """
-
-    if not isinstance(pwv, (int, float)):
-        raise TypeError('PWV concentration must be int or float')
 
     if pwv < 0:
         raise ValueError('PWV concentration cannot be negative')
@@ -81,28 +76,11 @@ def trans_for_pwv(pwv):
     _raise_pwv(pwv)
 
     atm_model = Table.read(settings._atm_model_path)
-    wavelengths = atm_model['wavelength']
-    atm_model.remove_column('wavelength')
+    atm_model['transmission'] = np.exp(- pwv * atm_model['mm_cm_2'])
+    atm_model.remove_column('mm_cm_2')
+    atm_model['wavelength'].unit = 'angstrom'
 
-    pwv_values = []
-    array_shape = (len(atm_model.colnames), len(wavelengths))
-    transmission_models = np.zeros(array_shape, dtype=np.float)
-
-    for i, column in enumerate(atm_model.itercols()):
-        pwv_values.append(float(column.name))
-        transmission_models[i, :] = column
-
-    # interpn will automatically extrapolate for values outside the domain
-    interp_trans = interpn(points=(pwv_values, wavelengths),
-                           values=transmission_models,
-                           xi=np.array([[pwv, x] for x in wavelengths]))
-
-    trans_func = Table([wavelengths, interp_trans],
-                       names=['wavelength', 'transmission'],
-                       dtype=[float, float])
-
-    trans_func['wavelength'].unit = 'angstrom'
-    return trans_func
+    return atm_model
 
 
 def _raise_transmission_args(date, airmass):
