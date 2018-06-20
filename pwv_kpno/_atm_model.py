@@ -54,7 +54,7 @@ def calc_num_density_conversion():
     return mm_to_num_dens
 
 
-def create_atm_model(mod_lambda, mod_cs, out_lambda):
+def create_pwv_atm_model(mod_lambda, mod_cs, out_lambda):
     """Creates a table of conversion factors from PWV to number density
 
     Expects input and output wavelengths to be in same units. Expects modeled
@@ -71,10 +71,14 @@ def create_atm_model(mod_lambda, mod_cs, out_lambda):
 
     # Todo: Add contribution from 02, 03, and aerosols to this function
 
-    interp_cs = interpolate.interp1d(mod_lambda, mod_cs, kind='nearest')
-    cross_sections = interp_cs(out_lambda)
-    pwv_num_density = cross_sections * calc_num_density_conversion()
+    if not np.array_equal(mod_lambda, out_lambda):
+        interp_cs = interpolate.interp1d(mod_lambda, mod_cs, kind='nearest')
+        out_cs = interp_cs(out_lambda)
 
+    else:
+        out_cs = mod_cs
+
+    pwv_num_density = out_cs * calc_num_density_conversion()
     out_table = Table([out_lambda, pwv_num_density],
                       names=['wavelength', 'mm_cm_2'])
 
@@ -86,12 +90,12 @@ if __name__ == '__main__':
     from pwv_kpno._settings import settings
 
     # Load modeled wavelengths and cross sections
-    h2o_cs_path = os.path.join(settings._phosim_dir, 'h2ocs.txt')
+    h2o_cs_path = os.path.join(settings._loc_dir, 'atmosphere/h2ocs.txt')
     cs_data = np.loadtxt(h2o_cs_path, usecols=[0, 1]).transpose()
     mod_lambda = cs_data[0] * 10000  # convert from microns to angstroms
     mod_cs = cs_data[1]
 
     out_lambda = np.arange(3000., 12001., 1)  # Angstroms
-    transmission = create_atm_model(mod_lambda, mod_cs, out_lambda)
+    transmission = create_pwv_atm_model(mod_lambda, mod_cs, out_lambda)
 
     transmission.write(settings._atm_model_path, overwrite=True)

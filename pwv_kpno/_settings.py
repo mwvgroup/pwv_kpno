@@ -113,10 +113,6 @@ class Settings:
         return self._config_path_unf.format(self.loc_name)
 
     @property
-    def _phosim_dir(self):
-        return os.path.join(self._loc_dir, 'atmosphere')
-
-    @property
     def _atm_model_path(self):
         return os.path.join(self._loc_dir, 'atm_model.csv')
 

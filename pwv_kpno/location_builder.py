@@ -22,9 +22,7 @@
 
 import os
 
-from astropy.table import Table
-
-from ._settings import settings
+from ._atm_model import create_pwv_atm_model
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -35,8 +33,7 @@ __status__ = 'Development'
 
 
 class LocationBuilder:
-    # Todo: Value checks
-    # Todo: Accept MODTRAN inputs and build model with _atm_model.py
+    # Todo: Add value checks and documentation when publicly released
 
     def __init__(self, **kwargs):
 
@@ -46,6 +43,8 @@ class LocationBuilder:
         self.loc_name = None
         self.primary_rec = None
         self.sup_rec = []
+        self.wavelengths = None
+        self.cross_sections = None
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -72,8 +71,14 @@ class LocationBuilder:
             out_dir (str): The desired output directory
         """
 
-        demo_table = Table.read(settings._atm_model_path)
-        demo_table.meta = self._create_config_dict()
+        model = create_pwv_atm_model(mod_lambda=self.wavelengths,
+                                     mod_cs=self.cross_sections,
+                                     out_lambda=self.wavelengths)
 
+        model.meta = self._create_config_dict()
         out_path = os.path.join(out_dir, self.loc_name + '.ecsv')
-        demo_table.write(out_path)
+        model.write(out_path)
+
+    def __repr__(self):
+        rep = '<pwv_kpno.LocationBuilder>'
+        return rep.format(self.loc_name)
