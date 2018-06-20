@@ -11,7 +11,7 @@ from pwv_kpno import pwv_atm
 from pwv_kpno import blackbody_with_atm as bb_atm
 
 PWV_0 = 15
-TEMP_0 = 8000
+TEMP_0 = 8500
 
 
 def source_dict(bb_temp, pwv):
@@ -24,46 +24,27 @@ def source_dict(bb_temp, pwv):
     b_body = bb_atm.sed(bb_temp, wavelengths, 0)
     b_body_atm = bb_atm.sed(bb_temp, wavelengths, pwv)
 
-    i_model = transmission_model[wavelengths < 8500]
-    i_scale_const = np.trapz(i_model['transmission'], i_model['wavelength'])
-    i_scale_const /= (max(i_model['wavelength']) - min(i_model['wavelength']))
-
-    z_model = transmission_model[8500 < wavelengths]
-    z_scale_const = np.trapz(z_model['transmission'], z_model['wavelength'])
-    z_scale_const /= (max(z_model['wavelength']) - min(z_model['wavelength']))
-
     data_dict = dict(
         transmission=transmission,
         wavelengths=wavelengths,
         b_body=b_body,
         b_body_atm=b_body_atm,
-        b_body_iscale=b_body * i_scale_const,
-        b_body_zscale=b_body * z_scale_const
     )
 
     return data_dict
 
 
 # Set up plot
-source = ColumnDataSource(data=source_dict(8000, PWV_0))
-fig_args = dict(plot_width=400, plot_height=400, y_range=(0, 1E7), title=None)
+source = ColumnDataSource(data=source_dict(TEMP_0, PWV_0))
+fig_args = dict(plot_width=800, plot_height=400, y_range=(0, 2E7), title=None)
 
-s1 = figure(**fig_args, x_range=(7000, 8500))
+s1 = figure(**fig_args, x_range=(3000, 12000))
 s1.line('wavelengths', 'b_body_atm', source=source, color="navy", alpha=.75)
 s1.line('wavelengths', 'b_body', source=source, color="green", line_width=1.75)
-s1.line('wavelengths', 'b_body_iscale', source=source, color="red", line_width=1.75)
 s1.yaxis.axis_label = 'Black Body Flux (ergs / s / A / cm^2 / sr)'
 s1.xaxis.axis_label = 'Wavelength'
 
-s2 = figure(**fig_args, x_range=(8500, 10000))
-s2.line('wavelengths', 'b_body_atm', source=source, color="navy", alpha=.75, legend='With Atmosphere')
-s2.line('wavelengths', 'b_body', source=source, color="green", line_width=1.75, legend='Black Body')
-s2.line('wavelengths', 'b_body_zscale', source=source, color="red", line_width=1.75, legend='Scaled by absorption')
-s2.xaxis.axis_label = 'Wavelength'
-s2.legend.location = "top_right"
-s2.legend.click_policy = "hide"
-
-plot = gridplot([[s1, s2]], toolbar_location=None)
+plot = gridplot([[s1]], toolbar_location='right')
 
 
 # Set up widgets
