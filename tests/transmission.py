@@ -102,7 +102,6 @@ class TransmissionPwvErrors(unittest.TestCase):
     def test_argument_types(self):
         """Test errors raised from function call with wrong argument types"""
 
-        self.assertRaises(TypeError, _raise_pwv, '13')
         self.assertIsNone(_raise_pwv(13))
         self.assertIsNone(_raise_pwv(13.0))
 
