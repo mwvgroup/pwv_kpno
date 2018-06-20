@@ -166,10 +166,11 @@ Examples:
 To retrieve the modeled PWV level for November 14, 2016 at 11:06 AM:
 
 .. code-block:: python
+    :linenos:
 
-   >>> from datetime import datetime
-   >>> from pwv_kpno import pwv_atm
-   >>> import pytz
-   >>>
-   >>> date = datetime(2016, 11, 14, 11, 6, tzinfo=pytz.utc)
-   >>> pwv = pwv_atm.pwv_date(date)
+    >>> from datetime import datetime
+    >>> from pwv_kpno import pwv_atm
+    >>> import pytz
+    >>>
+    >>> date = datetime(2016, 11, 14, 11, 6, tzinfo=pytz.utc)
+    >>> pwv = pwv_atm.pwv_date(date)
