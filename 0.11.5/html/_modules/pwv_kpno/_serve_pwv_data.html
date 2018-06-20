@@ -1,0 +1,459 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pwv_kpno._serve_pwv_data &mdash; pwv_kpno 0.11.5 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pwv_kpno
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.11.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">1. Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../accessing_data.html">2. Accessing PWV Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../atmospheric_modeling.html">3. Modeling the Atmosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../blackbody_modeling.html">4. Modeling a Black Body</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../correcting_observations.html">5. Correcting Observations</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pwv_kpno</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pwv_kpno._serve_pwv_data</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pwv_kpno._serve_pwv_data</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+
+<span class="c1">#    This file is part of the pwv_kpno software package.</span>
+<span class="c1">#</span>
+<span class="c1">#    The pwv_kpno package is free software: you can redistribute it and/or</span>
+<span class="c1">#    modify it under the terms of the GNU General Public License as published</span>
+<span class="c1">#    by the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1">#    (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1">#    The pwv_kpno package is distributed in the hope that it will be useful,</span>
+<span class="c1">#    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1">#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General</span>
+<span class="c1">#    Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1">#    You should have received a copy of the GNU General Public License</span>
+<span class="c1">#    along with pwv_kpno.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">&quot;&quot;&quot;This document contains functions for searching and returning the locally</span>
+<span class="sd">available PWV data. Functions are also provided to determine what years of</span>
+<span class="sd">SuomiNet data files have been downloaded to the local machine.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">astropy.table</span> <span class="k">import</span> <span class="n">Table</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pytz</span> <span class="k">import</span> <span class="n">utc</span>
+
+<span class="kn">from</span> <span class="nn">._settings</span> <span class="k">import</span> <span class="n">settings</span>
+
+<span class="n">__authors__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Daniel Perrefort&#39;</span><span class="p">,</span> <span class="s1">&#39;Alexander Afanasyev&#39;</span><span class="p">]</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s1">&#39;Copyright 2017, Daniel Perrefort&#39;</span>
+
+<span class="n">__license__</span> <span class="o">=</span> <span class="s1">&#39;GPL V3&#39;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s1">&#39;djperrefort@pitt.edu&#39;</span>
+<span class="n">__status__</span> <span class="o">=</span> <span class="s1">&#39;Development&#39;</span>
+
+
+<span class="k">def</span> <span class="nf">timestamp</span><span class="p">(</span><span class="n">date</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns seconds since epoch of a UTC datetime in %Y-%m-%dT%H:%M format</span>
+
+<span class="sd">    This function provides comparability for Python 2.7, for which the</span>
+<span class="sd">    datetime.timestamp method was not yet available.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        date (datetime.datetime): A datetime to find the timestamp for</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The timestamp of the provided datetime as a float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">unix_epoch</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">1970</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">utc</span><span class="p">)</span>
+    <span class="n">utc_date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">utc</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">utc_date</span> <span class="o">-</span> <span class="n">unix_epoch</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">_pwv_date</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">airmass</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">test_model</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the modeled PWV column density at Kitt Peak for a given date</span>
+
+<span class="sd">    Interpolate from the modeled PWV column density at Kitt Peak and return</span>
+<span class="sd">    the PWV column density for a given datetime and airmass.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        date    (datetime): The date of the desired PWV column density</span>
+<span class="sd">        airmass    (float): The airmass along line of sight</span>
+<span class="sd">        test_model (Table): A mock PWV model used by the test suite</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The modeled PWV column density for Kitt Peak</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">test_model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pwv_model</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">_pwv_model_path</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pwv_model</span> <span class="o">=</span> <span class="n">test_model</span>
+
+    <span class="c1"># Determine the PWV level along line of sight as pwv(zenith) * airmass</span>
+    <span class="n">time_stamp</span> <span class="o">=</span> <span class="n">timestamp</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
+    <span class="n">pwv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">time_stamp</span><span class="p">,</span> <span class="n">pwv_model</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">],</span> <span class="n">pwv_model</span><span class="p">[</span><span class="s1">&#39;pwv&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">airmass</span>
+    <span class="k">return</span> <span class="n">pwv</span>
+
+
+<div class="viewcode-block" id="pwv_date"><a class="viewcode-back" href="../../accessing_data.html#pwv_kpno.pwv_atm.pwv_date">[docs]</a><span class="k">def</span> <span class="nf">pwv_date</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">airmass</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="c1"># This function is a public wrapper for _pwv_date</span>
+    <span class="sd">&quot;&quot;&quot;Returns the modeled PWV column density at Kitt Peak for a given date</span>
+
+<span class="sd">    Interpolate from the modeled PWV column density at Kitt Peak and return</span>
+<span class="sd">    the PWV column density for a given datetime and airmass.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        date (datetime): The date of the desired PWV column density</span>
+<span class="sd">        airmass (float): The airmass along line of sight</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The modeled PWV column density for Kitt Peak</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">_pwv_date</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">airmass</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="available_data"><a class="viewcode-back" href="../../accessing_data.html#pwv_kpno.pwv_atm.available_data">[docs]</a><span class="k">def</span> <span class="nf">available_data</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Return a list of years for which SuomiNet data has been downloaded</span>
+
+<span class="sd">    Return a list of years for which SuomiNet data has been downloaded to the</span>
+<span class="sd">    local machine. Note that this list includes years for which any amount</span>
+<span class="sd">    of data has been downloaded. It does not indicate if additional data has</span>
+<span class="sd">    been released by SuomiNet for a given year that is not locally available.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A list of years with locally available SuomiNet data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">available_years</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_check_date_time_args</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Provides type and value checking for date and time arguments</span>
+
+<span class="sd">    This function provides argument type and value checking for the functions</span>
+<span class="sd">    `measured_pwv` and `modeled_pwv`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        year  (int): An integer value between 2010 and the current year</span>
+<span class="sd">        month (int): An integer value between 1 and 12 (inclusive)</span>
+<span class="sd">        day   (int): An integer value between 1 and 31 (inclusive)</span>
+<span class="sd">        hour  (int): An integer value between 0 and 23 (inclusive)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">year</span> <span class="o">&lt;</span> <span class="mi">2010</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;pwv_kpno does not provide data years prior to 2010&#39;</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">year</span> <span class="o">&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">year</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Argument &#39;year&#39; (pos 1) is larger than current year&quot;</span><span class="p">)</span>
+
+    <span class="n">arg_constraints</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">)),</span>
+                       <span class="p">(</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">31</span><span class="p">)),</span>
+                       <span class="p">(</span><span class="s1">&#39;hour&#39;</span><span class="p">,</span> <span class="n">hour</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">23</span><span class="p">))]</span>
+
+    <span class="k">for</span> <span class="n">arg</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">bounds</span> <span class="ow">in</span> <span class="n">arg_constraints</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">value</span> <span class="o">&lt;=</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid value for </span><span class="si">{0}</span><span class="s1">: </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_search_dt_table</span><span class="p">(</span><span class="n">data_tab</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Search an astropy table of dates</span>
+
+<span class="sd">    Given an astropy table with column &#39;date&#39;, return all entries in the table</span>
+<span class="sd">    for which there is an object in that column with attributes matching the</span>
+<span class="sd">    given kwargs.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data_tab (astropy.table.Table): An astropy table to search</span>
+<span class="sd">        **kwargs (): The parameters to search data_tab for</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Entries from data_tab that match search parameters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Credit for this function belongs to Alexander Afanasyev</span>
+    <span class="c1"># https://codereview.stackexchange.com/questions/165811</span>
+
+    <span class="k">def</span> <span class="nf">vectorized_callable</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks if datetime attributes match specified values&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">param_name</span><span class="p">)</span> <span class="o">==</span> <span class="n">param_value</span>
+                   <span class="k">for</span> <span class="n">param_name</span><span class="p">,</span> <span class="n">param_value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                   <span class="k">if</span> <span class="n">param_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">indexing_func</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">vectorized_callable</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data_tab</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">indexing_func</span><span class="p">(</span><span class="n">data_tab</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]]</span>
+
+
+<span class="k">def</span> <span class="nf">_read_and_format</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Reads a PWV data table from file and formats the table and data</span>
+
+<span class="sd">    Adds units and converts &#39;date&#39; column from timestamps to datetimes.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): The path of the file to read</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        An astropy table with PWV data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="c1"># Convert UNIX timestamps to UTC</span>
+    <span class="n">to_datetime</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">date</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">utc</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">to_datetime</span><span class="p">)(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">])</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;UTC&#39;</span>
+
+    <span class="k">for</span> <span class="n">colname</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">colnames</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">colname</span> <span class="o">!=</span> <span class="s1">&#39;date&#39;</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">colname</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;mm&#39;</span>
+
+    <span class="k">return</span> <span class="n">data</span>
+
+
+<div class="viewcode-block" id="measured_pwv"><a class="viewcode-back" href="../../accessing_data.html#pwv_kpno.pwv_atm.measured_pwv">[docs]</a><span class="k">def</span> <span class="nf">measured_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return an astropy table of PWV measurements taken by SuomiNet</span>
+
+<span class="sd">    Return an astropy table of precipitable water vapor (PWV) measurements</span>
+<span class="sd">    taken by the SuomiNet project. Columns are named using the SuomiNet IDs for</span>
+<span class="sd">    different locations and contain PWV measurements for that location in</span>
+<span class="sd">    millimeters. Results can be optionally refined by year, month, day, and</span>
+<span class="sd">    hour.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        year  (int): The year of the desired PWV data</span>
+<span class="sd">        month (int): The month of the desired PWV data</span>
+<span class="sd">        day   (int): The day of the desired PWV data</span>
+<span class="sd">        hour  (int): The hour of the desired PWV data in 24-hour format</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        An astropy table of measured PWV values in mm</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_check_date_time_args</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">hour</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">_read_and_format</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">_pwv_measred_path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_search_dt_table</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="n">day</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="n">hour</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="modeled_pwv"><a class="viewcode-back" href="../../accessing_data.html#pwv_kpno.pwv_atm.modeled_pwv">[docs]</a><span class="k">def</span> <span class="nf">modeled_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return an astropy table of the modeled PWV at Kitt Peak</span>
+
+<span class="sd">    Return a model for the precipitable water vapor level at Kitt Peak as an</span>
+<span class="sd">    astropy table. PWV measurements are reported in units of millimeters.</span>
+<span class="sd">    Results can be optionally refined by year, month, day, and hour.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        year  (int): The year of the desired PWV data</span>
+<span class="sd">        month (int): The month of the desired PWV data</span>
+<span class="sd">        day   (int): The day of the desired PWV data</span>
+<span class="sd">        hour  (int): The hour of the desired PWV data in 24-hour format</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        An astropy table of modeled PWV values in mm</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_check_date_time_args</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">hour</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">_read_and_format</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">_pwv_model_path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_search_dt_table</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="n">day</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="n">hour</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Daniel J. Perrefort.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.11.5',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,366 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>5. Correcting Observations &mdash; pwv_kpno 0.11.5 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="4. Modeling a Black Body" href="blackbody_modeling.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pwv_kpno
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.11.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">1. Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="accessing_data.html">2. Accessing PWV Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">3. Modeling the Atmosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">4. Modeling a Black Body</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">5. Correcting Observations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#spectrographic-observations">5.1. Spectrographic Observations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#photometric-observations">5.2. Photometric Observations</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pwv_kpno</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>5. Correcting Observations</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/correcting_observations.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="correcting-observations">
+<h1>5. Correcting Observations<a class="headerlink" href="#correcting-observations" title="Permalink to this headline">¶</a></h1>
+<p>Examples are provided on how to correct astronomical observations for
+atmospheric effects. For demonstration purposes, the following examples
+exclusively consider correcting observations of a black body.</p>
+<div class="section" id="spectrographic-observations">
+<h2>5.1. Spectrographic Observations<a class="headerlink" href="#spectrographic-observations" title="Permalink to this headline">¶</a></h2>
+<p>In order to correct spectrographic observations for atmospheric effects,
+observed spectra are divided by the atmospheric transmission function. As
+an example, consider the spectral energy distribution (SED) of a black body
+under the effects of atmospheric absorption. For a temperature of 8,000 K, and
+a PWV level of 15 mm, this can be found as:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">blackbody_with_atm</span> <span class="k">as</span> <span class="n">bb_atm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">temp</span> <span class="o">=</span> <span class="mi">8000</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wavelengths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">7000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pwv</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sed</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">sed</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">wavelengths</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">sed</span><span class="p">)</span>
+
+<span class="go">  [5406750.98492275, 5646734.81222486, ...,</span>
+<span class="go">   2460033.92176797  2383125.54323284]</span>
+</pre></div>
+</td></tr></table></div>
+<p>Since we know the PWV level used to generate this spectra, we can determine the
+corresponding transmission function using the <code class="docutils literal notranslate"><span class="pre">trans_for_pwv</span></code> function
+(although in a real world setting the <code class="docutils literal notranslate"><span class="pre">trans_for_date</span></code> function may be more
+appropriate).</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">modeled_trans</span> <span class="o">=</span> <span class="n">pwv_atm</span><span class="o">.</span><span class="n">trans_for_pwv</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">modeled_trans</span><span class="p">)</span>
+
+<span class="go">          wavelength        transmission</span>
+<span class="go">           Angstrom</span>
+<span class="go">      ------------------ ------------------</span>
+<span class="go">                  7000.0 0.9198165020431311</span>
+<span class="go">       7001.000333444482 0.8590254136327501</span>
+<span class="go">       7002.000666888963 0.9967736288238565</span>
+<span class="go">                     ...                ...</span>
+</pre></div>
+</td></tr></table></div>
+<p>In order to divide these two results, the SED at and the transmission function
+must be known for the same wavelength values. Since the SED is a well
+behaved function, we interpolate the SED to match the wavelength sampling of
+the transmission function.</p>
+<p>Using the <code class="docutils literal notranslate"><span class="pre">numpy</span></code> package, we interpolate as follows:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sampled_sed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">modeled_trans</span><span class="p">[</span><span class="s2">&quot;wavelength&quot;</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>                        <span class="n">wavelengths</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                        <span class="n">sed</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>The corrected spectrum can then be found by dividing the observed flux
+by the transmission on a wavelength by wavelength basis.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">corrected_spec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">sampled_sed</span><span class="p">,</span> <span class="n">modeled_trans</span><span class="p">[</span><span class="s2">&quot;transmission&quot;</span><span class="p">])</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="photometric-observations">
+<h2>5.2. Photometric Observations<a class="headerlink" href="#photometric-observations" title="Permalink to this headline">¶</a></h2>
+<p>For an atmospheric transmission <span class="math notranslate">\(T(\lambda)\)</span>, the photometric correction
+for an object with an intrinsic spectral energy distribution <span class="math notranslate">\(S(\lambda)\)</span>
+is given by</p>
+<div class="math notranslate">
+\[C = \frac{\int S(\lambda) \cdot T(\lambda) \, d\lambda}
+          {\int S(\lambda) \, d\lambda}\]</div>
+<p>where the integration bounds are defined by the wavelength range of the
+photometric bandpass. In practice an SED of the desired object may not be
+available. In such a case spectral templates should be used instead.</p>
+<p>Note that product in the numerator <span class="math notranslate">\(S(\lambda) \cdot T(\lambda)\)</span>
+represents the SED under the influence of atmospheric effects. For a
+photometric observation taken in the <em>i</em> band (7,000 to 8,500
+<span class="math notranslate">\(\unicode{x212B}\)</span>), the integration arguments can be found as:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">blackbody_with_atm</span> <span class="k">as</span> <span class="n">bb_atm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pwv</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">temp</span> <span class="o">=</span> <span class="mi">8000</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">i_band</span> <span class="o">=</span> <span class="p">(</span><span class="mi">7000</span><span class="p">,</span> <span class="mi">8500</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sample_rate</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wavelengths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">i_band</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">i_band</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">sample_rate</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sed_with_atm</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">sed</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">wavelengths</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>  <span class="c1"># S(lambda) T(lambda)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">intrinsic_sed</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">sed</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">wavelengths</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># S(lambda)</span>
+</pre></div>
+</td></tr></table></div>
+<p>Trapezoidal integration of array like objects in Python can be performed using
+the <code class="docutils literal notranslate"><span class="pre">Numpy</span></code> package. Using results from the spectrographic example we have:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">numerator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">sed_with_atm</span><span class="p">,</span> <span class="n">i_band</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">denominator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">intrinsic_sed</span><span class="p">,</span> <span class="n">i_band</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">photo_corr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">numerator</span><span class="p">,</span> <span class="n">denominator</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="blackbody_modeling.html" class="btn btn-neutral" title="4. Modeling a Black Body" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Daniel J. Perrefort.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.11.5',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script> 
+
+</body>
+</html>
