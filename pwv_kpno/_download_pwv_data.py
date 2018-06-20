@@ -209,7 +209,7 @@ def update_local_data(year=None, timeout=None):
     """
 
     # Get any local data that has already been downloaded
-    local_data = Table.read(settings._pwv_msred_path)
+    local_data = Table.read(settings._pwv_measred_path)
 
     # Determine what years to download
     current_years = settings.available_years
@@ -230,7 +230,7 @@ def update_local_data(year=None, timeout=None):
         new_years.append(yr)
 
     # Update local files
-    local_data.write(settings._pwv_msred_path, overwrite=True)
+    local_data.write(settings._pwv_measred_path, overwrite=True)
     current_years.extend(new_years)
     settings._replace_years(current_years)
 

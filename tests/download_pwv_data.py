@@ -176,7 +176,8 @@ class SuomiNetFileParsing(unittest.TestCase):
         self.assertFalse(is_negative_azam_data, msg.format(self.azam_hr_path))
         self.assertFalse(is_negative_p014_data, msg.format(self.p014_dy_path))
 
-    def test_parse_2010_data(self):
+    @staticmethod
+    def test_parse_2010_data():
         """Test file parsing of SuomiNet data published in 2010
 
         In 2010 SuomiNet changed the number of columns in their automatically

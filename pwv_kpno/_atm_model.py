@@ -94,10 +94,10 @@ if __name__ == '__main__':
     # Load modeled wavelengths and cross sections
     h2o_cs_path = os.path.join(settings._loc_dir, 'atmosphere/h2ocs.txt')
     cs_data = np.loadtxt(h2o_cs_path, usecols=[0, 1]).transpose()
-    mod_lambda = cs_data[0] * 10000  # convert from microns to angstroms
-    mod_cs = cs_data[1]
 
-    out_lambda = np.arange(3000., 12001., 1)  # Angstroms
-    transmission = create_pwv_atm_model(mod_lambda, mod_cs, out_lambda)
+    model_cs = cs_data[1]
+    model_lambda = cs_data[0] * 10000  # convert from microns to angstroms
+    output_lambda = np.arange(3000., 12001., 1)  # Angstroms
+    transmission = create_pwv_atm_model(model_lambda, model_cs, output_lambda)
 
     transmission.write(settings._atm_model_path, overwrite=True)

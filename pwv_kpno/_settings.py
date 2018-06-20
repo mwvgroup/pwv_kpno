@@ -121,7 +121,7 @@ class Settings:
         return os.path.join(self._loc_dir, 'modeled_pwv.csv')
 
     @property
-    def _pwv_msred_path(self):
+    def _pwv_measred_path(self):
         return os.path.join(self._loc_dir, 'measured_pwv.csv')
 
     @property
@@ -255,11 +255,11 @@ class Settings:
         atm_model_path = os.path.join(temp_dir, 'atm_model.json')
         data_table.write(atm_model_path)
 
-        self._create_loction_files()
+        self._create_location_files()
         shutil.rmtree(out_dir)
         shutil.move(temp_dir, out_dir)
 
-    def _create_loction_files(self):
+    def _create_location_files(self):
         pass  # Todo: Download data from suominet and create pwv model
 
 
