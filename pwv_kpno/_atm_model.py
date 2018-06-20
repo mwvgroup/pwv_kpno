@@ -72,7 +72,7 @@ def create_pwv_atm_model(mod_lambda, mod_cs, out_lambda):
     # Todo: Add contribution from 02, 03, and aerosols to this function
 
     if not np.array_equal(mod_lambda, out_lambda):
-        interp_cs = interpolate.interp1d(mod_lambda, mod_cs, kind='nearest')
+        interp_cs = interpolate.interp1d(mod_lambda, mod_cs)
         out_cs = interp_cs(out_lambda)
 
     else:
