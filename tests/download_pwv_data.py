@@ -31,7 +31,7 @@ from pwv_kpno._download_pwv_data import _suomi_date_to_timestamp
 from pwv_kpno._serve_pwv_data import timestamp
 from pwv_kpno._settings import Settings
 
-__author__ = 'Daniel Perrefort'
+__authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'

@@ -29,9 +29,8 @@ from pytz import utc
 
 from ._settings import settings
 
-__author__ = 'Daniel Perrefort'
+__authors__ = ['Daniel Perrefort', 'Alexander Afanasyev']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
-__credits__ = ['Alexander Afanasyev']
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'

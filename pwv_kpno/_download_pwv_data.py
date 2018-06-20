@@ -31,7 +31,7 @@ import requests
 
 from ._settings import settings
 
-__authors__ = 'Daniel Perrefort'
+__authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2016, Daniel Perrefort'
 __credits__ = ['Jessica Kroboth']
 

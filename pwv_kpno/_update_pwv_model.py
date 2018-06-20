@@ -32,7 +32,7 @@ from scipy.stats import binned_statistic
 from ._download_pwv_data import update_local_data
 from ._settings import settings
 
-__author__ = 'Daniel Perrefort'
+__authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'

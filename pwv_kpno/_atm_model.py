@@ -27,7 +27,7 @@ import numpy as np
 import scipy.interpolate as interpolate
 from astropy.table import Table
 
-__authors__ = 'Daniel Perrefort'
+__authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2016, Daniel Perrefort'
 __credits__ = ['Azalee Bostroem']
 

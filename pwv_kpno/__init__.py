@@ -27,7 +27,7 @@ from . import pwv_atm
 from . import blackbody_with_atm
 from ._settings import settings as _settings
 
-__author__ = 'Daniel Perrefort'
+__authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
 __credits__ = ['Michael Wood-Vasey', 'Azalee Bostroem',
                'Jessica Kroboth', 'Alexander Afanasyev']

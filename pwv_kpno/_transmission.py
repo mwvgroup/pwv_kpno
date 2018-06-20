@@ -32,7 +32,7 @@ from astropy.table import Table
 from ._settings import settings
 from ._serve_pwv_data import _pwv_date, timestamp
 
-__author__ = 'Daniel Perrefort'
+__authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
 __credits__ = ['Michael Wood-Vasey']
 
