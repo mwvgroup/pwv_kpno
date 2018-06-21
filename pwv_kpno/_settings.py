@@ -23,12 +23,17 @@ import json
 import os
 import shutil
 
-__author__ = 'Daniel Perrefort'
+from astropy.table import Table
+
+__authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
+
+# Locations included with release that cannot be overwritten by the user
+PROTECTED_NAMES = ['kitt_peak']
 
 
 class ModelingConfigError(Exception):
@@ -38,9 +43,9 @@ class ModelingConfigError(Exception):
 def location_property(f):
     @property
     def wrapper(self, *args, **kwargs):
-        if self._location is None:
+        if self._loc_name is None:
             raise ModelingConfigError(
-                'No location has been set for pwv_kpno model.')
+                'No loc_name has been set for pwv_kpno model.')
 
         return f(self, *args, **kwargs)
 
@@ -82,7 +87,7 @@ class Settings:
         export_location : Export package settings for the current location
     """
 
-    _location = None  # The name of the current location
+    _loc_name = None  # The name of the current location
     _config_data = None  # Data from the locations config file
 
     def __init__(self):
@@ -92,8 +97,8 @@ class Settings:
         self._config_path_unf = os.path.join(self._loc_dir_unf, 'config.json')
 
     @property
-    def location(self):
-        return self._location
+    def loc_name(self):
+        return self._loc_name
 
     @location_property
     def primary_rec(self):
@@ -101,15 +106,11 @@ class Settings:
 
     @location_property
     def _loc_dir(self):
-        return self._loc_dir_unf.format(self.location)
+        return self._loc_dir_unf.format(self.loc_name)
 
     @location_property
     def _config_path(self):
-        return self._config_path_unf.format(self.location)
-
-    @property
-    def _phosim_dir(self):
-        return os.path.join(self._loc_dir, 'atmosphere')
+        return self._config_path_unf.format(self.loc_name)
 
     @property
     def _atm_model_path(self):
@@ -120,7 +121,7 @@ class Settings:
         return os.path.join(self._loc_dir, 'modeled_pwv.csv')
 
     @property
-    def _pwv_msred_path(self):
+    def _pwv_measred_path(self):
         return os.path.join(self._loc_dir, 'measured_pwv.csv')
 
     @property
@@ -133,8 +134,7 @@ class Settings:
     def set_location(self, loc):
         """Configure pwv_kpno to model the atmosphere at a given location
 
-        Accepts the name of a builtin location OR a directory containing custom
-        configuration files.
+        See the available_loc attribute for a list of available location names
 
         Args:
             loc (str): The name or directory of location to model
@@ -143,17 +143,14 @@ class Settings:
         if loc in self.available_loc:
             config_path = self._config_path_unf.format(loc)
 
-        elif os.path.isdir(loc):
-            raise_missing_files(loc)
-            config_path = os.path.join(loc, 'config.json')
-
         else:
-            raise ValueError('err msg')
+            err_msg = 'No stored settings for location {}'
+            raise ValueError(err_msg.format(loc))
 
         with open(config_path, 'r') as ofile:
             self._config_data = json.load(ofile)
 
-        self._location = self._config_data['loc_name']
+        self._loc_name = self._config_data['loc_name']
 
     @location_property
     def available_years(self):
@@ -189,7 +186,7 @@ class Settings:
 
     def __repr__(self):
         rep = '<pwv_kpno.Settings, Current Location Name: {}>'
-        return rep.format(self.location)
+        return rep.format(self.loc_name)
 
     def _data_cuts(self, rec_id):
         """Returns restrictions on what SuomiNet measurements to include
@@ -198,7 +195,7 @@ class Settings:
             rec_id (str): The id code of a SuomiNet GPS receiver
         """
 
-        if self._location is None:
+        if self._loc_name is None:
             raise ValueError('No location set to model.')
 
         return self._config_data['data_cuts'][rec_id]
@@ -210,27 +207,60 @@ class Settings:
             rec_id (str): The id code of a SuomiNet GPS receiver
         """
 
-        if self._location is None:
+        if self._loc_name is None:
             raise ValueError('No location set to model.')
 
         return self._config_data['date_cuts'][rec_id]
 
     def export_location(self, out_dir):
-        """Export package settings for the current location to a new directory
+        """Save location data to a <out_dir>/<location_name>.ecsv
 
         Args:
             out_dir (str): The desired output directory
         """
 
         os.mkdir(out_dir)
-        atm_path = os.path.join(out_dir, 'atm_model.csv')
-        shutil.copyfile(self._atm_model_path, atm_path)
-        config_path = os.path.join(out_dir, 'config.json')
-        shutil.copyfile(self._config_path, config_path)
-        measured_path = os.path.join(out_dir, 'measured_pwv.csv')
-        shutil.copyfile(self._pwv_msred_path, measured_path)
-        model_path = os.path.join(out_dir, 'modeled_pwv.csv')
-        shutil.copyfile(self._pwv_model_path, model_path)
+        atm_model = Table.read(self._atm_model_path)
+        atm_model.meta = self._config_data
+
+        out_path = os.path.join(out_dir, self.loc_name + '.ecsv')
+        atm_model.write(out_path)
+
+    def import_location(self, path, overwrite=False):
+        """Load a custom location from file and save it to the package
+
+        Args:
+            path       (str): The path of the new location's config file
+            overwrite (bool): Whether to overwrite an existing location
+        """
+
+        data_table = Table.read(path)
+        loc_name = data_table.meta['loc_name']
+        out_dir = self._loc_dir_unf.format(loc_name)
+        temp_dir = out_dir + '_temp'
+
+        if loc_name in PROTECTED_NAMES:
+            err_msg = 'Cannot overwrite protected location name {}'
+            raise ValueError(err_msg.format(loc_name))
+
+        if os.path.exists(out_dir) and not overwrite:
+            err_msg = 'Location already exists {}'
+            raise ValueError(err_msg.format(loc_name))
+
+        config_path = os.path.join(temp_dir, 'config.json')
+        with open(config_path, 'r+') as ofile:
+            json.dump(data_table.meta, ofile, indent=4, sort_keys=True)
+
+        os.mkdir(temp_dir)
+        atm_model_path = os.path.join(temp_dir, 'atm_model.json')
+        data_table.write(atm_model_path)
+
+        self._create_location_files()
+        shutil.rmtree(out_dir)
+        shutil.move(temp_dir, out_dir)
+
+    def _create_location_files(self):
+        pass  # Todo: Download data from suominet and create pwv model
 
 
 # This instance should be used package wide to access site settings

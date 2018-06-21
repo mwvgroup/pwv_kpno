@@ -31,7 +31,7 @@ from pwv_kpno._transmission import _raise_available_data
 from pwv_kpno._transmission import _raise_pwv
 from _create_mock_data import create_mock_pwv_model
 
-__author__ = 'Daniel Perrefort'
+__authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
@@ -102,7 +102,6 @@ class TransmissionPwvErrors(unittest.TestCase):
     def test_argument_types(self):
         """Test errors raised from function call with wrong argument types"""
 
-        self.assertRaises(TypeError, _raise_pwv, '13')
         self.assertIsNone(_raise_pwv(13))
         self.assertIsNone(_raise_pwv(13.0))
 

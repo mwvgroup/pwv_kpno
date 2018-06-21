@@ -27,12 +27,11 @@ from datetime import datetime
 from astropy.table import Table
 import numpy as np
 from scipy.odr import RealData, ODR, polynomial
-from scipy.stats import binned_statistic
 
 from ._download_pwv_data import update_local_data
 from ._settings import settings
 
-__author__ = 'Daniel Perrefort'
+__authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
@@ -130,7 +129,7 @@ def _create_new_pwv_model(debug=False):
     data to a csv file at PWV_TAB_DIR/measured.csv.
     """
 
-    pwv_data = Table.read(settings._pwv_msred_path)
+    pwv_data = Table.read(settings._pwv_measred_path)
     if not settings.off_site_recs:
         return pwv_data
 

@@ -25,7 +25,7 @@ from pytz import utc
 
 from pwv_kpno._serve_pwv_data import timestamp
 
-__author__ = 'Daniel Perrefort'
+__authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'

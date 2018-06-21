@@ -29,9 +29,8 @@ from pytz import utc
 
 from ._settings import settings
 
-__author__ = 'Daniel Perrefort'
+__authors__ = ['Daniel Perrefort', 'Alexander Afanasyev']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
-__credits__ = ['Alexander Afanasyev']
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
@@ -53,8 +52,7 @@ def timestamp(date):
 
     unix_epoch = datetime(1970, 1, 1, tzinfo=utc)
     utc_date = date.astimezone(utc)
-    timestamp = (utc_date - unix_epoch).total_seconds()
-    return timestamp
+    return (utc_date - unix_epoch).total_seconds()
 
 
 def _pwv_date(date, airmass=1, test_model=None):
@@ -219,7 +217,7 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
     """
 
     _check_date_time_args(year, month, day, hour)
-    data = _read_and_format(settings._pwv_msred_path)
+    data = _read_and_format(settings._pwv_measred_path)
     return _search_dt_table(data, year=year, month=month, day=day, hour=hour)
 
 
