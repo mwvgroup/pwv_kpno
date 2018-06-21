@@ -42,8 +42,8 @@ at Kitt Peak in close to real time. The package also provides automated
 retrieval and processing of SuomiNet data, allowing photometry to typically be
 corrected within an hour of observation.
 
-**pwv_kpno** is open source software released under the GNU General Public License.
-Issues, pull requests, and feedback are welcome.
+**pwv_kpno** is open source software released under the GNU General Public
+License. Issues, pull requests, and feedback are welcome.
 
 ## How to Cite
 
@@ -53,7 +53,8 @@ you please use the following standard acknowledgement:
    *This research made use of the pwv_kpno python package, an open source project that provides models for the atmospheric absorption due to precipitable water vapor in the near-infrared (Perrefort, Wood-Vasey et al. 2018)*
 
 If the publisher allows, you can also include a footnote with a link pointing
-to the documentation page https://mwvgroup.github.io/pwv_kpno/
+to the documentation page
+[https://mwvgroup.github.io/pwv_kpno/](https://mwvgroup.github.io/pwv_kpno/)
 
 # Acknowledgements
 
@@ -69,10 +70,10 @@ with the National Science Foundation.
   [here](https://stats.uptimerobot.com/gn1xqsJvj)
 
 - For more information on the Kitt Peak National Observatory, see
-  www.noao.edu/kpno/
+  [www.noao.edu/kpno/](www.noao.edu/kpno/)
 
 - To learn more about the SuomiNet project, see
-  www.suominet.ucar.edu/overview.html
+  [www.suominet.ucar.edu/overview.html](www.suominet.ucar.edu/overview.html)
 
 - For an additional example on the correlation between GPS signals and
   atmospheric modeling, see
