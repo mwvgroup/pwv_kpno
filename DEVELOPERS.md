@@ -71,4 +71,5 @@ release a new version, follow the following steps:
 1. Merge the new source code into `master`.
 1. Merge any new documentation into `gh-pages`.
 1. Run the push_pypi bash file from the root directory to automatically upload
-    the new version to the python package index (you will need the appropriate login information for this step).
+    the new version to the python package index (you will need the appropriate
+    login information for this step).
