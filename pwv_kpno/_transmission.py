@@ -53,12 +53,6 @@ def _raise_pwv(pwv):
     if pwv < 0:
         raise ValueError('PWV concentration cannot be negative')
 
-    if pwv > 30.1:
-        warn_msg = ('Transmission values for PWV above 30.1 mm are'
-                    'extrapolated instead of interpolated.')
-
-        warn(warn_msg, RuntimeWarning)
-
 
 def trans_for_pwv(pwv):
     """Return the atmospheric transmission due a given PWV concentration in mm
