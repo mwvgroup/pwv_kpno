@@ -19,7 +19,7 @@ Kitt Peak National Observatory
 [![Build Status](https://travis-ci.org/mwvgroup/pwv_kpno.svg?branch=master)](https://travis-ci.org/mwvgroup/pwv_kpno)
 
 For package documentation and installation instructions, please see
-https://mwvgroup.github.io/pwv_kpno/
+[https://mwvgroup.github.io/pwv_kpno/](https://mwvgroup.github.io/pwv_kpno/)
 
 ## Overview
 
