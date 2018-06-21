@@ -48,6 +48,8 @@ engines:
         enabled: false
       MD033: # Checks for inline HTML
         enabled: false
+      MD014: # Dollar signs used before commands without showing output
+        enabled: false
 
   fixme:
     enabled: true
