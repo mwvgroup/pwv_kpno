@@ -18,6 +18,9 @@ Kitt Peak National Observatory
 [![license](https://img.shields.io/badge/license-GPL%20v3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![Build Status](https://travis-ci.org/mwvgroup/pwv_kpno.svg?branch=master)](https://travis-ci.org/mwvgroup/pwv_kpno)
 
+For package documentation and installation instructions, please see
+https://mwvgroup.github.io/pwv_kpno/
+
 ## Overview
 
 **pwv_kpno** is a Python package for modeling the atmospheric absorption due
@@ -50,8 +53,7 @@ you please use the following standard acknowledgement:
    *This research made use of the pwv_kpno python package, an open source project that provides models for the atmospheric absorption due to precipitable water vapor in the near-infrared (Perrefort, Wood-Vasey et al. 2018)*
 
 If the publisher allows, you can also include a footnote with a link pointing
-to the documentation page 
-[https://mwvgroup.github.io/pwv_kpno/](https://mwvgroup.github.io/pwv_kpno/)
+to the documentation page https://mwvgroup.github.io/pwv_kpno/
 
 # Acknowledgements
 
@@ -64,14 +66,14 @@ with the National Science Foundation.
 # Additional Resources
 
 - An up time monitor for the SuomiNet website can be found
-  [here](https://stats.uptimerobot.com/gn1xqsJvj).
+  [here](https://stats.uptimerobot.com/gn1xqsJvj)
 
 - For more information on the Kitt Peak National Observatory, see
-  [www.noao.edu/kpno/](https://www.noao.edu/kpno/).
+  www.noao.edu/kpno/
 
 - To learn more about the SuomiNet project, see
-  [www.suominet.ucar.edu/overview.html](http://www.suominet.ucar.edu/overview.html).
+  www.suominet.ucar.edu/overview.html
 
 - For an additional example on the correlation between GPS signals and
   atmospheric modeling, see
-  [Blake and Shaw, 2011](https://arxiv.org/abs/1109.6703).
+  [Blake and Shaw, 2011](https://arxiv.org/abs/1109.6703)
