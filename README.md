@@ -50,7 +50,10 @@ License. Issues, pull requests, and feedback are welcome.
 If you use **pwv_kpno** as part of any published work or research, we ask that
 you please use the following standard acknowledgement:
 
-   *This research made use of the pwv_kpno python package, an open source project that provides models for the atmospheric absorption due to precipitable water vapor in the near-infrared (Perrefort, Wood-Vasey et al. 2018)*
+&nbsp;&nbsp;&nbsp;&nbsp;*This research made use of the pwv_kpno python package,*<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*an open source project that provides models for the*<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*atmospheric absorption due to precipitable water vapor*<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*in the near-infrared (Perrefort, Wood-Vasey et al. 2018)*<br>
 
 If the publisher allows, you can also include a footnote with a link pointing
 to the documentation page
