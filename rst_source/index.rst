@@ -32,12 +32,12 @@ Overview
 
 **pwv_kpno** is a Python package for modeling the atmospheric absorption due
 to H\ :sub:`2`\ O at Kitt Peak National Observatory. It provides atmospheric
-models in the near-infrared (from 700 to 1,000 nm) for years 2010
-onward. Understanding atmospheric effects is important when calibrating
-ground based astronomical observations. Traditionally, determining the detailed
-atmospheric transmission function at a given date and time required performing
-dedicated spectrographic observations. **pwv_kpno** provides an alternative
-that can be performed at the user's convenience.
+models from 300 to 1,200 nm for years 2010 onward. Understanding atmospheric
+effects is important when calibrating ground based astronomical observations.
+Traditionally, determining the detailed atmospheric transmission function at a
+given date and time required performing dedicated spectrographic observations.
+**pwv_kpno** provides an alternative that can be performed at the user's
+convenience.
 
 Atmospheric absorption in the near-infrared is highly dependent on the column
 density of precipitable water vapor (PWV). By measuring the delay of GPS
