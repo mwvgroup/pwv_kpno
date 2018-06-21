@@ -29,10 +29,10 @@ cause the documentation to not render correctly.
 
 ```bash
 $ pip install sphinx
-$ pip install "sphinx_rtd_theme>0.2.4"    
+$ pip install "sphinx_rtd_theme>0.2.4"
 ```
 
-###  2.2 Generating new files
+### 2.2 Generating new files
 
 Source code for all documentation is contained in the rst_source directory.
 Files in other subdirectories are generated automatically and should not be
