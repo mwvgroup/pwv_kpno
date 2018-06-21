@@ -18,31 +18,60 @@ Kitt Peak National Observatory
 [![license](https://img.shields.io/badge/license-GPL%20v3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![Build Status](https://travis-ci.org/mwvgroup/pwv_kpno.svg?branch=master)](https://travis-ci.org/mwvgroup/pwv_kpno)
 
-## 1) Package Description
+## Overview
 
-**pwv_kpno** is a Python package for modeling the atmospheric transmission
-function at Kitt Peak National Observatory. It provides atmospheric models
-in the optical and near-infrared (7000 to 11000 Angstroms) for years 2010
-onward. Knowing the atmospheric transmission function is important when
-correcting ground based astronomical observations for atmospheric effects.
-Observed spectra are typically corrected using observations of a telluric
-standard star. **pwv_kpno** provides an alternative method that does not
-require dedicated observation time, and that can be run at the observer's
+**pwv_kpno** is a Python package for modeling the atmospheric absorption due
+to H<sub>2</sub>O at Kitt Peak National Observatory. It provides atmospheric
+models from 300 to 1,200 nm for years 2010 onward. Understanding atmospheric
+effects is important when calibrating ground based astronomical observations.
+Traditionally, determining the detailed atmospheric transmission function at a
+given date and time required performing dedicated spectrographic observations.
+**pwv_kpno** provides an alternative that can be performed at the user's
 convenience.
 
-When working in the optical and near-infrared, the atmospheric transmission
-function is highly dependent on the amount of precipitable water vapor (PWV)
-in the atmosphere. **pwv_kpno** models the atmospheric transmission using PWV
-measurements provided by the SuomiNet Project. SuomiNet measures PWV values
-by relating the delay in GPS signals to PWV levels in the atmosphere. This
-package uses measurements taken by GPS receivers located at Kitt Peak AZ,
-Amado AZ, Sahuarita AZ, Tucson AZ, and Tohono O'odham Community College.
+Atmospheric absorption in the near-infrared is highly dependent on the column
+density of precipitable water vapor (PWV). By measuring the delay of GPS
+signals through the atmosphere, the [SuomiNet](http://www.suominet.ucar.edu)
+project provides accurate PWV measurements for multiple, international
+locations. The **pwv_kpno** package uses published SuomiNet data in conjunction
+with MODTRAN models to determine the modeled atmospheric transmission function
+at Kitt Peak in close to real time. The package also provides automated
+retrieval and processing of SuomiNet data, allowing photometry to typically be
+corrected within an hour of observation.
 
-For more details on the correlation between GPS signals and PWV levels see
-[Blake and Shaw, 2011](https://arxiv.org/abs/1109.6703). To learn more about
-the SuomiNet project, see [their website](http://www.suominet.ucar.edu/overview.html).
+**pwv_kpno** is open source software released under the GNU General Public License.
+Issues, pull requests, and feedback are welcome.
 
-## 2) Documentation
+## How to Cite
 
-Documentation for **pwv_kpno**, including installation and setup instructions,
-can be found [here](https://mwvgroup.github.io/pwv_kpno/).
+If you use **pwv_kpno** as part of any published work or research, we ask that
+you please use the following standard acknowledgement:
+
+   *This research made use of the pwv_kpno python package, an open source project that provides models for the atmospheric absorption due to precipitable water vapor in the near-infrared (Perrefort, Wood-Vasey et al. 2018)*
+
+If the publisher allows, you can also include a footnote with a link pointing
+to the documentation page 
+[https://mwvgroup.github.io/pwv_kpno/](https://mwvgroup.github.io/pwv_kpno/)
+
+# Acknowledgements
+
+This work is based in part on observations taken at Kitt Peak National
+Observatory, National Optical Astronomy Observatory (NOAO Prop. IDs: 2011B-0482
+and 2012B-0500; PI: Wood-Vasey), which is operated by the Association of
+Universities for Research in Astronomy (AURA) under a cooperative agreement
+with the National Science Foundation.
+
+# Additional Resources
+
+- An up time monitor for the SuomiNet website can be found
+  [here](https://stats.uptimerobot.com/gn1xqsJvj).
+
+- For more information on the Kitt Peak National Observatory, see
+  [www.noao.edu/kpno/](https://www.noao.edu/kpno/).
+
+- To learn more about the SuomiNet project, see
+  [www.suominet.ucar.edu/overview.html](http://www.suominet.ucar.edu/overview.html).
+
+- For an additional example on the correlation between GPS signals and
+  atmospheric modeling, see
+  [Blake and Shaw, 2011](https://arxiv.org/abs/1109.6703).
