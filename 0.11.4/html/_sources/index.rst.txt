@@ -1,7 +1,7 @@
 .. figure::  _static/LOGO.png
    :align:   center
 
-.. image:: https://img.shields.io/badge/version-0.11.1-blue.svg
+.. image:: https://img.shields.io/badge/version-0.11.4-blue.svg
     :target: https://pypi.python.org/pypi/pwv-kpno/
 
 .. image:: https://img.shields.io/badge/python-2.7,%203.6-blue.svg
