@@ -34,10 +34,10 @@ Overview
 to H\ :sub:`2`\ O at Kitt Peak National Observatory. It provides atmospheric
 models from 300 to 1,200 nm for years 2010 onward. Understanding atmospheric
 effects is important when calibrating ground based astronomical observations.
-Traditionally, determining the detailed atmospheric transmission function at a
-given date and time required performing dedicated spectrographic observations.
-**pwv_kpno** provides an alternative that can be performed at the user's
-convenience.
+Astronomers traditionally calibrate broad-band imaging by using a reference
+catalog to compute correction terms for color, airmass, and perhaps a
+higher-order color-airmass term. **pwv_kpno** provides an alternative that can
+be performed at the user's convenience.
 
 Atmospheric absorption in the near-infrared is highly dependent on the column
 density of precipitable water vapor (PWV). By measuring the delay of GPS
