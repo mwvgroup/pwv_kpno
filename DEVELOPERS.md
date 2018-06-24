@@ -12,7 +12,6 @@ Some intended features to be included in future development include:
    location.
 - Implement functions to export / import custom made models and affiliated data
    so that resources can be shared between collaborators or made public.
-- Extend the atmospheric models to include a wider wavelength range.
 - An upper limit could be imposed on the number of significant figures returned
    by each function.
 
@@ -21,8 +20,7 @@ Some intended features to be included in future development include:
 ### 2.1 Extra Dependencies
 
 Source code for the documentation can be found in the *gh-pages* branch of the
-[project repository](https://github.com/mwvgroup/pwv_kpno/tree/gh-pages).
-Documentation for **pwv_kpno** is generated using Sphinx and the
+project repository. Documentation for **pwv_kpno** is generated using Sphinx and the
 “Read The Docs” theme. To update or modify package documentation you will need
 to install both of these. Note that version 0.2.4 has known bugs that will
 cause the documentation to not render correctly.
@@ -63,8 +61,8 @@ all relevant SuomiNet data from 2010 through the previous year. No SuomiNet
 data should be included for the year that the new version is released. To
 release a new version, follow the following steps:
 
-1. Make sure that the build passes on <travis-ci.org>.
-1. Update the meta data in __init__.py and the badges in README.md to reflect
+1. Make sure that the build passes on travis-ci.org.
+1. Update the meta data in \__init__.py and the badges in README.md to reflect
     the new version number and any newly supported Python versions.
 1. Proofread package docstring for both spelling and accuracy.
 1. Generate new documentation using sphinx.
