@@ -1,0 +1,400 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pwv_kpno._update_pwv_model &mdash; pwv_kpno 0.11.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pwv_kpno
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.11.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">1. Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../accessing_data.html">2. Accessing PWV Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../atmospheric_modeling.html">3. Modeling the Atmosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../blackbody_modeling.html">4. Modeling a Black Body</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../correcting_observations.html">5. Correcting Observations</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pwv_kpno</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pwv_kpno._update_pwv_model</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pwv_kpno._update_pwv_model</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+
+<span class="c1">#    This file is part of the pwv_kpno software package.</span>
+<span class="c1">#</span>
+<span class="c1">#    The pwv_kpno package is free software: you can redistribute it and/or</span>
+<span class="c1">#    modify it under the terms of the GNU General Public License as published</span>
+<span class="c1">#    by the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1">#    (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1">#    The pwv_kpno package is distributed in the hope that it will be useful,</span>
+<span class="c1">#    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1">#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General</span>
+<span class="c1">#    Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1">#    You should have received a copy of the GNU General Public License</span>
+<span class="c1">#    along with pwv_kpno.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">&quot;&quot;&quot;This document updates the PWV model using new data downloaded from SuomiNet.</span>
+<span class="sd">Linear functions are fitted to relate the PWV level at secondary locations</span>
+<span class="sd">to the PWV level at the primary location. The resulting polynomials are then</span>
+<span class="sd">used to supplement gaps in PWV measurements taken at the primary location.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">astropy.table</span> <span class="k">import</span> <span class="n">Table</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.odr</span> <span class="k">import</span> <span class="n">RealData</span><span class="p">,</span> <span class="n">ODR</span><span class="p">,</span> <span class="n">polynomial</span>
+
+<span class="kn">from</span> <span class="nn">._download_pwv_data</span> <span class="k">import</span> <span class="n">update_local_data</span>
+<span class="kn">from</span> <span class="nn">._settings</span> <span class="k">import</span> <span class="n">settings</span>
+
+<span class="n">__authors__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Daniel Perrefort&#39;</span><span class="p">]</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s1">&#39;Copyright 2017, Daniel Perrefort&#39;</span>
+
+<span class="n">__license__</span> <span class="o">=</span> <span class="s1">&#39;GPL V3&#39;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s1">&#39;djperrefort@pitt.edu&#39;</span>
+<span class="n">__status__</span> <span class="o">=</span> <span class="s1">&#39;Development&#39;</span>
+
+
+<span class="k">def</span> <span class="nf">_linear_regression</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Optimize and apply a linear regression using masked arrays</span>
+
+<span class="sd">    Generates a linear fit f using orthogonal distance regression and returns</span>
+<span class="sd">    the applied model f(x).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x  (MaskedArray): The independent variable of the regression</span>
+<span class="sd">        y  (MaskedArray): The dependent variable of the regression</span>
+<span class="sd">        sx  (MaskedArray): Standard deviations of x</span>
+<span class="sd">        sy  (MaskedArray): Standard deviations of y</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The applied linear regression on x as a masked array</span>
+<span class="sd">        The uncertainty in the applied linear regression as a masked array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># This type cast will propagate into returns</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>  <span class="c1"># It also ensures that x, y have a .mask attribute</span>
+
+    <span class="c1"># Fit data with orthogonal distance regression (ODR)</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">RealData</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="n">indices</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">[</span><span class="n">indices</span><span class="p">],</span> <span class="n">sx</span><span class="o">=</span><span class="n">sx</span><span class="p">[</span><span class="n">indices</span><span class="p">],</span> <span class="n">sy</span><span class="o">=</span><span class="n">sy</span><span class="p">[</span><span class="n">indices</span><span class="p">])</span>
+    <span class="n">odr</span> <span class="o">=</span> <span class="n">ODR</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">polynomial</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">beta0</span><span class="o">=</span><span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">])</span>
+    <span class="n">fit_results</span> <span class="o">=</span> <span class="n">odr</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+    <span class="n">fit_pass</span> <span class="o">=</span> <span class="s1">&#39;Numerical error detected&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fit_results</span><span class="o">.</span><span class="n">stopreason</span>
+    <span class="k">assert</span> <span class="n">fit_pass</span><span class="p">,</span> <span class="s1">&#39;Numerical error detected&#39;</span>
+
+    <span class="n">b</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="n">fit_results</span><span class="o">.</span><span class="n">beta</span>
+    <span class="n">applied_fit</span> <span class="o">=</span> <span class="n">m</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">b</span>
+    <span class="n">applied_fit</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">applied_fit</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">error</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">applied_fit</span><span class="o">.</span><span class="n">mask</span>
+
+    <span class="k">return</span> <span class="n">applied_fit</span><span class="p">,</span> <span class="n">error</span>
+
+
+<span class="k">def</span> <span class="nf">_calc_avg_pwv_model</span><span class="p">(</span><span class="n">pwv_data</span><span class="p">,</span> <span class="n">primary_rec</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determines a PWV model using each off site receiver and averages them</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        pwv_data (Table): A table of pwv data</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A masked array of the averaged PWV model</span>
+<span class="sd">        A masked array of the error in the averaged model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">off_site_receivers</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">off_site_recs</span>
+    <span class="n">receiver</span> <span class="o">=</span> <span class="n">off_site_receivers</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="n">modeled_pwv</span><span class="p">,</span> <span class="n">modeled_err</span> <span class="o">=</span> <span class="n">_linear_regression</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">pwv_data</span><span class="p">[</span><span class="n">receiver</span><span class="p">],</span>
+        <span class="n">y</span><span class="o">=</span><span class="n">pwv_data</span><span class="p">[</span><span class="n">primary_rec</span><span class="p">],</span>
+        <span class="n">sx</span><span class="o">=</span><span class="n">pwv_data</span><span class="p">[</span><span class="n">receiver</span> <span class="o">+</span> <span class="s1">&#39;_err&#39;</span><span class="p">],</span>
+        <span class="n">sy</span><span class="o">=</span><span class="n">pwv_data</span><span class="p">[</span><span class="n">primary_rec</span> <span class="o">+</span> <span class="s1">&#39;_err&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">receiver</span> <span class="ow">in</span> <span class="n">off_site_receivers</span><span class="p">:</span>
+        <span class="n">mod_pwv</span><span class="p">,</span> <span class="n">mod_err</span> <span class="o">=</span> <span class="n">_linear_regression</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">pwv_data</span><span class="p">[</span><span class="n">receiver</span><span class="p">],</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">pwv_data</span><span class="p">[</span><span class="n">primary_rec</span><span class="p">],</span>
+            <span class="n">sx</span><span class="o">=</span><span class="n">pwv_data</span><span class="p">[</span><span class="n">receiver</span> <span class="o">+</span> <span class="s1">&#39;_err&#39;</span><span class="p">],</span>
+            <span class="n">sy</span><span class="o">=</span><span class="n">pwv_data</span><span class="p">[</span><span class="n">primary_rec</span> <span class="o">+</span> <span class="s1">&#39;_err&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">modeled_pwv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">modeled_pwv</span><span class="p">,</span> <span class="n">mod_pwv</span><span class="p">))</span>
+        <span class="n">modeled_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">modeled_err</span><span class="p">,</span> <span class="n">mod_err</span><span class="p">))</span>
+
+    <span class="c1"># Average PWV models from different sites</span>
+    <span class="n">avg_pwv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">modeled_pwv</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">sum_quad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">modeled_err</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">off_site_receivers</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">modeled_pwv</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">avg_pwv_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sum_quad</span><span class="p">),</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">avg_pwv_err</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">avg_pwv</span><span class="o">.</span><span class="n">mask</span>  <span class="c1"># np.ma.divide throws off the mask</span>
+
+    <span class="k">return</span> <span class="n">avg_pwv</span><span class="p">,</span> <span class="n">avg_pwv_err</span>
+
+
+<span class="k">def</span> <span class="nf">_create_new_pwv_model</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a new model for the PWV level at Kitt Peak</span>
+
+<span class="sd">    Create first order polynomials relating the PWV measured by GPS receivers</span>
+<span class="sd">    near Kitt Peak to the PWV measured at Kitt Peak (one per off site receiver)</span>
+<span class="sd">    Use these polynomials to supplement PWV measurements taken at Kitt Peak for</span>
+<span class="sd">    times when no Kitt Peak data is available. Write the supplemented PWV</span>
+<span class="sd">    data to a csv file at PWV_TAB_DIR/measured.csv.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">pwv_data</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">_pwv_measred_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">settings</span><span class="o">.</span><span class="n">off_site_recs</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pwv_data</span>
+
+    <span class="n">primary_rec</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">primary_rec</span>
+    <span class="n">avg_pwv</span><span class="p">,</span> <span class="n">avg_pwv_err</span> <span class="o">=</span> <span class="n">_calc_avg_pwv_model</span><span class="p">(</span><span class="n">pwv_data</span><span class="p">,</span> <span class="n">primary_rec</span><span class="p">)</span>
+
+    <span class="c1"># Supplement KITT data with averaged fits</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">pwv_data</span><span class="p">[</span><span class="n">primary_rec</span><span class="p">]</span><span class="o">.</span><span class="n">mask</span>
+    <span class="n">sup_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">avg_pwv</span><span class="p">,</span> <span class="n">pwv_data</span><span class="p">[</span><span class="n">primary_rec</span><span class="p">])</span>
+    <span class="n">sup_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">avg_pwv_err</span><span class="p">,</span> <span class="n">pwv_data</span><span class="p">[</span><span class="n">primary_rec</span> <span class="o">+</span> <span class="s1">&#39;_err&#39;</span><span class="p">])</span>
+    <span class="n">sup_data</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">avg_pwv</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+
+    <span class="c1"># Remove any masked values</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="o">~</span><span class="n">sup_data</span><span class="o">.</span><span class="n">mask</span>
+    <span class="n">dates</span> <span class="o">=</span> <span class="n">pwv_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">][</span><span class="n">indices</span><span class="p">]</span>
+    <span class="n">sup_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">sup_data</span><span class="p">[</span><span class="n">indices</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">sup_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">sup_err</span><span class="p">[</span><span class="n">indices</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="n">dates</span><span class="p">,</span> <span class="n">sup_data</span><span class="p">,</span> <span class="n">sup_err</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;pwv&#39;</span><span class="p">,</span> <span class="s1">&#39;pwv_err&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">_pwv_model_path</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="update_models"><a class="viewcode-back" href="../../accessing_data.html#pwv_kpno.pwv_atm.update_models">[docs]</a><span class="k">def</span> <span class="nf">update_models</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Download data from SuomiNet and update the locally stored PWV model</span>
+
+<span class="sd">    Update the modeled PWV column density for Kitt Peak by downloading new data</span>
+<span class="sd">    releases from the SuomiNet website. If a year is provided, use only data</span>
+<span class="sd">    for that year. If not, download any published data that is not available on</span>
+<span class="sd">    the local machine.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        year      (int): A Year from 2010 onward</span>
+<span class="sd">        timeout (float): Optional seconds to wait while connecting to SuomiNet</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A list of years for which models where updated</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Check for valid args</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">year</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Argument &#39;year&#39; must be an integer&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">year</span> <span class="o">&lt;</span> <span class="mi">2010</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot update models for years prior to 2010&#39;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">year</span> <span class="o">&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">year</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Cannot update models for years greater than current year&#39;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="c1"># Update the local SuomiData and PWV models</span>
+    <span class="n">updated_years</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">update_local_data</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">timeout</span><span class="p">))</span>
+    <span class="n">_create_new_pwv_model</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">updated_years</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Daniel J. Perrefort.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.11.6',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
