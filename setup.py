@@ -25,24 +25,19 @@ from setuptools import setup
 def long_description():
     with open('README.md') as ofile:
         readme = ofile.read()
+        description = readme.split('## Overview')[-1]
+        description = '## Overview\n\n' + description
 
-        # Get the Package Description without headers
-        description = readme.split('## 1) Package Description')[-1]
-        description = description.replace('\n## 2) Documentation', '')
-
-        # Remove markdown formatting
-        description = description.replace('*', '')
-        description = description.replace('[here]', '')
-        description = description.replace('[', '').replace(']', ' ')
-        return description
+    return description
 
 
 setup(name='pwv_kpno',
-      version='0.11.5',
+      version='0.11.6',
       packages=['pwv_kpno'],
       keywords='KPNO atmospheric transmission PWV precipitable water vapor',
       description='Models the atmospheric transmission function for KPNO',
       long_description=long_description(),
+      long_description_content_type='text/markdown',
       classifiers=['Development Status :: 4 - Beta',
                    'Intended Audience :: Science/Research',
                    'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',

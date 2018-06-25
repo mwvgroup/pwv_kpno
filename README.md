@@ -13,7 +13,7 @@ Kitt Peak National Observatory
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;
-[![release](https://img.shields.io/badge/version-0.11.5-blue.svg)]()
+[![release](https://img.shields.io/badge/version-0.11.6-blue.svg)]()
 [![python](https://img.shields.io/badge/python-2.7,%203.6-blue.svg)]()
 [![license](https://img.shields.io/badge/license-GPL%20v3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![Build Status](https://travis-ci.org/mwvgroup/pwv_kpno.svg?branch=master)](https://travis-ci.org/mwvgroup/pwv_kpno)
@@ -25,7 +25,7 @@ For package documentation and installation instructions, please see
 
 **pwv_kpno** is a Python package for modeling the atmospheric absorption due
 to H<sub>2</sub>O at Kitt Peak National Observatory. It provides atmospheric
-models from 300 to 1,200 nm for years 2010 onward. Understanding atmospheric
+models from 3000 to 12,000 Angstroms for years 2010 onward. Understanding atmospheric
 effects is important when calibrating ground based astronomical observations.
 Traditionally, determining the detailed atmospheric transmission function at a
 given date and time required performing dedicated spectrographic observations.

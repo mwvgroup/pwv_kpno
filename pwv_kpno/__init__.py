@@ -33,7 +33,7 @@ __credits__ = ['Michael Wood-Vasey', 'Azalee Bostroem',
                'Jessica Kroboth', 'Alexander Afanasyev']
 
 __license__ = 'GPL V3'
-__version__ = '0.11.5'
+__version__ = '0.11.6'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
