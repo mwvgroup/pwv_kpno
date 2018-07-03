@@ -16,11 +16,13 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno. If not, see <http://www.gnu.org/licenses/>.
 
-
-"""This code allows users to create a configuration file for a custom location.
+"""The ConfigBuilder class is provided to create custom config files used in
+the pwv_kpno package.
 """
 
 import os
+
+import numpy as np
 
 from ._atm_model import create_pwv_atm_model
 
@@ -31,23 +33,43 @@ __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
+# Todo: Add value checks for args
 
-class LocationBuilder:
-    # Todo: Add value checks and documentation when publicly released
+class ConfigBuilder:
+    """This class is used to build custom config files for the pwv_kpno package
+
+    Attributes:
+        data_cuts         (dict): Specifies data ranges to ignore
+        loc_name           (str): Desired name of the custom location
+        primary_rec        (str): SuomiNet ID code for the primary GPS receiver
+        sup_recs          (list): List of SuomiNet id codes for supplemental receivers
+        wavelengths    (ndarray): Array of wavelengths in Angstoms
+        cross_sections (ndarray): Array of MODTRAN cross sections per wavelength in cm^2
+
+    Methods:
+        save : Create a custom config file <loc_name>.ecsv in a given directory
+    """
 
     def __init__(self, **kwargs):
-
-        # Set default values
         self.data_cuts = dict()
         self.date_cuts = dict()
-        self.loc_name = None
-        self.primary_rec = None
+        self.loc_name = None  # type: str
+        self.primary_rec = None  # type: str
         self.sup_rec = []
-        self.wavelengths = None
-        self.cross_sections = None
+        self.wavelengths = None  # type: np.ndarray
+        self.cross_sections = None  # type: np.ndarray
 
         for key, value in kwargs.items():
             setattr(self, key, value)
+
+    def _check_attributes(self):
+        """Ensure user has assigned values to required attributes"""
+
+        err_msg = 'Must specify attribute {} before saving.'
+        attrs = ['loc_name', 'primary_rec', 'wavelengths', 'cross_sections']
+        for value in attrs:
+            if getattr(self, value) is None:
+                raise ValueError(err_msg.format(value))
 
     def _create_config_dict(self):
         """Create a dictionary with config data for this location
@@ -61,25 +83,26 @@ class LocationBuilder:
         config_data['date_cuts'] = self.date_cuts
         config_data['loc_name'] = self.loc_name.lower()
         config_data['primary_rec'] = self.primary_rec.upper()
-        config_data['sup_rec'] = self.sup_rec
+        config_data['sup_rec'] = [id_code.upper() for id_code in self.sup_rec]
         return config_data
 
     def save(self, out_dir):
         # type: (str) -> None
-        """Save location data to a <out_dir>/<location_name>.ecsv
+        """Create a custom config file <out_dir>/<self.loc_name>.ecsv
 
         Args:
             out_dir (str): The desired output directory
         """
 
-        model = create_pwv_atm_model(mod_lambda=self.wavelengths,
-                                     mod_cs=self.cross_sections,
-                                     out_lambda=self.wavelengths)
+        self._check_attributes()
+        model = create_pwv_atm_model(mod_lambda=np.array(self.wavelengths),
+                                     mod_cs=np.array(self.cross_sections),
+                                     out_lambda=np.array(self.wavelengths))
 
         model.meta = self._create_config_dict()
         out_path = os.path.join(out_dir, self.loc_name + '.ecsv')
         model.write(out_path)
 
     def __repr__(self):
-        rep = '<pwv_kpno.LocationBuilder>'
-        return rep.format(self.loc_name)
+        rep = '<ConfigBuilder loc_name={}, primary_rec={}>'
+        return rep.format(self.loc_name, self.primary_rec)
