@@ -25,6 +25,7 @@ standard python help function.
 
 from . import pwv_atm
 from . import blackbody_with_atm
+from ._config_builder import ConfigBuilder
 from ._settings import settings as _settings
 
 __authors__ = ['Daniel Perrefort']
@@ -33,7 +34,7 @@ __credits__ = ['Michael Wood-Vasey', 'Azalee Bostroem',
                'Jessica Kroboth', 'Alexander Afanasyev']
 
 __license__ = 'GPL V3'
-__version__ = '0.11.6'
+__version__ = '0.12.0'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
