@@ -192,6 +192,21 @@ def _download_data_for_year(yr, timeout=None):
     return out_data
 
 
+def _get_local_data():
+    """Returns an astropy table containing any local PWV measurements"""
+
+    if os.path.exists(settings._pwv_measred_path):
+        return Table.read(settings._pwv_measred_path)
+
+    else:
+        col_names = ['date']
+        for rec in settings.receivers:
+            col_names.append(rec)
+            col_names.append(rec + '_err')
+
+        return Table(names=col_names)
+
+
 def update_local_data(year=None, timeout=None):
     # type: (int, float) -> list[int]
     """Download data from SuomiNet and update PWV_TAB_DIR/measured_pwv.csv
@@ -209,9 +224,6 @@ def update_local_data(year=None, timeout=None):
         A list of years for which data was updated
     """
 
-    # Get any local data that has already been downloaded
-    local_data = Table.read(settings._pwv_measred_path)
-
     # Determine what years to download
     current_years = settings.available_years
     if year is None:
@@ -221,6 +233,9 @@ def update_local_data(year=None, timeout=None):
 
     else:
         years = {year}
+
+    # Get any local data that has already been downloaded
+    local_data = _get_local_data
 
     # Download new data from SuomiNet
     new_years = []
