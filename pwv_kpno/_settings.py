@@ -44,8 +44,8 @@ def location_property(f):
     @property
     def wrapper(self, *args, **kwargs):
         if self._loc_name is None:
-            raise ModelingConfigError(
-                'No loc_name has been set for pwv_kpno model.')
+            err_msg = 'No loc_name has been set for pwv_kpno model.'
+            raise ModelingConfigError(err_msg)
 
         return f(self, *args, **kwargs)
 
@@ -237,10 +237,9 @@ class Settings:
             overwrite (bool): Whether to overwrite an existing location
         """
 
-        data_table = Table.read(path)
-        loc_name = data_table.meta['loc_name']
+        config_data = Table.read(path)
+        loc_name = config_data.meta['loc_name']
         out_dir = self._loc_dir_unf.format(loc_name)
-        temp_dir = out_dir + '_temp'
 
         if loc_name in PROTECTED_NAMES:
             err_msg = 'Cannot overwrite protected location name {}'
@@ -250,20 +249,19 @@ class Settings:
             err_msg = 'Location already exists {}'
             raise ValueError(err_msg.format(loc_name))
 
+        temp_dir = out_dir + '_temp'
+        os.mkdir(temp_dir)
+
         config_path = os.path.join(temp_dir, 'config.json')
         with open(config_path, 'r+') as ofile:
-            json.dump(data_table.meta, ofile, indent=4, sort_keys=True)
+            config_data.meta['years'] = []
+            json.dump(config_data.meta, ofile, indent=4, sort_keys=True)
 
-        os.mkdir(temp_dir)
         atm_model_path = os.path.join(temp_dir, 'atm_model.json')
-        data_table.write(atm_model_path)
+        config_data.write(atm_model_path, format='ascii.csv')
 
-        self._create_location_files()
         shutil.rmtree(out_dir)
         shutil.move(temp_dir, out_dir)
-
-    def _create_location_files(self):
-        pass  # Todo: Download data from suominet and create pwv model
 
 
 # This instance should be used package wide to access site settings
