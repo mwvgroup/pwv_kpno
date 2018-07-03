@@ -52,7 +52,7 @@ def location_property(f):
     return wrapper
 
 
-def raise_missing_files(dir_path):
+def _raise_missing_files(dir_path):
     """Raises an error if a given directory is missing package config files
 
     Args:
@@ -132,6 +132,7 @@ class Settings:
         return next(os.walk(self._loc_dir_unf.format('')))[1]
 
     def set_location(self, loc):
+        # type: (str) -> None
         """Configure pwv_kpno to model the atmosphere at a given location
 
         See the available_loc attribute for a list of available location names
@@ -213,6 +214,7 @@ class Settings:
         return self._config_data['date_cuts'][rec_id]
 
     def export_location(self, out_dir):
+        # type: (str) -> None
         """Save location data to a <out_dir>/<location_name>.ecsv
 
         Args:
@@ -227,6 +229,7 @@ class Settings:
         atm_model.write(out_path)
 
     def import_location(self, path, overwrite=False):
+        # type: (str, bool) -> None
         """Load a custom location from file and save it to the package
 
         Args:

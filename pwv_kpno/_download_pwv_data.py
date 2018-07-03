@@ -193,6 +193,7 @@ def _download_data_for_year(yr, timeout=None):
 
 
 def update_local_data(year=None, timeout=None):
+    # type: (int, float) -> list[int]
     """Download data from SuomiNet and update PWV_TAB_DIR/measured_pwv.csv
 
     If a year is provided, download SuomiNet data for that year to SUOMI_DIR.

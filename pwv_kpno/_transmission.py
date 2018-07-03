@@ -55,13 +55,14 @@ def _raise_pwv(pwv):
 
 
 def trans_for_pwv(pwv):
+    # type: (float) -> Table
     """Return the atmospheric transmission due a given PWV concentration in mm
 
     For a given precipitable water vapor concentration, return the modeled
     atmospheric transmission function.
 
     Args:
-        pwv (int, float): A PWV concentration in mm
+        pwv (float): A PWV concentration in mm
 
     Returns:
         The modeled transmission function as an astropy table
@@ -154,7 +155,7 @@ def _trans_for_date(date, airmass, test_model=None):
 
 
 def trans_for_date(date, airmass):
-    # This function is a public wrapper for _trans_for_date
+    # type: (datetime, float) -> Table
     """Return a model for the atmospheric transmission function due to PWV
 
     For a given datetime and airmass, return a model for the atmospheric

@@ -65,6 +65,7 @@ class LocationBuilder:
         return config_data
 
     def save(self, out_dir):
+        # type: (str) -> None
         """Save location data to a <out_dir>/<location_name>.ecsv
 
         Args:

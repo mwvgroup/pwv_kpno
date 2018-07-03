@@ -156,6 +156,7 @@ def _create_new_pwv_model(debug=False):
 
 
 def update_models(year=None, timeout=None):
+    # type: (int, float) -> list[int]
     """Download data from SuomiNet and update the locally stored PWV model
 
     Update the modeled PWV column density for Kitt Peak by downloading new data

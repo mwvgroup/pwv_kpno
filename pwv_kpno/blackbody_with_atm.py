@@ -62,6 +62,7 @@ __status__ = 'Development'
 
 
 def sed(temp, wavelengths, pwv):
+    # type: (float, np.ndarray, float) -> np.ndarray[float]
     """Return the flux of a black body under the influence of pwv absorption
 
      Flux is returned in units of ergs / (angstrom * cm2 * s)
@@ -90,6 +91,7 @@ def sed(temp, wavelengths, pwv):
 
 
 def magnitude(temp, band, pwv):
+    # type: (float, tuple[float], float) -> float
     """Return the magnitude of a black body with and without pwv absorption
 
     Magnitudes are calculated relative to a zero point of 3631 Jy
@@ -121,6 +123,7 @@ def magnitude(temp, band, pwv):
 
 
 def zp_bias(ref_temp, cal_temp, band, pwv):
+    # type: (float, float, tuple[float], float) -> float
     """Calculate the residual error in the photometric zero point due to PWV
 
     Using a black body approximation, calculate the residual error in the zero

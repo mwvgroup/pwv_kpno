@@ -36,7 +36,7 @@ __email__ = 'djperrefort@pitt.com'
 __status__ = 'Development'
 
 
-def calc_num_density_conversion():
+def _calc_num_density_conversion():
     """Calculate conversion factor from PWV to integrated number density
 
     Returns:
@@ -57,6 +57,7 @@ def calc_num_density_conversion():
 
 
 def create_pwv_atm_model(mod_lambda, mod_cs, out_lambda):
+    # type: (np.ndarray, np.ndarray, np.ndarray) -> Table
     """Creates a table of conversion factors from PWV to number density
 
     Expects input and output wavelengths to be in same units. Expects modeled
@@ -80,7 +81,7 @@ def create_pwv_atm_model(mod_lambda, mod_cs, out_lambda):
     else:
         out_cs = mod_cs
 
-    pwv_num_density = out_cs * calc_num_density_conversion()
+    pwv_num_density = out_cs * _calc_num_density_conversion()
     out_table = Table([out_lambda, pwv_num_density],
                       names=['wavelength', 'mm_cm_2'])
 

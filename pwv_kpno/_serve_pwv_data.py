@@ -38,6 +38,7 @@ __status__ = 'Development'
 
 
 def timestamp(date):
+    # type: (datetime) -> float
     """Returns seconds since epoch of a UTC datetime in %Y-%m-%dT%H:%M format
 
     This function provides comparability for Python 2.7, for which the
@@ -82,8 +83,8 @@ def _pwv_date(date, airmass=1, test_model=None):
     return pwv
 
 
-def pwv_date(date, airmass=1):
-    # This function is a public wrapper for _pwv_date
+def pwv_date(date, airmass=1.):
+    # type: (datetime, float) -> datetime
     """Returns the modeled PWV column density at Kitt Peak for a given date
 
     Interpolate from the modeled PWV column density at Kitt Peak and return
@@ -101,6 +102,7 @@ def pwv_date(date, airmass=1):
 
 
 def available_data():
+    # type: () -> list[int]
     """Return a list of years for which SuomiNet data has been downloaded
 
     Return a list of years for which SuomiNet data has been downloaded to the
@@ -198,6 +200,7 @@ def _read_and_format(path):
 
 
 def measured_pwv(year=None, month=None, day=None, hour=None):
+    # type: (int, int, int, int) -> Table
     """Return an astropy table of PWV measurements taken by SuomiNet
 
     Return an astropy table of precipitable water vapor (PWV) measurements
@@ -222,6 +225,7 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
 
 
 def modeled_pwv(year=None, month=None, day=None, hour=None):
+    # type: (int, int, int, int) -> Table
     """Return an astropy table of the modeled PWV at Kitt Peak
 
     Return a model for the precipitable water vapor level at Kitt Peak as an
