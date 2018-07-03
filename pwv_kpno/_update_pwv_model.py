@@ -90,14 +90,8 @@ def _calc_avg_pwv_model(pwv_data, primary_rec):
     """
 
     off_site_receivers = settings.off_site_recs
-    receiver = off_site_receivers.pop()
-    modeled_pwv, modeled_err = _linear_regression(
-        x=pwv_data[receiver],
-        y=pwv_data[primary_rec],
-        sx=pwv_data[receiver + '_err'],
-        sy=pwv_data[primary_rec + '_err']
-    )
 
+    pwv_arrays, err_arrays = [], []
     for receiver in off_site_receivers:
         mod_pwv, mod_err = _linear_regression(
             x=pwv_data[receiver],
@@ -105,9 +99,11 @@ def _calc_avg_pwv_model(pwv_data, primary_rec):
             sx=pwv_data[receiver + '_err'],
             sy=pwv_data[primary_rec + '_err']
         )
+        pwv_arrays.append(mod_pwv)
+        err_arrays.append(mod_err)
 
-        modeled_pwv = np.ma.vstack((modeled_pwv, mod_pwv))
-        modeled_err = np.ma.vstack((modeled_err, mod_err))
+    modeled_pwv = np.ma.vstack(pwv_arrays)
+    modeled_err = np.ma.vstack(err_arrays)
 
     # Average PWV models from different sites
     avg_pwv = np.ma.average(modeled_pwv, axis=0)
