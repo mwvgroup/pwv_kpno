@@ -13,6 +13,7 @@ pwv_kpno/__pycache__/
 
 # IDE / Notebook files
 *.ipynb
+!custom_loc_demo.ipynb
 .idea/
 
 # Opperating system files
