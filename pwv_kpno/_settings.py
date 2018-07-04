@@ -44,7 +44,7 @@ def location_property(f):
     @property
     def wrapper(self, *args, **kwargs):
         if self._loc_name is None:
-            err_msg = 'No loc_name has been set for pwv_kpno model.'
+            err_msg = 'No location has been set for pwv_kpno model.'
             raise ModelingConfigError(err_msg)
 
         return f(self, *args, **kwargs)
@@ -75,12 +75,11 @@ class Settings:
     Represents settings for Kitt Peak by default
 
     Attributes:
-        current_loc     : The current location being modeled
+        loc_name        : The current location being modeled
         available_loc   : A list of built in locations that can be modeled
         receivers       : A list of SuomiNet receivers used by this location
         primary_rec     : The SuomiNet id code for the primary GPS receiver
-        off_site_recs   : Same as receivers but without the primary receiver
-        available_years : A list of years with locally available SuomiNet data
+        supplement_rec  : Same as receivers but without the primary receiver
 
     Methods:
         set_location    : Configure pwv_kpno to model a given location
@@ -154,7 +153,7 @@ class Settings:
         self._loc_name = self._config_data['loc_name']
 
     @location_property
-    def available_years(self):
+    def _available_years(self):
         """A list of years for which SuomiNet data has been downloaded"""
 
         return sorted(self._config_data['years'])
@@ -180,8 +179,8 @@ class Settings:
         return sorted(rec_list)
 
     @location_property
-    def off_site_recs(self):
-        """A list of all enabled, off sight GPS receivers for this location"""
+    def supplement_rec(self):
+        """A list of all supplementary GPS receivers for this location"""
 
         return sorted(self._config_data['sup_rec'])
 
@@ -230,7 +229,7 @@ class Settings:
 
     def import_location(self, path, overwrite=False):
         # type: (str, bool) -> None
-        """Load a custom location from file and save it to the package
+        """Load a custom location from file and save_to_dir it to the package
 
         Args:
             path       (str): The path of the new location's config file
@@ -250,17 +249,17 @@ class Settings:
             raise ValueError(err_msg.format(loc_name))
 
         temp_dir = out_dir + '_temp'
+        if os.path.exists(temp_dir): shutil.rmtree(temp_dir)
         os.mkdir(temp_dir)
 
         config_path = os.path.join(temp_dir, 'config.json')
-        with open(config_path, 'r+') as ofile:
+        with open(config_path, 'w') as ofile:
             config_data.meta['years'] = []
             json.dump(config_data.meta, ofile, indent=4, sort_keys=True)
 
         atm_model_path = os.path.join(temp_dir, 'atm_model.json')
         config_data.write(atm_model_path, format='ascii.csv')
 
-        shutil.rmtree(out_dir)
         shutil.move(temp_dir, out_dir)
 
 

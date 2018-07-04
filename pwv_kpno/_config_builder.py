@@ -50,7 +50,7 @@ class ConfigBuilder:
         cross_sections (ndarray): Array of MODTRAN cross sections in cm^2
 
     Methods:
-        save : Create a custom config file <loc_name>.ecsv in a given directory
+        save_to_dir : Create a custom config file <loc_name>.ecsv in a given directory
     """
 
     def __init__(self, **kwargs):
@@ -80,19 +80,20 @@ class ConfigBuilder:
             {cut param: [[lower bound, upper bound], ...], ...}
         """
 
-        for key, value in self.data_cuts:
-            if key not in CUT_PARAMS:
-                warn(
-                    'Cut parameter {} does not correspond to any parameter '
-                    'used by pwv_kpno'.format(key)
-                )
+        for dictionary in self.data_cuts.values():
+            for key, value in dictionary.items():
+                if key not in CUT_PARAMS:
+                    warn(
+                        'Cut parameter {} does not correspond to any parameter '
+                        'used by pwv_kpno'.format(key)
+                    )
 
-            value = np.array(value)
-            if not len(value.shape) == 2:
-                warn(
-                    'Cut boundaries for parameter {} '
-                    'is not a two dimensional array'.format(key)
-                )
+                value = np.array(value)
+                if not len(value.shape) == 2:
+                    warn(
+                        'Cut boundaries for parameter {} '
+                        'is not a two dimensional array'.format(key)
+                    )
 
     def _warn_loc_name(self):
         """Raise warnings if loc_name is not the correct format
@@ -100,10 +101,10 @@ class ConfigBuilder:
         Location names should be lowercase strings.
         """
 
-        if not self.loc_name.isupper():
+        if not self.loc_name.islower():
             warn(
-                'SuomiNet uses lowercase location names. Location name {} will'
-                ' be saved as {}.'.format(self.loc_name, self.loc_name.upper())
+                'pwv_kpno uses lowercase location names. Location name {} will'
+                ' be saved as {}.'.format(self.loc_name, self.loc_name.lower())
             )
 
     def _warn_id_codes(self):
@@ -123,7 +124,7 @@ class ConfigBuilder:
             if not id_code.isupper():
                 warn(
                     'SuomiNet ID codes should be uppercase. ID code {} will'
-                    ' be saved as {}.'.format(id_code, id_code.isupper())
+                    ' be saved as {}.'.format(id_code, id_code.upper())
                 )
 
     def _create_config_dict(self):
@@ -145,12 +146,13 @@ class ConfigBuilder:
         config_data['sup_rec'] = [id_code.upper() for id_code in self.sup_rec]
         return config_data
 
-    def save(self, out_dir):
+    def save_to_dir(self, out_dir, overwrite=False):
         # type: (str) -> None
         """Create a custom config file <out_dir>/<self.loc_name>.ecsv
 
         Args:
-            out_dir (str): The desired output directory
+            out_dir    (str): The desired output directory
+            overwrite (bool): Whether to overwrite an existing file
         """
 
         self._raise_unset_attributes()
@@ -160,7 +162,7 @@ class ConfigBuilder:
 
         model.meta = self._create_config_dict()
         out_path = os.path.join(out_dir, self.loc_name + '.ecsv')
-        model.write(out_path)
+        model.write(out_path, overwrite=overwrite)
 
     def __repr__(self):
         rep = '<ConfigBuilder loc_name={}, primary_rec={}>'

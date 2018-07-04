@@ -114,7 +114,7 @@ def available_data():
         A list of years with locally available SuomiNet data
     """
 
-    return sorted(settings.available_years)
+    return sorted(settings._available_years)
 
 
 def _check_date_time_args(year=None, month=None, day=None, hour=None):

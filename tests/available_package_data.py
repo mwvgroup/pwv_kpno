@@ -28,7 +28,7 @@ from datetime import datetime
 import unittest
 from pytz import utc
 
-from pwv_kpno import _settings as pk_settings
+from pwv_kpno import settings as pk_settings
 from pwv_kpno import pwv_atm
 
 __authors__ = ['Daniel Perrefort']
@@ -75,7 +75,7 @@ class CorrectConfigData(unittest.TestCase):
     def test_config_years(self):
         """Check config file for correct years"""
 
-        config_years = set(pk_settings.available_years)
+        config_years = set(pk_settings._available_years)
         self.assertEqual(EXPECTED_YEARS, config_years)
 
     def test_config_ids(self):
