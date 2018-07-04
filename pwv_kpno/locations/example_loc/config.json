@@ -1,0 +1,9 @@
+{
+    "data_cuts": {},
+    "loc_name": "example_loc",
+    "primary_rec": "KITT",
+    "sup_rec": [
+        "SA48"
+    ],
+    "years": []
+}

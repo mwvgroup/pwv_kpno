@@ -227,31 +227,39 @@ class Settings:
         out_path = os.path.join(out_dir, self.loc_name + '.ecsv')
         atm_model.write(out_path)
 
-    def import_location(self, path, overwrite=False):
+    def import_location(self, path, force_name=None, overwrite=False):
         # type: (str, bool) -> None
-        """Load a custom location from file and save_to_dir it to the package
+        """Load a custom location from file and save it to the package
+
+        Existing locations are only overwritten if overwrite is set to True.
+        The imported location can be assigned an alternative name using the
+        forced_name argument.
 
         Args:
             path       (str): The path of the new location's config file
+            force_name (str): Optional location name to overwrite config file
             overwrite (bool): Whether to overwrite an existing location
         """
 
         config_data = Table.read(path)
-        loc_name = config_data.meta['loc_name']
-        out_dir = self._loc_dir_unf.format(loc_name)
+        if force_name:
+            config_data.meta['loc_name'] = str(force_name)
 
+        loc_name = config_data.meta['loc_name']
         if loc_name in PROTECTED_NAMES:
             err_msg = 'Cannot overwrite protected location name {}'
             raise ValueError(err_msg.format(loc_name))
 
+        out_dir = self._loc_dir_unf.format(loc_name)
         if os.path.exists(out_dir) and not overwrite:
             err_msg = 'Location already exists {}'
             raise ValueError(err_msg.format(loc_name))
 
         temp_dir = out_dir + '_temp'
-        if os.path.exists(temp_dir): shutil.rmtree(temp_dir)
-        os.mkdir(temp_dir)
+        if os.path.exists(temp_dir):
+            shutil.rmtree(temp_dir)
 
+        os.mkdir(temp_dir)
         config_path = os.path.join(temp_dir, 'config.json')
         with open(config_path, 'w') as ofile:
             config_data.meta['years'] = []
@@ -260,6 +268,8 @@ class Settings:
         atm_model_path = os.path.join(temp_dir, 'atm_model.json')
         config_data.write(atm_model_path, format='ascii.csv')
 
+        if os.path.exists(out_dir):
+            shutil.rmtree(out_dir)
         shutil.move(temp_dir, out_dir)
 
 

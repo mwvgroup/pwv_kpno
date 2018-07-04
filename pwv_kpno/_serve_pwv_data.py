@@ -21,6 +21,7 @@ available PWV data. Functions are also provided to determine what years of
 SuomiNet data files have been downloaded to the local machine.
 """
 
+import os
 from datetime import datetime
 
 from astropy.table import Table
@@ -173,7 +174,7 @@ def _search_dt_table(data_tab, **kwargs):
     return data_tab[np.where(indexing_func(data_tab['date']))[0]]
 
 
-def _read_and_format(path):
+def _get_pwv_data_table(path, year, month, day, hour):
     """Reads a PWV data table from file and formats the table and data
 
     Adds units and converts 'date' column from timestamps to datetimes.
@@ -184,6 +185,10 @@ def _read_and_format(path):
     Returns:
         An astropy table with PWV data
     """
+
+    _check_date_time_args(year, month, day, hour)
+    if not os.path.exists(path):
+        raise RuntimeError('No data downloaded for current location.')
 
     data = Table.read(path)
 
@@ -196,18 +201,16 @@ def _read_and_format(path):
         if colname != 'date':
             data[colname].unit = 'mm'
 
-    return data
+    return _search_dt_table(data, year=year, month=month, day=day, hour=hour)
 
 
 def measured_pwv(year=None, month=None, day=None, hour=None):
     # type: (int, int, int, int) -> Table
     """Return an astropy table of PWV measurements taken by SuomiNet
 
-    Return an astropy table of precipitable water vapor (PWV) measurements
-    taken by the SuomiNet project. Columns are named using the SuomiNet IDs for
-    different locations and contain PWV measurements for that location in
-    millimeters. Results can be optionally refined by year, month, day, and
-    hour.
+    Columns are named using the SuomiNet IDs for different locations. PWV
+    measurements each location are recorded in millimeters. Results can be
+    optionally refined by year, month, day, and hour.
 
     Args:
         year  (int): The year of the desired PWV data
@@ -219,9 +222,8 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
         An astropy table of measured PWV values in mm
     """
 
-    _check_date_time_args(year, month, day, hour)
-    data = _read_and_format(settings._pwv_measred_path)
-    return _search_dt_table(data, year=year, month=month, day=day, hour=hour)
+    return _get_pwv_data_table(settings._pwv_measred_path,
+                               year, month, day, hour)
 
 
 def modeled_pwv(year=None, month=None, day=None, hour=None):
@@ -242,6 +244,5 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
         An astropy table of modeled PWV values in mm
     """
 
-    _check_date_time_args(year, month, day, hour)
-    data = _read_and_format(settings._pwv_model_path)
-    return _search_dt_table(data, year=year, month=month, day=day, hour=hour)
+    return _get_pwv_data_table(settings._pwv_model_path,
+                               year, month, day, hour)

@@ -1,0 +1,15 @@
+# %ECSV 0.9
+# ---
+# datatype:
+# - {name: wavelength, datatype: int64}
+# - {name: mm_cm_2, datatype: float64}
+# meta: !!omap
+# - data_cuts: {}
+# - {loc_name: example_loc}
+# - {primary_rec: KITT}
+# - sup_rec: [SA48]
+# schema: astropy-2.0
+wavelength mm_cm_2
+3000 1.9120016687e+13
+3001 1.91395706908e+13
+3002 1.91587894832e+13
