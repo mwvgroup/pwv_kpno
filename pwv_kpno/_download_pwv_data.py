@@ -66,6 +66,23 @@ def _suomi_date_to_timestamp(year, days_str):
     return timestamp
 
 
+def _apply_data_cuts(data, site_id):
+
+    data = data[data[site_id] > 0]
+    data[site_id + '_err'] = np.round(data[site_id + '_err'] + 0.025, 3)
+
+    data_cuts = settings.data_cuts
+    if site_id not in data_cuts:
+        return data
+
+    for param_name, cut_list in data_cuts[site_id].items():
+        for start, end in cut_list:
+            indices = (data[param_name] > start) & (data[param_name] < end)
+            data = data[indices]
+
+    return data
+
+
 def _read_file(path):
     """Return PWV measurements from a SuomiNet data file as an astropy table
 
@@ -93,13 +110,7 @@ def _read_file(path):
     data = np.genfromtxt(path,
                          names=names,
                          usecols=range(0, len(names)),
-                         dtype=[float for col in names])
-
-    data = data[data[site_id] > 0]
-    data[site_id + '_err'] = np.round(data[site_id + '_err'] + 0.025, 3)
-    for key, (start, end) in settings._data_cuts(site_id).items():
-        indices = (data[key] > start) & (data[key] < end)
-        data = data[indices]
+                         dtype=[float for _ in names])
 
     data = Table(data)['date', site_id, site_id + '_err']
     if data:
@@ -108,11 +119,7 @@ def _read_file(path):
         to_timestamp_vectorized = np.vectorize(_suomi_date_to_timestamp)
         data['date'] = to_timestamp_vectorized(year, data['date'])
 
-    for start_time, end_time in settings._date_cuts(site_id):
-        indices = (data['date'] < start_time) | (data['date'] > end_time)
-        data = data[indices]
-
-    return data
+    return _apply_data_cuts(data, site_id)
 
 
 def _download_data_for_site(year, site_id, timeout=None):
@@ -235,7 +242,7 @@ def update_local_data(year=None, timeout=None):
         years = {year}
 
     # Get any local data that has already been downloaded
-    local_data = _get_local_data
+    local_data = _get_local_data()
 
     # Download new data from SuomiNet
     new_years = []

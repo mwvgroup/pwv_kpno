@@ -39,6 +39,8 @@ __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
 
+# Todo: Add handling for no overlapping data
+
 def _linear_regression(x, y, sx, sy):
     """Optimize and apply a linear regression using masked arrays
 

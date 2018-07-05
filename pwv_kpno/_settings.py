@@ -188,29 +188,15 @@ class Settings:
         rep = '<pwv_kpno.Settings, Current Location Name: {}>'
         return rep.format(self.loc_name)
 
-    def _data_cuts(self, rec_id):
+    @location_property
+    def data_cuts(self):
         """Returns restrictions on what SuomiNet measurements to include
 
         Args:
             rec_id (str): The id code of a SuomiNet GPS receiver
         """
 
-        if self._loc_name is None:
-            raise ValueError('No location set to model.')
-
-        return self._config_data['data_cuts'][rec_id]
-
-    def _date_cuts(self, rec_id):
-        """Returns time periods when data from a given receiver is ignored
-
-        Args:
-            rec_id (str): The id code of a SuomiNet GPS receiver
-        """
-
-        if self._loc_name is None:
-            raise ValueError('No location set to model.')
-
-        return self._config_data['date_cuts'][rec_id]
+        return self._config_data['data_cuts']
 
     def export_location(self, out_dir):
         # type: (str) -> None
