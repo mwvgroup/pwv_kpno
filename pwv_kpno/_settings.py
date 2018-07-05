@@ -32,7 +32,7 @@ __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
-# Locations included with release that cannot be overwritten by the user
+# Sites included with release that cannot be overwritten by the user
 PROTECTED_NAMES = ['kitt_peak']
 
 
@@ -40,11 +40,11 @@ class ModelingConfigError(Exception):
     pass
 
 
-def location_property(f):
+def site_property(f):
     @property
     def wrapper(self, *args, **kwargs):
         if self._loc_name is None:
-            err_msg = 'No location has been set for pwv_kpno model.'
+            err_msg = 'No site has been specified for pwv_kpno model.'
             raise ModelingConfigError(err_msg)
 
         return f(self, *args, **kwargs)
@@ -70,46 +70,46 @@ def _raise_missing_files(dir_path):
 
 
 class Settings:
-    """Represents pwv_kpno settings for a particular geographical location
+    """Represents pwv_kpno settings for a particular geographical site
 
     Represents settings for Kitt Peak by default
 
     Attributes:
-        loc_name        : The current location being modeled
-        available_loc   : A list of built in locations that can be modeled
-        receivers       : A list of SuomiNet receivers used by this location
+        site_name       : The current site being modeled
+        available_sites   : A list of built in sites that pwv_kpno can model
+        receivers       : A list of SuomiNet receivers used by this site
         primary_rec     : The SuomiNet id code for the primary GPS receiver
         supplement_rec  : Same as receivers but without the primary receiver
 
     Methods:
-        set_location    : Configure pwv_kpno to model a given location
-        export_location : Export package settings for the current location
+        set_site      : Configure pwv_kpno to model a given site
+        export_config : Save the current site's configuration data to file
     """
 
-    _loc_name = None  # The name of the current location
-    _config_data = None  # Data from the locations config file
+    _site_name = None  # The name of the current site
+    _config_data = None  # Data from the site's config file
 
     def __init__(self):
         _file_dir = os.path.dirname(os.path.realpath(__file__))
         self._suomi_dir = os.path.join(_file_dir, 'suomi_data')
-        self._loc_dir_unf = os.path.join(_file_dir, 'locations/{}')
+        self._loc_dir_unf = os.path.join(_file_dir, 'site_data/{}')
         self._config_path_unf = os.path.join(self._loc_dir_unf, 'config.json')
 
     @property
-    def loc_name(self):
-        return self._loc_name
+    def site_name(self):
+        return self._site_name
 
-    @location_property
+    @site_property
     def primary_rec(self):
         return self._config_data['primary_rec']
 
-    @location_property
+    @site_property
     def _loc_dir(self):
-        return self._loc_dir_unf.format(self.loc_name)
+        return self._loc_dir_unf.format(self.site_name)
 
-    @location_property
+    @site_property
     def _config_path(self):
-        return self._config_path_unf.format(self.loc_name)
+        return self._config_path_unf.format(self.site_name)
 
     @property
     def _atm_model_path(self):
@@ -124,44 +124,44 @@ class Settings:
         return os.path.join(self._loc_dir, 'measured_pwv.csv')
 
     @property
-    def available_loc(self):
-        """A list of locations for which pwv_kpno has stored settings"""
+    def available_sites(self):
+        """A list of sites for which pwv_kpno has stored settings"""
 
         self._loc_dir_unf.format('')
         return next(os.walk(self._loc_dir_unf.format('')))[1]
 
-    def set_location(self, loc):
+    def set_site(self, loc):
         # type: (str) -> None
-        """Configure pwv_kpno to model the atmosphere at a given location
+        """Configure pwv_kpno to model the atmosphere at a given site
 
-        See the available_loc attribute for a list of available location names
+        See the available_sites attribute for a list of available site names
 
         Args:
-            loc (str): The name or directory of location to model
+            loc (str): The name of a site to model
         """
 
-        if loc in self.available_loc:
+        if loc in self.available_sites:
             config_path = self._config_path_unf.format(loc)
 
         else:
-            err_msg = 'No stored settings for location {}'
+            err_msg = 'No stored settings for site {}'
             raise ValueError(err_msg.format(loc))
 
         with open(config_path, 'r') as ofile:
             self._config_data = json.load(ofile)
 
-        self._loc_name = self._config_data['loc_name']
+        self._site_name = self._config_data['site_name']
 
-    @location_property
+    @site_property
     def _available_years(self):
         """A list of years for which SuomiNet data has been downloaded"""
 
         return sorted(self._config_data['years'])
 
     def _replace_years(self, yr_list):
-        # Replaces the list of years in the location's config file
+        # Replaces the list of years in the site's config file
 
-        # Note: self._config_path calls @location_property decorator
+        # Note: self._config_path calls @site_property decorator
         with open(self._config_path, 'r+') as ofile:
             current_data = json.load(ofile)
             current_data['years'] = list(set(yr_list))
@@ -169,35 +169,35 @@ class Settings:
             json.dump(current_data, ofile, indent=4, sort_keys=True)
             ofile.truncate()
 
-    @location_property
+    @site_property
     def receivers(self):
-        """A list of all GPS receivers associated with this location"""
+        """A list of all GPS receivers associated with the current site"""
 
         # list used instead of .copy for python 2.7 compatibility
         rec_list = list(self._config_data['sup_rec'])
         rec_list.append(self._config_data['primary_rec'])
         return sorted(rec_list)
 
-    @location_property
+    @site_property
     def supplement_rec(self):
-        """A list of all supplementary GPS receivers for this location"""
+        """A list of all supplementary GPS receivers for the current site"""
 
         return sorted(self._config_data['sup_rec'])
 
     def __repr__(self):
-        rep = '<pwv_kpno.Settings, Current Location Name: {}>'
-        return rep.format(self.loc_name)
+        rep = '<pwv_kpno.Settings, Current Site Name: {}>'
+        return rep.format(self.site_name)
 
-    @location_property
+    @site_property
     def data_cuts(self):
         # type () -> dict
         """Returns restrictions on what SuomiNet measurements to include"""
 
         return self._config_data['data_cuts']
 
-    def export_location(self, out_dir):
+    def export_config(self, out_dir):
         # type: (str) -> None
-        """Save location data to a <out_dir>/<location_name>.ecsv
+        """Save the current site's config file to <out_dir>/<site_name>.ecsv
 
         Args:
             out_dir (str): The desired output directory
@@ -207,35 +207,35 @@ class Settings:
         atm_model = Table.read(self._atm_model_path)
         atm_model.meta = self._config_data
 
-        out_path = os.path.join(out_dir, self.loc_name + '.ecsv')
+        out_path = os.path.join(out_dir, self.site_name + '.ecsv')
         atm_model.write(out_path)
 
-    def import_location(self, path, force_name=None, overwrite=False):
+    def import_site(self, path, force_name=None, overwrite=False):
         # type: (str, bool) -> None
-        """Load a custom location from file and save it to the package
+        """Load a custom configuration file and save it to the package
 
-        Existing locations are only overwritten if overwrite is set to True.
-        The imported location can be assigned an alternative name using the
+        Existing sites are only overwritten if overwrite is set to True.
+        The imported site can be assigned an alternative name using the
         forced_name argument.
 
         Args:
-            path       (str): The path of the new location's config file
-            force_name (str): Optional location name to overwrite config file
-            overwrite (bool): Whether to overwrite an existing location
+            path       (str): The path of the desired config file
+            force_name (str): Optional site name to overwrite config file
+            overwrite (bool): Whether to overwrite an existing site
         """
 
         config_data = Table.read(path)
         if force_name:
-            config_data.meta['loc_name'] = str(force_name)
+            config_data.meta['site_name'] = str(force_name)
 
-        loc_name = config_data.meta['loc_name']
+        loc_name = config_data.meta['site_name']
         if loc_name in PROTECTED_NAMES:
-            err_msg = 'Cannot overwrite protected location name {}'
+            err_msg = 'Cannot overwrite protected site name {}'
             raise ValueError(err_msg.format(loc_name))
 
         out_dir = self._loc_dir_unf.format(loc_name)
         if os.path.exists(out_dir) and not overwrite:
-            err_msg = 'Location already exists {}'
+            err_msg = 'Site already exists {}'
             raise ValueError(err_msg.format(loc_name))
 
         temp_dir = out_dir + '_temp'

@@ -50,7 +50,7 @@ class ConfigBuilder:
         cross_sections (ndarray): Array of MODTRAN cross sections in cm^2
 
     Methods:
-        save_to_dir : Create a custom config file <loc_name>.ecsv in a given directory
+        save_to_dir : Create a custom config file <site_name>.ecsv in a given directory
     """
 
     def __init__(self, **kwargs):
@@ -68,7 +68,7 @@ class ConfigBuilder:
         """Ensure user has assigned values to required attributes"""
 
         err_msg = 'Must specify attribute {} before saving.'
-        attrs = ['loc_name', 'primary_rec', 'wavelengths', 'cross_sections']
+        attrs = ['site_name', 'primary_rec', 'wavelengths', 'cross_sections']
         for value in attrs:
             if getattr(self, value) is None:
                 raise ValueError(err_msg.format(value))
@@ -96,7 +96,7 @@ class ConfigBuilder:
                     )
 
     def _warn_loc_name(self):
-        """Raise warnings if loc_name is not the correct format
+        """Raise warnings if site_name is not the correct format
 
         Location names should be lowercase strings.
         """
@@ -139,7 +139,7 @@ class ConfigBuilder:
         config_data['data_cuts'] = self.data_cuts
 
         self._warn_loc_name()
-        config_data['loc_name'] = self.loc_name.lower()
+        config_data['site_name'] = self.loc_name.lower()
 
         self._warn_id_codes()
         config_data['primary_rec'] = self.primary_rec.upper()
@@ -148,7 +148,7 @@ class ConfigBuilder:
 
     def save_to_dir(self, out_dir, overwrite=False):
         # type: (str) -> None
-        """Create a custom config file <out_dir>/<self.loc_name>.ecsv
+        """Create a custom config file <out_dir>/<self.site_name>.ecsv
 
         Args:
             out_dir    (str): The desired output directory
@@ -165,5 +165,5 @@ class ConfigBuilder:
         model.write(out_path, overwrite=overwrite)
 
     def __repr__(self):
-        rep = '<ConfigBuilder loc_name={}, primary_rec={}>'
+        rep = '<ConfigBuilder site_name={}, primary_rec={}>'
         return rep.format(self.loc_name, self.primary_rec)
