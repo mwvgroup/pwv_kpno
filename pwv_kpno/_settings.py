@@ -190,11 +190,8 @@ class Settings:
 
     @location_property
     def data_cuts(self):
-        """Returns restrictions on what SuomiNet measurements to include
-
-        Args:
-            rec_id (str): The id code of a SuomiNet GPS receiver
-        """
+        # type () -> dict
+        """Returns restrictions on what SuomiNet measurements to include"""
 
         return self._config_data['data_cuts']
 
