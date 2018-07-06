@@ -13,6 +13,9 @@
 .. image:: https://travis-ci.org/mwvgroup/pwv_kpno.svg?branch=master
     :target: https://travis-ci.org/mwvgroup/pwv_kpno
 
+.. image:: https://img.shields.io/badge/astro--ph.IM-arXiv%3A1806.09701-B31B1B.svg
+    :target: https://arxiv.org/abs/1806.09701
+
 .. toctree::
     :hidden:
     :numbered:
