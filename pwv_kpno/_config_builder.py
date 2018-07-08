@@ -38,6 +38,8 @@ __status__ = 'Development'
 CUT_PARAMS = ('PWV', 'PWVerr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH')
 
 
+# Todo: Add test coverage
+# Todo: Store pwv measurements, not atm model
 class ConfigBuilder:
     """This class is used to build custom config files for the pwv_kpno package
 

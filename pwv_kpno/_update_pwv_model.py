@@ -40,7 +40,6 @@ __status__ = 'Development'
 
 
 # Todo: Add handling for no overlapping data
-
 def _linear_regression(x, y, sx, sy):
     """Optimize and apply a linear regression using masked arrays
 
@@ -153,6 +152,7 @@ def _create_new_pwv_model(debug=False):
     out.write(settings._pwv_model_path, overwrite=True)
 
 
+# Todo: Fix for multi site
 def update_models(year=None, timeout=None):
     # type: (int, float) -> list[int]
     """Download data from SuomiNet and update the locally stored PWV model

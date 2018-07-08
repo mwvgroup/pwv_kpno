@@ -45,8 +45,6 @@ def _calc_num_density_conversion():
         The conversion factor from PWV to number density in 1 / (mm * cm^2)
     """
 
-    # Todo: Create an analogous function for 02, 03, and aerosols
-
     n_a = 6.02214129E23       # 1 / mol (Avogadro's constant)
     h2o_molar_mass = 18.0152  # g / mol
     h2o_density = 0.99997     # g / cm^3
@@ -73,8 +71,6 @@ def create_pwv_atm_model(mod_lambda, mod_cs, out_lambda):
     Returns:
         A table with columns 'wavelength' and 'mm_cm_2'
     """
-
-    # Todo: Add contribution from 02, 03, and aerosols to this function
 
     if not np.array_equal(mod_lambda, out_lambda):
         interp_cs = interpolate.interp1d(mod_lambda, mod_cs)
