@@ -67,6 +67,12 @@ def _suomi_date_to_timestamp(year, days_str):
 
 
 def _apply_data_cuts(data, site_id):
+    """Apply data cuts from settings to a table of SuomiNet measurements
+
+    Args:
+        data  (Table): Table containing data from a SuomiNet data file
+        site_id (str): The site to apply data cuts for
+    """
 
     data = data[data[site_id] > 0]
     data[site_id + '_err'] = np.round(data[site_id + '_err'] + 0.025, 3)
