@@ -37,3 +37,5 @@ __license__ = 'GPL V3'
 __version__ = '0.12.0'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
+
+settings.set_site('kitt_peak')
