@@ -94,6 +94,7 @@ class Settings:
         self._suomi_dir = os.path.join(_file_dir, 'suomi_data')
         self._loc_dir_unf = os.path.join(_file_dir, 'site_data/{}')
         self._config_path_unf = os.path.join(self._loc_dir_unf, 'config.json')
+        self._atm_model_path = os.path.join(_file_dir, 'atmosphere/atm_model.csv')
 
     @property
     def site_name(self):
@@ -110,10 +111,6 @@ class Settings:
     @site_property
     def _config_path(self):
         return self._config_path_unf.format(self.site_name)
-
-    @property
-    def _atm_model_path(self):
-        return os.path.join(self._loc_dir, 'atm_model.csv')
 
     @property
     def _pwv_model_path(self):
