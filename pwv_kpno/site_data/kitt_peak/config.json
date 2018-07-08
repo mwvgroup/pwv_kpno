@@ -35,7 +35,7 @@
             ]
         }
     },
-    "loc_name": "kitt_peak",
+    "site_name": "kitt_peak",
     "primary_rec": "KITT",
     "sup_rec": [
         "AZAM",

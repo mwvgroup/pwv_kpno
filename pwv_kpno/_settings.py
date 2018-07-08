@@ -43,7 +43,7 @@ class ModelingConfigError(Exception):
 def site_property(f):
     @property
     def wrapper(self, *args, **kwargs):
-        if self._loc_name is None:
+        if self._site_name is None:
             err_msg = 'No site has been specified for pwv_kpno model.'
             raise ModelingConfigError(err_msg)
 
