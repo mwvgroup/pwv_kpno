@@ -98,10 +98,12 @@ class Settings:
 
     @property
     def site_name(self):
+        # type: () -> str
         return self._site_name
 
     @site_property
     def primary_rec(self):
+        # type: () -> str
         return self._config_data['primary_rec']
 
     @site_property
@@ -122,6 +124,7 @@ class Settings:
 
     @property
     def available_sites(self):
+        # type: () -> list[str]
         """A list of sites for which pwv_kpno has stored settings"""
 
         self._loc_dir_unf.format('')
@@ -168,6 +171,7 @@ class Settings:
 
     @site_property
     def receivers(self):
+        # type: () -> list[str]
         """A list of all GPS receivers associated with the current site"""
 
         # list used instead of .copy for python 2.7 compatibility
@@ -177,6 +181,7 @@ class Settings:
 
     @site_property
     def supplement_rec(self):
+        # type () -> list[str]
         """A list of all supplementary GPS receivers for the current site"""
 
         return sorted(self._config_data['sup_rec'])
