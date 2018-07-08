@@ -255,6 +255,7 @@ class Settings:
 
         if os.path.exists(out_dir):
             shutil.rmtree(out_dir)
+
         shutil.move(temp_dir, out_dir)
 
 

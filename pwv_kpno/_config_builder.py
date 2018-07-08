@@ -35,7 +35,7 @@ __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
 # List of params that data cuts can be applied for
-CUT_PARAMS = ['PWV', 'PWVerr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH']
+CUT_PARAMS = ('PWV', 'PWVerr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH')
 
 
 class ConfigBuilder:
@@ -43,19 +43,19 @@ class ConfigBuilder:
 
     Attributes:
         data_cuts         (dict): Specifies data ranges to ignore
-        loc_name           (str): Desired name of the custom location
+        site_name          (str): Desired name of the custom site
         primary_rec        (str): SuomiNet ID code for the primary GPS receiver
         sup_recs          (list): List of id codes for supplemental receivers
         wavelengths    (ndarray): Array of wavelengths in Angstroms
         cross_sections (ndarray): Array of MODTRAN cross sections in cm^2
 
     Methods:
-        save_to_dir : Create a custom config file <site_name>.ecsv in a given directory
+        save_to_dir : Create a custom config file <site_name>.ecsv
     """
 
     def __init__(self, **kwargs):
         self.data_cuts = dict()
-        self.loc_name = None  # type: str
+        self.site_name = None  # type: str
         self.primary_rec = None  # type: str
         self.sup_rec = []
         self.wavelengths = None  # type: np.ndarray
@@ -84,27 +84,27 @@ class ConfigBuilder:
             for key, value in dictionary.items():
                 if key not in CUT_PARAMS:
                     warn(
-                        'Cut parameter {} does not correspond to any parameter '
-                        'used by pwv_kpno'.format(key)
+                        'Provided data cut parameter {} does not correspond'
+                        ' to any parameter used by pwv_kpno'.format(key)
                     )
 
                 value = np.array(value)
                 if not len(value.shape) == 2:
                     warn(
-                        'Cut boundaries for parameter {} '
-                        'is not a two dimensional array'.format(key)
+                        'Cut boundaries for parameter {}'
+                        ' is not a two dimensional array'.format(key)
                     )
 
-    def _warn_loc_name(self):
+    def _warn_site_name(self):
         """Raise warnings if site_name is not the correct format
 
-        Location names should be lowercase strings.
+        Site names should be lowercase strings.
         """
 
-        if not self.loc_name.islower():
+        if not self.site_name.islower():
             warn(
-                'pwv_kpno uses lowercase location names. Location name {} will'
-                ' be saved as {}.'.format(self.loc_name, self.loc_name.lower())
+                'pwv_kpno uses lowercase site names. The site name {} will be'
+                ' saved as {}.'.format(self.site_name, self.site_name.lower())
             )
 
     def _warn_id_codes(self):
@@ -117,9 +117,7 @@ class ConfigBuilder:
         all_id_codes.append(self.primary_rec)
         for id_code in all_id_codes:
             if len(id_code) != 4:
-                warn(
-                    'ID is not of expected length 4: {}'.format(id_code)
-                )
+                warn('ID is not of expected length 4: {}'.format(id_code))
 
             if not id_code.isupper():
                 warn(
@@ -128,18 +126,18 @@ class ConfigBuilder:
                 )
 
     def _create_config_dict(self):
-        """Create a dictionary with config data for this location
+        """Create a dictionary with config data for this site
 
         Returns:
-            A dictionary storing location settings
+            A dictionary storing site settings
         """
 
         config_data = dict()
         self._warn_data_cuts()
         config_data['data_cuts'] = self.data_cuts
 
-        self._warn_loc_name()
-        config_data['site_name'] = self.loc_name.lower()
+        self._warn_site_name()
+        config_data['site_name'] = self.site_name.lower()
 
         self._warn_id_codes()
         config_data['primary_rec'] = self.primary_rec.upper()
@@ -161,9 +159,9 @@ class ConfigBuilder:
                                      out_lambda=np.array(self.wavelengths))
 
         model.meta = self._create_config_dict()
-        out_path = os.path.join(out_dir, self.loc_name + '.ecsv')
+        out_path = os.path.join(out_dir, self.site_name + '.ecsv')
         model.write(out_path, overwrite=overwrite)
 
     def __repr__(self):
         rep = '<ConfigBuilder site_name={}, primary_rec={}>'
-        return rep.format(self.loc_name, self.primary_rec)
+        return rep.format(self.site_name, self.primary_rec)
