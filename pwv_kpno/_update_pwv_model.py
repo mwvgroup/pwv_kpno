@@ -27,6 +27,7 @@ from datetime import datetime
 from astropy.table import Table
 import numpy as np
 from scipy.odr import RealData, ODR, polynomial
+import warnings
 
 from ._download_pwv_data import update_local_data
 from ._settings import settings
@@ -37,6 +38,9 @@ __copyright__ = 'Copyright 2017, Daniel Perrefort'
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
+
+w_msg = 'Empty data detected for ODR instance.'
+warnings.filterwarnings("ignore", message=w_msg)
 
 
 # Todo: Add handling for no overlapping data
