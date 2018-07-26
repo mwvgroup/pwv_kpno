@@ -26,6 +26,7 @@ from warnings import warn
 import numpy as np
 
 from ._atm_model import create_pwv_atm_model
+from ._settings import Settings
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -49,7 +50,7 @@ class ConfigBuilder:
         primary_rec        (str): SuomiNet ID code for the primary GPS receiver
         sup_recs          (list): List of id codes for supplemental receivers
         wavelengths    (ndarray): Array of wavelengths in Angstroms
-        cross_sections (ndarray): Array of MODTRAN cross sections in cm^2
+        cross_sections (ndarray): Array of PWV cross sections in cm^2
 
     Methods:
         save_to_dir : Create a custom config file <site_name>.ecsv
@@ -60,8 +61,12 @@ class ConfigBuilder:
         self.site_name = None  # type: str
         self.primary_rec = None  # type: str
         self.sup_rec = []
-        self.wavelengths = None  # type: np.ndarray
-        self.cross_sections = None  # type: np.ndarray
+
+        settings = Settings()
+        settings.set_site('kitt_peak')
+        atm_cross_sections = np.genfromtxt(settings._atm_model_path)
+        self.wavelengths = atm_cross_sections['wavelength']
+        self.cross_sections = atm_cross_sections['mm_cm_2']
 
         for key, value in kwargs.items():
             setattr(self, key, value)
