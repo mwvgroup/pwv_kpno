@@ -26,7 +26,7 @@ from warnings import warn
 import numpy as np
 
 from ._atm_model import create_pwv_atm_model
-from ._settings import Settings
+from ._package_settings import Settings
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'

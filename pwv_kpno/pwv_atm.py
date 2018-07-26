@@ -85,7 +85,7 @@ from astropy.table import Table
 import numpy as np
 from pytz import utc
 
-from ._settings import settings
+from ._package_settings import settings
 from ._update_pwv_model import update_models
 
 __authors__ = ['Daniel Perrefort', 'Michael Wood-Vasey']

@@ -26,7 +26,7 @@ standard python help function.
 from . import pwv_atm
 from . import blackbody_with_atm
 from ._config_builder import ConfigBuilder
-from ._settings import settings
+from ._package_settings import settings
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'

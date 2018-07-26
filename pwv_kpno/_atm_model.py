@@ -86,7 +86,7 @@ def create_pwv_atm_model(mod_lambda, mod_cs, out_lambda):
 
 if __name__ == '__main__':
 
-    from pwv_kpno._settings import settings
+    from pwv_kpno._package_settings import settings
 
     # Load modeled wavelengths and cross sections
     h2o_cs_path = os.path.join(settings._loc_dir, 'atmosphere/h2ocs.txt')

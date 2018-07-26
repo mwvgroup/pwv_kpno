@@ -29,7 +29,7 @@ from astropy.table import Table, join, vstack, unique
 import numpy as np
 import requests
 
-from ._settings import settings
+from ._package_settings import settings
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2016, Daniel Perrefort'
