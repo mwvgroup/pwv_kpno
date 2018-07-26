@@ -191,17 +191,19 @@ def _get_pwv_data_table(path, year, month, day, hour):
         raise RuntimeError('No data downloaded for current location.')
 
     data = Table.read(path)
+    if data:
+        # vectorized callable can not be used on an empty table
+        to_datetime = lambda date: datetime.fromtimestamp(date, utc)
+        data['date'] = np.vectorize(to_datetime)(data['date'])
+        data['date'].unit = 'UTC'
 
-    # Convert UNIX timestamps to UTC
-    to_datetime = lambda date: datetime.fromtimestamp(date, utc)
-    data['date'] = np.vectorize(to_datetime)(data['date'])
-    data['date'].unit = 'UTC'
+        data = _search_dt_table(data, year=year, month=month, day=day, hour=hour)
 
     for colname in data.colnames:
         if colname != 'date':
             data[colname].unit = 'mm'
 
-    return _search_dt_table(data, year=year, month=month, day=day, hour=hour)
+    return data
 
 
 def measured_pwv(year=None, month=None, day=None, hour=None):
