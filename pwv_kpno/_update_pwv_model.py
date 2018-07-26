@@ -76,7 +76,7 @@ def _linear_regression(x, y, sx, sy):
 
     b, m = fit_results.beta
     applied_fit = m * x + b
-    applied_fit.mask = np.logical_or(x.mask, applied_fit <= 0)
+    applied_fit.mask = np.logical_or(np.logical_or(x.mask, y.mask), applied_fit <= 0)
 
     error = np.minimum(1 + 0.1 * x, 3)
     error.mask = applied_fit.mask
