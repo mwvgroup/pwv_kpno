@@ -70,8 +70,9 @@ def _linear_regression(x, y, sx, sy):
     odr = ODR(data, polynomial(1), beta0=[0., 1.])
     fit_results = odr.run()
 
-    fit_pass = 'Numerical error detected' not in fit_results.stopreason
-    assert fit_pass, 'Numerical error detected'
+    fit_fail = 'Numerical error detected' in fit_results.stopreason
+    if fit_fail:
+        raise RuntimeError(fit_results.stopreason)
 
     b, m = fit_results.beta
     applied_fit = m * x + b
