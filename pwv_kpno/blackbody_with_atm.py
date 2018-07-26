@@ -51,7 +51,7 @@ from astropy.constants import c
 from astropy.modeling.blackbody import blackbody_lambda
 import numpy as np
 
-from pwv_kpno._transmission import trans_for_pwv
+from pwv_kpno.pwv_atm import trans_for_pwv
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
