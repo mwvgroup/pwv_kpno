@@ -96,18 +96,18 @@ __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
 
-def timestamp(date):
+def _timestamp(date):
     # type: (datetime) -> float
     """Returns seconds since epoch of a UTC datetime in %Y-%m-%dT%H:%M format
 
     This function provides comparability for Python 2.7, for which the
-    datetime.timestamp method was not yet available.
+    datetime._timestamp method was not yet available.
 
     Args:
-        date (datetime.datetime): A datetime to find the timestamp for
+        date (datetime.datetime): A datetime to find the _timestamp for
 
     Returns:
-        The timestamp of the provided datetime as a float
+        The _timestamp of the provided datetime as a float
     """
 
     unix_epoch = datetime(1970, 1, 1, tzinfo=utc)
@@ -128,7 +128,7 @@ def _raise_available_data(date, pwv_model):
         raise RuntimeError(err_msg)
 
     # Check date falls within the range of available PWV data
-    time_stamp = timestamp(date)
+    time_stamp = _timestamp(date)
     w_data_less_than = np.where(pwv_model['date'] < time_stamp)[0]
     if len(w_data_less_than) < 1:
         min_date = datetime.utcfromtimestamp(min(pwv_model['date']))
@@ -175,7 +175,7 @@ def _pwv_date(date, airmass=1, test_model=None):
 
     _raise_available_data(date, pwv_model)
     # Determine the PWV level along line of sight as pwv(zenith) * airmass
-    time_stamp = timestamp(date)
+    time_stamp = _timestamp(date)
     pwv = np.interp(time_stamp, pwv_model['date'], pwv_model['pwv']) * airmass
     return pwv
 

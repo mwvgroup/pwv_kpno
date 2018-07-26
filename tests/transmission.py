@@ -24,11 +24,11 @@ from datetime import datetime, timedelta
 import numpy as np
 from pytz import utc
 
-from pwv_kpno._transmission import _trans_for_date
-from pwv_kpno._transmission import trans_for_date
-from pwv_kpno._transmission import _raise_transmission_args
-from pwv_kpno._transmission import _raise_available_data
-from pwv_kpno._transmission import _raise_pwv
+from pwv_kpno.pwv_atm import _trans_for_date
+from pwv_kpno.pwv_atm import trans_for_date
+from pwv_kpno.pwv_atm import _raise_transmission_args
+from pwv_kpno.pwv_atm import _raise_available_data
+from pwv_kpno.pwv_atm import _raise_pwv
 from _create_mock_data import create_mock_pwv_model
 
 __authors__ = ['Daniel Perrefort']

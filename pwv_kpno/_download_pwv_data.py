@@ -41,13 +41,13 @@ __status__ = 'Development'
 
 
 def _suomi_date_to_timestamp(year, days_str):
-    """Convert the SuomiNet date format to UTC timestamp
+    """Convert the SuomiNet date format to UTC _timestamp
 
     SuomiNet dates are stored as decimal days in a given year. For example,
     February 1st, 00:15 would be 36.01042.
 
     Args:
-        year     (int): The year of the desired timestamp
+        year     (int): The year of the desired _timestamp
         days_str (str): The number of days that have passed since january 1st
 
     Returns:
