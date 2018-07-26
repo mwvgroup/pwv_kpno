@@ -118,6 +118,7 @@ def _read_file(path):
                          usecols=range(0, len(names)),
                          dtype=[float for _ in names])
 
+    data = _apply_data_cuts(data, site_id)
     data = Table(data)['date', site_id, site_id + '_err']
     if data:
         data = unique(data, keys='date', keep='none')
@@ -125,7 +126,7 @@ def _read_file(path):
         to_timestamp_vectorized = np.vectorize(_suomi_date_to_timestamp)
         data['date'] = to_timestamp_vectorized(year, data['date'])
 
-    return _apply_data_cuts(data, site_id)
+    return data
 
 
 def _download_data_for_site(year, site_id, timeout=None):

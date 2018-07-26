@@ -129,13 +129,16 @@ def _raise_available_data(date, pwv_model):
 
     # Check date falls within the range of available PWV data
     time_stamp = _timestamp(date)
-    w_data_less_than = np.where(pwv_model['date'] < time_stamp)[0]
+    print(date)
+    print(time_stamp)
+    print(min(pwv_model['date']))
+    w_data_less_than = np.where(pwv_model['date'] <= time_stamp)[0]
     if len(w_data_less_than) < 1:
         min_date = datetime.utcfromtimestamp(min(pwv_model['date']))
         msg = 'No PWV data found for datetimes before {0} on local machine'
         raise ValueError(msg.format(min_date))
 
-    w_data_greater_than = np.where(time_stamp < pwv_model['date'])[0]
+    w_data_greater_than = np.where(time_stamp <= pwv_model['date'])[0]
     if len(w_data_greater_than) < 1:
         max_date = datetime.utcfromtimestamp(max(pwv_model['date']))
         msg = 'No PWV data found for datetimes after {0} on local machine'
@@ -143,7 +146,7 @@ def _raise_available_data(date, pwv_model):
 
     # Check for SuomiNet data available near the given date
     diff = pwv_model['date'] - time_stamp
-    interval = min(diff[diff > 0]) - max(diff[diff < 0])
+    interval = min(diff[diff >= 0]) - max(diff[diff <= 0])
     one_day_in_seconds = 24 * 60 * 60
 
     if one_day_in_seconds <= interval:
