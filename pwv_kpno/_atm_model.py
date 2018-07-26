@@ -35,8 +35,6 @@ __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.com'
 __status__ = 'Development'
 
-# Todo: Add test coverage
-
 
 def _calc_num_density_conversion():
     """Calculate conversion factor from PWV to integrated number density
