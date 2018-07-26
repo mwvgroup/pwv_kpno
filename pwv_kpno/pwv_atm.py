@@ -123,18 +123,22 @@ def _raise_available_data(date, pwv_model):
         pwv_model (Table): An astropy table containing column 'date'
     """
 
+    if not pwv_model:
+        err_msg = 'No PWV data for primary receiver available on local machine.'
+        raise RuntimeError(err_msg)
+
     # Check date falls within the range of available PWV data
     time_stamp = timestamp(date)
     w_data_less_than = np.where(pwv_model['date'] < time_stamp)[0]
     if len(w_data_less_than) < 1:
         min_date = datetime.utcfromtimestamp(min(pwv_model['date']))
-        msg = 'No local SuomiNet data found for datetimes before {0}'
+        msg = 'No PWV data found for datetimes before {0} on local machine'
         raise ValueError(msg.format(min_date))
 
     w_data_greater_than = np.where(time_stamp < pwv_model['date'])[0]
     if len(w_data_greater_than) < 1:
         max_date = datetime.utcfromtimestamp(max(pwv_model['date']))
-        msg = 'No local SuomiNet data found for datetimes after {0}'
+        msg = 'No PWV data found for datetimes after {0} on local machine'
         raise ValueError(msg.format(max_date))
 
     # Check for SuomiNet data available near the given date
