@@ -89,8 +89,7 @@ if __name__ == '__main__':
     from pwv_kpno._package_settings import settings
 
     # Load modeled wavelengths and cross sections
-    h2o_cs_path = os.path.join(settings._loc_dir, 'atmosphere/h2ocs.txt')
-    cs_data = np.loadtxt(h2o_cs_path, usecols=[0, 1]).transpose()
+    cs_data = np.loadtxt(settings._h2o_cs_path, usecols=[0, 1]).transpose()
 
     model_cs = cs_data[1]
     model_lambda = cs_data[0] * 10000  # convert from microns to angstroms

@@ -94,7 +94,11 @@ class Settings:
         self._suomi_dir = os.path.join(_file_dir, 'suomi_data')
         self._loc_dir_unf = os.path.join(_file_dir, 'site_data/{}')
         self._config_path_unf = os.path.join(self._loc_dir_unf, 'config.json')
-        self._atm_model_path = os.path.join(_file_dir, 'atmosphere/atm_model.csv')
+
+        atm_dir = os.path.join(_file_dir, 'default_atmosphere/')
+        self._h2o_cs_path = os.path.join(atm_dir, 'h2ocs.txt')
+        # self._o2_cs_path = os.path.join(atm_dir, 'o2cs.txt')
+        # self._o3_cs_path = os.path.join(atm_dir, 'o3cs.txt')
 
     @property
     def site_name(self):
@@ -109,6 +113,10 @@ class Settings:
     @site_property
     def _loc_dir(self):
         return self._loc_dir_unf.format(self.site_name)
+
+    @property
+    def _atm_model_path(self):
+        return os.path.join(self._loc_dir, 'atm_model.csv')
 
     @site_property
     def _config_path(self):
@@ -132,7 +140,7 @@ class Settings:
 
     def set_site(self, loc):
         # type: (str) -> None
-        """Configure pwv_kpno to model the atmosphere at a given site
+        """Configure pwv_kpno to model the default_atmosphere at a given site
 
         See the available_sites attribute for a list of available site names
 

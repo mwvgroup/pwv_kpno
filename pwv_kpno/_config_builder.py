@@ -40,7 +40,6 @@ CUT_PARAMS = ('PWV', 'PWVerr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH')
 
 
 # Todo: Add test coverage
-# Todo: Store pwv measurements, not atm model
 class ConfigBuilder:
     """This class is used to build custom config files for the pwv_kpno package
 
@@ -64,9 +63,9 @@ class ConfigBuilder:
 
         settings = Settings()
         settings.set_site('kitt_peak')
-        atm_cross_sections = np.genfromtxt(settings._atm_model_path)
-        self.wavelengths = atm_cross_sections['wavelength']
-        self.cross_sections = atm_cross_sections['mm_cm_2']
+        atm_cross_sections = np.genfromtxt(settings._h2o_cs_path).transpose()
+        self.wavelengths = atm_cross_sections[0]
+        self.cross_sections = atm_cross_sections[1]
 
         for key, value in kwargs.items():
             setattr(self, key, value)
