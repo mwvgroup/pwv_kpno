@@ -52,23 +52,6 @@ def site_property(f):
     return wrapper
 
 
-def _raise_missing_files(dir_path):
-    """Raises an error if a given directory is missing package config files
-
-    Args:
-         dir_path: A directory to check for missing config files
-    """
-
-    files = os.listdir(dir_path)
-    err_msg = 'Missing {} in loc_dir.'
-    file_list = ['atm_model.csv', 'config.json',
-                 'measured_pwv.csv', 'modeled_pwv.csv']
-
-    for fname in file_list:
-        if fname not in files:
-            raise FileNotFoundError(err_msg.format(fname))
-
-
 class Settings:
     """Represents pwv_kpno settings for a particular geographical site
 
@@ -220,7 +203,6 @@ class Settings:
         out_path = os.path.join(out_dir, self.site_name + '.ecsv')
         atm_model.write(out_path)
 
-    # Todo: Requires code review
     def import_site(self, path, force_name=None, overwrite=False):
         # type: (str, bool) -> None
         """Load a custom configuration file and save it to the package
