@@ -129,9 +129,6 @@ def _raise_available_data(date, pwv_model):
 
     # Check date falls within the range of available PWV data
     time_stamp = _timestamp(date)
-    print(date)
-    print(time_stamp)
-    print(min(pwv_model['date']))
     w_data_less_than = np.where(pwv_model['date'] <= time_stamp)[0]
     if len(w_data_less_than) < 1:
         min_date = datetime.utcfromtimestamp(min(pwv_model['date']))
@@ -176,8 +173,8 @@ def _pwv_date(date, airmass=1, test_model=None):
     else:
         pwv_model = test_model
 
-    _raise_available_data(date, pwv_model)
     # Determine the PWV level along line of sight as pwv(zenith) * airmass
+    _raise_available_data(date, pwv_model)
     time_stamp = _timestamp(date)
     pwv = np.interp(time_stamp, pwv_model['date'], pwv_model['pwv']) * airmass
     return pwv
