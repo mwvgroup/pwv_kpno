@@ -27,7 +27,6 @@ from pytz import utc
 from pwv_kpno.pwv_atm import _trans_for_date
 from pwv_kpno.pwv_atm import trans_for_date
 from pwv_kpno.pwv_atm import _raise_transmission_args
-from pwv_kpno.pwv_atm import _raise_available_data
 from pwv_kpno.pwv_atm import _raise_pwv
 from _create_mock_data import create_mock_pwv_model
 
@@ -74,26 +73,6 @@ class TransmissionErrors(unittest.TestCase):
 
         late_year = datetime(year=now.year + 1, month=1, day=1, tzinfo=utc)
         self.assertRaises(ValueError, _raise_transmission_args, late_year, 1)
-
-    def test_data_gap_handling(self):
-        """Test errors raised from function call for datetime without PWV data
-
-        The function 'transmission' should raise an error if it is asked for
-        the atmospheric transmission at a datetime that falls within a gap in
-        available data spanning three days or more.
-        """
-
-        # Start dates for data gaps
-        one_day_start = datetime(year=2010, month=1, day=11, tzinfo=utc)
-        three_day_start = datetime(year=2010, month=4, day=11, tzinfo=utc)
-
-        gaps = [(one_day_start, 1), (three_day_start, 3)]
-        mock_model = create_mock_pwv_model(year=2010, gaps=gaps)
-
-        self.assertRaises(ValueError, _raise_available_data,
-                          one_day_start, mock_model)
-        self.assertRaises(ValueError, _raise_available_data,
-                          three_day_start, mock_model)
 
 
 class TransmissionPwvErrors(unittest.TestCase):

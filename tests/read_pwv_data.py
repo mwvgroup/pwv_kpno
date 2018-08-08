@@ -27,7 +27,8 @@ from pytz import utc
 from pwv_kpno.pwv_atm import _check_date_time_args
 from pwv_kpno.pwv_atm import measured_pwv
 from pwv_kpno.pwv_atm import modeled_pwv
-from pwv_kpno.pwv_atm import pwv_date
+from pwv_kpno.pwv_atm import _pwv_date
+from _create_mock_data import create_mock_pwv_model
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -162,5 +163,25 @@ class PwvDate(unittest.TestCase):
         test_pwv_100 = self.kitt_peak_pwv_model['pwv'][100]
 
         error_msg = "pwv_date returned incorrect PWV value for tabulated date"
-        self.assertEqual(test_pwv_0, pwv_date(test_date_0), error_msg)
-        self.assertEqual(test_pwv_100, pwv_date(test_date_100), error_msg)
+        self.assertEqual(test_pwv_0, _pwv_date(test_date_0), error_msg)
+        self.assertEqual(test_pwv_100, _pwv_date(test_date_100), error_msg)
+
+    def test_data_gap_handling(self):
+        """Test errors raised from function call for datetime without PWV data
+
+        pwv_date should raise an error if it is asked for the PWV at a datetime
+        that falls within a gap in available data spanning one day or more.
+        """
+
+        # Start dates for data gaps
+        one_day_start = datetime(year=2010, month=1, day=11, tzinfo=utc)
+        three_day_start = datetime(year=2010, month=4, day=11, tzinfo=utc)
+
+        gaps = [(one_day_start, 1), (three_day_start, 3)]
+        mock_model = create_mock_pwv_model(year=2010, gaps=gaps)
+
+        self.assertRaises(ValueError, _pwv_date,
+                          one_day_start, 1, mock_model)
+        self.assertRaises(ValueError, _pwv_date,
+                          three_day_start, 1, mock_model)
+
