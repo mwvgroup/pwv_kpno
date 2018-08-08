@@ -23,7 +23,7 @@ master table located at PWV_TAB_DIR/measured.csv.
 
 from datetime import datetime, timedelta
 import os
-from warnings import warn
+from warnings import catch_warnings, simplefilter, warn
 
 from astropy.table import Table, join, vstack, unique
 import numpy as np
@@ -147,12 +147,15 @@ def _download_data_for_site(year, site_id, timeout=None):
 
     downloaded_paths = []
     day_path = os.path.join(settings._suomi_dir, '{0}dy_{1}.plt')
-    day_url = 'http://www.suominet.ucar.edu/data/staYrDay/{0}pp_{1}.plt'
+    day_url = 'https://www.suominet.ucar.edu/data/staYrDay/{0}pp_{1}.plt'
     hour_path = os.path.join(settings._suomi_dir, '{0}hr_{1}.plt')
-    hour_url = 'http://www.suominet.ucar.edu/data/staYrHr/{0}nrt_{1}.plt'
+    hour_url = 'https://www.suominet.ucar.edu/data/staYrHr/{0}nrt_{1}.plt'
 
     for general_path, url in ((day_path, day_url), (hour_path, hour_url)):
-        response = requests.get(url.format(site_id, year), timeout=timeout)
+        with catch_warnings():
+            simplefilter('ignore')
+            response = requests.get(url.format(site_id, year),
+                                    timeout=timeout, verify=False)
 
         if response.status_code != 404:
             response.raise_for_status()

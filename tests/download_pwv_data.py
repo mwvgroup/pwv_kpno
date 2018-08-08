@@ -20,6 +20,7 @@
 
 import os
 from datetime import datetime
+import warnings
 
 import unittest
 from pytz import utc
@@ -39,7 +40,9 @@ __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
 try:
-    req = requests.get('http://www.suominet.ucar.edu')
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        req = requests.get('http://www.suominet.ucar.edu', verify=False)
     SUOMINET_OFFLINE = req.status_code != 200
 
 except requests.exceptions.ConnectionError:
