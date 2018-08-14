@@ -83,8 +83,11 @@ def _apply_data_cuts(data, site_id):
 
     for param_name, cut_list in data_cuts[site_id].items():
         for start, end in cut_list:
-            indices = (data[param_name] > start) & (data[param_name] < end)
-            data = data[~indices]
+            indices = (start < data[param_name]) & (data[param_name] < end)
+            if param_name == 'date':
+                indices = ~indices
+
+            data = data[indices]
 
     return data
 
