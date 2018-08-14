@@ -38,7 +38,6 @@ __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
-
 EXPECTED_YEARS = set(range(2010, datetime.now().year))
 EXPECTED_IDS = {'KITT', 'P014', 'SA46', 'SA48', 'AZAM'}
 
