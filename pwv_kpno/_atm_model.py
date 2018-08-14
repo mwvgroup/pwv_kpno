@@ -70,12 +70,12 @@ def create_pwv_atm_model(mod_lambda, mod_cs, out_lambda):
         A table with columns 'wavelength' and 'mm_cm_2'
     """
 
-    if not np.array_equal(mod_lambda, out_lambda):
-        interp_cs = interpolate.interp1d(mod_lambda, mod_cs)
-        out_cs = interp_cs(out_lambda)
+    if np.array_equal(mod_lambda, out_lambda):
+        out_cs = mod_cs
 
     else:
-        out_cs = mod_cs
+        interp_cs = interpolate.interp1d(mod_lambda, mod_cs)
+        out_cs = interp_cs(out_lambda)
 
     pwv_num_density = out_cs * _calc_num_density_conversion()
     out_table = Table([out_lambda, pwv_num_density],
@@ -93,7 +93,6 @@ if __name__ == '__main__':
 
     model_cs = cs_data[1]
     model_lambda = cs_data[0] * 10000  # convert from microns to angstroms
-    output_lambda = np.arange(3000., 12001., 1)  # Angstroms
-    transmission = create_pwv_atm_model(model_lambda, model_cs, output_lambda)
+    transmission = create_pwv_atm_model(model_lambda, model_cs, model_lambda)
 
     transmission.write(settings._atm_model_path, overwrite=True)
