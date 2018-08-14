@@ -110,6 +110,11 @@ def _calc_avg_pwv_model(pwv_data, primary_rec):
     modeled_pwv = np.ma.vstack(pwv_arrays)
     modeled_err = np.ma.vstack(err_arrays)
 
+    if np.all(modeled_pwv.mask):
+        warnings.warn('No overlapping PWV data between primary and secondary '
+                      'receivers. Cannot model PWV for times when primary '
+                      'receiver is offline')
+
     # Average PWV models from different sites
     avg_pwv = np.ma.average(modeled_pwv, axis=0)
     sum_quad = np.ma.sum(modeled_err ** 2, axis=0)
@@ -156,7 +161,6 @@ def _create_new_pwv_model(debug=False):
     out.write(settings._pwv_model_path, overwrite=True)
 
 
-# Todo: Fix for multi site
 def update_models(year=None, timeout=None):
     # type: (int, float) -> list[int]
     """Download data from SuomiNet and update the locally stored PWV model
