@@ -84,7 +84,7 @@ def _apply_data_cuts(data, site_id):
     for param_name, cut_list in data_cuts[site_id].items():
         for start, end in cut_list:
             indices = (data[param_name] > start) & (data[param_name] < end)
-            data = data[indices]
+            data = data[~indices]
 
     return data
 
@@ -188,14 +188,12 @@ def _download_data_for_year(yr, timeout=None):
     combined_data = []
     for site_id in settings.receivers:
         file_paths = _download_data_for_site(yr, site_id, timeout)
-
-        try:
+        if file_paths:
             site_data = vstack([_read_file(path) for path in file_paths])
-            site_data = unique(site_data, keys=['date'], keep='first')
-            combined_data.append(site_data)
 
-        except (TypeError, IndexError):
-            continue  # Data files had no unmasked data
+            if site_data:
+                unique_data = unique(site_data, keys=['date'], keep='first')
+                combined_data.append(unique_data)
 
     if not combined_data:
         warn('No SuomiNet data found for year {}'.format(yr), RuntimeWarning)
