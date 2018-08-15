@@ -59,7 +59,7 @@ class Settings:
 
     Attributes:
         site_name       : The current site being modeled
-        available_sites   : A list of built in sites that pwv_kpno can model
+        available_sites : A list of built in sites that pwv_kpno can model
         receivers       : A list of SuomiNet receivers used by this site
         primary_rec     : The SuomiNet id code for the primary GPS receiver
         supplement_rec  : Same as receivers but without the primary receiver
