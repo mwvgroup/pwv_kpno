@@ -25,7 +25,7 @@ import numpy as np
 from astropy.table import Table
 from pytz import utc
 
-from _create_mock_data import create_mock_pwv_model
+from ._create_mock_data import create_mock_pwv_model
 from pwv_kpno import pwv_atm
 
 __authors__ = ['Daniel Perrefort']
@@ -33,7 +33,7 @@ __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Development'
+__status__ = 'Release'
 
 
 def _check_attrs(iterable, **kwargs):
@@ -253,6 +253,9 @@ class TransmissionResults(unittest.TestCase):
 
         date_40 = self.mock_model['date'][40]
         date_40 = datetime.utcfromtimestamp(date_40).replace(tzinfo=utc)
+
+        print(date_35)
+        print(date_40)
 
         airmass_2_transm = pwv_atm._trans_for_date(date_35, 2, self.mock_model)
         airmass_1_transm = pwv_atm._trans_for_date(date_40, 1, self.mock_model)

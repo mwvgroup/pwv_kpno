@@ -31,7 +31,7 @@ __credits__ = ['Azalee Bostroem']
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.com'
-__status__ = 'Development'
+__status__ = 'Release'
 
 
 def _calc_num_density_conversion():
@@ -65,7 +65,7 @@ def create_pwv_atm_model(mod_lambda, mod_cs, out_lambda):
         out_lambda (ndarray): Array of desired output wavelengths
 
     Returns:
-        A table with columns 'wavelength' and 'mm_cm_2'
+        A table with columns 'wavelength' and '1/mm_cm_2'
     """
 
     if np.array_equal(mod_lambda, out_lambda):
@@ -77,7 +77,7 @@ def create_pwv_atm_model(mod_lambda, mod_cs, out_lambda):
 
     pwv_num_density = out_cs * _calc_num_density_conversion()
     out_table = Table([out_lambda, pwv_num_density],
-                      names=['wavelength', 'mm_cm_2'])
+                      names=['wavelength', '1/mm_cm_2'])
 
     return out_table
 

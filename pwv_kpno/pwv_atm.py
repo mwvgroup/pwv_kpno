@@ -94,7 +94,7 @@ __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Development'
+__status__ = 'Release'
 
 
 def _timestamp(date):
@@ -243,7 +243,7 @@ def _check_date_time_args(year=None, month=None, day=None, hour=None):
             raise ValueError('Invalid value for {0}: {1}'.format(arg, value))
 
 
-def _search_dt_table(data_tab, **kwargs):
+def _search_data_table(data_tab, **kwargs):
     """Search an astropy table of dates
 
     Given an astropy table with column 'date', return all entries in the table
@@ -294,7 +294,9 @@ def _get_pwv_data_table(path, year, month, day, hour):
         data['date'] = np.vectorize(to_datetime)(data['date'])
         data['date'].unit = 'UTC'
 
-        data = _search_dt_table(data, year=year, month=month, day=day, hour=hour)
+        data = _search_data_table(
+            data, year=year, month=month, day=day, hour=hour
+        )
 
     for colname in data.colnames:
         if colname != 'date':
@@ -367,8 +369,8 @@ def trans_for_pwv(pwv, bins=None):
         raise ValueError('PWV concentration cannot be negative')
 
     atm_model = Table.read(settings._atm_model_path)
-    atm_model['transmission'] = np.exp(- pwv * atm_model['mm_cm_2'])
-    atm_model.remove_column('mm_cm_2')
+    atm_model['transmission'] = np.exp(- pwv * atm_model['1/mm_cm_2'])
+    atm_model.remove_column('1/mm_cm_2')
 
     if bins:
         dx = atm_model['wavelength'][1] - atm_model['wavelength'][0]

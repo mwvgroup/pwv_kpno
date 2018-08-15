@@ -33,7 +33,7 @@ __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Development'
+__status__ = 'Release'
 
 # List of params that data cuts can be applied for
 CUT_PARAMS = ('PWV', 'PWVerr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH')
@@ -41,15 +41,18 @@ CUT_PARAMS = ('PWV', 'PWVerr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH')
 
 # Todo: Add test coverage
 class ConfigBuilder:
-    """This class is used to build custom config files for the pwv_kpno package
+    """The ConfigBuilder class is used to build config files for a custom site
+
+    Default wavelengths and cross sections are provided by MODTRAN estimates
+    and range from 3,000 to 12,000 Angstroms in 0.05 Angstrom increments.
 
     Attributes:
-        data_cuts         (dict): Specifies data ranges to ignore
+        data_cuts         (dict): Specifies cuts for SuomiNet data
         site_name          (str): Desired name of the custom site
         primary_rec        (str): SuomiNet ID code for the primary GPS receiver
         sup_recs          (list): List of id codes for supplemental receivers
-        wavelengths    (ndarray): Array of wavelengths in Angstroms
-        cross_sections (ndarray): Array of PWV cross sections in cm^2
+        wavelengths    (ndarray): Array of wavelengths in Angstroms (optional)
+        cross_sections (ndarray): Array of PWV cross sections in cm^2 (optional)
 
     Methods:
         save_to_dir : Create a custom config file <site_name>.ecsv
@@ -98,7 +101,7 @@ class ConfigBuilder:
                 if not len(value.shape) == 2:
                     warn(
                         'Cut boundaries for parameter {}'
-                        ' is not a two dimensional array'.format(key)
+                        ' are not a two dimensional array'.format(key)
                     )
 
     def _warn_site_name(self):
