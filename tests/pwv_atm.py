@@ -22,10 +22,10 @@ import unittest
 from datetime import datetime, timedelta
 
 import numpy as np
-from _create_mock_data import create_mock_pwv_model
 from astropy.table import Table
 from pytz import utc
 
+from _create_mock_data import create_mock_pwv_model
 from pwv_kpno import pwv_atm
 
 __authors__ = ['Daniel Perrefort']
