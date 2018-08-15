@@ -240,10 +240,10 @@ class TransmissionResults(unittest.TestCase):
         self.assertRaises(ValueError, pwv_atm.trans_for_pwv, -1)
 
         # Check value that uses interpolation
-        self.assertIsNone(pwv_atm.trans_for_pwv(15.0))
+        self.assertIsNotNone(pwv_atm.trans_for_pwv(15.0))
 
         # Check value outside domain that uses extrapolation
-        self.assertIsNone(pwv_atm.trans_for_pwv(30.5))
+        self.assertIsNotNone(pwv_atm.trans_for_pwv(30.5))
 
     def test_airmass_dependence(self):
         """Test that line of sight pwv is directly proportional to airmass"""

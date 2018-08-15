@@ -84,6 +84,7 @@ from datetime import datetime, timedelta
 from astropy.table import Table
 import numpy as np
 from pytz import utc
+from scipy.stats import binned_statistic
 
 from ._package_settings import settings
 from ._update_pwv_model import update_models
@@ -104,7 +105,7 @@ def _timestamp(date):
     datetime._timestamp method was not yet available.
 
     Args:
-        date (datetime.datetime): A datetime to find the _timestamp for
+        date (datetime): A datetime to find the _timestamp for
 
     Returns:
         The _timestamp of the provided datetime as a float
@@ -346,7 +347,7 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
                                year, month, day, hour)
 
 
-#Todo: Update docstring to include bins argument
+# Todo: Update docstring to include bins argument
 def trans_for_pwv(pwv, bins=None):
     # type: (float) -> Table
     """Return the atmospheric transmission due a given PWV concentration in mm
@@ -355,7 +356,8 @@ def trans_for_pwv(pwv, bins=None):
     atmospheric transmission function.
 
     Args:
-        pwv (float): A PWV concentration in mm
+        pwv        (float): A PWV concentration in mm
+        bins (int or list): Integer number of bins or sequence of bin edges
 
     Returns:
         The modeled transmission function as an astropy table
@@ -369,17 +371,16 @@ def trans_for_pwv(pwv, bins=None):
     atm_model.remove_column('mm_cm_2')
 
     if bins:
-        out_table = Table(names=atm_model.colnames)
-        for lower_bound, upper_bound in bins:
-            indices = np.logical_and(lower_bound <= atm_model['wavelength'],
-                                     atm_model['wavelength'] < upper_bound)
+        dx = atm_model['wavelength'][1] - atm_model['wavelength'][0]
+        statistic_func = lambda y: np.trapz(y, dx=dx) / ((len(y) - 1) * dx)
+        statistic, bin_edges, _ = binned_statistic(
+            atm_model['wavelength'],
+            atm_model['transmission'],
+            statistic_func,
+            bins
+        )
 
-            bin_data = atm_model[indices]
-            integrated_trans = np.trapz(y=bin_data['transmission'],
-                                        x=bin_data['wavelength'])
-
-            norm_trans = integrated_trans / (upper_bound - lower_bound)
-            out_table.add_row([lower_bound, norm_trans])
+        out_table = Table([bin_edges[:-1], statistic], names=atm_model.colnames)
 
     else:
         out_table = atm_model
@@ -392,8 +393,8 @@ def _raise_transmission_args(date, airmass):
     """Raise exception if arguments have wrong type or value
 
     Args:
-        date    (datetime.datetime): A datetime value
-        airmass             (float): An airmass value
+        date    (datetime): A datetime value
+        airmass    (float): An airmass value
     """
 
     if not isinstance(date, datetime):
@@ -419,9 +420,10 @@ def _trans_for_date(date, airmass, bins, test_model=None):
     """Return a model for the atmospheric transmission function due to PWV
 
     Args:
-        date (datetime.datetime): The datetime of the desired model
-        airmass          (float): The airmass of the desired model
-        test_model       (Table): A mock PWV model used by the test suite
+        date    (datetime): The datetime of the desired model
+        airmass    (float): The airmass of the desired model
+        bins (int or list): Integer number of bins or sequence of bin edges
+        test_model (Table): A mock PWV model used by the test suite
 
     Returns:
         The modeled transmission function as an astropy table
@@ -440,8 +442,9 @@ def trans_for_date(date, airmass, bins=None):
     Observatory.
 
     Args:
-        date (datetime.datetime): The datetime of the desired model
-        airmass          (float): The airmass of the desired model
+        date    (datetime): The datetime of the desired model
+        airmass    (float): The airmass of the desired model
+        bins (int or list): Integer number of bins or sequence of bin edges
 
     Returns:
         The modeled transmission function as an astropy table

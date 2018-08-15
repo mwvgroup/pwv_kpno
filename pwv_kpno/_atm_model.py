@@ -21,8 +21,6 @@ integrated PWV column density to integrated H2O number density. It is based on
 work done by Azalee Bostroem.
 """
 
-import os
-
 import numpy as np
 import scipy.interpolate as interpolate
 from astropy.table import Table
@@ -92,7 +90,7 @@ if __name__ == '__main__':
     cs_data = np.loadtxt(settings._h2o_cs_path, usecols=[0, 1]).transpose()
 
     model_cs = cs_data[1]
-    model_lambda = cs_data[0] * 10000  # convert from microns to angstroms
+    model_lambda = np.round(cs_data[0] * 10000, 2)  # convert from microns to angstroms
     transmission = create_pwv_atm_model(model_lambda, model_cs, model_lambda)
 
     transmission.write(settings._atm_model_path, overwrite=True)
