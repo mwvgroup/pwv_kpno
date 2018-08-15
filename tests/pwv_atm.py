@@ -225,14 +225,10 @@ class TransmissionErrors(unittest.TestCase):
                           late_year, 1)
 
 
-class TransmissionPwvErrors(unittest.TestCase):
-    """Test pwv_kpno.transmission_pwv for raised errors due to bad arguments"""
+class TransmissionResults(unittest.TestCase):
+    """Test pwv_kpno.transmission for the expected returns"""
 
-    def test_argument_types(self):
-        """Test errors raised from function call with wrong argument types"""
-
-        self.assertIsNone(pwv_atm._raise_pwv(13))
-        self.assertIsNone(pwv_atm._raise_pwv(13.0))
+    mock_model = create_mock_pwv_model(2010)
 
     def test_argument_values(self):
         """Test errors raised from function call with out of range values
@@ -241,19 +237,13 @@ class TransmissionPwvErrors(unittest.TestCase):
         is due to the range of the atmospheric models.
         """
 
-        self.assertRaises(ValueError, pwv_atm._raise_pwv, -1)
+        self.assertRaises(ValueError, pwv_atm.trans_for_pwv, -1)
 
         # Check value that uses interpolation
-        self.assertIsNone(pwv_atm._raise_pwv(15.0))
+        self.assertIsNone(pwv_atm.trans_for_pwv(15.0))
 
         # Check value outside domain that uses extrapolation
-        self.assertIsNone(pwv_atm._raise_pwv(30.5))
-
-
-class TransmissionResults(unittest.TestCase):
-    """Test pwv_kpno.transmission for the expected returns"""
-
-    mock_model = create_mock_pwv_model(2010)
+        self.assertIsNone(pwv_atm.trans_for_pwv(30.5))
 
     def test_airmass_dependence(self):
         """Test that line of sight pwv is directly proportional to airmass"""
