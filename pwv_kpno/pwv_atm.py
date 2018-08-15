@@ -346,20 +346,8 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
                                year, month, day, hour)
 
 
-def _raise_pwv(pwv):
-    """Raise exception if pwv argument has wrong value
-
-    PWV values should be in the range 0 <= pwv <= 30.1
-
-    Args:
-        pwv (int, float): A PWV concentration in mm
-    """
-
-    if pwv < 0:
-        raise ValueError('PWV concentration cannot be negative')
-
-
-def trans_for_pwv(pwv):
+#Todo: Update docstring to include bins argument
+def trans_for_pwv(pwv, bins=None):
     # type: (float) -> Table
     """Return the atmospheric transmission due a given PWV concentration in mm
 
@@ -373,14 +361,31 @@ def trans_for_pwv(pwv):
         The modeled transmission function as an astropy table
     """
 
-    _raise_pwv(pwv)
+    if pwv < 0:
+        raise ValueError('PWV concentration cannot be negative')
 
     atm_model = Table.read(settings._atm_model_path)
     atm_model['transmission'] = np.exp(- pwv * atm_model['mm_cm_2'])
     atm_model.remove_column('mm_cm_2')
-    atm_model['wavelength'].unit = 'angstrom'
 
-    return atm_model
+    if bins:
+        out_table = Table(names=atm_model.colnames)
+        for lower_bound, upper_bound in bins:
+            indices = np.logical_and(lower_bound <= atm_model['wavelength'],
+                                     atm_model['wavelength'] < upper_bound)
+
+            bin_data = atm_model[indices]
+            integrated_trans = np.trapz(y=bin_data['transmission'],
+                                        x=bin_data['wavelength'])
+
+            norm_trans = integrated_trans / (upper_bound - lower_bound)
+            out_table.add_row([lower_bound, norm_trans])
+
+    else:
+        out_table = atm_model
+
+    out_table['wavelength'].unit = 'angstrom'
+    return out_table
 
 
 def _raise_transmission_args(date, airmass):
@@ -410,7 +415,7 @@ def _raise_transmission_args(date, airmass):
         raise TypeError("Argument 'airmass' (pos 2) must be an int or float")
 
 
-def _trans_for_date(date, airmass, test_model=None):
+def _trans_for_date(date, airmass, bins, test_model=None):
     """Return a model for the atmospheric transmission function due to PWV
 
     Args:
@@ -423,10 +428,10 @@ def _trans_for_date(date, airmass, test_model=None):
     """
 
     pwv = _pwv_date(date, airmass, test_model)
-    return trans_for_pwv(pwv)
+    return trans_for_pwv(pwv, bins)
 
 
-def trans_for_date(date, airmass):
+def trans_for_date(date, airmass, bins=None):
     # type: (datetime, float) -> Table
     """Return a model for the atmospheric transmission function due to PWV
 
@@ -442,5 +447,4 @@ def trans_for_date(date, airmass):
         The modeled transmission function as an astropy table
     """
 
-    return _trans_for_date(date, airmass, test_model=None)
-
+    return _trans_for_date(date, airmass, bins)
