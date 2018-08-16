@@ -34,6 +34,20 @@ __status__ = 'Release'
 
 # Sites included with release that cannot be overwritten by the user
 PROTECTED_NAMES = ['kitt_peak']
+STATUS_TABLE = (
+    "                     pwv_kpno Current Site Information\n"
+    "=====================================================================\n"
+    "Site Name:            {} \n"
+    "Primary Receiver:     {}\n"
+    "Secondary Receivers:\n"
+    "    {}\n\n"
+    "Available Data:\n"
+    "    {}\n\n"
+    "                               Data Cuts\n"
+    "=====================================================================\n"
+    "Reveiver        Value         Type      Lower_Bound      Upper_Bound \n"
+    "---------------------------------------------------------------------"
+)
 
 
 class ModelingConfigError(Exception):
@@ -248,6 +262,44 @@ class Settings:
             shutil.rmtree(out_dir)
 
         shutil.move(temp_dir, out_dir)
+
+    def print_status(self):
+        """Print metadata for the current site being modeled
+        """
+
+        if self.supplement_rec:
+            receivers = '\n    '.join(self.supplement_rec)
+
+        else:
+            receivers = '    NONE'
+
+        if self._available_years:
+            years = '\n    '.join(str(x) for x in self._available_years)
+
+        else:
+            years = '    NONE'
+
+        status = STATUS_TABLE.format(
+            self.site_name,
+            self.primary_rec,
+            receivers,
+            years
+        )
+
+        for site, cuts in self.data_cuts.items():
+            for value, bounds in cuts.items():
+                for start, end in bounds:
+                    cut_type = 'exclusive' if value == 'date' else 'inclusive'
+                    status += (
+                            '\n'
+                            + site
+                            + value.rjust(17)
+                            + cut_type.rjust(13)
+                            + str(start).rjust(17)
+                            + str(end).rjust(17)
+                    )
+
+        print(status)
 
 
 # This instance should be used package wide to access site settings
