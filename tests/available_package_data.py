@@ -36,8 +36,7 @@ __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Development'
-
+__status__ = 'Release'
 
 EXPECTED_YEARS = set(range(2010, datetime.now().year))
 EXPECTED_IDS = {'KITT', 'P014', 'SA46', 'SA48', 'AZAM'}
@@ -75,7 +74,7 @@ class CorrectConfigData(unittest.TestCase):
     def test_config_years(self):
         """Check config file for correct years"""
 
-        config_years = set(pk_settings.available_years)
+        config_years = set(pk_settings._available_years)
         self.assertEqual(EXPECTED_YEARS, config_years)
 
     def test_config_ids(self):

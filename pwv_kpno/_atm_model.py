@@ -21,8 +21,6 @@ integrated PWV column density to integrated H2O number density. It is based on
 work done by Azalee Bostroem.
 """
 
-import os
-
 import numpy as np
 import scipy.interpolate as interpolate
 from astropy.table import Table
@@ -33,17 +31,15 @@ __credits__ = ['Azalee Bostroem']
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.com'
-__status__ = 'Development'
+__status__ = 'Release'
 
 
-def calc_num_density_conversion():
+def _calc_num_density_conversion():
     """Calculate conversion factor from PWV to integrated number density
 
     Returns:
         The conversion factor from PWV to number density in 1 / (mm * cm^2)
     """
-
-    # Todo: Create an analogous function for 02, 03, and aerosols
 
     n_a = 6.02214129E23       # 1 / mol (Avogadro's constant)
     h2o_molar_mass = 18.0152  # g / mol
@@ -57,6 +53,7 @@ def calc_num_density_conversion():
 
 
 def create_pwv_atm_model(mod_lambda, mod_cs, out_lambda):
+    # type: (np.ndarray, np.ndarray, np.ndarray) -> Table
     """Creates a table of conversion factors from PWV to number density
 
     Expects input and output wavelengths to be in same units. Expects modeled
@@ -68,36 +65,32 @@ def create_pwv_atm_model(mod_lambda, mod_cs, out_lambda):
         out_lambda (ndarray): Array of desired output wavelengths
 
     Returns:
-        A table with columns 'wavelength' and 'mm_cm_2'
+        A table with columns 'wavelength' and '1/mm_cm_2'
     """
 
-    # Todo: Add contribution from 02, 03, and aerosols to this function
+    if np.array_equal(mod_lambda, out_lambda):
+        out_cs = mod_cs
 
-    if not np.array_equal(mod_lambda, out_lambda):
+    else:
         interp_cs = interpolate.interp1d(mod_lambda, mod_cs)
         out_cs = interp_cs(out_lambda)
 
-    else:
-        out_cs = mod_cs
-
-    pwv_num_density = out_cs * calc_num_density_conversion()
+    pwv_num_density = out_cs * _calc_num_density_conversion()
     out_table = Table([out_lambda, pwv_num_density],
-                      names=['wavelength', 'mm_cm_2'])
+                      names=['wavelength', '1/mm_cm_2'])
 
     return out_table
 
 
 if __name__ == '__main__':
 
-    from pwv_kpno._settings import settings
+    from pwv_kpno._package_settings import settings
 
     # Load modeled wavelengths and cross sections
-    h2o_cs_path = os.path.join(settings._loc_dir, 'atmosphere/h2ocs.txt')
-    cs_data = np.loadtxt(h2o_cs_path, usecols=[0, 1]).transpose()
+    cs_data = np.loadtxt(settings._h2o_cs_path, usecols=[0, 1]).transpose()
 
     model_cs = cs_data[1]
-    model_lambda = cs_data[0] * 10000  # convert from microns to angstroms
-    output_lambda = np.arange(3000., 12001., 1)  # Angstroms
-    transmission = create_pwv_atm_model(model_lambda, model_cs, output_lambda)
+    model_lambda = np.round(cs_data[0] * 10000, 2)  # convert from microns to angstroms
+    transmission = create_pwv_atm_model(model_lambda, model_cs, model_lambda)
 
     transmission.write(settings._atm_model_path, overwrite=True)

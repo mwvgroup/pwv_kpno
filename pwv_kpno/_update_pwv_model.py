@@ -27,16 +27,20 @@ from datetime import datetime
 from astropy.table import Table
 import numpy as np
 from scipy.odr import RealData, ODR, polynomial
+import warnings
 
 from ._download_pwv_data import update_local_data
-from ._settings import settings
+from ._package_settings import settings
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Development'
+__status__ = 'Release'
+
+w_msg = 'Empty data detected for ODR instance.'
+warnings.filterwarnings("ignore", message=w_msg)
 
 
 def _linear_regression(x, y, sx, sy):
@@ -65,12 +69,13 @@ def _linear_regression(x, y, sx, sy):
     odr = ODR(data, polynomial(1), beta0=[0., 1.])
     fit_results = odr.run()
 
-    fit_pass = 'Numerical error detected' not in fit_results.stopreason
-    assert fit_pass, 'Numerical error detected'
+    fit_fail = 'Numerical error detected' in fit_results.stopreason
+    if fit_fail:
+        raise RuntimeError(fit_results.stopreason)
 
     b, m = fit_results.beta
     applied_fit = m * x + b
-    applied_fit.mask = np.logical_or(x.mask, applied_fit <= 0)
+    applied_fit.mask = np.logical_or(np.logical_or(x.mask, y.mask), applied_fit <= 0)
 
     error = np.minimum(1 + 0.1 * x, 3)
     error.mask = applied_fit.mask
@@ -89,15 +94,9 @@ def _calc_avg_pwv_model(pwv_data, primary_rec):
         A masked array of the error in the averaged model
     """
 
-    off_site_receivers = settings.off_site_recs
-    receiver = off_site_receivers.pop()
-    modeled_pwv, modeled_err = _linear_regression(
-        x=pwv_data[receiver],
-        y=pwv_data[primary_rec],
-        sx=pwv_data[receiver + '_err'],
-        sy=pwv_data[primary_rec + '_err']
-    )
+    off_site_receivers = settings.supplement_rec
 
+    pwv_arrays, err_arrays = [], []
     for receiver in off_site_receivers:
         mod_pwv, mod_err = _linear_regression(
             x=pwv_data[receiver],
@@ -105,9 +104,16 @@ def _calc_avg_pwv_model(pwv_data, primary_rec):
             sx=pwv_data[receiver + '_err'],
             sy=pwv_data[primary_rec + '_err']
         )
+        pwv_arrays.append(mod_pwv)
+        err_arrays.append(mod_err)
 
-        modeled_pwv = np.ma.vstack((modeled_pwv, mod_pwv))
-        modeled_err = np.ma.vstack((modeled_err, mod_err))
+    modeled_pwv = np.ma.vstack(pwv_arrays)
+    modeled_err = np.ma.vstack(err_arrays)
+
+    if np.all(modeled_pwv.mask):
+        warnings.warn('No overlapping PWV data between primary and secondary '
+                      'receivers. Cannot model PWV for times when primary '
+                      'receiver is offline')
 
     # Average PWV models from different sites
     avg_pwv = np.ma.average(modeled_pwv, axis=0)
@@ -130,7 +136,7 @@ def _create_new_pwv_model(debug=False):
     """
 
     pwv_data = Table.read(settings._pwv_measred_path)
-    if not settings.off_site_recs:
+    if not settings.supplement_rec:
         return pwv_data
 
     primary_rec = settings.primary_rec
@@ -156,6 +162,7 @@ def _create_new_pwv_model(debug=False):
 
 
 def update_models(year=None, timeout=None):
+    # type: (int, float) -> list[int]
     """Download data from SuomiNet and update the locally stored PWV model
 
     Update the modeled PWV column density for Kitt Peak by downloading new data

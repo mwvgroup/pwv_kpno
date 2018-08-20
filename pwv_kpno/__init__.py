@@ -25,7 +25,8 @@ standard python help function.
 
 from . import pwv_atm
 from . import blackbody_with_atm
-from ._settings import settings as _settings
+from ._config_builder import ConfigBuilder
+from ._package_settings import settings as _settings
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -33,9 +34,8 @@ __credits__ = ['Michael Wood-Vasey', 'Azalee Bostroem',
                'Jessica Kroboth', 'Alexander Afanasyev']
 
 __license__ = 'GPL V3'
-__version__ = '0.11.6'
+__version__ = '0.12.0'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Development'
+__status__ = 'Release'
 
-# Sets up package to model Kitt Peak
-_settings.set_location('kitt_peak')
+_settings.set_site('kitt_peak')

@@ -21,15 +21,15 @@ suominet.ucar.edu for Kitt Peak and other nearby locations. Data is added to a
 master table located at PWV_TAB_DIR/measured.csv.
 """
 
-from datetime import datetime, timedelta
 import os
-from warnings import warn
+from datetime import datetime, timedelta
+from warnings import catch_warnings, simplefilter, warn
 
-from astropy.table import Table, join, vstack, unique
 import numpy as np
 import requests
+from astropy.table import Table, join, vstack, unique
 
-from ._settings import settings
+from ._package_settings import settings
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2016, Daniel Perrefort'
@@ -37,17 +37,17 @@ __credits__ = ['Jessica Kroboth']
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Development'
+__status__ = 'Release'
 
 
 def _suomi_date_to_timestamp(year, days_str):
-    """Convert the SuomiNet date format to UTC timestamp
+    """Convert the SuomiNet date format to UTC _timestamp
 
     SuomiNet dates are stored as decimal days in a given year. For example,
     February 1st, 00:15 would be 36.01042.
 
     Args:
-        year     (int): The year of the desired timestamp
+        year     (int): The year of the desired _timestamp
         days_str (str): The number of days that have passed since january 1st
 
     Returns:
@@ -64,6 +64,32 @@ def _suomi_date_to_timestamp(year, days_str):
 
     timestamp = (date - datetime(1970, 1, 1)).total_seconds()
     return timestamp
+
+
+def _apply_data_cuts(data, site_id):
+    """Apply data cuts from settings to a table of SuomiNet measurements
+
+    Args:
+        data  (Table): Table containing data from a SuomiNet data file
+        site_id (str): The site to apply data cuts for
+    """
+
+    data = data[data[site_id] > 0]
+    data[site_id + '_err'] = np.round(data[site_id + '_err'] + 0.025, 3)
+
+    data_cuts = settings.data_cuts
+    if site_id not in data_cuts:
+        return data
+
+    for param_name, cut_list in data_cuts[site_id].items():
+        for start, end in cut_list:
+            indices = (start < data[param_name]) & (data[param_name] < end)
+            if param_name == 'date':
+                indices = ~indices
+
+            data = data[indices]
+
+    return data
 
 
 def _read_file(path):
@@ -93,24 +119,15 @@ def _read_file(path):
     data = np.genfromtxt(path,
                          names=names,
                          usecols=range(0, len(names)),
-                         dtype=[float for col in names])
+                         dtype=[float for _ in names])
 
-    data = data[data[site_id] > 0]
-    data[site_id + '_err'] = np.round(data[site_id + '_err'] + 0.025, 3)
-    for key, (start, end) in settings._data_cuts(site_id).items():
-        indices = (data[key] > start) & (data[key] < end)
-        data = data[indices]
-
+    data = _apply_data_cuts(data, site_id)
     data = Table(data)['date', site_id, site_id + '_err']
     if data:
         data = unique(data, keys='date', keep='none')
         year = int(path[-8: -4])
         to_timestamp_vectorized = np.vectorize(_suomi_date_to_timestamp)
         data['date'] = to_timestamp_vectorized(year, data['date'])
-
-    for start_time, end_time in settings._date_cuts(site_id):
-        indices = (data['date'] < start_time) | (data['date'] > end_time)
-        data = data[indices]
 
     return data
 
@@ -133,12 +150,15 @@ def _download_data_for_site(year, site_id, timeout=None):
 
     downloaded_paths = []
     day_path = os.path.join(settings._suomi_dir, '{0}dy_{1}.plt')
-    day_url = 'http://www.suominet.ucar.edu/data/staYrDay/{0}pp_{1}.plt'
+    day_url = 'https://www.suominet.ucar.edu/data/staYrDay/{0}pp_{1}.plt'
     hour_path = os.path.join(settings._suomi_dir, '{0}hr_{1}.plt')
-    hour_url = 'http://www.suominet.ucar.edu/data/staYrHr/{0}nrt_{1}.plt'
+    hour_url = 'https://www.suominet.ucar.edu/data/staYrHr/{0}nrt_{1}.plt'
 
     for general_path, url in ((day_path, day_url), (hour_path, hour_url)):
-        response = requests.get(url.format(site_id, year), timeout=timeout)
+        with catch_warnings():
+            simplefilter('ignore')
+            response = requests.get(url.format(site_id, year),
+                                    timeout=timeout, verify=False)
 
         if response.status_code != 404:
             response.raise_for_status()
@@ -171,14 +191,12 @@ def _download_data_for_year(yr, timeout=None):
     combined_data = []
     for site_id in settings.receivers:
         file_paths = _download_data_for_site(yr, site_id, timeout)
-
-        try:
+        if file_paths:
             site_data = vstack([_read_file(path) for path in file_paths])
-            site_data = unique(site_data, keys=['date'], keep='first')
-            combined_data.append(site_data)
 
-        except (TypeError, IndexError):
-            continue  # Data files had no unmasked data
+            if site_data:
+                unique_data = unique(site_data, keys=['date'], keep='first')
+                combined_data.append(unique_data)
 
     if not combined_data:
         warn('No SuomiNet data found for year {}'.format(yr), RuntimeWarning)
@@ -192,7 +210,23 @@ def _download_data_for_year(yr, timeout=None):
     return out_data
 
 
+def _get_local_data():
+    """Returns an astropy table containing any local PWV measurements"""
+
+    if os.path.exists(settings._pwv_measred_path):
+        return Table.read(settings._pwv_measred_path)
+
+    else:
+        col_names = ['date']
+        for rec in settings.receivers:
+            col_names.append(rec)
+            col_names.append(rec + '_err')
+
+        return Table(names=col_names)
+
+
 def update_local_data(year=None, timeout=None):
+    # type: (int, float) -> list[int]
     """Download data from SuomiNet and update PWV_TAB_DIR/measured_pwv.csv
 
     If a year is provided, download SuomiNet data for that year to SUOMI_DIR.
@@ -208,11 +242,8 @@ def update_local_data(year=None, timeout=None):
         A list of years for which data was updated
     """
 
-    # Get any local data that has already been downloaded
-    local_data = Table.read(settings._pwv_measred_path)
-
     # Determine what years to download
-    current_years = settings.available_years
+    current_years = settings._available_years
     if year is None:
         all_years = range(2010, datetime.now().year + 1)
         years = [yr for yr in all_years if yr not in current_years]
@@ -220,6 +251,9 @@ def update_local_data(year=None, timeout=None):
 
     else:
         years = {year}
+
+    # Get any local data that has already been downloaded
+    local_data = _get_local_data()
 
     # Download new data from SuomiNet
     new_years = []

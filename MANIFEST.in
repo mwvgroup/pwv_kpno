@@ -1,7 +1,7 @@
 include README.md
 include LICENSE.txt
 include pwv_kpno/CONFIG.txt
-graft pwv_kpno/locations
+graft pwv_kpno/site_data
 graft pwv_kpno/sims_phosim
 graft pwv_kpno/suomi_data
 graft tests

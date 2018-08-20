@@ -20,6 +20,7 @@
 
 import os
 from datetime import datetime
+import warnings
 
 import unittest
 from pytz import utc
@@ -28,18 +29,20 @@ import requests
 from pwv_kpno._download_pwv_data import _download_data_for_year
 from pwv_kpno._download_pwv_data import _read_file
 from pwv_kpno._download_pwv_data import _suomi_date_to_timestamp
-from pwv_kpno._serve_pwv_data import timestamp
-from pwv_kpno._settings import Settings
+from pwv_kpno.pwv_atm import _timestamp
+from pwv_kpno._package_settings import Settings
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Development'
+__status__ = 'Release'
 
 try:
-    req = requests.get('http://www.suominet.ucar.edu')
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        req = requests.get('http://www.suominet.ucar.edu', verify=False)
     SUOMINET_OFFLINE = req.status_code != 200
 
 except requests.exceptions.ConnectionError:
@@ -97,32 +100,32 @@ class DateFormatConversion(unittest.TestCase):
         jan_01_2010_02_45 = datetime(2010, 1, 1, 2, 45, tzinfo=utc)
         jan_01_2010_04_15 = datetime(2010, 1, 1, 4, 15, tzinfo=utc)
 
-        error_msg = 'Incorrect timestamp for {}'
+        error_msg = 'Incorrect _timestamp for {}'
         self.assertEqual(_suomi_date_to_timestamp(2010, '1.05208'),
-                         timestamp(jan_01_2010_01_15),
+                         _timestamp(jan_01_2010_01_15),
                          error_msg.format(jan_01_2010_01_15))
 
         self.assertEqual(_suomi_date_to_timestamp(2010, '1.11458'),
-                         timestamp(jan_01_2010_02_45),
+                         _timestamp(jan_01_2010_02_45),
                          error_msg.format(jan_01_2010_02_45))
 
         self.assertEqual(_suomi_date_to_timestamp(2010, '1.17708'),
-                         timestamp(jan_01_2010_04_15),
+                         _timestamp(jan_01_2010_04_15),
                          error_msg.format(jan_01_2010_04_15))
 
     def test_dates_out_of_data_range(self):
-        """Test timestamp calculation for dates outside SuomiNet data range"""
+        """Test _timestamp calculation for dates outside SuomiNet data range"""
 
         jan_01_2000_00_15 = datetime(2000, 1, 1, 0, 15, tzinfo=utc)
         dec_31_2021_23_15 = datetime(2021, 12, 31, 23, 15, tzinfo=utc)
 
-        error_msg = 'Incorrect timestamp for {}'
+        error_msg = 'Incorrect _timestamp for {}'
         self.assertEqual(_suomi_date_to_timestamp(2000, '1.01042'),
-                         timestamp(jan_01_2000_00_15),
+                         _timestamp(jan_01_2000_00_15),
                          error_msg.format(jan_01_2000_00_15))
 
         self.assertEqual(_suomi_date_to_timestamp(2021, '365.96875'),
-                         timestamp(dec_31_2021_23_15),
+                         _timestamp(dec_31_2021_23_15),
                          error_msg.format(dec_31_2021_23_15))
 
 
