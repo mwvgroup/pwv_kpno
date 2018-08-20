@@ -28,14 +28,14 @@ a PWV level of 15 mm, this can be found as:
     >>> import numpy as np
     >>>
     >>> temp = 8000
-    >>> wavelengths = np.arange(7000, 10000, 100)
+    >>> wavelengths = np.arange(3000, 12000, 1)
     >>> pwv = 15
     >>>
     >>> sed = bb_atm.sed(temp, wavelengths, pwv)
     >>> print(sed)
 
-      [5406750.98492275, 5646734.81222486, ...,
-       2460033.92176797  2383125.54323284]
+      [ 12241933.89690229  12246050.83311057  12250159.73335347 ...,
+        1126268.89626354   1328275.73117935   1360143.3175513 ]
 
 Since we know the PWV level used to generate this spectra, we can determine the
 corresponding transmission function using the ``trans_for_pwv`` function
@@ -50,13 +50,13 @@ appropriate).
     >>> modeled_trans = pwv_atm.trans_for_pwv(15)
     >>> print(modeled_trans)
 
-              wavelength        transmission
+              wavelength      transmission
                Angstrom
-          ------------------ ------------------
-                      7000.0 0.9198165020431311
-           7001.000333444482 0.8590254136327501
-           7002.000666888963 0.9967736288238565
-                         ...                ...
+          ------------------ --------------
+                     3000.00 0.999999914201
+                     3000.05 0.999999914197
+                     3000.10 0.999999914193
+                         ...            ...
 
 In order to divide these two results, the SED at and the transmission function
 must be known for the same wavelength values. Since the SED is a well

@@ -175,7 +175,8 @@ SuomiNet data to be available on the local machine. See the
 <dd><p>Return a model for the atmospheric transmission function due to PWV</p>
 <p>For a given datetime and airmass, return a model for the atmospheric
 transmission function due to precipitable water vapor at Kitt Peak National
-Observatory.</p>
+Observatory. The transmission function can optionally be binned by
+specifying the <cite>bins</cite> argument.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -233,9 +234,9 @@ given by:</p>
 <span class="go">  wavelength  transmission</span>
 <span class="go">   Angstrom</span>
 <span class="go">  ---------- --------------</span>
-<span class="go">      3000.0 0.999999991637</span>
-<span class="go">      3001.0 0.999999991629</span>
-<span class="go">      3002.0 0.999999991621</span>
+<span class="go">     3000.00 0.999999991637</span>
+<span class="go">     3000.05 0.999999991637</span>
+<span class="go">     3000.10 0.999999991637</span>
 <span class="go">         ...            ...</span>
 </pre></div>
 </td></tr></table></div>
@@ -251,7 +252,8 @@ can be done using the <code class="docutils literal notranslate"><span class="pr
 <code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">trans_for_pwv</code><span class="sig-paren">(</span><em>pwv</em>, <em>bins=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/pwv_atm.html#trans_for_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.trans_for_pwv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the atmospheric transmission due a given PWV concentration in mm</p>
 <p>For a given precipitable water vapor concentration, return the modeled
-atmospheric transmission function.</p>
+atmospheric transmission function. The transmission function can optionally
+be binned by specifying the <cite>bins</cite> argument.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -273,23 +275,25 @@ atmospheric transmission function.</p>
 <h3>3.2.1. Examples:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>For a 13.5 mm PWV column density along line of sight, the transmission function
 is given by:</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">trans_for_pwv</span><span class="p">(</span><span class="mf">13.5</span><span class="p">)</span>
 
 <span class="go">  wavelength  transmission</span>
 <span class="go">   Angstrom</span>
 <span class="go">  ---------- --------------</span>
-<span class="go">      3000.0 0.999999922781</span>
-<span class="go">      3001.0 0.999999922702</span>
-<span class="go">      3002.0 0.999999922625</span>
+<span class="go">     3000.00 0.999999922781</span>
+<span class="go">     3000.05 0.999999922777</span>
+<span class="go">     3000.10 0.999999922774</span>
+<span class="go">         ...            ...</span>
 </pre></div>
 </td></tr></table></div>
 </div>

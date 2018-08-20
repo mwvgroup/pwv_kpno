@@ -506,7 +506,8 @@
     <span class="sd">&quot;&quot;&quot;Return the atmospheric transmission due a given PWV concentration in mm</span>
 
 <span class="sd">    For a given precipitable water vapor concentration, return the modeled</span>
-<span class="sd">    atmospheric transmission function.</span>
+<span class="sd">    atmospheric transmission function. The transmission function can optionally</span>
+<span class="sd">    be binned by specifying the `bins` argument.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        pwv        (float): A PWV concentration in mm</span>
@@ -592,7 +593,8 @@
 
 <span class="sd">    For a given datetime and airmass, return a model for the atmospheric</span>
 <span class="sd">    transmission function due to precipitable water vapor at Kitt Peak National</span>
-<span class="sd">    Observatory.</span>
+<span class="sd">    Observatory. The transmission function can optionally be binned by</span>
+<span class="sd">    specifying the `bins` argument.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        date    (datetime): The datetime of the desired model</span>
