@@ -28,7 +28,7 @@ from datetime import datetime
 import unittest
 from pytz import utc
 
-from pwv_kpno import settings as pk_settings
+from pwv_kpno import _settings as pk_settings
 from pwv_kpno import pwv_atm
 
 __authors__ = ['Daniel Perrefort']
