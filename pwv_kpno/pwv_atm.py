@@ -419,7 +419,7 @@ def _raise_transmission_args(date, airmass):
         raise TypeError("Argument 'airmass' (pos 2) must be an int or float")
 
 
-def _trans_for_date(date, airmass, bins, test_model=None):
+def _trans_for_date(date, airmass, bins=None, test_model=None):
     """Return a model for the atmospheric transmission function due to PWV
 
     Args:
