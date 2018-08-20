@@ -73,10 +73,10 @@ with the National Science Foundation.
   [here](https://stats.uptimerobot.com/gn1xqsJvj)
 
 - For more information on the Kitt Peak National Observatory, see
-  [www.noao.edu/kpno/](www.noao.edu/kpno/)
+  [www.noao.edu/kpno/](https://www.noao.edu/kpno/)
 
 - To learn more about the SuomiNet project, see
-  [www.suominet.ucar.edu/overview.html](www.suominet.ucar.edu/overview.html)
+  [www.suominet.ucar.edu/overview.html](http://www.suominet.ucar.edu/overview.html)
 
 - For an additional example on the correlation between GPS signals and
   atmospheric modeling, see
