@@ -28,7 +28,7 @@ or through the standard python help function.
 from . import pwv_atm
 from . import blackbody_with_atm
 from ._config_builder import ConfigBuilder
-from ._package_settings import settings
+from ._package_settings import settings as _settings
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -36,8 +36,8 @@ __credits__ = ['Michael Wood-Vasey', 'Azalee Bostroem',
                'Jessica Kroboth', 'Alexander Afanasyev']
 
 __license__ = 'GPL V3'
-__version__ = '1.0.0'
+__version__ = '0.12.0'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Release'
 
-settings.set_site('kitt_peak')
+_settings.set_site('kitt_peak')

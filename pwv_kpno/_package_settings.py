@@ -132,7 +132,6 @@ class Settings:
         # type: () -> list[str]
         """A list of sites for which pwv_kpno has stored settings"""
 
-        self._loc_dir_unf.format('')
         return next(os.walk(self._loc_dir_unf.format('')))[1]
 
     def set_site(self, loc):
