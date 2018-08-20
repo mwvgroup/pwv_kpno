@@ -355,7 +355,8 @@ def trans_for_pwv(pwv, bins=None):
     """Return the atmospheric transmission due a given PWV concentration in mm
 
     For a given precipitable water vapor concentration, return the modeled
-    atmospheric transmission function.
+    atmospheric transmission function. The transmission function can optionally
+    be binned by specifying the `bins` argument.
 
     Args:
         pwv        (float): A PWV concentration in mm
@@ -441,7 +442,8 @@ def trans_for_date(date, airmass, bins=None):
 
     For a given datetime and airmass, return a model for the atmospheric
     transmission function due to precipitable water vapor at Kitt Peak National
-    Observatory.
+    Observatory. The transmission function can optionally be binned by
+    specifying the `bins` argument.
 
     Args:
         date    (datetime): The datetime of the desired model
