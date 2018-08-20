@@ -16,13 +16,11 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
-"""pwv_kpno provides models for the atmospheric transmission due to
-precipitable water vapor (PWV) in the ugrizy bands (3000 to 12000 Angstroms).
-Models are available for a given PWV column density or as a function of date
-and time for a customizable location. By default datetime models are provided
-for Kitt Peak National Observatory for years 2010 onward. Full documentation
-and examples are available online at https://mwvgroup.github.io/pwv_kpno/
-or through the standard python help function.
+"""pwv_kpno provides models for the atmospheric transmission function at Kitt
+Peak National Observatory due to precipitable water vapor. Models cover
+wavelengths from 7000 to 11000 Angstroms for years 2010 onward. Documentation
+is available online at https://mwvgroup.github.io/pwv_kpno/ or through the
+standard python help function.
 """
 
 from . import pwv_atm
