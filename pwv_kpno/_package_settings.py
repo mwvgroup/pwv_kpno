@@ -290,12 +290,12 @@ class Settings:
                 for start, end in bounds:
                     cut_type = 'exclusive' if value == 'date' else 'inclusive'
                     status += (
-                            '\n'
-                            + site
-                            + value.rjust(17)
-                            + cut_type.rjust(13)
-                            + str(start).rjust(17)
-                            + str(end).rjust(17)
+                            '\n' +
+                            site +
+                            value.rjust(17) +
+                            cut_type.rjust(13) +
+                            str(start).rjust(17) +
+                            str(end).rjust(17)
                     )
 
         print(status)

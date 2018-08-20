@@ -257,8 +257,8 @@ class TransmissionResults(unittest.TestCase):
         print(date_35)
         print(date_40)
 
-        airmass_2_transm = pwv_atm._trans_for_date(date_35, 2, self.mock_model)
-        airmass_1_transm = pwv_atm._trans_for_date(date_40, 1, self.mock_model)
+        airmass_2_transm = pwv_atm._trans_for_date(date_35, 2, test_model=self.mock_model)
+        airmass_1_transm = pwv_atm._trans_for_date(date_40, 1, test_model=self.mock_model)
 
         same_transmission = np.equal(airmass_1_transm['transmission'],
                                      airmass_2_transm['transmission'])
