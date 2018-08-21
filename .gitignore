@@ -18,7 +18,5 @@ pwv_kpno/__pycache__/
 # Opperating system files
 *.DS_Store
 
-# Used by developer for data analysis
-analysis_plotting/
-create_figures.py
-figs/
+# Used by developer
+cmd_line.py
