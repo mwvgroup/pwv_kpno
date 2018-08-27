@@ -80,7 +80,7 @@ An incomplete guide to getting started:
 
 import os
 from datetime import datetime, timedelta
-from typing import Tuple
+from typing import Tuple, List, Union
 
 import numpy as np
 from astropy.table import Table
@@ -356,8 +356,8 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
                                year, month, day, hour)
 
 
-def trans_for_pwv(pwv, bins=None):
-    # type: (float) -> Table
+def trans_for_pwv(pwv, pwv_err=None, bins=None):
+    # type: (float, float, Union[int, float, List]) -> Table
     """Return the atmospheric transmission due a given PWV concentration in mm
 
     For a given precipitable water vapor concentration, return the modeled
@@ -377,6 +377,13 @@ def trans_for_pwv(pwv, bins=None):
 
     atm_model = Table.read(settings._atm_model_path)
     atm_model['transmission'] = np.exp(- pwv * atm_model['1/mm_cm_2'])
+
+    if pwv_err is not None:
+        trans_plus_err = np.exp(- (pwv + pwv_err) * atm_model['1/mm_cm_2'])
+        trans_minus_err = np.exp(- (pwv - pwv_err) * atm_model['1/mm_cm_2'])
+        trans_model_error = np.subtract(trans_plus_err, trans_minus_err)
+        atm_model['transmission_err'] = np.abs(trans_model_error)
+
     atm_model.remove_column('1/mm_cm_2')
 
     if bins is not None:
@@ -440,7 +447,7 @@ def _trans_for_date(date, airmass, bins=None, test_model=None):
     """
 
     pwv, pwv_err = _pwv_date(date, airmass, test_model)
-    return trans_for_pwv(pwv, bins)
+    return trans_for_pwv(pwv, pwv_err, bins)
 
 
 def trans_for_date(date, airmass, bins=None):
