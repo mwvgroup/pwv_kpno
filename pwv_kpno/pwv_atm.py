@@ -396,6 +396,7 @@ def trans_for_pwv(pwv, pwv_err=None, bins=None):
             bins
         )
 
+        # Todo: Add error calculation for binned values
         out_table = Table([bin_edges[:-1], statistic],
                           names=atm_model.colnames)
 
