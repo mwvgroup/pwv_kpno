@@ -56,7 +56,7 @@ setup(name='pwv_kpno',
       license='GPL v3',
 
       python_requires='>=2.7',
-      install_requires=['numpy', 'astropy', 'requests', 'pytz', 'scipy'],
+      install_requires=['numpy', 'astropy', 'requests', 'pytz', 'scipy', 'typing'],
       setup_requires=['pytest-runner'],
       tests_require=['pytest'],
       include_package_data=True)
