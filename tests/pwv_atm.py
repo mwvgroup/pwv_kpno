@@ -160,9 +160,10 @@ class PwvDate(unittest.TestCase):
         test_pwv_100 = self.kitt_peak_pwv_model['pwv'][100]
 
         error_msg = "pwv_date returned incorrect PWV value for tabulated date"
-        self.assertEqual(test_pwv_0, pwv_atm._pwv_date(test_date_0), error_msg)
-        self.assertEqual(test_pwv_100, pwv_atm._pwv_date(test_date_100),
-                         error_msg)
+        pwv_0, pwv_err_0 = pwv_atm._pwv_date(test_date_0)
+        pwv_100, pwv_err_100 = pwv_atm._pwv_date(test_date_100)
+        self.assertEqual(test_pwv_0, pwv_0, error_msg)
+        self.assertEqual(test_pwv_100, pwv_100, error_msg)
 
     def test_data_gap_handling(self):
         """Test errors raised from function call for datetime without PWV data
@@ -253,9 +254,6 @@ class TransmissionResults(unittest.TestCase):
 
         date_40 = self.mock_model['date'][40]
         date_40 = datetime.utcfromtimestamp(date_40).replace(tzinfo=utc)
-
-        print(date_35)
-        print(date_40)
 
         airmass_2_transm = pwv_atm._trans_for_date(date_35, 2, test_model=self.mock_model)
         airmass_1_transm = pwv_atm._trans_for_date(date_40, 1, test_model=self.mock_model)

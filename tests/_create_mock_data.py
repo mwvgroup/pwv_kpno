@@ -53,10 +53,13 @@ def create_mock_pwv_model(year, gaps=None):
     end_date = datetime(year + 1, 1, 1, tzinfo=utc)
     total_time_intervals = (end_date - start_date).days * 24 * 60 // 30
 
-    out_table = Table(names=['date', 'pwv'], dtype=[float, float])
+    out_table = Table(names=['date', 'pwv', 'pwv_err'],
+                      dtype=[float, float, float])
+
     for i in range(total_time_intervals):
         start_date += timedelta(minutes=30)
-        out_table.add_row([_timestamp(start_date), i % 15])
+        pwv = i % 15
+        out_table.add_row([_timestamp(start_date), pwv, pwv * .1])
 
     if gaps is not None:
         intervals = 48  # number of 30 min intervals in a day

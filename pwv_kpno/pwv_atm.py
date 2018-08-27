@@ -47,7 +47,7 @@ An incomplete guide to getting started:
       >>>                      minute=35,
       >>>                      tzinfo=pytz.utc)
       >>>
-      >>> pwv = pwv_atm.pwv_date(obsv_date)
+      >>> pwv, pwv_err = pwv_atm.pwv_date(obsv_date)
 
 
     To retrieve the atmospheric model for a line of sight PWV concentration:
@@ -80,9 +80,10 @@ An incomplete guide to getting started:
 
 import os
 from datetime import datetime, timedelta
+from typing import Tuple
 
-from astropy.table import Table
 import numpy as np
+from astropy.table import Table
 from pytz import utc
 from scipy.stats import binned_statistic
 
@@ -98,17 +99,16 @@ __status__ = 'Release'
 
 
 def _timestamp(date):
-    # type: (datetime) -> float
     """Returns seconds since epoch of a UTC datetime in %Y-%m-%dT%H:%M format
 
     This function provides comparability for Python 2.7, for which the
-    datetime._timestamp method was not yet available.
+    datetime.timestamp method was not yet available.
 
     Args:
         date (datetime): A datetime to find the _timestamp for
 
     Returns:
-        The _timestamp of the provided datetime as a float
+        The timestamp of the provided datetime as a float
     """
 
     unix_epoch = datetime(1970, 1, 1, tzinfo=utc)
@@ -153,7 +153,7 @@ def _raise_available_data(date, pwv_model):
         raise ValueError(msg.format(timedelta(seconds=interval)))
 
 
-def _pwv_date(date, airmass=1, test_model=None):
+def _pwv_date(date, airmass=1., test_model=None):
     """Returns the modeled PWV column density at Kitt Peak for a given date
 
     Interpolate from the modeled PWV column density at Kitt Peak and return
@@ -166,6 +166,7 @@ def _pwv_date(date, airmass=1, test_model=None):
 
     Returns:
         The modeled PWV column density for Kitt Peak
+        The error in modeled PWV column density for Kitt Peak
     """
 
     if test_model is None:
@@ -178,11 +179,12 @@ def _pwv_date(date, airmass=1, test_model=None):
     _raise_available_data(date, pwv_model)
     time_stamp = _timestamp(date)
     pwv = np.interp(time_stamp, pwv_model['date'], pwv_model['pwv']) * airmass
-    return pwv
+    pwv_err = np.interp(time_stamp, pwv_model['date'], pwv_model['pwv_err'])
+    return pwv, pwv_err
 
 
 def pwv_date(date, airmass=1.):
-    # type: (datetime, float) -> datetime
+    # type: (datetime, float) -> Tuple[float, float]
     """Returns the modeled PWV column density at Kitt Peak for a given date
 
     Interpolate from the modeled PWV column density at Kitt Peak and return
@@ -194,6 +196,7 @@ def pwv_date(date, airmass=1.):
 
     Returns:
         The modeled PWV column density for Kitt Peak
+        The error in modeled PWV column density for Kitt Peak
     """
 
     return _pwv_date(date, airmass)
@@ -254,8 +257,8 @@ def _search_data_table(data_tab, **kwargs):
     https://codereview.stackexchange.com/questions/165811
 
     Args:
-        data_tab (astropy.table.Table): An astropy table to search
-        **kwargs (): The parameters to search data_tab for
+        data_tab (Table): An astropy table to search
+        **kwargs      (): The parameters to search data_tab for
 
     Returns:
         Entries from data_tab that match search parameters
@@ -277,7 +280,11 @@ def _get_pwv_data_table(path, year, month, day, hour):
     Adds units and converts 'date' column from timestamps to datetimes.
 
     Args:
-        path (str): The path of the file to read
+        path  (str): The path of the file to read
+        year  (int): An integer value between 2010 and the current year
+        month (int): An integer value between 1 and 12 (inclusive)
+        day   (int): An integer value between 1 and 31 (inclusive)
+        hour  (int): An integer value between 0 and 23 (inclusive)
 
     Returns:
         An astropy table with PWV data
@@ -349,7 +356,6 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
                                year, month, day, hour)
 
 
-# Todo: Update docstring to include bins argument
 def trans_for_pwv(pwv, bins=None):
     # type: (float) -> Table
     """Return the atmospheric transmission due a given PWV concentration in mm
@@ -383,7 +389,8 @@ def trans_for_pwv(pwv, bins=None):
             bins
         )
 
-        out_table = Table([bin_edges[:-1], statistic], names=atm_model.colnames)
+        out_table = Table([bin_edges[:-1], statistic],
+                          names=atm_model.colnames)
 
     else:
         out_table = atm_model
@@ -432,7 +439,7 @@ def _trans_for_date(date, airmass, bins=None, test_model=None):
         The modeled transmission function as an astropy table
     """
 
-    pwv = _pwv_date(date, airmass, test_model)
+    pwv, pwv_err = _pwv_date(date, airmass, test_model)
     return trans_for_pwv(pwv, bins)
 
 
