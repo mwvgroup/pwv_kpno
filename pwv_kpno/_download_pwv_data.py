@@ -18,7 +18,7 @@
 
 """This code downloads precipitable water vapor (PWV) measurements from
 suominet.ucar.edu for Kitt Peak and other nearby locations. Data is added to a
-master table located at PWV_TAB_DIR/measured.csv.
+master table located at site_data/<current site name>/measured_pwv.csv.
 """
 
 import os
@@ -37,7 +37,7 @@ __credits__ = ['Jessica Kroboth']
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Release'
+__status__ = 'Development'
 
 
 def _suomi_date_to_timestamp(year, days_str):

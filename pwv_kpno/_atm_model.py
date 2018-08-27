@@ -31,7 +31,7 @@ __credits__ = ['Azalee Bostroem']
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.com'
-__status__ = 'Release'
+__status__ = 'Development'
 
 
 def _calc_num_density_conversion():

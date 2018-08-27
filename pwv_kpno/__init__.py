@@ -18,7 +18,7 @@
 
 """pwv_kpno provides models for the atmospheric transmission function at Kitt
 Peak National Observatory due to precipitable water vapor. Models cover
-wavelengths from 7000 to 11000 Angstroms for years 2010 onward. Documentation
+wavelengths from 7,000 to 11,000 Angstroms for years 2010 onward. Documentation
 is available online at https://mwvgroup.github.io/pwv_kpno/ or through the
 standard python help function.
 """
@@ -36,6 +36,6 @@ __credits__ = ['Michael Wood-Vasey', 'Azalee Bostroem',
 __license__ = 'GPL V3'
 __version__ = '0.12.1'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Release'
+__status__ = 'Development'
 
 _settings.set_site('kitt_peak')
