@@ -250,6 +250,9 @@ def _search_data_table(data_tab, **kwargs):
     for which there is an object in that column with attributes matching the
     given kwargs.
 
+    Credit for this function belongs to Alexander Afanasyev
+    https://codereview.stackexchange.com/questions/165811
+
     Args:
         data_tab (astropy.table.Table): An astropy table to search
         **kwargs (): The parameters to search data_tab for
@@ -257,9 +260,6 @@ def _search_data_table(data_tab, **kwargs):
     Returns:
         Entries from data_tab that match search parameters
     """
-
-    # Credit for this function belongs to Alexander Afanasyev
-    # https://codereview.stackexchange.com/questions/165811
 
     def vectorized_callable(obj):
         """Checks if datetime attributes match specified values"""
@@ -373,7 +373,7 @@ def trans_for_pwv(pwv, bins=None):
     atm_model['transmission'] = np.exp(- pwv * atm_model['1/mm_cm_2'])
     atm_model.remove_column('1/mm_cm_2')
 
-    if bins:
+    if bins is not None:
         dx = atm_model['wavelength'][1] - atm_model['wavelength'][0]
         statistic_func = lambda y: np.trapz(y, dx=dx) / ((len(y) - 1) * dx)
         statistic, bin_edges, _ = binned_statistic(
