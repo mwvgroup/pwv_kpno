@@ -396,8 +396,16 @@ def trans_for_pwv(pwv, pwv_err=None, bins=None):
             bins
         )
 
-        # Todo: Add error calculation for binned values
-        out_table = Table([bin_edges[:-1], statistic],
+        bin_sizes = np.ediff1d(bins)
+        error_func = lambda y_err: dx * np.sqrt(np.sum(y_err * y_err))
+        statistic_err, _, _ = binned_statistic(
+            atm_model['wavelength'],
+            atm_model['transmission_err'],
+            error_func,
+            bins
+        )
+
+        out_table = Table([bin_edges[:-1], statistic, statistic_err / bin_sizes],
                           names=atm_model.colnames)
 
     else:
