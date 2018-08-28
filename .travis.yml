@@ -7,7 +7,7 @@ language: python
 os:
   - linux
 
-pmatrix:
+matrix:
   include:
     - python: 2.7
     - python: 3.5
