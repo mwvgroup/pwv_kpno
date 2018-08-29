@@ -52,8 +52,11 @@ An incomplete guide to getting started:
 
     To retrieve the atmospheric model for a line of sight PWV concentration:
 
+      >>> # With a known error
       >>> pwv_atm.trans_for_pwv(pwv)
-
+      >>>
+      >>> # Without any error propagation
+      >>> pwv_atm.trans_for_pwv(pwv, pwv_err)
 
     To retrieve the atmospheric model for a datetime:
 
@@ -356,36 +359,26 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
                                year, month, day, hour)
 
 
-def trans_for_pwv(pwv, pwv_err=None, bins=None):
-    # type: (float, float, Union[int, float, List]) -> Table
-    """Return the atmospheric transmission due a given PWV concentration in mm
+def _calc_transmission(atm_model, pwv, bins=None):
+    """Calculate the PWV transmission from an atmospheric model
 
-    For a given precipitable water vapor concentration, return the modeled
-    atmospheric transmission function. The transmission function can optionally
-    be binned by specifying the `bins` argument.
+    atm_model should be a table with columns for wavelength ('wavelength') and
+    conversion factor from PWV to cross section ('1/mm_cm_2').
 
     Args:
+        atm_model  (Table): Atmospheric model
         pwv        (float): A PWV concentration in mm
         bins (int or list): Integer number of bins or sequence of bin edges
-
+    
     Returns:
-        The modeled transmission function as an astropy table
+        A table with wavelengths, transmission, and optional transmission error
     """
-
+    
     if pwv < 0:
         raise ValueError('PWV concentration cannot be negative')
 
-    atm_model = Table.read(settings._atm_model_path)
-    atm_model['transmission'] = np.exp(- pwv * atm_model['1/mm_cm_2'])
-
-    if pwv_err is not None:
-        trans_plus_err = np.exp(- (pwv + pwv_err) * atm_model['1/mm_cm_2'])
-        trans_minus_err = np.exp(- (pwv - pwv_err) * atm_model['1/mm_cm_2'])
-        trans_model_error = np.subtract(trans_plus_err, trans_minus_err)
-        atm_model['transmission_err'] = np.abs(trans_model_error)
-
-    atm_model.remove_column('1/mm_cm_2')
-
+    transmission = np.exp(- pwv * atm_model['1/mm_cm_2'])
+    
     if bins is not None:
         dx = atm_model['wavelength'][1] - atm_model['wavelength'][0]
         statistic_func = lambda y: np.trapz(y, dx=dx) / ((len(y) - 1) * dx)
@@ -396,23 +389,46 @@ def trans_for_pwv(pwv, pwv_err=None, bins=None):
             bins
         )
 
-        bin_sizes = np.ediff1d(bins)
-        error_func = lambda y_err: dx * np.sqrt(np.sum(y_err * y_err))
-        statistic_err, _, _ = binned_statistic(
-            atm_model['wavelength'],
-            atm_model['transmission_err'],
-            error_func,
-            bins
-        )
-
-        out_table = Table([bin_edges[:-1], statistic, statistic_err / bin_sizes],
-                          names=atm_model.colnames)
+        out_table = Table([bin_edges[:-1], statistic],
+                          names=['wavelength', 'transmission'])
 
     else:
-        out_table = atm_model
+        out_table = Table([atm_model['wavelength'], transmission], 
+                          names=['wavelength', 'transmission'])
 
     out_table['wavelength'].unit = 'angstrom'
     return out_table
+
+
+def trans_for_pwv(pwv, pwv_err=None, bins=None):
+    # type: (float, float, Union[int, float, List]) -> Table
+    """Return the atmospheric transmission due a given PWV concentration in mm
+
+    For a given precipitable water vapor concentration, return the modeled
+    atmospheric transmission function. The transmission function can optionally
+    be binned by specifying the `bins` argument.
+
+    Args:
+        pwv        (float): A PWV concentration in mm
+        pwv_err    (float): The error in pwv
+        bins (int or list): Integer number of bins or sequence of bin edges
+
+    Returns:
+        The modeled transmission function as an astropy table
+    """
+
+    atm_model = Table.read(settings._atm_model_path)
+    transmission = _calc_transmission(atm_model, pwv, bins)
+    
+    if pwv_err is not None:
+        trans_plus_pwv_err = _calc_transmission(atm_model, pwv + pwv_err, bins)
+        trans_minus_pwv_err = _calc_transmission(atm_model, pwv - pwv_err, bins)
+        transmission_err = np.subtract(trans_plus_pwv_err['transmission'],
+                                       trans_minus_pwv_err['transmission'])
+
+        transmission['transmission_err'] = np.abs(transmission_err)
+
+    return transmission
 
 
 def _raise_transmission_args(date, airmass):
