@@ -14,6 +14,14 @@ matrix:
 
 before_install:
   - "pip install astropy"
+  - "pip install coveralls"
+  - "pip install pytest-cov"
+
+install:
+  - "python setup.py install"
 
 script:
-  - "python setup.py test"
+  - "pytest --cov=pwv_kpno/"
+
+after_success:
+  - "coveralls"
