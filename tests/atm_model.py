@@ -50,17 +50,15 @@ class CreatePWVModel(TestCase):
         )
 
     def test_zero_cross_section(self):
-        self.assertEqual(self.mock_model['wavelength'][0], 0)
         self.assertEqual(self.mock_model['1/mm_cm_2'][0], 0)
 
     def test_cs_equal_one(self):
         conv_factor = _calc_num_density_conversion()
-        self.assertEqual(self.mock_model['wavelength'][-1], 1)
         self.assertEqual(self.mock_model['1/mm_cm_2'][-1], conv_factor)
 
     def test_returned_wavelengths(self):
-        self.assertSequenceEqual(self.mock_model['wavelength'],
-                                 self.mock_lambda_out)
+        eq = np.array_equal(self.mock_model['wavelength'], self.mock_lambda_out)
+        self.assertTrue(eq)
 
     def test_interpolation(self):
         pass
