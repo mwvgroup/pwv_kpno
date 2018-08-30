@@ -18,7 +18,7 @@
 
 """This file provides tests for the function "transmission"."""
 
-import unittest
+from unittest import TestCase
 from datetime import datetime, timedelta
 
 import numpy as np
@@ -33,7 +33,7 @@ __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Release'
+__status__ = 'Development'
 
 
 def _check_attrs(iterable, **kwargs):
@@ -59,7 +59,7 @@ def _check_attrs(iterable, **kwargs):
     return True
 
 
-class SearchArgumentErrors(unittest.TestCase):
+class SearchArgumentErrors(TestCase):
     """Test that _check_search_args raises the appropriate errors
 
     _check_search_args is responsible for checking the arguments for both
@@ -91,7 +91,7 @@ class SearchArgumentErrors(unittest.TestCase):
         self.assert_raises_iter([-3, 24, 30], ValueError)
 
 
-class MeasuredPWV(unittest.TestCase):
+class MeasuredPWV(TestCase):
     """Tests for the 'pwv_atm.measured_pwv' function"""
 
     data_table = pwv_atm.measured_pwv()
@@ -138,7 +138,7 @@ class MeasuredPWV(unittest.TestCase):
                 self.assertEqual(column.unit, 'mm')
 
 
-class ModeledPWV(unittest.TestCase):
+class ModeledPWV(TestCase):
     """Tests for the 'pwv_atm.modeled_pwv' function"""
 
     data_table = pwv_atm.modeled_pwv()
@@ -146,7 +146,7 @@ class ModeledPWV(unittest.TestCase):
     test_units = MeasuredPWV.__dict__["test_units"]
 
 
-class PwvDate(unittest.TestCase):
+class PwvDate(TestCase):
     """Tests for the pwv_date function"""
 
     kitt_peak_pwv_model = pwv_atm.modeled_pwv()
@@ -160,9 +160,10 @@ class PwvDate(unittest.TestCase):
         test_pwv_100 = self.kitt_peak_pwv_model['pwv'][100]
 
         error_msg = "pwv_date returned incorrect PWV value for tabulated date"
-        self.assertEqual(test_pwv_0, pwv_atm._pwv_date(test_date_0), error_msg)
-        self.assertEqual(test_pwv_100, pwv_atm._pwv_date(test_date_100),
-                         error_msg)
+        pwv_0, pwv_err_0 = pwv_atm._pwv_date(test_date_0)
+        pwv_100, pwv_err_100 = pwv_atm._pwv_date(test_date_100)
+        self.assertEqual(test_pwv_0, pwv_0, error_msg)
+        self.assertEqual(test_pwv_100, pwv_100, error_msg)
 
     def test_data_gap_handling(self):
         """Test errors raised from function call for datetime without PWV data
@@ -184,7 +185,7 @@ class PwvDate(unittest.TestCase):
                           three_day_start, 1, mock_model)
 
 
-class TransmissionErrors(unittest.TestCase):
+class TransmissionErrors(TestCase):
     """Test pwv_kpno.transmission for raised errors due to bad arguments"""
 
     def test_argument_types(self):
@@ -225,7 +226,7 @@ class TransmissionErrors(unittest.TestCase):
                           late_year, 1)
 
 
-class TransmissionResults(unittest.TestCase):
+class TransmissionResults(TestCase):
     """Test pwv_kpno.transmission for the expected returns"""
 
     mock_model = create_mock_pwv_model(2010)
@@ -254,11 +255,13 @@ class TransmissionResults(unittest.TestCase):
         date_40 = self.mock_model['date'][40]
         date_40 = datetime.utcfromtimestamp(date_40).replace(tzinfo=utc)
 
-        print(date_35)
-        print(date_40)
+        airmass_2_transm = pwv_atm._trans_for_date(date=date_35,
+                                                   airmass=2,
+                                                   test_model=self.mock_model)
 
-        airmass_2_transm = pwv_atm._trans_for_date(date_35, 2, test_model=self.mock_model)
-        airmass_1_transm = pwv_atm._trans_for_date(date_40, 1, test_model=self.mock_model)
+        airmass_1_transm = pwv_atm._trans_for_date(date=date_40,
+                                                   airmass=1,
+                                                   test_model=self.mock_model)
 
         same_transmission = np.equal(airmass_1_transm['transmission'],
                                      airmass_2_transm['transmission'])
@@ -280,3 +283,48 @@ class TransmissionResults(unittest.TestCase):
         error_msg = 'Wrong units for column "{}"'
         self.assertEqual(w_units, 'angstrom', error_msg.format('wavelength'))
         self.assertEqual(t_units, None, error_msg.format('transmission'))
+
+
+class TransmissionErrorPropagation(TestCase):
+    """Tests for the error propagation of pwv_kpno.pwv_atm.trans_for_pwv"""
+
+    def test_zero_pwv_error(self):
+        """Returned error should be zero for a PWV error of zero"""
+
+        transmission = pwv_atm.trans_for_pwv(pwv=1, pwv_err=0)
+        expected_error = np.zeros(len(transmission))
+        all_zeros = np.array_equal(transmission['transmission_err'],
+                                   expected_error)
+
+        self.assertTrue(all_zeros)
+
+    def test_increasing_error(self):
+        """As the PWV error increases so should the transmission error"""
+
+        transm_1 = pwv_atm.trans_for_pwv(pwv=2, pwv_err=1)
+        transm_5 = pwv_atm.trans_for_pwv(pwv=2, pwv_err=5)
+        error_is_greater = (e5 > e1 for e1, e5 in zip(transm_1, transm_5))
+        pass_test = np.all(error_is_greater)
+
+        self.assertTrue(pass_test)
+
+    def test_not_passed_pwv_error(self):
+        """Returned transmission should have no error if not given PWV error"""
+
+        transmission = pwv_atm.trans_for_pwv(1)
+        no_err = np.all(('err' not in col for col in transmission.colnames))
+        self.assertTrue(no_err)
+
+    def test_works_with_binning(self):
+        """Error should be returned regardless if binning occurs"""
+
+        transmission = pwv_atm.trans_for_pwv(pwv=2, pwv_err=1, bins=5000)
+        col_names = ['wavelength', 'transmission', 'transmission_err']
+
+        try:
+            # Python 2.7
+            self.assertItemsEqual(transmission.colnames, col_names)
+
+        except AttributeError:
+            # Python 3
+            self.assertCountEqual(transmission.colnames, col_names)

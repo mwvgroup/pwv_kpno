@@ -37,7 +37,7 @@ __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Release'
+__status__ = 'Development'
 
 w_msg = 'Empty data detected for ODR instance.'
 warnings.filterwarnings("ignore", message=w_msg)

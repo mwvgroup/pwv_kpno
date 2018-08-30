@@ -21,7 +21,7 @@
 from datetime import datetime
 
 import numpy as np
-import unittest
+from unittest import TestCase
 
 from pwv_kpno._update_pwv_model import _create_new_pwv_model
 from pwv_kpno._update_pwv_model import _linear_regression
@@ -32,10 +32,10 @@ __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Release'
+__status__ = 'Development'
 
 
-class LinearRegression(unittest.TestCase):
+class LinearRegression(TestCase):
     """Tests for pwv_kpno._update_pwv_model._linear_regression"""
 
     def test_mask_handling(self):
@@ -69,7 +69,7 @@ class LinearRegression(unittest.TestCase):
         self.assertTrue(fit_matches_data)
 
 
-class CalcAvgPwvModel(unittest.TestCase):
+class CalcAvgPwvModel(TestCase):
     """Tests for pwv_kpno._update_pwv_model._create_new_pwv_model"""
 
     def test_positive_pwv(self):
@@ -80,7 +80,7 @@ class CalcAvgPwvModel(unittest.TestCase):
         self.assertFalse(are_negative_values)
 
 
-class UpdateModelsArgs(unittest.TestCase):
+class UpdateModelsArgs(TestCase):
     """Test update_models function for raised errors due to bad arguments"""
 
     def test_argument_errors(self):

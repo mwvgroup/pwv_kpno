@@ -22,27 +22,28 @@ available.
 """
 
 import os
-from glob import glob
 from datetime import datetime
+from glob import glob
+from unittest import TestCase
 
-import unittest
 from pytz import utc
 
-from pwv_kpno import _settings as pk_settings
+from pwv_kpno import _settings
 from pwv_kpno import pwv_atm
+from pwv_kpno._download_pwv_data import _get_local_data
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Release'
+__status__ = 'Development'
 
 EXPECTED_YEARS = set(range(2010, datetime.now().year))
 EXPECTED_IDS = {'KITT', 'P014', 'SA46', 'SA48', 'AZAM'}
 
 
-class CorrectDataFiles(unittest.TestCase):
+class CorrectDataFiles(TestCase):
     """Test appropriate SuomiNet data files are included with the package"""
 
     @classmethod
@@ -52,7 +53,7 @@ class CorrectDataFiles(unittest.TestCase):
         cls.data_file_years = set()
         cls.data_file_GPS_ids = set()
 
-        glob_pattern = os.path.join(pk_settings._suomi_dir, '*.plt')
+        glob_pattern = os.path.join(_settings._suomi_dir, '*.plt')
         for fname in glob(glob_pattern):
             cls.data_file_years.add(int(fname[-8: -4]))
             cls.data_file_GPS_ids.add(fname[-15: -11])
@@ -68,23 +69,23 @@ class CorrectDataFiles(unittest.TestCase):
         self.assertEqual(EXPECTED_IDS, self.data_file_GPS_ids)
 
 
-class CorrectConfigData(unittest.TestCase):
+class CorrectConfigData(TestCase):
     """Test the Kitt Peak config file for the correct years and SuomiNet ids"""
 
     def test_config_years(self):
         """Check config file for correct years"""
 
-        config_years = set(pk_settings._available_years)
+        config_years = set(_settings._available_years)
         self.assertEqual(EXPECTED_YEARS, config_years)
 
     def test_config_ids(self):
         """Check config file for correct SuomiNet ids"""
 
-        config_ids = set(pk_settings.receivers)
+        config_ids = set(_settings.receivers)
         self.assertEqual(EXPECTED_IDS, config_ids)
 
 
-class CorrectReturnedYears(unittest.TestCase):
+class CorrectReturnedYears(TestCase):
     """Test that the end user is returned data for the correct years"""
 
     def test_correct_measured_years(self):
@@ -110,3 +111,35 @@ class CorrectReturnedYears(unittest.TestCase):
         april_2016 = datetime(2016, 4, 1, tzinfo=utc)
         bad_data = data_2016[data_2016['date'] < april_2016]
         self.assertTrue(all(bad_data['KITT'].mask))
+
+
+class LocalData(TestCase):
+    """Tests for the _get_local_data function"""
+
+    def setUp(self):
+        self.data = _get_local_data()
+
+    def test_correct_col_names(self):
+        """Test that the returned table has a 'date' column plus a data
+        and error column for each receiver.
+        """
+
+        # Create a list of expected column names
+        col_names = ['date']
+        col_names.extend((rec for rec in _settings.receivers))
+        col_names.extend((rec + '_err' for rec in _settings.receivers))
+        print(col_names)
+        print(self.data.colnames)
+
+        try:
+            # Python 2.7
+            self.assertItemsEqual(self.data.colnames, col_names)
+
+        except AttributeError:
+            # Python 3
+            self.assertCountEqual(self.data.colnames, col_names)
+
+    def test_non_empty(self):
+        """Check that the returned table is not empty"""
+
+        self.assertGreater(len(self.data), 1)

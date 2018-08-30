@@ -11,12 +11,11 @@ Kitt Peak National Observatory
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;
-[![release](https://img.shields.io/badge/version-0.12.0-blue.svg)]()
-[![python](https://img.shields.io/badge/python-2.7,%203.6-blue.svg)]()
+[![release](https://img.shields.io/badge/version-0.12.1-blue.svg)]()
+[![python](https://img.shields.io/badge/python-2.7,%203.5,%203.6,%203.7-blue.svg)]()
 [![license](https://img.shields.io/badge/license-GPL%20v3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![Build Status](https://travis-ci.org/mwvgroup/pwv_kpno.svg?branch=master)](https://travis-ci.org/mwvgroup/pwv_kpno)
+[![Coverage Status](https://coveralls.io/repos/github/mwvgroup/pwv_kpno/badge.svg?branch=master)](https://coveralls.io/github/mwvgroup/pwv_kpno?branch=master)
 
 For package documentation and installation instructions, please see
 [https://mwvgroup.github.io/pwv_kpno/](https://mwvgroup.github.io/pwv_kpno/)

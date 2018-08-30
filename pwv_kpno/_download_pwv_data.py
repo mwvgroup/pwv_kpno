@@ -18,7 +18,7 @@
 
 """This code downloads precipitable water vapor (PWV) measurements from
 suominet.ucar.edu for Kitt Peak and other nearby locations. Data is added to a
-master table located at PWV_TAB_DIR/measured.csv.
+master table located at site_data/<current site name>/measured_pwv.csv.
 """
 
 import os
@@ -37,7 +37,7 @@ __credits__ = ['Jessica Kroboth']
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Release'
+__status__ = 'Development'
 
 
 def _suomi_date_to_timestamp(year, days_str):
@@ -110,7 +110,7 @@ def _read_file(path):
         An astropy Table with data from path
     """
 
-    # Credit goes to Jessica Kroboth for identifying conditions 1 and 2
+    # Credit goes to Jessica Kroboth for identifying conditions 1 and 2 above
 
     site_id = path[-15:-11]
     names = ['date', site_id, site_id + '_err', 'ZenithDelay',
@@ -211,7 +211,10 @@ def _download_data_for_year(yr, timeout=None):
 
 
 def _get_local_data():
-    """Returns an astropy table containing any local PWV measurements"""
+    """Return an astropy table containing any local PWV measurements
+
+    Data is returned for the current site set in the package settings
+    """
 
     if os.path.exists(settings._pwv_measred_path):
         return Table.read(settings._pwv_measred_path)

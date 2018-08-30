@@ -32,23 +32,25 @@ def long_description():
 
 
 setup(name='pwv_kpno',
-      version='0.12.0',
+      version='0.12.1',
       packages=['pwv_kpno'],
       keywords='KPNO atmospheric transmission PWV precipitable water vapor',
       description='Models the atmospheric transmission function for KPNO',
       long_description=long_description(),
       long_description_content_type='text/markdown',
-      classifiers=['Development Status :: 4 - Beta',
-                   'Intended Audience :: Science/Research',
-                   'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
-                   'Natural Language :: English',
-                   'Operating System :: OS Independent',
-                   'Programming Language :: Python',
-                   'Programming Language :: Python :: 2.7',
-                   'Programming Language :: Python :: 3.6',
-                   'Topic :: Scientific/Engineering :: Astronomy',
-                   'Topic :: Scientific/Engineering :: Atmospheric Science',
-                   'Topic :: Scientific/Engineering :: Physics'],
+      classifiers=[
+          'Development Status :: 4 - Beta',
+          'Intended Audience :: Science/Research',
+          'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
+          'Natural Language :: English',
+          'Operating System :: OS Independent',
+          'Programming Language :: Python',
+          'Programming Language :: Python :: 2.7',
+          'Programming Language :: Python :: 3.6',
+          'Topic :: Scientific/Engineering :: Astronomy',
+          'Topic :: Scientific/Engineering :: Atmospheric Science',
+          'Topic :: Scientific/Engineering :: Physics'
+      ],
 
       author='Daniel Perrefort',
       author_email='djperrefort@pitt.edu',
@@ -56,7 +58,16 @@ setup(name='pwv_kpno',
       license='GPL v3',
 
       python_requires='>=2.7',
-      install_requires=['numpy', 'astropy', 'requests', 'pytz', 'scipy'],
+      install_requires=[
+          'numpy',
+          'astropy < 3.0; python_version < "3.0"',
+          'astropy; python_version >= "3.0"',
+          'requests',
+          'pytz',
+          'scipy',
+          'typing; python_version < "3.5"'
+      ],
+
       setup_requires=['pytest-runner'],
       tests_require=['pytest'],
       include_package_data=True)
