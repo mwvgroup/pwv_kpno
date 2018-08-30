@@ -18,7 +18,7 @@
 
 """This file provides tests for the function "transmission"."""
 
-import unittest
+from unittest import TestCase
 from datetime import datetime, timedelta
 
 import numpy as np
@@ -59,7 +59,7 @@ def _check_attrs(iterable, **kwargs):
     return True
 
 
-class SearchArgumentErrors(unittest.TestCase):
+class SearchArgumentErrors(TestCase):
     """Test that _check_search_args raises the appropriate errors
 
     _check_search_args is responsible for checking the arguments for both
@@ -91,7 +91,7 @@ class SearchArgumentErrors(unittest.TestCase):
         self.assert_raises_iter([-3, 24, 30], ValueError)
 
 
-class MeasuredPWV(unittest.TestCase):
+class MeasuredPWV(TestCase):
     """Tests for the 'pwv_atm.measured_pwv' function"""
 
     data_table = pwv_atm.measured_pwv()
@@ -138,7 +138,7 @@ class MeasuredPWV(unittest.TestCase):
                 self.assertEqual(column.unit, 'mm')
 
 
-class ModeledPWV(unittest.TestCase):
+class ModeledPWV(TestCase):
     """Tests for the 'pwv_atm.modeled_pwv' function"""
 
     data_table = pwv_atm.modeled_pwv()
@@ -146,7 +146,7 @@ class ModeledPWV(unittest.TestCase):
     test_units = MeasuredPWV.__dict__["test_units"]
 
 
-class PwvDate(unittest.TestCase):
+class PwvDate(TestCase):
     """Tests for the pwv_date function"""
 
     kitt_peak_pwv_model = pwv_atm.modeled_pwv()
@@ -185,7 +185,7 @@ class PwvDate(unittest.TestCase):
                           three_day_start, 1, mock_model)
 
 
-class TransmissionErrors(unittest.TestCase):
+class TransmissionErrors(TestCase):
     """Test pwv_kpno.transmission for raised errors due to bad arguments"""
 
     def test_argument_types(self):
@@ -226,7 +226,7 @@ class TransmissionErrors(unittest.TestCase):
                           late_year, 1)
 
 
-class TransmissionResults(unittest.TestCase):
+class TransmissionResults(TestCase):
     """Test pwv_kpno.transmission for the expected returns"""
 
     mock_model = create_mock_pwv_model(2010)

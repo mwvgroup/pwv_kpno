@@ -16,21 +16,26 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno. If not, see <http://www.gnu.org/licenses/>.
 
-"""This file tests that SuomiNet data is downloaded and parsed correctly."""
+"""This file tests that SuomiNet data is downloaded and parsed correctly.
+
+Primary tested modules:
+    pwv_kpno._download_pwv_data
+"""
 
 import os
 from datetime import datetime
 import warnings
 
-import unittest
+from unittest import TestCase, skipIf
 from pytz import utc
 import requests
 
 from pwv_kpno._download_pwv_data import _download_data_for_year
 from pwv_kpno._download_pwv_data import _read_file
 from pwv_kpno._download_pwv_data import _suomi_date_to_timestamp
+from pwv_kpno._download_pwv_data import _get_local_data
 from pwv_kpno.pwv_atm import _timestamp
-from pwv_kpno._package_settings import Settings
+from pwv_kpno import _settings
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -49,9 +54,9 @@ except requests.exceptions.ConnectionError:
     SUOMINET_OFFLINE = True
 
 
-@unittest.skipIf(SUOMINET_OFFLINE, 'SuomiNet.ucar.edu Unreachable')
-class SuomiNetDataDownload(unittest.TestCase):
-    """Tests data is downloaded correctly by _download_suomi_data_for_year"""
+@skipIf(SUOMINET_OFFLINE, 'SuomiNet.ucar.edu Unreachable')
+class SuomiNetDataDownload(TestCase):
+    """Test data is downloaded correctly by _download_suomi_data_for_year"""
 
     @classmethod
     def setUpClass(cls):
@@ -61,7 +66,11 @@ class SuomiNetDataDownload(unittest.TestCase):
         cls.data_2015 = _download_data_for_year(2015)
 
     def test_column_names(self):
-        """Test downloaded data for correct columns"""
+        """Check the downloaded data for the correct column names
+
+        The set of correct column names is determined by manually checking the
+        SuomiNet website.
+        """
 
         bad_column_msg = 'Wrong columns for year={}'
         expected_2015_cols = {'date', 'KITT', 'KITT_err', 'P014', 'P014_err',
@@ -79,7 +88,7 @@ class SuomiNetDataDownload(unittest.TestCase):
                          bad_column_msg.format(2012))
 
     def test_year_values(self):
-        """Test data was downloaded for the correct years"""
+        """Test that data was downloaded for the correct years"""
 
         error_msg = 'Wrong data downloaded for year {}'
         first_2012_date = datetime.utcfromtimestamp(self.data_2012['date'][0])
@@ -89,8 +98,8 @@ class SuomiNetDataDownload(unittest.TestCase):
         self.assertEqual(first_2015_date.year, 2015, error_msg.format(2015))
 
 
-class DateFormatConversion(unittest.TestCase):
-    """Tests conversion of SuomiNet datetime format to timestamps"""
+class DateFormatConversion(TestCase):
+    """Test the conversion of SuomiNet datetime format to timestamps"""
 
     def test_roundoff_error(self):
         """Test returned timestamps for round off error"""
@@ -129,8 +138,8 @@ class DateFormatConversion(unittest.TestCase):
                          error_msg.format(dec_31_2021_23_15))
 
 
-class SuomiNetFileParsing(unittest.TestCase):
-    """Tests file parsing by create_pwv_models._read_file"""
+class SuomiNetFileParsing(TestCase):
+    """Test file parsing by create_pwv_models._read_file"""
 
     @classmethod
     def setUpClass(cls):
@@ -141,7 +150,7 @@ class SuomiNetFileParsing(unittest.TestCase):
         cls.azam_hr_path = 'AZAMhr_2015.plt'
         cls.p014_dy_path = 'P014dy_2012.plt'
 
-        data_dir = Settings()._suomi_dir
+        data_dir = _settings._suomi_dir
         cls.kitt_hr_data = _read_file(os.path.join(data_dir, cls.kitt_hr_path))
         cls.kitt_dy_data = _read_file(os.path.join(data_dir, cls.kitt_dy_path))
         cls.azam_hr_data = _read_file(os.path.join(data_dir, cls.azam_hr_path))
@@ -188,5 +197,22 @@ class SuomiNetFileParsing(unittest.TestCase):
         to have a different number of columns from the second half of the year.
         """
 
-        hr_path = os.path.join(Settings()._suomi_dir, 'SA48dy_2010.plt')
+        hr_path = os.path.join(_settings._suomi_dir, 'SA48dy_2010.plt')
         _read_file(hr_path)
+
+
+class LocalData(TestCase):
+    """Tests for the _get_local_data function"""
+
+    def correct_col_names(self):
+        """Test that the returned table has a 'date' column plus a data
+        and error column for each receiver.
+        """
+
+        # Create a list of expected column names
+        col_names = ['date']
+        col_names = col_names.extend((rec for rec in _settings.receivers))
+        col_names = col_names.extend((rec + '_err' for rec in _settings.receivers))
+
+        local_data = _get_local_data()
+        self.assertListEqual(local_data.colnames, col_names)

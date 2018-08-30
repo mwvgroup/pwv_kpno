@@ -25,11 +25,12 @@ import os
 from glob import glob
 from datetime import datetime
 
-import unittest
+from unittest import TestCase
 from pytz import utc
 
 from pwv_kpno import _settings as pk_settings
 from pwv_kpno import pwv_atm
+from pwv_kpno._download_pwv_data import _get_local_data
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -42,7 +43,7 @@ EXPECTED_YEARS = set(range(2010, datetime.now().year))
 EXPECTED_IDS = {'KITT', 'P014', 'SA46', 'SA48', 'AZAM'}
 
 
-class CorrectDataFiles(unittest.TestCase):
+class CorrectDataFiles(TestCase):
     """Test appropriate SuomiNet data files are included with the package"""
 
     @classmethod
@@ -68,7 +69,7 @@ class CorrectDataFiles(unittest.TestCase):
         self.assertEqual(EXPECTED_IDS, self.data_file_GPS_ids)
 
 
-class CorrectConfigData(unittest.TestCase):
+class CorrectConfigData(TestCase):
     """Test the Kitt Peak config file for the correct years and SuomiNet ids"""
 
     def test_config_years(self):
@@ -84,7 +85,7 @@ class CorrectConfigData(unittest.TestCase):
         self.assertEqual(EXPECTED_IDS, config_ids)
 
 
-class CorrectReturnedYears(unittest.TestCase):
+class CorrectReturnedYears(TestCase):
     """Test that the end user is returned data for the correct years"""
 
     def test_correct_measured_years(self):

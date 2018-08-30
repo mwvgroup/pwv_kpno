@@ -16,7 +16,11 @@
 #    You should have received a copy of the GNU General Public License
 #    along with  If not, see <http://www.gnu.org/licenses/>.
 
-"""Tests for the pwv_kpno.atm_model module."""
+"""This file provides tests for the creation of atmospheric models using
+
+Primary tested modules:
+    pwv_kpno.atm_model module.
+"""
 
 from unittest import TestCase
 

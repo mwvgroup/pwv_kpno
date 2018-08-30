@@ -18,7 +18,7 @@
 
 """This file tests functions related to black body modeling"""
 
-import unittest
+from unittest import TestCase
 
 from astropy.modeling.blackbody import blackbody_lambda
 import numpy as np
@@ -35,7 +35,7 @@ __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
 
-class BlackbodySED(unittest.TestCase):
+class BlackbodySED(TestCase):
     """Tests for the function blackbody.sed"""
 
     wavelengths = np.arange(7000, 10001, 1000)  # Angstroms
@@ -54,7 +54,7 @@ class BlackbodySED(unittest.TestCase):
                         "SED does not match ideal black body for pwv = 0")
 
 
-class BlackbodyMagnitude(unittest.TestCase):
+class BlackbodyMagnitude(TestCase):
     """Tests for the function blackbody.magnitude"""
 
     def test_pwv_dependence(self):
@@ -70,7 +70,7 @@ class BlackbodyMagnitude(unittest.TestCase):
                         "Returned magnitude does not decrease with pwv")
 
 
-class ZeroPointBias(unittest.TestCase):
+class ZeroPointBias(TestCase):
     """Tests for the function blackbody.zp_bias"""
 
     def test_same_temperature(self):
