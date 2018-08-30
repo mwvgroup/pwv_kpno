@@ -80,17 +80,3 @@ def create_pwv_atm_model(mod_lambda, mod_cs, out_lambda):
                       names=['wavelength', '1/mm_cm_2'])
 
     return out_table
-
-
-if __name__ == '__main__':
-
-    from pwv_kpno._package_settings import settings
-
-    # Load modeled wavelengths and cross sections
-    cs_data = np.loadtxt(settings._h2o_cs_path, usecols=[0, 1]).transpose()
-
-    model_cs = cs_data[1]
-    model_lambda = np.round(cs_data[0] * 10000, 2)  # convert from microns to angstroms
-    transmission = create_pwv_atm_model(model_lambda, model_cs, model_lambda)
-
-    transmission.write(settings._atm_model_path, overwrite=True)
