@@ -199,27 +199,3 @@ class SuomiNetFileParsing(TestCase):
 
         hr_path = os.path.join(_settings._suomi_dir, 'SA48dy_2010.plt')
         _read_file(hr_path)
-
-
-class LocalData(TestCase):
-    """Tests for the _get_local_data function"""
-
-    def setUp(self):
-        self.data = _get_local_data()
-
-    def test_correct_col_names(self):
-        """Test that the returned table has a 'date' column plus a data
-        and error column for each receiver.
-        """
-
-        # Create a list of expected column names
-        col_names = ['date']
-        col_names = col_names.extend((rec for rec in _settings.receivers))
-        col_names = col_names.extend((rec + '_err' for rec in _settings.receivers))
-
-        self.assertListEqual(self.data.colnames, col_names)
-
-    def test_non_empty(self):
-        """Check that the returned table is not empty"""
-
-        self.assertGreater(len(self.data), 1)

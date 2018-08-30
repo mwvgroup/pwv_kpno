@@ -111,3 +111,28 @@ class CorrectReturnedYears(TestCase):
         april_2016 = datetime(2016, 4, 1, tzinfo=utc)
         bad_data = data_2016[data_2016['date'] < april_2016]
         self.assertTrue(all(bad_data['KITT'].mask))
+
+
+class LocalData(TestCase):
+    """Tests for the _get_local_data function"""
+
+    def setUp(self):
+        self.data = _get_local_data()
+
+    def test_correct_col_names(self):
+        """Test that the returned table has a 'date' column plus a data
+        and error column for each receiver.
+        """
+
+        # Create a list of expected column names
+        col_names = ['date']
+        col_names.extend((rec for rec in _settings.receivers))
+        col_names.extend((rec + '_err' for rec in _settings.receivers))
+
+        self.assertListEqual(self.data.colnames, col_names)
+
+    def test_non_empty(self):
+        """Check that the returned table is not empty"""
+
+        self.assertGreater(len(self.data), 1)
+
