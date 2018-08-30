@@ -8,7 +8,7 @@ Providing models of the atmospheric transmission function at
 Kitt Peak National Observatory
 </h4>
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 [![release](https://img.shields.io/badge/version-0.12.1-blue.svg)]()
 [![python](https://img.shields.io/badge/python-2.7,%203.5,%203.6,%203.7-blue.svg)]()
 [![license](https://img.shields.io/badge/license-GPL%20v3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
