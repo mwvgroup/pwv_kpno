@@ -22,6 +22,7 @@
 import json
 import os
 import shutil
+from datetime import datetime
 
 from astropy.table import Table
 
@@ -252,18 +253,18 @@ class Settings:
         """Print metadata for the current site being modeled"""
 
         status_table = (
-            "                  pwv_kpno Current Site Information\n"
-            "=====================================================================\n"
+            "                     pwv_kpno Current Site Information\n"
+            "============================================================================\n"
             "Site Name:            {} \n"
             "Primary Receiver:     {}\n"
             "Secondary Receivers:\n"
             "    {}\n\n"
             "Available Data:\n"
             "    {}\n\n"
-            "                              Data Cuts\n"
-            "=====================================================================\n"
-            "Reveiver        Value         Type      Lower_Bound      Upper_Bound \n"
-            "---------------------------------------------------------------------"
+            "                                 Data Cuts\n"
+            "============================================================================\n"
+            "Reveiver    Value       Type          Lower_Bound          Upper_Bound  unit\n"
+            "----------------------------------------------------------------------------"
         )
 
         if self.supplement_rec:
@@ -285,17 +286,36 @@ class Settings:
             years
         )
 
+        units = {
+            'date': 'UTC',
+            'PWV': 'mm',
+            'PWVerr': 'mm',
+            'ZenithDelay': 'mm',
+            'SrfcPress': 'mbar',
+            'SrfcTemp': 'C',
+            'SrfcRH': '%'
+        }
+
+
         for site, cuts in self.data_cuts.items():
             for value, bounds in cuts.items():
                 for start, end in bounds:
-                    cut_type = 'exclusive' if value == 'date' else 'inclusive'
+                    if value == 'date':
+                        cut_type = 'exclusive'
+                        start = datetime.utcfromtimestamp(start)
+                        end = datetime.utcfromtimestamp(end)
+
+                    else:
+                        cut_type = 'inclusive'
+
                     status += (
                             '\n' +
                             site +
-                            value.rjust(17) +
-                            cut_type.rjust(13) +
-                            str(start).rjust(17) +
-                            str(end).rjust(17)
+                            value.rjust(13) +
+                            cut_type.rjust(11) +
+                            str(start).rjust(21) +
+                            str(end).rjust(21) +
+                            units[value].rjust(6)
                     )
 
         return status
