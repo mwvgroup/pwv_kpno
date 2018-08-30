@@ -204,7 +204,10 @@ class SuomiNetFileParsing(TestCase):
 class LocalData(TestCase):
     """Tests for the _get_local_data function"""
 
-    def correct_col_names(self):
+    def setUp(self):
+        self.data = _get_local_data()
+
+    def test_correct_col_names(self):
         """Test that the returned table has a 'date' column plus a data
         and error column for each receiver.
         """
@@ -214,5 +217,9 @@ class LocalData(TestCase):
         col_names = col_names.extend((rec for rec in _settings.receivers))
         col_names = col_names.extend((rec + '_err' for rec in _settings.receivers))
 
-        local_data = _get_local_data()
-        self.assertListEqual(local_data.colnames, col_names)
+        self.assertListEqual(self.data.colnames, col_names)
+
+    def test_non_empty(self):
+        """Check that the returned table is not empty"""
+
+        self.assertGreater(len(self.data), 1)

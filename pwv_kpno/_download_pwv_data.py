@@ -211,7 +211,10 @@ def _download_data_for_year(yr, timeout=None):
 
 
 def _get_local_data():
-    """Return an astropy table containing any local PWV measurements"""
+    """Return an astropy table containing any local PWV measurements
+
+    Data is returned for the current site set in the package settings
+    """
 
     if os.path.exists(settings._pwv_measred_path):
         return Table.read(settings._pwv_measred_path)
