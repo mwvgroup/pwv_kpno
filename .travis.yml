@@ -13,7 +13,6 @@ matrix:
       sudo: true
 
 before_install:
-  - "pip install astropy"
   - "pip install coveralls"
   - "pip install pytest-cov"
 

@@ -60,11 +60,12 @@ setup(name='pwv_kpno',
       python_requires='>=2.7',
       install_requires=[
           'numpy',
-          'astropy',
+          'astropy < 3.0; python_version < "3.0"',
+          'astropy; python_version >= "3.0"',
           'requests',
           'pytz',
           'scipy',
-          'typing;python_version < "3.5"'
+          'typing; python_version < "3.5"'
       ],
 
       setup_requires=['pytest-runner'],
