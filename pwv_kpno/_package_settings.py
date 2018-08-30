@@ -34,20 +34,6 @@ __status__ = 'Development'
 
 # Sites included with release that cannot be overwritten by the user
 PROTECTED_NAMES = ['kitt_peak']
-STATUS_TABLE = (
-    "                     pwv_kpno Current Site Information\n"
-    "=====================================================================\n"
-    "Site Name:            {} \n"
-    "Primary Receiver:     {}\n"
-    "Secondary Receivers:\n"
-    "    {}\n\n"
-    "Available Data:\n"
-    "    {}\n\n"
-    "                               Data Cuts\n"
-    "=====================================================================\n"
-    "Reveiver        Value         Type      Lower_Bound      Upper_Bound \n"
-    "---------------------------------------------------------------------"
-)
 
 
 class ModelingConfigError(Exception):
@@ -190,10 +176,6 @@ class Settings:
 
         return sorted(self._config_data['sup_rec'])
 
-    def __repr__(self):
-        rep = '<pwv_kpno.Settings, Current Site Name: {}>'
-        return rep.format(self.site_name)
-
     @site_property
     def data_cuts(self):
         # type () -> dict
@@ -262,9 +244,27 @@ class Settings:
 
         shutil.move(temp_dir, out_dir)
 
-    def print_status(self):
-        """Print metadata for the current site being modeled
-        """
+    def __repr__(self):
+        rep = '<pwv_kpno.Settings, Current Site Name: {}>'
+        return rep.format(self.site_name)
+
+    def __str__(self):
+        """Print metadata for the current site being modeled"""
+
+        status_table = (
+            "                  pwv_kpno Current Site Information\n"
+            "=====================================================================\n"
+            "Site Name:            {} \n"
+            "Primary Receiver:     {}\n"
+            "Secondary Receivers:\n"
+            "    {}\n\n"
+            "Available Data:\n"
+            "    {}\n\n"
+            "                              Data Cuts\n"
+            "=====================================================================\n"
+            "Reveiver        Value         Type      Lower_Bound      Upper_Bound \n"
+            "---------------------------------------------------------------------"
+        )
 
         if self.supplement_rec:
             receivers = '\n    '.join(self.supplement_rec)
@@ -278,7 +278,7 @@ class Settings:
         else:
             years = '    NONE'
 
-        status = STATUS_TABLE.format(
+        status = status_table.format(
             self.site_name,
             self.primary_rec,
             receivers,
@@ -298,7 +298,7 @@ class Settings:
                             str(end).rjust(17)
                     )
 
-        print(status)
+        return status
 
 
 # This instance should be used package wide to access site settings
