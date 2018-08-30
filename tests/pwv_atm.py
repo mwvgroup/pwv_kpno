@@ -301,9 +301,9 @@ class TransmissionErrorPropagation(TestCase):
     def test_increasing_error(self):
         """As the PWV error increases so should the transmission error"""
 
-        transmission_1 = pwv_atm.trans_for_pwv(pwv=2, pwv_err=1)
-        transmission_5 = pwv_atm.trans_for_pwv(pwv=2, pwv_err=5)
-        error_is_greater = (e5 > e1 for e1, e5 in zip(transmission_1, transmission_5))
+        transm_1 = pwv_atm.trans_for_pwv(pwv=2, pwv_err=1)
+        transm_5 = pwv_atm.trans_for_pwv(pwv=2, pwv_err=5)
+        error_is_greater = (e5 > e1 for e1, e5 in zip(transm_1, transm_5))
         pass_test = np.all(error_is_greater)
 
         self.assertTrue(pass_test)

@@ -296,6 +296,8 @@ class Settings:
             'SrfcRH': '%'
         }
 
+        # Todo: This will be simplified once the config file format
+        #  is modified in version 1.0.0
         for site, cuts in self.data_cuts.items():
             for value, bounds in cuts.items():
                 for start, end in bounds:
