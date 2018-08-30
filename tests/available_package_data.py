@@ -128,8 +128,16 @@ class LocalData(TestCase):
         col_names = ['date']
         col_names.extend((rec for rec in _settings.receivers))
         col_names.extend((rec + '_err' for rec in _settings.receivers))
+        print(col_names)
+        print(self.data.colnames)
 
-        self.assertListEqual(self.data.colnames, col_names)
+        try:
+            # Python 2.7
+            self.assertItemsEqual(self.data.colnames, col_names)
+
+        except AttributeError:
+            # Python 3
+            self.assertCountEqual(self.data.colnames, col_names)
 
     def test_non_empty(self):
         """Check that the returned table is not empty"""
