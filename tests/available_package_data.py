@@ -22,13 +22,13 @@ available.
 """
 
 import os
-from glob import glob
 from datetime import datetime
-
+from glob import glob
 from unittest import TestCase
+
 from pytz import utc
 
-from pwv_kpno import _settings as pk_settings
+from pwv_kpno import _settings
 from pwv_kpno import pwv_atm
 from pwv_kpno._download_pwv_data import _get_local_data
 
@@ -53,7 +53,7 @@ class CorrectDataFiles(TestCase):
         cls.data_file_years = set()
         cls.data_file_GPS_ids = set()
 
-        glob_pattern = os.path.join(pk_settings._suomi_dir, '*.plt')
+        glob_pattern = os.path.join(_settings._suomi_dir, '*.plt')
         for fname in glob(glob_pattern):
             cls.data_file_years.add(int(fname[-8: -4]))
             cls.data_file_GPS_ids.add(fname[-15: -11])
@@ -75,13 +75,13 @@ class CorrectConfigData(TestCase):
     def test_config_years(self):
         """Check config file for correct years"""
 
-        config_years = set(pk_settings._available_years)
+        config_years = set(_settings._available_years)
         self.assertEqual(EXPECTED_YEARS, config_years)
 
     def test_config_ids(self):
         """Check config file for correct SuomiNet ids"""
 
-        config_ids = set(pk_settings.receivers)
+        config_ids = set(_settings.receivers)
         self.assertEqual(EXPECTED_IDS, config_ids)
 
 
@@ -135,4 +135,3 @@ class LocalData(TestCase):
         """Check that the returned table is not empty"""
 
         self.assertGreater(len(self.data), 1)
-
