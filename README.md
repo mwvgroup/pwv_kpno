@@ -23,7 +23,7 @@ For package documentation and installation instructions, please see
 
 **pwv_kpno** is a Python package for modeling the atmospheric absorption due
 to H<sub>2</sub>O at Kitt Peak National Observatory. It provides atmospheric
-models from 3000 to 12,000 Angstroms for years 2010 onward. Understanding atmospheric
+models from 3,000 to 12,000 Angstroms for years 2010 onward. Understanding atmospheric
 effects is important when calibrating ground based astronomical observations.
 Traditionally, determining the detailed atmospheric transmission function at a
 given date and time required performing dedicated spectrographic observations.
@@ -54,7 +54,7 @@ you please use the following standard acknowledgement:
 &nbsp;&nbsp;&nbsp;&nbsp;*in the near-infrared (Perrefort, Wood-Vasey et al. 2018)*<br>
 
 If the publisher allows, you can also include a footnote with a link pointing
-to the documentation page
+to the documentation page:
 [https://mwvgroup.github.io/pwv_kpno/](https://mwvgroup.github.io/pwv_kpno/)
 
 # Acknowledgements
@@ -64,6 +64,9 @@ Observatory, National Optical Astronomy Observatory (NOAO Prop. IDs: 2011B-0482
 and 2012B-0500; PI: Wood-Vasey), which is operated by the Association of
 Universities for Research in Astronomy (AURA) under a cooperative agreement
 with the National Science Foundation.
+
+This work was supported in part by the US Department of Energy Office of Science 
+under DE-SC0007914.
 
 # Additional Resources
 
