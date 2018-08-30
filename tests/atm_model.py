@@ -36,7 +36,7 @@ __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
 
-
+# Todo: add docstring
 class CreatePWVModel(TestCase):
     """Tests for pwv_kpno.atm_model.create_pwv_atm_model"""
 
@@ -61,7 +61,9 @@ class CreatePWVModel(TestCase):
         self.assertEqual(self.mock_model['1/mm_cm_2'][-1], conv_factor)
 
     def test_returned_wavelengths(self):
-        eq = np.array_equal(self.mock_model['wavelength'], self.mock_lambda_out)
+        eq = np.array_equal(self.mock_model['wavelength'],
+                            self.mock_lambda_out)
+
         self.assertTrue(eq)
 
     def test_interpolation(self):

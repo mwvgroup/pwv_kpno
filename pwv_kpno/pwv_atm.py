@@ -374,7 +374,7 @@ def _calc_transmission(atm_model, pwv, bins=None, ignore_lim=False):
     Returns:
         A table with wavelengths, transmission, and optional transmission error
     """
-    
+
     if not ignore_lim and pwv < 0:
         raise ValueError('PWV concentration cannot be negative')
 
@@ -394,7 +394,7 @@ def _calc_transmission(atm_model, pwv, bins=None, ignore_lim=False):
                           names=['wavelength', 'transmission'])
 
     else:
-        out_table = Table([atm_model['wavelength'], transmission], 
+        out_table = Table([atm_model['wavelength'], transmission],
                           names=['wavelength', 'transmission'])
 
     out_table['wavelength'].unit = 'angstrom'
@@ -420,10 +420,18 @@ def trans_for_pwv(pwv, pwv_err=None, bins=None):
 
     atm_model = Table.read(settings._atm_model_path)
     transmission = _calc_transmission(atm_model=atm_model, pwv=pwv, bins=bins)
-    
+
     if pwv_err is not None:
-        trans_plus_pwv_err = _calc_transmission(atm_model, pwv + pwv_err, bins, ignore_lim=True)
-        trans_minus_pwv_err = _calc_transmission(atm_model, pwv - pwv_err, bins, ignore_lim=True)
+        trans_plus_pwv_err = _calc_transmission(atm_model,
+                                                pwv + pwv_err,
+                                                bins,
+                                                ignore_lim=True)
+
+        trans_minus_pwv_err = _calc_transmission(atm_model,
+                                                 pwv - pwv_err,
+                                                 bins,
+                                                 ignore_lim=True)
+
         transmission_err = np.subtract(trans_plus_pwv_err['transmission'],
                                        trans_minus_pwv_err['transmission'])
 
