@@ -255,8 +255,13 @@ class TransmissionResults(TestCase):
         date_40 = self.mock_model['date'][40]
         date_40 = datetime.utcfromtimestamp(date_40).replace(tzinfo=utc)
 
-        airmass_2_transm = pwv_atm._trans_for_date(date_35, 2, test_model=self.mock_model)
-        airmass_1_transm = pwv_atm._trans_for_date(date_40, 1, test_model=self.mock_model)
+        airmass_2_transm = pwv_atm._trans_for_date(date=date_35,
+                                                   airmass=2,
+                                                   test_model=self.mock_model)
+
+        airmass_1_transm = pwv_atm._trans_for_date(date=date_40,
+                                                   airmass=1,
+                                                   test_model=self.mock_model)
 
         same_transmission = np.equal(airmass_1_transm['transmission'],
                                      airmass_2_transm['transmission'])

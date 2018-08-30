@@ -370,7 +370,7 @@ def _calc_transmission(atm_model, pwv, bins=None, ignore_lim=False):
         pwv        (float): A PWV concentration in mm
         bins (int or list): Integer number of bins or sequence of bin edges
         ignore_lim  (bool): Whether to ignore errors for nagative PWV values
-    
+
     Returns:
         A table with wavelengths, transmission, and optional transmission error
     """
