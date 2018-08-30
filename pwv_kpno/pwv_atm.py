@@ -359,7 +359,7 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
                                year, month, day, hour)
 
 
-def _calc_transmission(atm_model, pwv, bins=None):
+def _calc_transmission(atm_model, pwv, bins=None, ignore_lim=False):
     """Calculate the PWV transmission from an atmospheric model
 
     atm_model should be a table with columns for wavelength ('wavelength') and
@@ -369,22 +369,23 @@ def _calc_transmission(atm_model, pwv, bins=None):
         atm_model  (Table): Atmospheric model
         pwv        (float): A PWV concentration in mm
         bins (int or list): Integer number of bins or sequence of bin edges
+        ignore_lim  (bool): Whether to ignore errors for nagative PWV values
     
     Returns:
         A table with wavelengths, transmission, and optional transmission error
     """
     
-    if pwv < 0:
+    if not ignore_lim and pwv < 0:
         raise ValueError('PWV concentration cannot be negative')
 
     transmission = np.exp(- pwv * atm_model['1/mm_cm_2'])
-    
+
     if bins is not None:
         dx = atm_model['wavelength'][1] - atm_model['wavelength'][0]
         statistic_func = lambda y: np.trapz(y, dx=dx) / ((len(y) - 1) * dx)
         statistic, bin_edges, _ = binned_statistic(
             atm_model['wavelength'],
-            atm_model['transmission'],
+            transmission,
             statistic_func,
             bins
         )
@@ -418,11 +419,11 @@ def trans_for_pwv(pwv, pwv_err=None, bins=None):
     """
 
     atm_model = Table.read(settings._atm_model_path)
-    transmission = _calc_transmission(atm_model, pwv, bins)
+    transmission = _calc_transmission(atm_model=atm_model, pwv=pwv, bins=bins)
     
     if pwv_err is not None:
-        trans_plus_pwv_err = _calc_transmission(atm_model, pwv + pwv_err, bins)
-        trans_minus_pwv_err = _calc_transmission(atm_model, pwv - pwv_err, bins)
+        trans_plus_pwv_err = _calc_transmission(atm_model, pwv + pwv_err, bins, ignore_lim=True)
+        trans_minus_pwv_err = _calc_transmission(atm_model, pwv - pwv_err, bins, ignore_lim=True)
         transmission_err = np.subtract(trans_plus_pwv_err['transmission'],
                                        trans_minus_pwv_err['transmission'])
 

@@ -296,7 +296,6 @@ class Settings:
             'SrfcRH': '%'
         }
 
-
         for site, cuts in self.data_cuts.items():
             for value, bounds in cuts.items():
                 for start, end in bounds:
