@@ -1,0 +1,367 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pwv_kpno.blackbody_with_atm &mdash; pwv_kpno 0.12.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pwv_kpno
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.12.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">1. Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../accessing_data.html">2. Accessing PWV Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../atmospheric_modeling.html">3. Modeling the Atmosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../blackbody_modeling.html">4. Modeling a Black Body</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../correcting_observations.html">5. Correcting Observations</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pwv_kpno</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pwv_kpno.blackbody_with_atm</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pwv_kpno.blackbody_with_atm</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;This module provides modeling for the effects of atmospheric absorption</span>
+<span class="sd">due to precipitable water vapor (PWV) on a black body.</span>
+
+<span class="sd">For full documentation on a function use the builtin Python `help` function</span>
+<span class="sd">or see https://mwvgroup.github.io/pwv_kpno/.</span>
+
+<span class="sd">An Incomplete Guide to Getting Started:</span>
+
+<span class="sd">    To determine the SED of a black body under the influence of atmospheric</span>
+<span class="sd">    effects due to a known PWV concentration (in mm):</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from pwv_kpno import blackbody_with_atm as bb_atm</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; bb_temp = 8000  # Black Body temperature in Kelvin</span>
+<span class="sd">    &gt;&gt;&gt; wavelengths = np.arange(7000, 10000, 100)  # Wavelengths in Angstrom</span>
+<span class="sd">    &gt;&gt;&gt; pwv = 15  # Integrated PWV concentration in mm</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; sed = bb_atm.sed(bb_temp, wavelengths, pwv)</span>
+
+<span class="sd">    To determine the magnitude of a black body either with or without</span>
+<span class="sd">    atmospheric effects:</span>
+
+<span class="sd">    &gt;&gt;&gt; from pwv_kpno import blackbody_with_atm as bb_atm</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; bb_temp = 8000</span>
+<span class="sd">    &gt;&gt;&gt; i_band = (7000, 8500)</span>
+<span class="sd">    &gt;&gt;&gt; pwv = 15</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; bb_mag = bb_atm.magnitude(bb_temp, i_band, pwv)</span>
+
+
+<span class="sd">    To determine the residual error in the zero point of a photometric image</span>
+<span class="sd">    due to PWV:</span>
+
+<span class="sd">    &gt;&gt;&gt; from pwv_kpno import blackbody_with_atm as bb_atm</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; reference_star_temp = 4000</span>
+<span class="sd">    &gt;&gt;&gt; other_star_temp = 10000</span>
+<span class="sd">    &gt;&gt;&gt; bias = bb_atm.zp_bias(reference_star_temp,</span>
+<span class="sd">    &gt;&gt;&gt;                       other_star_temp,</span>
+<span class="sd">    &gt;&gt;&gt;                       i_band,</span>
+<span class="sd">    &gt;&gt;&gt;                       pwv)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">astropy</span> <span class="k">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
+<span class="kn">from</span> <span class="nn">astropy.constants</span> <span class="k">import</span> <span class="n">c</span>
+<span class="kn">from</span> <span class="nn">astropy.modeling.blackbody</span> <span class="k">import</span> <span class="n">blackbody_lambda</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">pwv_kpno.pwv_atm</span> <span class="k">import</span> <span class="n">trans_for_pwv</span>
+
+<span class="n">__authors__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Daniel Perrefort&#39;</span><span class="p">]</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s1">&#39;Copyright 2017, Daniel Perrefort&#39;</span>
+
+<span class="n">__license__</span> <span class="o">=</span> <span class="s1">&#39;GPL V3&#39;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s1">&#39;djperrefort@pitt.edu&#39;</span>
+<span class="n">__status__</span> <span class="o">=</span> <span class="s1">&#39;Development&#39;</span>
+
+
+<div class="viewcode-block" id="sed"><a class="viewcode-back" href="../../blackbody_modeling.html#pwv_kpno.blackbody_with_atm.sed">[docs]</a><span class="k">def</span> <span class="nf">sed</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">wavelengths</span><span class="p">,</span> <span class="n">pwv</span><span class="p">):</span>
+    <span class="c1"># type: (float, np.ndarray, float) -&gt; np.ndarray[float]</span>
+    <span class="sd">&quot;&quot;&quot;Return the flux of a black body under the influence of pwv absorption</span>
+
+<span class="sd">     Flux is returned in units of ergs / (angstrom * cm2 * s)</span>
+
+<span class="sd">     Args:</span>
+<span class="sd">         temp          (float): The desired temperature of the black body</span>
+<span class="sd">         wavelengths (ndarray): An array like object containing wavelengths</span>
+<span class="sd">         pwv           (float): The PWV concentration along line of sight in mm</span>
+
+<span class="sd">     Returns:</span>
+<span class="sd">         An array of flux values in units of ergs / (angstrom * cm2 * s * sr)</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+
+    <span class="c1"># blackbody_lambda returns ergs / (angstrom * cm2 * s * sr)</span>
+    <span class="n">bb_sed</span> <span class="o">=</span> <span class="n">blackbody_lambda</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">,</span> <span class="n">temp</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="k">if</span> <span class="n">pwv</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">transmission</span> <span class="o">=</span> <span class="n">trans_for_pwv</span><span class="p">(</span><span class="n">pwv</span><span class="p">)</span>
+        <span class="n">sampled_transmission</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">,</span>
+                                         <span class="n">transmission</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">],</span>
+                                         <span class="n">transmission</span><span class="p">[</span><span class="s1">&#39;transmission&#39;</span><span class="p">])</span>
+
+        <span class="n">bb_sed</span> <span class="o">*=</span> <span class="n">sampled_transmission</span>
+
+    <span class="k">return</span> <span class="n">bb_sed</span></div>
+
+
+<div class="viewcode-block" id="magnitude"><a class="viewcode-back" href="../../blackbody_modeling.html#pwv_kpno.blackbody_with_atm.magnitude">[docs]</a><span class="k">def</span> <span class="nf">magnitude</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">band</span><span class="p">,</span> <span class="n">pwv</span><span class="p">):</span>
+    <span class="c1"># type: (float, tuple[float], float) -&gt; float</span>
+    <span class="sd">&quot;&quot;&quot;Return the magnitude of a black body with and without pwv absorption</span>
+
+<span class="sd">    Magnitudes are calculated relative to a zero point of 3631 Jy</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        temp (float): The temperature of the desired black body</span>
+<span class="sd">        band (tuple): Tuple with the beginning and end wavelengths of the</span>
+<span class="sd">                       desired band in angstroms</span>
+<span class="sd">        pwv  (float): The PWV concentration along line of sight in mm</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The magnitude of the desired black body as effected by H2O absorption</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">wavelengths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">band</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">band</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">lambda_over_c</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">band</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">AA</span><span class="p">)</span> <span class="o">/</span> <span class="n">c</span>
+
+    <span class="c1"># We reintroduce units here to make dimensional analysis easier</span>
+    <span class="n">flux_pwv</span> <span class="o">=</span> <span class="n">sed</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">wavelengths</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
+    <span class="n">flux_pwv</span> <span class="o">*=</span> <span class="n">u</span><span class="o">.</span><span class="n">erg</span> <span class="o">/</span> <span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">AA</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">cm</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">cm</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">sr</span><span class="p">)</span>
+    <span class="n">flux_pwv</span> <span class="o">*=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">sr</span>  <span class="c1"># integrate over angular coordinates</span>
+    <span class="n">flux_pwv</span> <span class="o">*=</span> <span class="n">lambda_over_c</span><span class="o">.</span><span class="n">cgs</span>
+
+    <span class="n">zero_point</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3631</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">jansky</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">erg</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">cm</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">int_flux</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">wavelengths</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">flux_pwv</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">AA</span>
+    <span class="n">mag</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">int_flux</span> <span class="o">/</span> <span class="n">zero_point</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mag</span><span class="o">.</span><span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="zp_bias"><a class="viewcode-back" href="../../blackbody_modeling.html#pwv_kpno.blackbody_with_atm.zp_bias">[docs]</a><span class="k">def</span> <span class="nf">zp_bias</span><span class="p">(</span><span class="n">ref_temp</span><span class="p">,</span> <span class="n">cal_temp</span><span class="p">,</span> <span class="n">band</span><span class="p">,</span> <span class="n">pwv</span><span class="p">):</span>
+    <span class="c1"># type: (float, float, tuple[float], float) -&gt; float</span>
+    <span class="sd">&quot;&quot;&quot;Calculate the residual error in the photometric zero point due to PWV</span>
+
+<span class="sd">    Using a black body approximation, calculate the residual error in the zero</span>
+<span class="sd">    point of a photometric image cause by not considering the PWV transmission</span>
+<span class="sd">    function. Returned values are in units of magnitude relative to a zero</span>
+<span class="sd">    point of 3631 Jy.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ref_temp (float): The temperature of a star used to calibrate the image</span>
+<span class="sd">        cal_temp (float): The temperature of another star in the same image to</span>
+<span class="sd">                           calculate the error for</span>
+<span class="sd">        band     (tuple): Tuple specifying the beginning and end points</span>
+<span class="sd">                           of the desired band in angstroms</span>
+<span class="sd">        pwv      (float): The PWV concentration along line of sight</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The residual error in the photometric zero point for the given band</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Values for reference star</span>
+    <span class="n">ref_mag</span> <span class="o">=</span> <span class="n">magnitude</span><span class="p">(</span><span class="n">ref_temp</span><span class="p">,</span> <span class="n">band</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">ref_mag_atm</span> <span class="o">=</span> <span class="n">magnitude</span><span class="p">(</span><span class="n">ref_temp</span><span class="p">,</span> <span class="n">band</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
+    <span class="n">ref_zero_point</span> <span class="o">=</span> <span class="n">ref_mag</span> <span class="o">-</span> <span class="n">ref_mag_atm</span>
+
+    <span class="c1"># Values for star being calibrated</span>
+    <span class="n">cal_mag</span> <span class="o">=</span> <span class="n">magnitude</span><span class="p">(</span><span class="n">cal_temp</span><span class="p">,</span> <span class="n">band</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">cal_mag_atm</span> <span class="o">=</span> <span class="n">magnitude</span><span class="p">(</span><span class="n">cal_temp</span><span class="p">,</span> <span class="n">band</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
+    <span class="n">cal_zero_point</span> <span class="o">=</span> <span class="n">cal_mag</span> <span class="o">-</span> <span class="n">cal_mag_atm</span>
+
+    <span class="n">bias</span> <span class="o">=</span> <span class="n">cal_zero_point</span> <span class="o">-</span> <span class="n">ref_zero_point</span>
+    <span class="k">return</span> <span class="n">bias</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Daniel J. Perrefort.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.12.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,386 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>4. Modeling a Black Body &mdash; pwv_kpno 0.12.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="5. Correcting Observations" href="correcting_observations.html" />
+    <link rel="prev" title="3. Modeling the Atmosphere" href="atmospheric_modeling.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pwv_kpno
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.12.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">1. Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="accessing_data.html">2. Accessing PWV Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">3. Modeling the Atmosphere</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">4. Modeling a Black Body</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#generating-an-sed">4.1. Generating an SED</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#magnitude">4.2. Magnitude</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#estimating-zero-point-error">4.3. Estimating Zero Point Error</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="correcting_observations.html">5. Correcting Observations</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pwv_kpno</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>4. Modeling a Black Body</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/blackbody_modeling.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="modeling-a-black-body">
+<h1>4. Modeling a Black Body<a class="headerlink" href="#modeling-a-black-body" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">blackbody_with_atm</span></code> module provides functions for modeling the effects
+of PWV absorption on a black body. We suggest importing this module as
+<code class="docutils literal notranslate"><span class="pre">bb_atm</span></code>.</p>
+<div class="section" id="generating-an-sed">
+<h2>4.1. Generating an SED<a class="headerlink" href="#generating-an-sed" title="Permalink to this headline">¶</a></h2>
+<p>For a given array of wavelengths in Angstroms, the <code class="docutils literal notranslate"><span class="pre">sed</span></code> function returns
+the corresponding spectral energy distribution of a black body as seen through
+the atmosphere.</p>
+<dl class="function">
+<dt id="pwv_kpno.blackbody_with_atm.sed">
+<code class="descclassname">pwv_kpno.blackbody_with_atm.</code><code class="descname">sed</code><span class="sig-paren">(</span><em>temp</em>, <em>wavelengths</em>, <em>pwv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/blackbody_with_atm.html#sed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.blackbody_with_atm.sed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the flux of a black body under the influence of pwv absorption</p>
+<p>Flux is returned in units of ergs / (angstrom * cm2 * s)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>temp</strong> (<em>float</em>) – The desired temperature of the black body</li>
+<li><strong>wavelengths</strong> (<em>ndarray</em>) – An array like object containing wavelengths</li>
+<li><strong>pwv</strong> (<em>float</em>) – The PWV concentration along line of sight in mm</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An array of flux values in units of ergs / (angstrom * cm2 * s * sr)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="section" id="example">
+<h3>4.1.1. Example:<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">blackbody_with_atm</span> <span class="k">as</span> <span class="n">bb_atm</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bb_temp</span> <span class="o">=</span> <span class="mi">8000</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wavelengths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">7000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pwv</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sed</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">sed</span><span class="p">(</span><span class="n">bb_temp</span><span class="p">,</span> <span class="n">wavelengths</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p><strong>Note:</strong> If desired, the SED of a black body without atmospheric effects can
+be achieved by specifying a PWV level of zero.</p>
+</div>
+</div>
+<div class="section" id="magnitude">
+<h2>4.2. Magnitude<a class="headerlink" href="#magnitude" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">magnitude</span></code> function returns the absolute magnitude of a black body in a
+given band as seen under the effects of PWV absorption.</p>
+<dl class="function">
+<dt id="pwv_kpno.blackbody_with_atm.magnitude">
+<code class="descclassname">pwv_kpno.blackbody_with_atm.</code><code class="descname">magnitude</code><span class="sig-paren">(</span><em>temp</em>, <em>band</em>, <em>pwv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/blackbody_with_atm.html#magnitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.blackbody_with_atm.magnitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the magnitude of a black body with and without pwv absorption</p>
+<p>Magnitudes are calculated relative to a zero point of 3631 Jy</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>temp</strong> (<em>float</em>) – The temperature of the desired black body</li>
+<li><strong>band</strong> (<em>tuple</em>) – Tuple with the beginning and end wavelengths of the
+desired band in angstroms</li>
+<li><strong>pwv</strong> (<em>float</em>) – The PWV concentration along line of sight in mm</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The magnitude of the desired black body as effected by H2O absorption</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="section" id="examples">
+<h3>4.2.1. Examples:<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<p>In the <em>i</em> band from 7,000 to 8,500 Angstroms, the magnitude of a
+black body is found by running</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">blackbody_with_atm</span> <span class="k">as</span> <span class="n">bb_atm</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bb_temp</span> <span class="o">=</span> <span class="mi">8000</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">i_band</span> <span class="o">=</span> <span class="p">(</span><span class="mi">7000</span><span class="p">,</span> <span class="mi">8500</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pwv</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bb_mag</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">magnitude</span><span class="p">(</span><span class="n">bb_temp</span><span class="p">,</span> <span class="n">i_band</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p><strong>Note:</strong> If desired, the absolute magnitude of a black body without
+atmospheric effects can also be achieved by specifying a PWV level of zero.</p>
+</div>
+</div>
+<div class="section" id="estimating-zero-point-error">
+<h2>4.3. Estimating Zero Point Error<a class="headerlink" href="#estimating-zero-point-error" title="Permalink to this headline">¶</a></h2>
+<p>Correcting photometric observations using tabulated values of a standard star
+introduces residual error in the magnitudes of other stars with different
+spectral types. The error in photometric zero point introduced by not
+considering absorption by precipitable water vapor can be found using the
+<code class="docutils literal notranslate"><span class="pre">zp_bias</span></code> function.</p>
+<dl class="function">
+<dt id="pwv_kpno.blackbody_with_atm.zp_bias">
+<code class="descclassname">pwv_kpno.blackbody_with_atm.</code><code class="descname">zp_bias</code><span class="sig-paren">(</span><em>ref_temp</em>, <em>cal_temp</em>, <em>band</em>, <em>pwv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/blackbody_with_atm.html#zp_bias"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.blackbody_with_atm.zp_bias" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the residual error in the photometric zero point due to PWV</p>
+<p>Using a black body approximation, calculate the residual error in the zero
+point of a photometric image cause by not considering the PWV transmission
+function. Returned values are in units of magnitude relative to a zero
+point of 3631 Jy.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ref_temp</strong> (<em>float</em>) – The temperature of a star used to calibrate the image</li>
+<li><strong>cal_temp</strong> (<em>float</em>) – The temperature of another star in the same image to
+calculate the error for</li>
+<li><strong>band</strong> (<em>tuple</em>) – Tuple specifying the beginning and end points
+of the desired band in angstroms</li>
+<li><strong>pwv</strong> (<em>float</em>) – The PWV concentration along line of sight</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The residual error in the photometric zero point for the given band</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="section" id="id1">
+<h3>4.3.1. Examples:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">blackbody_with_atm</span> <span class="k">as</span> <span class="n">bb_atm</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reference_star_temp</span> <span class="o">=</span> <span class="mi">4000</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">other_star_temp</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bias</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">zp_bias</span><span class="p">(</span><span class="n">reference_star_temp</span><span class="p">,</span> <span class="n">other_star_temp</span><span class="p">,</span> <span class="n">i_band</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="correcting_observations.html" class="btn btn-neutral float-right" title="5. Correcting Observations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="atmospheric_modeling.html" class="btn btn-neutral" title="3. Modeling the Atmosphere" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Daniel J. Perrefort.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.12.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

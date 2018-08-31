@@ -1,0 +1,530 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>2. Accessing PWV Data &mdash; pwv_kpno 0.12.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="3. Modeling the Atmosphere" href="atmospheric_modeling.html" />
+    <link rel="prev" title="1. Installation and Setup" href="install.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pwv_kpno
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.12.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">1. Installation and Setup</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2. Accessing PWV Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#checking-for-available-data">2.1. Checking For Available Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#updating-data">2.2. Updating Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#measured-pwv-data">2.3. Measured PWV Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#modeled-pwv-data">2.4. Modeled PWV Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pwv-for-a-given-date">2.5. PWV For a Given Date</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">3. Modeling the Atmosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">4. Modeling a Black Body</a></li>
+<li class="toctree-l1"><a class="reference internal" href="correcting_observations.html">5. Correcting Observations</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pwv_kpno</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>2. Accessing PWV Data</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/accessing_data.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="accessing-pwv-data">
+<h1>2. Accessing PWV Data<a class="headerlink" href="#accessing-pwv-data" title="Permalink to this headline">¶</a></h1>
+<p>In order to model the PWV absorption for a given date and time, SuomiNet data
+for that date must be available on your local machine. By default, each release
+of <strong>pwv_kpno</strong> contains all necessary SuomiNet data from 2010 through the end
+of the previous year. Access to the locally available PWV data is available
+through the <code class="docutils literal notranslate"><span class="pre">pwv_atm</span></code> module.</p>
+<div class="section" id="checking-for-available-data">
+<h2>2.1. Checking For Available Data<a class="headerlink" href="#checking-for-available-data" title="Permalink to this headline">¶</a></h2>
+<p>To check what years of SuomiNet data are locally available, use the
+<code class="docutils literal notranslate"><span class="pre">available_data</span></code> function.</p>
+<dl class="function">
+<dt id="pwv_kpno.pwv_atm.available_data">
+<code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">available_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/pwv_atm.html#available_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.available_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of years for which SuomiNet data has been downloaded</p>
+<p>Return a list of years for which SuomiNet data has been downloaded to the
+local machine. Note that this list includes years for which any amount
+of data has been downloaded. It does not indicate if additional data has
+been released by SuomiNet for a given year that is not locally available.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of years with locally available SuomiNet data</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="section" id="examples">
+<h3>2.1.1. Examples:<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">available_data</span><span class="p">()</span>
+
+<span class="go">  [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017]</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+<div class="section" id="updating-data">
+<h2>2.2. Updating Data<a class="headerlink" href="#updating-data" title="Permalink to this headline">¶</a></h2>
+<p>To download new SuomiNet data to your local machine, use the <code class="docutils literal notranslate"><span class="pre">update_models</span></code>
+function. This function will download new data from the SuomiNet web server,
+and use that data to update the modeled precipitable water vapor for Kitt Peak
+National Observatory.</p>
+<dl class="function">
+<dt id="pwv_kpno.pwv_atm.update_models">
+<code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">update_models</code><span class="sig-paren">(</span><em>year=None</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/_update_pwv_model.html#update_models"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.update_models" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download data from SuomiNet and update the locally stored PWV model</p>
+<p>Update the modeled PWV column density for Kitt Peak by downloading new data
+releases from the SuomiNet website. If a year is provided, use only data
+for that year. If not, download any published data that is not available on
+the local machine.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>year</strong> (<em>int</em>) – A Year from 2010 onward</li>
+<li><strong>timeout</strong> (<em>float</em>) – Optional seconds to wait while connecting to SuomiNet</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A list of years for which models where updated</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="section" id="id1">
+<h3>2.2.1. Examples:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>To ensure that the PWV data for <strong>pwv_kpno</strong> is up to date run:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">update_models</span><span class="p">()</span>
+
+<span class="go">  [2017, 2018]</span>
+</pre></div>
+</td></tr></table></div>
+<p>If desired, <strong>pwv_kpno</strong> can be forced to (re)download SuomiNet data for a
+specific year:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">update_models</span><span class="p">(</span><span class="mi">2010</span><span class="p">)</span>
+
+<span class="go">  [2010]</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+<div class="section" id="measured-pwv-data">
+<h2>2.3. Measured PWV Data<a class="headerlink" href="#measured-pwv-data" title="Permalink to this headline">¶</a></h2>
+<p>Data that has been downloaded from SuomiNet can be accessed using the
+<code class="docutils literal notranslate"><span class="pre">measured_pwv</span></code> function.</p>
+<dl class="function">
+<dt id="pwv_kpno.pwv_atm.measured_pwv">
+<code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">measured_pwv</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>hour=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/pwv_atm.html#measured_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.measured_pwv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an astropy table of PWV measurements taken by SuomiNet</p>
+<p>Columns are named using the SuomiNet IDs for different locations. PWV
+measurements each location are recorded in millimeters. Results can be
+optionally refined by year, month, day, and hour.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>year</strong> (<em>int</em>) – The year of the desired PWV data</li>
+<li><strong>month</strong> (<em>int</em>) – The month of the desired PWV data</li>
+<li><strong>day</strong> (<em>int</em>) – The day of the desired PWV data</li>
+<li><strong>hour</strong> (<em>int</em>) – The hour of the desired PWV data in 24-hour format</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An astropy table of measured PWV values in mm</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="section" id="id2">
+<h3>2.3.1. Examples:<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>To retrieve all SuomiNet data available on the local machine as an <code class="docutils literal notranslate"><span class="pre">astropy</span></code>
+table:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">measured_pwv</span><span class="p">()</span>
+
+<span class="go">           date       KITT KITT_err P014 P014_err SA46 SA46_err SA48 ...</span>
+<span class="go">           UTC         mm     mm     mm     mm     mm     mm     mm  ...</span>
+<span class="go">  ------------------- ---- -------- ---- -------- ---- -------- ---- ...</span>
+<span class="go">  2010-01-01 00:15:00   --       --  3.6    0.125  4.2    0.125  4.7 ...</span>
+<span class="go">  2010-01-01 00:45:00   --       --  3.7    0.125  4.0    0.125  4.7 ...</span>
+<span class="go">  2010-01-01 01:15:00   --       --  3.7    0.025  3.4    0.125  3.6 ...</span>
+<span class="go">               ...     ...      ...  ...      ...  ...      ...  ... ...</span>
+</pre></div>
+</td></tr></table></div>
+<p>To retrieve SuomiNet data taken on a specific date, specify the desired
+datetime using keyword arguments. Note in the below example that there is no
+data available from the SA48 receiver for this date:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">measured_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+
+<span class="go">           date       KITT KITT_err P014 P014_err SA46 SA46_err SA48 ...</span>
+<span class="go">           UTC         mm     mm     mm     mm     mm     mm     mm  ...</span>
+<span class="go">  ------------------- ---- -------- ---- -------- ---- -------- ---- ...</span>
+<span class="go">  2016-11-14 00:15:00  4.7    1.025  6.9    0.525  9.8    0.725   -- ...</span>
+<span class="go">  2016-11-14 00:45:00  4.3    1.025  6.7    0.425  9.9    0.525   -- ...</span>
+<span class="go">  2016-11-14 01:15:00  3.9    0.925  6.7    0.425  9.7    0.525   -- ...</span>
+<span class="go">               ...     ...      ...  ...      ...  ...      ...  ... ...</span>
+</pre></div>
+</td></tr></table></div>
+<p><strong>Note:</strong> If no SuomiNet data is available at all during the specified datetime, then the
+returned table will be empty.</p>
+</div>
+</div>
+<div class="section" id="modeled-pwv-data">
+<h2>2.4. Modeled PWV Data<a class="headerlink" href="#modeled-pwv-data" title="Permalink to this headline">¶</a></h2>
+<p>To retrieve the modeled PWV level at Kitt Peak National Observatory, use the
+<code class="docutils literal notranslate"><span class="pre">modeled_pwv</span></code> function.</p>
+<dl class="function">
+<dt id="pwv_kpno.pwv_atm.modeled_pwv">
+<code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">modeled_pwv</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>hour=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/pwv_atm.html#modeled_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.modeled_pwv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an astropy table of the modeled PWV at Kitt Peak</p>
+<p>Return a model for the precipitable water vapor level at Kitt Peak as an
+astropy table. PWV measurements are reported in units of millimeters.
+Results can be optionally refined by year, month, day, and hour.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>year</strong> (<em>int</em>) – The year of the desired PWV data</li>
+<li><strong>month</strong> (<em>int</em>) – The month of the desired PWV data</li>
+<li><strong>day</strong> (<em>int</em>) – The day of the desired PWV data</li>
+<li><strong>hour</strong> (<em>int</em>) – The hour of the desired PWV data in 24-hour format</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An astropy table of modeled PWV values in mm</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="section" id="id3">
+<h3>2.4.1. Examples:<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>To retrieve the entire PWV model from 2010 onward:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">modeled_pwv</span><span class="p">()</span>
+
+<span class="go">           date       pwv   pwv_err</span>
+<span class="go">           UTC         mm      mm</span>
+<span class="go">  ------------------- ----- -------</span>
+<span class="go">  2010-01-01 00:15:00 1.55    1.227</span>
+<span class="go">  2010-01-01 00:45:00 1.532   1.225</span>
+<span class="go">  2010-01-01 01:15:00 1.178   1.175</span>
+<span class="go">                  ...   ...     ...</span>
+</pre></div>
+</td></tr></table></div>
+<p>To retrieve the modeled PWV level for November 14th, 2016:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">modeled_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+
+<span class="go">           date       pwv pwv_err</span>
+<span class="go">           UTC         mm    mm</span>
+<span class="go">  ------------------- --- -------</span>
+<span class="go">  2016-11-14 00:15:00 4.7   1.025</span>
+<span class="go">  2016-11-14 00:45:00 4.3   1.025</span>
+<span class="go">  2016-11-14 01:15:00 3.9   0.925</span>
+<span class="go">                  ... ...    ...</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+<div class="section" id="pwv-for-a-given-date">
+<h2>2.5. PWV For a Given Date<a class="headerlink" href="#pwv-for-a-given-date" title="Permalink to this headline">¶</a></h2>
+<p>For convenience, users can interpolate from the modeld PWV concentration at
+Kitt Peak using the <code class="docutils literal notranslate"><span class="pre">pwv_date</span></code> function. Note that this function does not
+return an uncertainty on the measured value.</p>
+<dl class="function">
+<dt id="pwv_kpno.pwv_atm.pwv_date">
+<code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">pwv_date</code><span class="sig-paren">(</span><em>date</em>, <em>airmass=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/pwv_atm.html#pwv_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.pwv_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the modeled PWV column density at Kitt Peak for a given date</p>
+<p>Interpolate from the modeled PWV column density at Kitt Peak and return
+the PWV column density for a given datetime and airmass.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>date</strong> (<em>datetime</em>) – The date of the desired PWV column density</li>
+<li><strong>airmass</strong> (<em>float</em>) – The airmass along line of sight</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The modeled PWV column density for Kitt Peak
+The error in modeled PWV column density for Kitt Peak</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="section" id="id4">
+<h3>2.5.1. Examples:<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>To retrieve the modeled PWV level for November 14, 2016 at 11:06 AM:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pytz</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">pytz</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pwv</span> <span class="o">=</span> <span class="n">pwv_atm</span><span class="o">.</span><span class="n">pwv_date</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="atmospheric_modeling.html" class="btn btn-neutral float-right" title="3. Modeling the Atmosphere" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="install.html" class="btn btn-neutral" title="1. Installation and Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Daniel J. Perrefort.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.12.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
