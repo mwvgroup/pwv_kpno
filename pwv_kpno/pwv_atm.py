@@ -83,7 +83,7 @@ An incomplete guide to getting started:
 
 import os
 from datetime import datetime, timedelta
-from typing import Tuple, List, Union
+from typing import Tuple, Union
 
 import numpy as np
 from astropy.table import Table
@@ -402,7 +402,7 @@ def _calc_transmission(atm_model, pwv, bins=None, ignore_lim=False):
 
 
 def trans_for_pwv(pwv, pwv_err=None, bins=None):
-    # type: (float, float, Union[int, float, List]) -> Table
+    # type: (float, float, Union[int, float, list]) -> Table
     """Return the atmospheric transmission due a given PWV concentration in mm
 
     For a given precipitable water vapor concentration, return the modeled
