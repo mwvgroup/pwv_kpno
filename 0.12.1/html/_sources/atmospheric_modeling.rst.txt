@@ -95,8 +95,8 @@ transmission if the `pwv_err` argument is specified:
          3000.10 0.999999922774 1.7161443266e-08
              ...            ...              ...
 
-Binned Transmission
-===================
+Binned the Transmission
+=======================
 
 Both the `trans_for_date` and the `trans_for_pwv` functions provided support
 for binning the returned transmission function via the `bins` argument. The
