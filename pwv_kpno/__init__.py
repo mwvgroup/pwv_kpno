@@ -16,11 +16,35 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
-"""pwv_kpno provides models for the atmospheric transmission function at Kitt
-Peak National Observatory due to precipitable water vapor. Models cover
-wavelengths from 7,000 to 11,000 Angstroms for years 2010 onward. Documentation
-is available online at https://mwvgroup.github.io/pwv_kpno/ or through the
-standard python help function.
+"""pwv_kpno provides models for the atmospheric transmission function due to
+precipitable water vapor (PWV). Models cover wavelengths from 7,000 to 11,000
+Angstroms at a resolution of 0.05 Angstroms. Using PWV measurements published
+by the SuomiNet project (https://www.suominet.ucar.edu), this package is
+capable of returning the modeled PWV transmission for a given date, time, and
+airmass at customizable geographic locations. By default, this functionality
+is set to model Kitt Peak National Observatory.
+
+For more information on using this package, documentation is available online
+at https://mwvgroup.github.io/pwv_kpno/ or through the standard python help
+function.
+
+An incomplete guide to getting started:
+
+    To model the effects of PWV absorption on a black body, see the
+    documentation for the `blackbody_with_atm` module:
+
+      >>> from pwv_kpno import blackbody_with_atm as bb_atm
+
+    To model the atmospheric transmission function, either for a known PWV
+    concentration or for a datetime at a particular location, see the `pw_atm`
+    module:
+
+      >>> from pwv_kpno import pwv_atm
+
+    To configure this package to model a custom geographical site, see the
+    `ConfigBuilder` class:
+
+      >>> from pwv_kpno import ConfigBuilder
 """
 
 from . import pwv_atm
