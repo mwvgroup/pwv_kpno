@@ -8,77 +8,74 @@ Correcting Observations
         **Note:** The following tutorial is available for download as a
         `Jupyter Notebook <_static/pwv_kpno_demo.ipynb>`_
 
-Examples are provided on how to correct astronomical observations for
-atmospheric effects. For demonstration purposes, the following examples
-exclusively consider correcting observations of a black body.
-
 Spectrographic Observations
 ===========================
 
-In order to correct spectrographic observations for atmospheric effects,
-observed spectra are divided by the atmospheric transmission function. As
-an example, consider the spectral energy distribution (SED) of a black body
-under the effects of atmospheric absorption. For a temperature of 8,000 K, and
-a PWV level of 15 mm, this can be found as:
+Correcting observed spectra for PWV effects is achieved in four steps:
+
+#. Use **pwv_kpno** to determine the PWV transmission function corresponding to a given observation
+#. Interpolate the transmission function to match the observed wavelengths
+#. If desired, use a gaussian kernel to smooth the interpolated transmission function
+#. Divide the observed flux by the modeled transmission
+
+It is important to note that the atmospheric models used by **pwv_kpno** are
+may be at a higher wavelength resolution than the observed spectra. This means
+that the modeled transmission function must first be binned to a lower
+resolution before interpolating to the observed wavelengths. Fortunately,
+**pwv_kpno** makes this process easy.
+
+For demonstration purposes, assume you wish to correct an observation that was
+taken through an airmass of 1.5 on December 15, 2013 at 05:35:00 UTC.
+Furthermore, assume that this observed spectra has a wavelength resolution of
+16 :math:`\unicode{x212B}`. The binned transmission function corresponding to
+this observation is given by:
 
 .. code-block:: python
     :linenos:
 
-    >>> from pwv_kpno import blackbody_with_atm as bb_atm
     >>> import numpy as np
-    >>>
-    >>> temp = 8000
-    >>> wavelengths = np.arange(3000, 12000, 1)
-    >>> pwv = 15
-    >>>
-    >>> sed = bb_atm.sed(temp, wavelengths, pwv)
-    >>> print(sed)
-
-      [ 12241933.89690229  12246050.83311057  12250159.73335347 ...,
-        1126268.89626354   1328275.73117935   1360143.3175513 ]
-
-Since we know the PWV level used to generate this spectra, we can determine the
-corresponding transmission function using the ``trans_for_pwv`` function
-(although in a real world setting the ``trans_for_date`` function may be more
-appropriate).
-
-.. code-block:: python
-    :linenos:
-
     >>> from pwv_kpno import pwv_atm
     >>>
-    >>> modeled_trans = pwv_atm.trans_for_pwv(15)
-    >>> print(modeled_trans)
+    >>> # Meta-data about the observation to be corrected
+    >>> spectral_resolution = 16
+    >>> obsv_date = datetime(year=2013,
+    >>>                      month=12,
+    >>>                      day=15,
+    >>>                      hour=5,
+    >>>                      minute=35,
+    >>>                      tzinfo=pytz.utc)
+    >>>
+    >>> # Determine the binned transmission function
+    >>> bins = np.arange(3000, 12000, spectral_resolution)
+    >>> transmission = pwv_atm.trans_for_date(obsv_date, 1.5, bins)
 
-              wavelength      transmission
-               Angstrom
-          ------------------ --------------
-                     3000.00 0.999999914201
-                     3000.05 0.999999914197
-                     3000.10 0.999999914193
-                         ...            ...
-
-In order to divide these two results, the SED at and the transmission function
-must be known for the same wavelength values. Since the SED is a well
-behaved function, we interpolate the SED to match the wavelength sampling of
-the transmission function.
-
-Using the ``numpy`` package, we interpolate as follows:
-
-.. code-block:: python
-    :linenos:
-
-    >>> sampled_sed = np.interp(modeled_trans["wavelength"],
-    >>>                         wavelengths,
-    >>>                         sed)
-
-The corrected spectrum can then be found by dividing the observed flux
-by the transmission on a wavelength by wavelength basis.
+We then interpolate the binned transmission for the observed wavelengths and
+use the ``scipy`` package to smooth the transmission function with a gaussian
+kernel. Here we assume the wavelengths are stored in the array
+``observed_wavelength_array``.
 
 .. code-block:: python
     :linenos:
 
-    >>> corrected_spec = np.divide(sampled_sed, modeled_trans["transmission"])
+    >>> # Interpolate the transmission function to match observed wavelengths
+    >>> interped_transmission = np.interp(observed_wavelength_array,
+    >>>                                   transmission['wavelength'],
+    >>>                                   transmission['transmission'])
+    >>>
+    >>> # Smooth the modeled transmission function
+    >>> standard_deviation = 2
+    >>> gaussian_transmission = gaussian_filter(interp_transmission,
+    >>>                                         standard_deviation)
+
+Finally, the corrected spectrum can then be found by dividing the observed flux
+by the transmission on a wavelength by wavelength basis. Assuming the
+uncorrected flux values are stored in an array called ``observed_flux_array``,
+this is programmatically equivalent to:
+
+.. code-block:: python
+    :linenos:
+
+    >>> corrected_spec = np.divide(observed_flux_array, gaussian_transmission)
 
 
 Photometric Observations
@@ -96,10 +93,11 @@ where the integration bounds are defined by the wavelength range of the
 photometric bandpass. In practice an SED of the desired object may not be
 available. In such a case spectral templates should be used instead.
 
-Note that product in the numerator :math:`S(\lambda) \cdot T(\lambda)`
-represents the SED under the influence of atmospheric effects. For a
-photometric observation taken in the *i* band (7,000 to 8,500
-:math:`\unicode{x212B}`), the integration arguments can be found as:
+For demonstration purposes, we consider an observation of a black body. Note
+that product in the numerator :math:`S(\lambda) \cdot T(\lambda)` represents
+the SED under the influence of atmospheric effects. For a photometric
+observation taken in the *i* band (7,000 to 8,500 :math:`\unicode{x212B}`),
+the integration arguments can be found as:
 
 .. code-block:: python
     :linenos:
@@ -111,12 +109,11 @@ photometric observation taken in the *i* band (7,000 to 8,500
     >>> temp = 8000
     >>>
     >>> i_band = (7000, 8500)
-    >>> sample_rate = 100
+    >>> sample_rate = 1
     >>> wavelengths = np.arange(i_band[0], i_band[1], sample_rate)
     >>>
     >>> sed_with_atm = bb_atm.sed(temp, wavelengths, pwv)  # S(lambda) T(lambda)
     >>> intrinsic_sed = bb_atm.sed(temp, wavelengths, 0)  # S(lambda)
-
 
 Trapezoidal integration of array like objects in Python can be performed using
 the ``Numpy`` package. Using results from the spectrographic example we have:
