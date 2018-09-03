@@ -28,7 +28,7 @@ from unittest import TestCase
 
 from pytz import utc
 
-from pwv_kpno import _settings
+from pwv_kpno import settings
 from pwv_kpno import pwv_atm
 from pwv_kpno._download_pwv_data import _get_local_data
 
@@ -53,7 +53,7 @@ class CorrectDataFiles(TestCase):
         cls.data_file_years = set()
         cls.data_file_GPS_ids = set()
 
-        glob_pattern = os.path.join(_settings._suomi_dir, '*.plt')
+        glob_pattern = os.path.join(settings._suomi_dir, '*.plt')
         for fname in glob(glob_pattern):
             cls.data_file_years.add(int(fname[-8: -4]))
             cls.data_file_GPS_ids.add(fname[-15: -11])
@@ -75,13 +75,13 @@ class CorrectConfigData(TestCase):
     def test_config_years(self):
         """Check config file for correct years"""
 
-        config_years = set(_settings._available_years)
+        config_years = set(settings._available_years)
         self.assertEqual(EXPECTED_YEARS, config_years)
 
     def test_config_ids(self):
         """Check config file for correct SuomiNet ids"""
 
-        config_ids = set(_settings.receivers)
+        config_ids = set(settings.receivers)
         self.assertEqual(EXPECTED_IDS, config_ids)
 
 
@@ -126,8 +126,8 @@ class LocalData(TestCase):
 
         # Create a list of expected column names
         col_names = ['date']
-        col_names.extend((rec for rec in _settings.receivers))
-        col_names.extend((rec + '_err' for rec in _settings.receivers))
+        col_names.extend((rec for rec in settings.receivers))
+        col_names.extend((rec + '_err' for rec in settings.receivers))
         print(col_names)
         print(self.data.colnames)
 
