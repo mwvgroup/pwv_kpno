@@ -17,8 +17,9 @@
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
 """This code downloads precipitable water vapor (PWV) measurements from
-suominet.ucar.edu for Kitt Peak and other nearby locations. Data is added to a
-master table located at site_data/<current site name>/measured_pwv.csv.
+suominet.ucar.edu. Data is added to a master table located at
+site_data/<current site name>/measured_pwv.csv where the current site name
+is specified by the settings class pwv_kpno._package_settings.settings
 """
 
 import os
