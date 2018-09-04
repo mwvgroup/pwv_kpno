@@ -22,28 +22,29 @@ For package documentation and installation instructions, please see
 ## Overview
 
 **pwv_kpno** is a Python package for modeling the atmospheric absorption due
-to H<sub>2</sub>O at Kitt Peak National Observatory. It provides atmospheric
-models from 3,000 to 12,000 Angstroms for years 2010 onward. Understanding atmospheric
-effects is important when calibrating ground based astronomical observations.
-Traditionally, determining the detailed atmospheric transmission function at a
-given date and time required performing dedicated spectrographic observations.
-**pwv_kpno** provides an alternative that can be performed at the user's
-convenience.
+to H<sub>2</sub>O. It provides atmospheric models from 3,000 to 12,000 
+Angstoms at a resolution of 0.05 Angstroms.
 
 Atmospheric absorption in the near-infrared is highly dependent on the column
 density of precipitable water vapor (PWV). By measuring the delay of GPS
-signals through the atmosphere, the [SuomiNet](http://www.suominet.ucar.edu)
-project provides accurate PWV measurements for multiple, international
-locations. The **pwv_kpno** package uses published SuomiNet data in conjunction
-with MODTRAN models to determine the modeled atmospheric transmission function
-at Kitt Peak in close to real time. The package also provides automated
-retrieval and processing of SuomiNet data, allowing photometry to typically be
-corrected within an hour of observation.
+signals through the atmosphere, the [SuomiNet project](https://www.suominet.ucar.edu)
+provides accurate PWV measurements for multiple, international locations. The
+**pwv_kpno** package  uses published SuomiNet data in conjunction with MODTRAN
+models to determine  the modeled atmospheric transmission function as a function
+of date and time.
+
+By default the package provides access to the time dependent transmission
+function at Kitt Peak National Observatory. However, this package is designed
+to be easily extensible to other locations around within the SuomiNet Network.
+Additionally, **pwv_kpno** provides access to atmospheric models as a function of
+PWV, which is independent of a geographical location.
+
+## Contributing and Attribution
 
 **pwv_kpno** is open source software released under the GNU General Public
-License. Issues, pull requests, and feedback are welcome.
-
-## How to Cite
+License. Issues, pull requests, and feedback are welcome. Additionally, pull
+requests introducing custom configuration files that extend **pwv_kpno** to new
+locations are also welcome.
 
 If you use **pwv_kpno** as part of any published work or research, we ask that
 you please use the following standard acknowledgement:
