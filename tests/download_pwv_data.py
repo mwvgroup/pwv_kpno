@@ -30,7 +30,7 @@ from unittest import TestCase, skipIf
 import requests
 from pytz import utc
 
-from pwv_kpno import settings
+from pwv_kpno.package_settings import settings
 from pwv_kpno._download_pwv_data import _download_data_for_year
 from pwv_kpno._download_pwv_data import _read_file
 from pwv_kpno._download_pwv_data import _suomi_date_to_timestamp

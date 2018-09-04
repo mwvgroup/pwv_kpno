@@ -51,8 +51,7 @@ An incomplete guide to getting started:
 
 from . import pwv_atm
 from . import blackbody_with_atm
-from ._config_builder import ConfigBuilder
-from ._package_settings import settings
+from . import package_settings
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -64,4 +63,5 @@ __version__ = '1.0.0'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Release'
 
-settings.set_site('kitt_peak')
+from .package_settings import settings as _settings
+_settings.set_site('kitt_peak')
