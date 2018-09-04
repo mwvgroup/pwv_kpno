@@ -35,11 +35,13 @@ An incomplete guide to getting started:
 
       >>> from pwv_kpno import blackbody_with_atm as bb_atm
 
+
     To model the atmospheric transmission function, either for a known PWV
     concentration or for a datetime at a particular location, see the `pw_atm`
     module:
 
       >>> from pwv_kpno import pwv_atm
+
 
     To configure this package to model a custom geographical site, see the
     `ConfigBuilder` class:

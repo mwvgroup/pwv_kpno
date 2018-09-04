@@ -21,6 +21,7 @@ An Incomplete Guide to Getting Started:
     >>>
     >>> sed = bb_atm.sed(bb_temp, wavelengths, pwv)
 
+
     To determine the magnitude of a black body either with (PWV > 0) or without
     (PWV = 0) atmospheric effects:
 
@@ -31,6 +32,7 @@ An Incomplete Guide to Getting Started:
     >>> pwv = 15
     >>>
     >>> bb_mag = bb_atm.magnitude(bb_temp, i_band, pwv)
+
 
     To determine the residual error in the zero point of a photometric image
     due to PWV:
