@@ -126,13 +126,13 @@ def _calc_avg_pwv_model(pwv_data, primary_rec):
 
 
 def _create_new_pwv_model(debug=False):
-    """Create a new model for the PWV level at Kitt Peak
+    """Create a new model for the PWV level at the current site
 
-    Create first order polynomials relating the PWV measured by GPS receivers
-    near Kitt Peak to the PWV measured at Kitt Peak (one per off site receiver)
-    Use these polynomials to supplement PWV measurements taken at Kitt Peak for
-    times when no Kitt Peak data is available. Write the supplemented PWV
-    data to a csv file at PWV_TAB_DIR/measured.csv.
+    Create first order polynomials relating the PWV measured by the current
+    site's supplimentary recievers to its primary receiver (one per off site
+    receiver). Use these polynomials to supplement PWV measurements taken by
+    the primary receiver times when it is unavailable. Write the supplemented
+    PWV data to a csv file at settings._pwv_model_path.
     """
 
     pwv_data = Table.read(settings._pwv_measred_path)
@@ -142,7 +142,7 @@ def _create_new_pwv_model(debug=False):
     primary_rec = settings.primary_rec
     avg_pwv, avg_pwv_err = _calc_avg_pwv_model(pwv_data, primary_rec)
 
-    # Supplement KITT data with averaged fits
+    # Supplement primary data with averaged fits
     mask = pwv_data[primary_rec].mask
     sup_data = np.ma.where(mask, avg_pwv, pwv_data[primary_rec])
     sup_err = np.ma.where(mask, avg_pwv_err, pwv_data[primary_rec + '_err'])
@@ -165,10 +165,10 @@ def update_models(year=None, timeout=None):
     # type: (int, float) -> list[int]
     """Download data from SuomiNet and update the locally stored PWV model
 
-    Update the modeled PWV column density for Kitt Peak by downloading new data
-    releases from the SuomiNet website. If a year is provided, use only data
-    for that year. If not, download any published data that is not available on
-    the local machine.
+    Update the modeled PWV column density for the current site by downloading
+    new data releases from the SuomiNet website. If a year is provided, use
+    only data for that year. If not, download any published data that is not
+    available on the local machine.
 
     Args:
         year      (int): A Year from 2010 onward
