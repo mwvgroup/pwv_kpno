@@ -37,7 +37,7 @@ __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Development'
+__status__ = 'Release'
 
 EXPECTED_YEARS = set(range(2010, datetime.now().year))
 EXPECTED_IDS = {'KITT', 'P014', 'SA46', 'SA48', 'AZAM'}

@@ -38,7 +38,7 @@ __credits__ = ['Jessica Kroboth']
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Development'
+__status__ = 'Release'
 
 
 def _suomi_date_to_timestamp(year, days_str):

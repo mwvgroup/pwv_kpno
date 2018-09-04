@@ -31,7 +31,7 @@ __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Development'
+__status__ = 'Release'
 
 # Sites included with release that cannot be overwritten by the user
 PROTECTED_NAMES = ['kitt_peak']
