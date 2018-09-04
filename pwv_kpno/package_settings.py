@@ -17,7 +17,15 @@
 #    along with pwv_kpno. If not, see <http://www.gnu.org/licenses/>.
 
 
-"""This code provides access to package settings through the Settings class."""
+"""This code provides access to package wide settings for the pwv_kpno package
+
+For full documentation on a function use the builtin Python `help` function
+or see https://mwvgroup.github.io/pwv_kpno/.
+
+An Incomplete Guide to Getting Started:
+
+    # Todo
+"""
 
 import json
 import os
@@ -60,6 +68,7 @@ def site_property(f):
     return wrapper
 
 
+# Todo: Add usage demo
 class Settings:
     """Represents pwv_kpno settings for a particular geographical site
 
@@ -334,6 +343,7 @@ settings = Settings()
 
 
 # Todo: Add test coverage
+# Todo: Add usage demo
 class ConfigBuilder:
     """The ConfigBuilder class is used to build config files for a custom site
 
