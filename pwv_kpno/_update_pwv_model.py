@@ -22,12 +22,12 @@ to the PWV level at the primary location. The resulting polynomials are then
 used to supplement gaps in PWV measurements taken at the primary location.
 """
 
+import warnings
 from datetime import datetime
 
-from astropy.table import Table
 import numpy as np
+from astropy.table import Table
 from scipy.odr import RealData, ODR, polynomial
-import warnings
 
 from ._download_pwv_data import update_local_data
 from .package_settings import settings
@@ -75,7 +75,8 @@ def _linear_regression(x, y, sx, sy):
 
     b, m = fit_results.beta
     applied_fit = m * x + b
-    applied_fit.mask = np.logical_or(np.logical_or(x.mask, y.mask), applied_fit <= 0)
+    applied_fit.mask = np.logical_or(np.logical_or(x.mask, y.mask),
+                                     applied_fit <= 0)
 
     error = np.minimum(1 + 0.1 * x, 3)
     error.mask = applied_fit.mask

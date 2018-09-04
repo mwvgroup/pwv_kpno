@@ -28,9 +28,9 @@ from unittest import TestCase
 
 from pytz import utc
 
-from pwv_kpno.package_settings import settings
 from pwv_kpno import pwv_atm
 from pwv_kpno._download_pwv_data import _get_local_data
+from pwv_kpno.package_settings import settings
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'

@@ -41,8 +41,7 @@ __status__ = 'Release'
 PROTECTED_NAMES = ['kitt_peak']
 
 # List of params that data cuts can be applied for
-CUT_PARAMS = (
-'PWV', 'PWVerr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH')
+CUT_PARAMS = ('PWV', 'PWVerr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH')
 
 
 class ModelingConfigError(Exception):

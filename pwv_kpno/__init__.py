@@ -43,15 +43,15 @@ An incomplete guide to getting started:
       >>> from pwv_kpno import pwv_atm
 
 
-    To configure this package to model a custom geographical site, see the
-    `ConfigBuilder` class:
+    To configure this package to model a custom geographical site, and to
+    modify other package settings, see the `package_settings` module:
 
-      >>> from pwv_kpno import ConfigBuilder
+      >>> from pwv_kpno import package_settings
 """
 
-from . import pwv_atm
 from . import blackbody_with_atm
 from . import package_settings
+from . import pwv_atm
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -64,4 +64,5 @@ __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Release'
 
 from .package_settings import settings as _settings
+
 _settings.set_site('kitt_peak')

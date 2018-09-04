@@ -18,15 +18,15 @@
 
 """This file provides tests for the function "transmission"."""
 
-from unittest import TestCase
 from datetime import datetime, timedelta
+from unittest import TestCase
 
 import numpy as np
 from astropy.table import Table
 from pytz import utc
 
-from ._create_mock_data import create_mock_pwv_model
 from pwv_kpno import pwv_atm
+from ._create_mock_data import create_mock_pwv_model
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'

@@ -47,10 +47,10 @@ An Incomplete Guide to Getting Started:
     >>>                       pwv)
 """
 
+import numpy as np
 from astropy import units as u
 from astropy.constants import c
 from astropy.modeling.blackbody import blackbody_lambda
-import numpy as np
 
 from pwv_kpno.pwv_atm import trans_for_pwv
 

@@ -99,8 +99,8 @@ from astropy.table import Table
 from pytz import utc
 from scipy.stats import binned_statistic
 
-from .package_settings import settings
 from ._update_pwv_model import update_models
+from .package_settings import settings
 
 __authors__ = ['Daniel Perrefort', 'Michael Wood-Vasey']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'

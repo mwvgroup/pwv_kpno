@@ -19,9 +19,9 @@
 """This file tests that SuomiNet data is downloaded and parsed correctly."""
 
 from datetime import datetime
+from unittest import TestCase
 
 import numpy as np
-from unittest import TestCase
 
 from pwv_kpno._update_pwv_model import _create_new_pwv_model
 from pwv_kpno._update_pwv_model import _linear_regression
