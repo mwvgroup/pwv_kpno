@@ -23,10 +23,9 @@ is available online at https://mwvgroup.github.io/pwv_kpno/ or through the
 standard python help function.
 """
 
-from . import pwv_atm
 from . import blackbody_with_atm
-from ._config_builder import ConfigBuilder
-from ._package_settings import settings as _settings
+from . import package_settings
+from . import pwv_atm
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -37,5 +36,7 @@ __license__ = 'GPL V3'
 __version__ = '0.12.1'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Development'
+
+from .package_settings import settings as _settings
 
 _settings.set_site('kitt_peak')

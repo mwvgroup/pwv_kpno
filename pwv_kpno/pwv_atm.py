@@ -90,7 +90,7 @@ from astropy.table import Table
 from pytz import utc
 from scipy.stats import binned_statistic
 
-from ._package_settings import settings
+from .package_settings import settings
 from ._update_pwv_model import update_models
 
 __authors__ = ['Daniel Perrefort', 'Michael Wood-Vasey']

@@ -30,7 +30,7 @@ from scipy.odr import RealData, ODR, polynomial
 import warnings
 
 from ._download_pwv_data import update_local_data
-from ._package_settings import settings
+from .package_settings import settings
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
