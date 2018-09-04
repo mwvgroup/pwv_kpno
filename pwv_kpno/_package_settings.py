@@ -41,7 +41,9 @@ class ModelingConfigError(Exception):
     pass
 
 
-def site_property(f):
+def _site_property(f):
+    """Property style wrapper requiring self._site_name is not None"""
+
     @property
     def wrapper(self, *args, **kwargs):
         if self._site_name is None:
@@ -89,12 +91,12 @@ class Settings:
         # type: () -> str
         return self._site_name
 
-    @site_property
+    @_site_property
     def primary_rec(self):
         # type: () -> str
         return self._config_data['primary_rec']
 
-    @site_property
+    @_site_property
     def _loc_dir(self):
         return self._loc_dir_unf.format(self.site_name)
 
@@ -102,7 +104,7 @@ class Settings:
     def _atm_model_path(self):
         return os.path.join(self._loc_dir, 'atm_model.csv')
 
-    @site_property
+    @_site_property
     def _config_path(self):
         return self._config_path_unf.format(self.site_name)
 
@@ -143,7 +145,7 @@ class Settings:
 
         self._site_name = self._config_data['site_name']
 
-    @site_property
+    @_site_property
     def _available_years(self):
         """A list of years for which SuomiNet data has been downloaded"""
 
@@ -152,7 +154,7 @@ class Settings:
     def _replace_years(self, yr_list):
         # Replaces the list of years in the site's config file
 
-        # Note: self._config_path calls @site_property decorator
+        # Note: self._config_path calls @_site_property decorator
         with open(self._config_path, 'r+') as ofile:
             current_data = json.load(ofile)
             current_data['years'] = list(set(yr_list))
@@ -160,7 +162,7 @@ class Settings:
             json.dump(current_data, ofile, indent=4, sort_keys=True)
             ofile.truncate()
 
-    @site_property
+    @_site_property
     def receivers(self):
         # type: () -> list[str]
         """A list of all GPS receivers associated with the current site"""
@@ -170,14 +172,14 @@ class Settings:
         rec_list.append(self._config_data['primary_rec'])
         return sorted(rec_list)
 
-    @site_property
+    @_site_property
     def supplement_rec(self):
         # type () -> list[str]
         """A list of all supplementary GPS receivers for the current site"""
 
         return sorted(self._config_data['sup_rec'])
 
-    @site_property
+    @_site_property
     def data_cuts(self):
         # type () -> dict
         """Returns restrictions on what SuomiNet measurements to include"""
