@@ -169,27 +169,27 @@
 <div class="section" id="overview">
 <h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
 <p><strong>pwv_kpno</strong> is a Python package for modeling the atmospheric absorption due
-to H<sub>2</sub>O at Kitt Peak National Observatory. It provides atmospheric
-models from 300 to 1,200 nm for years 2010 onward. Understanding atmospheric
-effects is important when calibrating ground based astronomical observations.
-Astronomers traditionally calibrate broad-band imaging by using a reference
-catalog to compute correction terms for color, airmass, and perhaps a
-higher-order color-airmass term. <strong>pwv_kpno</strong> provides an alternative that can
-be performed at the user’s convenience.</p>
+to H<sub>2</sub>O. It provides atmospheric models from 3,000 to 12,000 Angstoms
+at a resolution of 0.05 Angstroms.</p>
 <p>Atmospheric absorption in the near-infrared is highly dependent on the column
 density of precipitable water vapor (PWV). By measuring the delay of GPS
 signals through the atmosphere, the <a class="reference external" href="http://www.suominet.ucar.edu">SuomiNet project</a> provides accurate PWV measurements for
 multiple, international locations. The <strong>pwv_kpno</strong> package uses published
 SuomiNet data in conjunction with MODTRAN models to determine the modeled
-atmospheric transmission function at Kitt Peak in close to real time. The
-package also provides automated retrieval and processing of SuomiNet data,
-allowing photometry to typically be corrected within an hour of observation.</p>
+atmospheric transmission function as a function of date and time.</p>
+<p>By default the package provides access to the time dependent transmission
+function at Kitt Peak National Observatory. However, this package is designed
+to be easily extensible to other locations around within the SuomiNet Network.
+Additionally, <strong>pwv_kpno</strong> provides access to atmospheric models as a function
+of PWV, which is independent of a geographical location.</p>
+</div>
+<div class="section" id="contributing-and-attribution">
+<h1>Contributing and Attribution<a class="headerlink" href="#contributing-and-attribution" title="Permalink to this headline">¶</a></h1>
 <p>pwv_kpno is open source software released under the GNU General Public License.
 Issues raised on <a class="reference external" href="https://github.com/mwvgroup/pwv_kpno">GitHub</a> and pull
-requests from contributors are welcome.</p>
-</div>
-<div class="section" id="how-to-cite">
-<h1>How to Cite<a class="headerlink" href="#how-to-cite" title="Permalink to this headline">¶</a></h1>
+requests from contributors are welcome. Additionally, pull requests introducing
+custom configuration files that extend <strong>pwv_kpno</strong> to new locations are also
+welcome.</p>
 <p>If you use <strong>pwv_kpno</strong> as part of any published work or research, we ask that
 you please use the following standard acknowledgement:</p>
 <blockquote>
