@@ -16,26 +16,28 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
-"""This module provides access PWV measurements for Kitt Peak and the modeled
-PWV transmission function.
+"""This module provides access precipitable water vapor (PWV) measurements and
+the modeled atmospheric transmission due to PWV.
 
 For full documentation on a function use the builtin Python `help` function
 or see https://mwvgroup.github.io/pwv_kpno/.
 
 An incomplete guide to getting started:
 
-    To check what years data is locally available for:
+    To check what years data is locally available for the current site being
+    modeled:
 
       >>> from pwv_kpno import pwv_atm
       >>> pwv_atm.available_data()
 
 
-    To update the locally available data with any new measurements:
+    To update the locally available data with any new SuomiNet measurements:
 
       >>> pwv_atm.update_models()
 
 
-    To determine the PWV concentration at Kitt Peak for a datetime:
+    To determine the PWV concentration at the current site being modeled for a
+    a given datetime:
 
       >>> from datetime import datetime
       >>> import pytz
@@ -50,7 +52,10 @@ An incomplete guide to getting started:
       >>> pwv, pwv_err = pwv_atm.pwv_date(obsv_date)
 
 
-    To retrieve the atmospheric model for a line of sight PWV concentration:
+    To retrieve the atmospheric model for a line of sight PWV concentration
+    (Note that this model will be the same regardless of the site being
+    modeled. Thankfully the physics of the light passing through atmosphere
+    don't depend on our geographic location!):
 
       >>> # With a known error
       >>> pwv_atm.trans_for_pwv(pwv)
@@ -58,12 +63,15 @@ An incomplete guide to getting started:
       >>> # Without any error propagation
       >>> pwv_atm.trans_for_pwv(pwv, pwv_err)
 
-    To retrieve the atmospheric model for a datetime:
+
+    To retrieve the atmospheric model for at the current site being modeled
+    at a given datetime and airmass:
 
       >>> pwv_atm.trans_for_date(date=obsv_date, airmass=1.2)
 
 
-    To access the PWV measurements as an astropy table:
+    To access the PWV measurements for the current site being modeled as an
+    astropy table:
 
       >>> # All locally available PWV measurements
       >>> pwv_atm.measured_pwv()
@@ -72,7 +80,8 @@ An incomplete guide to getting started:
       >>> pwv_atm.measured_pwv(year=2016, month=11, day=14)
 
 
-    To access the modeled PWV level at Kitt Peak as an astropy table:
+    To access the modeled PWV level at at the current site being modeled as an
+    astropy table:
 
       >>> # The entire model from 2010 to present
       >>> pwv_atm.modeled_pwv()
@@ -157,10 +166,11 @@ def _raise_available_data(date, pwv_model):
 
 
 def _pwv_date(date, airmass=1., test_model=None):
-    """Returns the modeled PWV column density at Kitt Peak for a given date
+    """Returns the modeled PWV column density at the current site
 
-    Interpolate from the modeled PWV column density at Kitt Peak and return
-    the PWV column density for a given datetime and airmass.
+    Interpolate from the modeled PWV column density at at the current site
+    being modeled and return the PWV column density for a given datetime and
+    airmass.
 
     Args:
         date    (datetime): The date of the desired PWV column density
@@ -168,8 +178,8 @@ def _pwv_date(date, airmass=1., test_model=None):
         test_model (Table): A mock PWV model used by the test suite
 
     Returns:
-        The modeled PWV column density for Kitt Peak
-        The error in modeled PWV column density for Kitt Peak
+        The modeled PWV column density at the current site
+        The error in modeled PWV column density
     """
 
     if test_model is None:
@@ -188,18 +198,19 @@ def _pwv_date(date, airmass=1., test_model=None):
 
 def pwv_date(date, airmass=1.):
     # type: (datetime, float) -> Tuple[float, float]
-    """Returns the modeled PWV column density at Kitt Peak for a given date
+    """Returns the modeled PWV column density at the current site
 
-    Interpolate from the modeled PWV column density at Kitt Peak and return
-    the PWV column density for a given datetime and airmass.
+    Interpolate from the modeled PWV column density at at the current site
+    being modeled and return the PWV column density for a given datetime and
+    airmass.
 
     Args:
         date (datetime): The date of the desired PWV column density
         airmass (float): The airmass along line of sight
 
     Returns:
-        The modeled PWV column density for Kitt Peak
-        The error in modeled PWV column density for Kitt Peak
+        The modeled PWV column density at the current site
+        The error in modeled PWV column density
     """
 
     return _pwv_date(date, airmass)
@@ -339,10 +350,10 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
 
 def modeled_pwv(year=None, month=None, day=None, hour=None):
     # type: (int, int, int, int) -> Table
-    """Return an astropy table of the modeled PWV at Kitt Peak
+    """Return a table of the modeled PWV at the current site being modeled
 
-    Return a model for the precipitable water vapor level at Kitt Peak as an
-    astropy table. PWV measurements are reported in units of millimeters.
+    Return a model for the precipitable water vapor level at the current site
+    as an astropy table. PWV measurements are reported in units of millimeters.
     Results can be optionally refined by year, month, day, and hour.
 
     Args:
@@ -489,8 +500,8 @@ def trans_for_date(date, airmass, bins=None):
     """Return a model for the atmospheric transmission function due to PWV
 
     For a given datetime and airmass, return a model for the atmospheric
-    transmission function due to precipitable water vapor at Kitt Peak National
-    Observatory. The transmission function can optionally be binned by
+    transmission function due to precipitable water vapor at the current site
+    being modeled. The transmission function can optionally be binned by
     specifying the `bins` argument.
 
     Args:
