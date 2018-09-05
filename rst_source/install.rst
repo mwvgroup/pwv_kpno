@@ -80,20 +80,3 @@ as an argument:
     :linenos:
 
     >>> pwv_atm.update_models(year=2018)
-
-Note that updating the locally available data requires the user to have
-permission to write and modify files within the package directory.
-
-Running Tests
-=============
-
-If desired, the test suite can be run using:
-
-.. code-block:: bash
-    :linenos:
-
-    $ python setup.py tests
-
-Note that **pwv_kpno** includes tests that download SuomiNet data from the
-internet (under 20 MB). If a connection cannot be established, these tests are
-skipped.

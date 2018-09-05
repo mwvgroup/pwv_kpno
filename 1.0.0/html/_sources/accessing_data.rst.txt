@@ -154,7 +154,7 @@ To retrieve the modeled PWV level for November 14th, 2016:
 PWV For a Given Date
 ====================
 
-For convenience, users can interpolate from the modeld PWV concentration at
+For convenience, users can interpolate from the modeled PWV concentration at
 Kitt Peak using the ``pwv_date`` function. Note that this function does not
 return an uncertainty on the measured value.
 
