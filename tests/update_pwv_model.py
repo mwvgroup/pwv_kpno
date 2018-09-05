@@ -129,3 +129,14 @@ class UpdateModelsArgs(TestCase):
             # Python 3
             self.assertCountEqual(self.call_1_years, expected_return_1)
             self.assertCountEqual(self.call_2_years, expected_return_2)
+
+    def test_empy_years_arg(self):
+        """When passed an empty list update_models should return []"""
+
+        try:
+            # Python 2.7
+            self.assertItemsEqual(update_models([]), [])
+
+        except AttributeError:
+            # Python 3
+            self.assertCountEqual(update_models([]), [])
