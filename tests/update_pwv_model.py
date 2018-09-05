@@ -95,8 +95,12 @@ class UpdateModelsArgs(TestCase):
     """Test update_models function for raised errors due to bad arguments"""
 
     def setUp(self):
+        from pwv_kpno.package_settings import settings
+        print(settings._available_years)
         self.call_1_years = update_models()
+        print(settings._available_years)
         self.call_2_years = update_models()
+        print(settings._available_years)
 
     def test_argument_errors(self):
         """Test errors raised from function call with wrong argument types"""
@@ -113,15 +117,15 @@ class UpdateModelsArgs(TestCase):
         """
 
         current_year = datetime.now().year
-        expexted_return_1 = [current_year - 1, current_year]
-        expexted_return_2 = [current_year]
+        expected_return_1 = [current_year - 1, current_year]
+        expected_return_2 = [current_year]
 
         try:
             # Python 2.7
-            self.assertItemsEqual(self.call_1_years, expexted_return_1)
-            self.assertItemsEqual(self.call_2_years, expexted_return_2)
+            self.assertItemsEqual(self.call_1_years, expected_return_1)
+            self.assertItemsEqual(self.call_2_years, expected_return_2)
 
         except AttributeError:
             # Python 3
-            self.assertCountEqual(self.call_1_years, expexted_return_1)
-            self.assertCountEqual(self.call_2_years, expexted_return_2)
+            self.assertCountEqual(self.call_1_years, expected_return_1)
+            self.assertCountEqual(self.call_2_years, expected_return_2)

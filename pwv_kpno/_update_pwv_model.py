@@ -162,8 +162,8 @@ def _create_new_pwv_model(debug=False):
     out.write(settings._pwv_model_path, overwrite=True)
 
 
-def update_models(year=None, timeout=None):
-    # type: (int, float) -> list[int]
+def update_models(years=None, timeout=None):
+    # type: (list, float) -> list[int]
     """Download data from SuomiNet and update the locally stored PWV model
 
     Update the modeled PWV column density for the current site by downloading
@@ -172,27 +172,41 @@ def update_models(year=None, timeout=None):
     available on the local machine.
 
     Args:
-        year      (int): A Year from 2010 onward
+        years    (list): A list of integer years
         timeout (float): Optional seconds to wait while connecting to SuomiNet
 
     Returns:
         A list of years for which models where updated
     """
 
-    # Check for valid args
-    if not (isinstance(year, int) or year is None):
-        raise TypeError("Argument 'year' must be an integer")
+    current_year = datetime.now().year
+    available_years = settings._available_years
+    if years is None:
+        if not available_years:
+            raise RuntimeError(
+                'No data has been downloaded for the current location yet.'
+                ' Cannot auto determine what years to download without a'
+                ' starting point.'
+            )
 
-    if year is not None:
-        if year < 2010:
-            raise ValueError('Cannot update models for years prior to 2010')
+        starting_year, ending_year = min(available_years), max(available_years)
+        all_years = set(range(starting_year, current_year + 1))
+        download_years = all_years - set(settings._available_years)
+        download_years.add(ending_year)
+        years = sorted(download_years)
 
-        elif year > datetime.now().year:
-            msg = 'Cannot update models for years greater than current year'
-            raise ValueError(msg)
+    # Instantiate a new list to make a copy of the attribute
+    updated_years = []
+    for year in years:
+        if year > current_year:
+            raise ValueError(
+                'Cannot update models for years greater than the current year.'
+            )
 
-    # Update the local SuomiData and PWV models
-    updated_years = sorted(update_local_data(year, timeout))
+        new_years = update_local_data(year, timeout)
+        updated_years.extend(new_years)
+
     _create_new_pwv_model()
-
+    all_years = available_years + updated_years
+    settings._replace_years(all_years)
     return updated_years

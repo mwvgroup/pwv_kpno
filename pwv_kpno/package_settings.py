@@ -163,7 +163,8 @@ class Settings:
     def _available_years(self):
         """A list of years for which SuomiNet data has been downloaded"""
 
-        return sorted(self._config_data['years'])
+        with open(self._config_path, 'r') as ofile:
+            return sorted(json.load(ofile)['years'])
 
     def _replace_years(self, yr_list):
         # Replaces the list of years in the site's config file
@@ -368,9 +369,9 @@ class ConfigBuilder:
         self.primary_rec = None  # type: str
         self.sup_rec = []
 
-        settings = Settings()
-        settings.set_site('kitt_peak')
-        atm_cross_sections = np.genfromtxt(settings._h2o_cs_path).transpose()
+        settings_obj = Settings()
+        settings_obj.set_site('kitt_peak')
+        atm_cross_sections = np.genfromtxt(settings_obj._h2o_cs_path).transpose()
         self.wavelengths = atm_cross_sections[0]
         self.cross_sections = atm_cross_sections[1]
 
