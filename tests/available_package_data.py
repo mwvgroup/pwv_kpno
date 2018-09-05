@@ -128,8 +128,6 @@ class LocalData(TestCase):
         col_names = ['date']
         col_names.extend((rec for rec in settings.receivers))
         col_names.extend((rec + '_err' for rec in settings.receivers))
-        print(col_names)
-        print(self.data.colnames)
 
         try:
             # Python 2.7
