@@ -167,12 +167,13 @@ def update_models(years=None, timeout=None):
     """Download data from SuomiNet and update the locally stored PWV model
 
     Update the modeled PWV column density for the current site by downloading
-    new data releases from the SuomiNet website. If a year is provided, use
-    only data for that year. If not, download any published data that is not
-    available on the local machine.
+    new data releases from the SuomiNet website. Suominet organizes its data
+    by year. If the years argument is not provided, download any missing
+    data from the earliest available date on the current machine through the
+    present day.
 
     Args:
-        years    (list): A list of integer years
+        years    (list): A list of integer years to download
         timeout (float): Optional seconds to wait while connecting to SuomiNet
 
     Returns:

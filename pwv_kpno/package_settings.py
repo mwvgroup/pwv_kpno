@@ -69,6 +69,7 @@ def site_property(f):
 
 
 # Todo: Add usage demo
+# Todo: Needs getters and setters
 class Settings:
     """Represents pwv_kpno settings for a particular geographical site
 
