@@ -102,13 +102,13 @@ class UpdateModelsArgs(TestCase):
         self.call_2_years = update_models()
         print(settings._available_years)
 
-    def test_argument_errors(self):
-        """Test errors raised from function call with wrong argument types"""
+    def test_future_year(self):
+        """
+        An error should be raised if the user trys to update data
+        from the future
+        """
 
-        self.assertRaises(TypeError, update_models, "2011")
-        self.assertRaises(TypeError, update_models, 2011.5)
-        self.assertRaises(ValueError, update_models, 2009)
-        self.assertRaises(ValueError, update_models, datetime.now().year + 1)
+        self.assertRaises(ValueError, update_models, [datetime.now().year + 1])
 
     def test_succesive_calls(self):
         """
