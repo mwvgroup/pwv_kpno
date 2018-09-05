@@ -192,18 +192,18 @@ def update_models(years=None, timeout=None):
 
         starting_year, ending_year = min(available_years), max(available_years)
         all_years = set(range(starting_year, current_year + 1))
-        download_years = all_years - set(settings._available_years)
+        download_years = all_years - set(available_years)
         download_years.add(ending_year)
         years = sorted(download_years)
 
-    # Instantiate a new list to make a copy of the attribute
-    updated_years = []
     for year in years:
         if year > current_year:
             raise ValueError(
                 'Cannot update models for years greater than the current year.'
             )
 
+    updated_years = []
+    for year in years:
         new_years = update_local_data(year, timeout)
         updated_years.extend(new_years)
 

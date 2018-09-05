@@ -116,8 +116,9 @@ class CorrectReturnedYears(TestCase):
 class LocalData(TestCase):
     """Tests for the _get_local_data function"""
 
-    def setUp(self):
-        self.data = _get_local_data()
+    @classmethod
+    def setUpClass(cls):
+        cls.data = _get_local_data()
 
     def test_correct_col_names(self):
         """Test that the returned table has a 'date' column plus a data

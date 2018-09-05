@@ -41,17 +41,18 @@ __status__ = 'Release'
 class CreatePWVModel(TestCase):
     """Tests for pwv_kpno.atm_model.create_pwv_atm_model"""
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         """Create a model for conversion from mm of PWV to atm cross section"""
 
-        self.mock_cross_sections = np.array([0, .5, 1])
-        self.mock_lambda_in = np.array([0, 5, 10])
-        self.mock_lambda_out = np.array([0, 2.5, 5, 7.5, 10])
+        cls.mock_cross_sections = np.array([0, .5, 1])
+        cls.mock_lambda_in = np.array([0, 5, 10])
+        cls.mock_lambda_out = np.array([0, 2.5, 5, 7.5, 10])
 
-        self.mock_model = create_pwv_atm_model(
-            self.mock_lambda_in,
-            self.mock_cross_sections,
-            self.mock_lambda_out
+        cls.mock_model = create_pwv_atm_model(
+            cls.mock_lambda_in,
+            cls.mock_cross_sections,
+            cls.mock_lambda_out
         )
 
     def test_zero_cross_section(self):

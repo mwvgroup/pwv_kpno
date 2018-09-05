@@ -94,12 +94,13 @@ class CalcAvgPwvModel(TestCase):
 class UpdateModelsArgs(TestCase):
     """Test update_models function for raised errors due to bad arguments"""
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         from pwv_kpno.package_settings import settings
         print(settings._available_years)
-        self.call_1_years = update_models()
+        cls.call_1_years = update_models()
         print(settings._available_years)
-        self.call_2_years = update_models()
+        cls.call_2_years = update_models()
         print(settings._available_years)
 
     def test_future_year(self):
@@ -133,10 +134,11 @@ class UpdateModelsArgs(TestCase):
     def test_empy_years_arg(self):
         """When passed an empty list update_models should return []"""
 
+        years_list = update_models([])
         try:
             # Python 2.7
-            self.assertItemsEqual(update_models([]), [])
+            self.assertItemsEqual(years_list, [])
 
         except AttributeError:
             # Python 3
-            self.assertCountEqual(update_models([]), [])
+            self.assertCountEqual(years_list, [])
