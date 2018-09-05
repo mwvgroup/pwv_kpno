@@ -18,10 +18,12 @@
 
 """This file tests that SuomiNet data is downloaded and parsed correctly."""
 
+import warnings
 from datetime import datetime
 from unittest import TestCase
 
 import numpy as np
+import requests
 
 from pwv_kpno._update_pwv_model import _create_new_pwv_model
 from pwv_kpno._update_pwv_model import _linear_regression
@@ -33,6 +35,15 @@ __copyright__ = 'Copyright 2017, Daniel Perrefort'
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Release'
+
+try:
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        req = requests.get('http://www.suominet.ucar.edu', verify=False)
+    SUOMINET_OFFLINE = req.status_code != 200
+
+except requests.exceptions.ConnectionError:
+    SUOMINET_OFFLINE = True
 
 
 class LinearRegression(TestCase):
@@ -83,6 +94,10 @@ class CalcAvgPwvModel(TestCase):
 class UpdateModelsArgs(TestCase):
     """Test update_models function for raised errors due to bad arguments"""
 
+    def setUp(self):
+        self.call_1_years = update_models()
+        self.call_2_years = update_models()
+
     def test_argument_errors(self):
         """Test errors raised from function call with wrong argument types"""
 
@@ -90,3 +105,23 @@ class UpdateModelsArgs(TestCase):
         self.assertRaises(TypeError, update_models, 2011.5)
         self.assertRaises(ValueError, update_models, 2009)
         self.assertRaises(ValueError, update_models, datetime.now().year + 1)
+
+    def test_succesive_calls(self):
+        """
+        First call should return [current year - 1, current year]
+        second call should return [current year]
+        """
+
+        current_year = datetime.now().year
+        expexted_return_1 = [current_year - 1, current_year]
+        expexted_return_2 = [current_year]
+
+        try:
+            # Python 2.7
+            self.assertItemsEqual(self.call_1_years, expexted_return_1)
+            self.assertItemsEqual(self.call_2_years, expexted_return_2)
+
+        except AttributeError:
+            # Python 3
+            self.assertCountEqual(self.call_1_years, expexted_return_1)
+            self.assertCountEqual(self.call_2_years, expexted_return_2)
