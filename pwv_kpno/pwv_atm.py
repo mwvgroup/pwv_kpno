@@ -200,9 +200,8 @@ def pwv_date(date, airmass=1.):
     # type: (datetime, float) -> Tuple[float, float]
     """Returns the modeled PWV column density at the current site
 
-    Interpolate from the modeled PWV column density at at the current site
-    being modeled and return the PWV column density for a given datetime and
-    airmass.
+    Interpolate from the modeled PWV column density at the current site being
+    modeled and return the PWV column density for a given datetime and airmass.
 
     Args:
         date (datetime): The date of the desired PWV column density
