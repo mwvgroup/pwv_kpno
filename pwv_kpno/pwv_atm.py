@@ -330,8 +330,8 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
     # type: (int, int, int, int) -> Table
     """Return an astropy table of PWV measurements taken by SuomiNet
 
-    Columns are named using the SuomiNet IDs for different locations. PWV
-    measurements each location are recorded in millimeters. Results can be
+    Columns are named using the SuomiNet IDs for different GPS receivers. PWV
+    measurements for each receiver are recorded in millimeters. Results can be
     optionally refined by year, month, day, and hour.
 
     Args:
