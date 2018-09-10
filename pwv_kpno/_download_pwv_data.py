@@ -112,7 +112,7 @@ def _read_file(path):
     """
 
     # Credit goes to Jessica Kroboth for identifying conditions 1 and 2 above
-
+    print(path)
     site_id = path[-15:-11]
     names = ['date', site_id, site_id + '_err', 'ZenithDelay',
              'SrfcPress', 'SrfcTemp', 'SrfcRH']
@@ -129,7 +129,6 @@ def _read_file(path):
         year = int(path[-8: -4])
         to_timestamp_vectorized = np.vectorize(_suomi_date_to_timestamp)
         data['date'] = to_timestamp_vectorized(year, data['date'])
-
     return data
 
 
@@ -154,8 +153,13 @@ def _download_data_for_site(year, site_id, timeout=None):
     day_url = 'https://www.suominet.ucar.edu/data/staYrDay/{0}pp_{1}.plt'
     hour_path = os.path.join(settings._suomi_dir, '{0}hr_{1}.plt')
     hour_url = 'https://www.suominet.ucar.edu/data/staYrHr/{0}nrt_{1}.plt'
+    globl_day_path = os.path.join(settings._suomi_dir, '{0}gl_{1}.plt')
+    globl_day_url = 'https://www.suominet.ucar.edu/data/staYrDayGlob/{0}_{1}global.plt'
 
-    for general_path, url in ((day_path, day_url), (hour_path, hour_url)):
+    for general_path, url in ((globl_day_path, globl_day_url),
+                              (day_path, day_url),
+                              (hour_path, hour_url)):
+
         with catch_warnings():
             simplefilter('ignore')
             response = requests.get(url.format(site_id, year),

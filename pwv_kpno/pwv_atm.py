@@ -238,17 +238,14 @@ def _check_date_time_args(year=None, month=None, day=None, hour=None):
     `measured_pwv` and `modeled_pwv`.
 
     Args:
-        year  (int): An integer value between 2010 and the current year
+        year  (int): An integer value less than or equal to the current year
         month (int): An integer value between 1 and 12 (inclusive)
         day   (int): An integer value between 1 and 31 (inclusive)
         hour  (int): An integer value between 0 and 23 (inclusive)
     """
 
-    if year is not None and year < 2010:
-        raise ValueError('pwv_kpno does not provide data years prior to 2010')
-
-    elif year is not None and year > datetime.now().year:
-        raise ValueError("Argument 'year' (pos 1) is larger than current year")
+    if year is not None and year > datetime.now().year:
+        raise ValueError("Provided year is larger than current year")
 
     arg_constraints = [('month', month, (1, 12)),
                        ('day', day, (1, 31)),
