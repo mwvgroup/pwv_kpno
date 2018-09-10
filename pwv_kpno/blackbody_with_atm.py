@@ -62,17 +62,18 @@ __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Release'
 
 
-def sed(temp, wavelengths, pwv):
+def sed(temp, wavelengths, pwv, bins=None):
     # type: (float, np.ndarray, float) -> np.ndarray[float]
     """Return the flux of a black body under the influence of pwv absorption
 
-     Flux is returned in units of ergs / (angstrom * cm2 * s). Atmospheric
-     features are interpolated from the modeled transmission function.
+     Flux is returned in units of ergs / (angstrom * cm2 * s).
 
      Args:
-         temp          (float): The desired temperature of the black body
-         wavelengths (ndarray): An array like object containing wavelengths
-         pwv           (float): The PWV concentration along line of sight in mm
+         temp        (float): The temperature of the black body in Kelvin
+         wavelengths (array): The SED's wavelengths in Angstroms
+         pwv         (float): The PWV concentration along line of sight in mm
+         bins  (int or list): Integer number of bins or sequence of bin edges
+                               used to smooth atmospheric transmission
 
      Returns:
          An array of flux values in units of ergs / (angstrom * cm2 * s * sr)
@@ -82,7 +83,7 @@ def sed(temp, wavelengths, pwv):
     bb_sed = blackbody_lambda(wavelengths, temp).value
 
     if pwv > 0:
-        transmission = trans_for_pwv(pwv)
+        transmission = trans_for_pwv(pwv, bins=bins)
         sampled_transmission = np.interp(wavelengths,
                                          transmission['wavelength'],
                                          transmission['transmission'])
@@ -96,13 +97,12 @@ def magnitude(temp, band, pwv):
     # type: (float, tuple[float], float) -> float
     """Return the magnitude of a black body with and without pwv absorption
 
-    Magnitudes are calculated relative to a zero point of 3631 Jy. Atmospheric
-    features are interpolated from the modeled transmission function.
+    Magnitudes are calculated relative to a zero point of 3631 Jy.
 
     Args:
-        temp (float): The temperature of the desired black body
-        band (tuple): Tuple with the beginning and end wavelengths of the
-                       desired band in angstroms
+        temp (float): The temperature of the black body in Kelvin
+        band (tuple): Tuple with the beginning and end wavelengths of a
+                        photometric band in Angstroms
         pwv  (float): The PWV concentration along line of sight in mm
 
     Returns:
@@ -132,19 +132,18 @@ def zp_bias(ref_temp, cal_temp, band, pwv):
     Using a black body approximation, calculate the residual error in the zero
     point of a photometric image cause by not considering the PWV transmission
     function. Returned values are in units of magnitude relative to a zero
-    point of 3631 Jy. Atmospheric effects are found by interpolating from the
-    modeled transmission function.
+    point of 3631 Jy.
 
     Args:
-        ref_temp (float): The temperature of a star used to calibrate the image
-        cal_temp (float): The temperature of another star in the same image to
-                           calculate the error for
-        band     (tuple): Tuple specifying the beginning and end points
-                           of the desired band in angstroms
-        pwv      (float): The PWV concentration along line of sight
+        ref_temp (float): The temperature of the star used to calibrate the
+                            image in Kelvin
+        cal_temp (float): The temperature of another star in the same image
+        band     (tuple): A tuple with the beginning and end wavelengths of a
+                            photometric band in Angstroms
+        pwv      (float): The PWV concentration along line of sight in mm
 
     Returns:
-        The residual error in the photometric zero point for the given band
+        The error in magnitudes for the photometric zero point of the given band
     """
 
     # Values for reference star

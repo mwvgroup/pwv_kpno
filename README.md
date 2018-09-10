@@ -23,7 +23,7 @@ For package documentation and installation instructions, please see
 
 **pwv_kpno** is a Python package for modeling the atmospheric absorption due
 to H<sub>2</sub>O. It provides atmospheric models from 3,000 to 12,000 
-Angstoms at a resolution of 0.05 Angstroms.
+Angstroms at a resolution of 0.05 Angstroms.
 
 Atmospheric absorption in the near-infrared is highly dependent on the column
 density of precipitable water vapor (PWV). By measuring the delay of GPS
