@@ -196,11 +196,10 @@ def update_models(years=None, timeout=None):
         download_years.add(ending_year)
         years = sorted(download_years)
 
-    for year in years:
-        if year > current_year:
-            raise ValueError(
-                'Cannot update models for years greater than the current year.'
-            )
+    if any((year > current_year for year in years)):
+        raise ValueError(
+            'Cannot update models for years greater than the current year.'
+        )
 
     updated_years = []
     for year in years:
