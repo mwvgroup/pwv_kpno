@@ -34,9 +34,9 @@ Cerro Tololo Inter-American Observatory near La Serena, Chile.
     >>> from pwv_kpno.package_settings import ConfigBuilder
     >>>
     >>> new_config = ConfigBuilder(
-        site_name='cerro_tololo', primary_rec='CTIO',
-        sup_rec=[],
-    )
+    >>>     site_name='cerro_tololo', primary_rec='CTIO',
+    >>>     sup_rec=[],
+    >>> )
     >>> new_config.save_to_ecsv('./cerro_tololo.ecsv')
 
 Here ``site_name`` specifies a unique identifier for the location being
@@ -57,11 +57,11 @@ these cross sections in units of Angstroms and cm^2 respectively.
     >>> from pwv_kpno.package_settings import ConfigBuilder
     >>>
     >>> new_config = ConfigBuilder(
-        site_name='cerro_tololo', primary_rec='CTIO',
-        sup_rec=[],
-        wavelength=custom_wavelengths, # Array of wavelengths in Angstroms
-        cross_section=custom_cross_sections # Array of cross sections in cm^2
-    )
+    >>>     site_name='cerro_tololo', primary_rec='CTIO',
+    >>>     sup_rec=[],
+    >>>     wavelength=custom_wavelengths, # Array of wavelengths in Angstroms
+    >>>     cross_section=custom_cross_sections # Array of cross sections in cm^2
+    >>> )
     >>> new_config.save_to_ecsv('./cerro_tololo.ecsv')
 
 Specifying Data Cuts
@@ -75,6 +75,21 @@ that can be cut include PWV (``"PWV"``), the PWV error (``"PWVerr"``),
 surface pressure (``"SrfcPress"``), surface temperature (``"SrfcTemp"``),
 and relative humidity (``"SrfcRH"``).
 
+**Note:** This example needs to be updated with correct data cut values and a
+suggestion on how to find those data cuts.
+
+.. code-block:: python
+    :linenos:
+
+    >>> data_cuts = {'CTIO':
+            {'SrfcPress': [[880, 925],]}
+        }
+
+    >>> new_config = ConfigBuilder(
+            site_name='cerro_tololo',
+            primary_rec='CTIO',
+            data_cuts = data_cuts)
+
 
 Importing a New Location
 ========================
@@ -87,7 +102,7 @@ Once a configuration file has been created, it can be permanently added to the
 
     >>> from pwv_kpno.package_settings import settings
     >>>
-    >>> settings.import_site('./kitt_two_receivers.ecsv')
+    >>> settings.import_site('./cerro_tololo.ecsv')
 
 This command only needs to be run once, after which **pwv_kpno** will retain
 the new model on disk, even in between package updates. The package can then be
@@ -96,7 +111,7 @@ configured to use the new model by running
 .. code-block:: python
     :linenos:
 
-    >>> settings.set_site('kitt_two_receivers')
+    >>> settings.set_site('cerro_tololo')
 
 After setting **pwv_kpno** to a new location, the package will exclusively use
 the new model until the current Python environment is terminated. It is
@@ -104,27 +119,70 @@ important to note that this setting is not persistent. When **pwv_kpno** is
 first imported into a new environment the package will always default to using
 the standard model for Kitt Peak, and the above command will have to be rerun.
 
+Accessing Current Settings
+=========================
+
 A complete summary of package settings can be accessed by printing the
-``settings`` object. Alternatively, individual settings can be accessed, but
-not modified, using attributes
+``settings`` object. For example, the settings for Kitt Peak are as follows
+
+.. code-block:: python
+    :linenos:
+
+    >>> settings.set_site('kitt_peak')
+    >>> print(settings)
+
+                             pwv_kpno Current Site Information
+        ============================================================================
+        Site Name:            kitt_peak
+        Primary Receiver:     KITT
+        Secondary Receivers:
+            AZAM
+            P014
+            SA46
+            SA48
+
+        Available Data:
+            2010
+            2011
+            2012
+            2013
+            2014
+            2015
+            2016
+            2017
+
+                                         Data Cuts
+        ============================================================================
+        Reveiver    Value       Type          Lower_Bound          Upper_Bound  unit
+        ----------------------------------------------------------------------------
+        AZAM    SrfcPress  inclusive                  880                  925  mbar
+        KITT    SrfcPress  inclusive                  775                 1000  mbar
+        KITT         date  exclusive  2016-01-01 00:00:00  2016-04-01 00:00:00   UTC
+        P014    SrfcPress  inclusive                  850                 1000  mbar
+        SA46    SrfcPress  inclusive                  900                 1000  mbar
+        SA48    SrfcPress  inclusive                  910                 1000  mbar
+
+Alternatively, individual settings can be accessed, but not modified, using
+attributes.
 
 .. code-block:: python
     :linenos:
 
     >>> print(settings.site_name)
-        kitt_two_receivers
 
-    >>> print(settings.available_sites)
-        ['kitt_peak', 'kitt_two_receivers']
+        kitt_peak
 
     >>> print(settings.receivers)
-        ['AZAM', 'KITT']
+
+        ['AZAM', 'KITT', 'P014', 'SA46', 'SA48']
 
     >>> print(settings.primary_rec)
-        KITT
+
+        'KITT'
 
     >>> print(settings.supplement_rec)
-        []
+
+        ['AZAM', 'P014', 'SA46', 'SA48']
 
 Users can export the configuration file for the currently modeled location by
 running

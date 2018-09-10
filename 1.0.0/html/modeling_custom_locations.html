@@ -88,6 +88,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#creating-a-new-location">2.1. Creating a New Location</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#specifying-data-cuts">2.2. Specifying Data Cuts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#importing-a-new-location">2.3. Importing a New Location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#accessing-current-settings">2.4. Accessing Current Settings</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="accessing_data.html">3. Accessing PWV Data</a></li>
@@ -161,11 +162,11 @@
   <div class="section" id="modeling-custom-locations">
 <h1>2. Modeling Custom Locations<a class="headerlink" href="#modeling-custom-locations" title="Permalink to this headline">¶</a></h1>
 <p>By default <strong>pwv_kpno</strong> provides models for the PWV transmission function at
-Kitt Peak National Observatory. However, pwv_kpno also provides atmospheric
+Kitt Peak National Observatory. However, <strong>pwv_kpno</strong> also provides atmospheric
 modeling for user customized locations. Support for modeling multiple
 locations is handled by the <code class="docutils literal notranslate"><span class="pre">package_settings</span></code> module, and allows modeling at
 any location with a SuomiNet connected GPS receiver. A list of locations that
-are available with a particular install of pwv_kpno can be retrieved by running</p>
+are available with a particular install of <strong>pwv_kpno</strong> can be retrieved by running</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -192,9 +193,9 @@ Cerro Tololo Inter-American Observatory near La Serena, Chile.</p>
 7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno.package_settings</span> <span class="kn">import</span> <span class="n">ConfigBuilder</span>
 <span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">new_config</span> <span class="o">=</span> <span class="n">ConfigBuilder</span><span class="p">(</span>
-<span class="go">    site_name=&#39;cerro_tololo&#39;, primary_rec=&#39;CTIO&#39;,</span>
-<span class="go">    sup_rec=[],</span>
-<span class="go">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">site_name</span><span class="o">=</span><span class="s1">&#39;cerro_tololo&#39;</span><span class="p">,</span> <span class="n">primary_rec</span><span class="o">=</span><span class="s1">&#39;CTIO&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">sup_rec</span><span class="o">=</span><span class="p">[],</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">new_config</span><span class="o">.</span><span class="n">save_to_ecsv</span><span class="p">(</span><span class="s1">&#39;./cerro_tololo.ecsv&#39;</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
@@ -219,11 +220,11 @@ these cross sections in units of Angstroms and cm^2 respectively.</p>
 9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno.package_settings</span> <span class="kn">import</span> <span class="n">ConfigBuilder</span>
 <span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">new_config</span> <span class="o">=</span> <span class="n">ConfigBuilder</span><span class="p">(</span>
-<span class="go">    site_name=&#39;cerro_tololo&#39;, primary_rec=&#39;CTIO&#39;,</span>
-<span class="go">    sup_rec=[],</span>
-<span class="go">    wavelength=custom_wavelengths, # Array of wavelengths in Angstroms</span>
-<span class="go">    cross_section=custom_cross_sections # Array of cross sections in cm^2</span>
-<span class="go">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">site_name</span><span class="o">=</span><span class="s1">&#39;cerro_tololo&#39;</span><span class="p">,</span> <span class="n">primary_rec</span><span class="o">=</span><span class="s1">&#39;CTIO&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">sup_rec</span><span class="o">=</span><span class="p">[],</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">wavelength</span><span class="o">=</span><span class="n">custom_wavelengths</span><span class="p">,</span> <span class="c1"># Array of wavelengths in Angstroms</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">cross_section</span><span class="o">=</span><span class="n">custom_cross_sections</span> <span class="c1"># Array of cross sections in cm^2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">new_config</span><span class="o">.</span><span class="n">save_to_ecsv</span><span class="p">(</span><span class="s1">&#39;./cerro_tololo.ecsv&#39;</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
@@ -234,9 +235,28 @@ these cross sections in units of Angstroms and cm^2 respectively.</p>
 package. Data cuts are defined using a 2d dictionary of boundary values.
 The first key specifies which receiver the data cuts apply to. The second key
 specifies what values to cut. Following SuomiNet’s naming convention, values
-that can be cut include PWV (<code class="docutils literal notranslate"><span class="pre">{&quot;PWV&quot;</span></code>), the PWV error (<code class="docutils literal notranslate"><span class="pre">{&quot;PWVerr&quot;</span></code>),
-surface pressure (<code class="docutils literal notranslate"><span class="pre">{&quot;SrfcPress&quot;</span></code>), surface temperature (<code class="docutils literal notranslate"><span class="pre">{&quot;SrfcTemp&quot;</span></code>),
-and relative humidity (<code class="docutils literal notranslate"><span class="pre">{&quot;SrfcRH&quot;</span></code>).</p>
+that can be cut include PWV (<code class="docutils literal notranslate"><span class="pre">&quot;PWV&quot;</span></code>), the PWV error (<code class="docutils literal notranslate"><span class="pre">&quot;PWVerr&quot;</span></code>),
+surface pressure (<code class="docutils literal notranslate"><span class="pre">&quot;SrfcPress&quot;</span></code>), surface temperature (<code class="docutils literal notranslate"><span class="pre">&quot;SrfcTemp&quot;</span></code>),
+and relative humidity (<code class="docutils literal notranslate"><span class="pre">&quot;SrfcRH&quot;</span></code>).</p>
+<p><strong>Note:</strong> This example needs to be updated with correct data cut values and a
+suggestion on how to find those data cuts.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data_cuts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;CTIO&#39;</span><span class="p">:</span>
+<span class="go">        {&#39;SrfcPress&#39;: [[880, 925],]}</span>
+<span class="go">    }</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_config</span> <span class="o">=</span> <span class="n">ConfigBuilder</span><span class="p">(</span>
+<span class="go">        site_name=&#39;cerro_tololo&#39;,</span>
+<span class="go">        primary_rec=&#39;CTIO&#39;,</span>
+<span class="go">        data_cuts = data_cuts)</span>
+</pre></div>
+</td></tr></table></div>
 </div>
 <div class="section" id="importing-a-new-location">
 <h2>2.3. Importing a New Location<a class="headerlink" href="#importing-a-new-location" title="Permalink to this headline">¶</a></h2>
@@ -246,13 +266,13 @@ and relative humidity (<code class="docutils literal notranslate"><span class="p
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno.package_settings</span> <span class="kn">import</span> <span class="n">settings</span>
 <span class="go">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">settings</span><span class="o">.</span><span class="n">import_site</span><span class="p">(</span><span class="s1">&#39;./kitt_two_receivers.ecsv&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">settings</span><span class="o">.</span><span class="n">import_site</span><span class="p">(</span><span class="s1">&#39;./cerro_tololo.ecsv&#39;</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
 <p>This command only needs to be run once, after which <strong>pwv_kpno</strong> will retain
 the new model on disk, even in between package updates. The package can then be
 configured to use the new model by running</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">settings</span><span class="o">.</span><span class="n">set_site</span><span class="p">(</span><span class="s1">&#39;kitt_two_receivers&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">settings</span><span class="o">.</span><span class="n">set_site</span><span class="p">(</span><span class="s1">&#39;cerro_tololo&#39;</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
 <p>After setting <strong>pwv_kpno</strong> to a new location, the package will exclusively use
@@ -260,9 +280,11 @@ the new model until the current Python environment is terminated. It is
 important to note that this setting is not persistent. When <strong>pwv_kpno</strong> is
 first imported into a new environment the package will always default to using
 the standard model for Kitt Peak, and the above command will have to be rerun.</p>
+</div>
+<div class="section" id="accessing-current-settings">
+<h2>2.4. Accessing Current Settings<a class="headerlink" href="#accessing-current-settings" title="Permalink to this headline">¶</a></h2>
 <p>A complete summary of package settings can be accessed by printing the
-<code class="docutils literal notranslate"><span class="pre">settings</span></code> object. Alternatively, individual settings can be accessed, but
-not modified, using attributes</p>
+<code class="docutils literal notranslate"><span class="pre">settings</span></code> object. For example, the settings for Kitt Peak are as follows</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -276,20 +298,91 @@ not modified, using attributes</p>
 11
 12
 13
-14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">site_name</span><span class="p">)</span>
-<span class="go">    kitt_two_receivers</span>
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">settings</span><span class="o">.</span><span class="n">set_site</span><span class="p">(</span><span class="s1">&#39;kitt_peak&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">available_sites</span><span class="p">)</span>
-<span class="go">    [&#39;kitt_peak&#39;, &#39;kitt_two_receivers&#39;]</span>
+<span class="go">                         pwv_kpno Current Site Information</span>
+<span class="go">    ============================================================================</span>
+<span class="go">    Site Name:            kitt_peak</span>
+<span class="go">    Primary Receiver:     KITT</span>
+<span class="go">    Secondary Receivers:</span>
+<span class="go">        AZAM</span>
+<span class="go">        P014</span>
+<span class="go">        SA46</span>
+<span class="go">        SA48</span>
+
+<span class="go">    Available Data:</span>
+<span class="go">        2010</span>
+<span class="go">        2011</span>
+<span class="go">        2012</span>
+<span class="go">        2013</span>
+<span class="go">        2014</span>
+<span class="go">        2015</span>
+<span class="go">        2016</span>
+<span class="go">        2017</span>
+
+<span class="go">                                     Data Cuts</span>
+<span class="go">    ============================================================================</span>
+<span class="go">    Reveiver    Value       Type          Lower_Bound          Upper_Bound  unit</span>
+<span class="go">    ----------------------------------------------------------------------------</span>
+<span class="go">    AZAM    SrfcPress  inclusive                  880                  925  mbar</span>
+<span class="go">    KITT    SrfcPress  inclusive                  775                 1000  mbar</span>
+<span class="go">    KITT         date  exclusive  2016-01-01 00:00:00  2016-04-01 00:00:00   UTC</span>
+<span class="go">    P014    SrfcPress  inclusive                  850                 1000  mbar</span>
+<span class="go">    SA46    SrfcPress  inclusive                  900                 1000  mbar</span>
+<span class="go">    SA48    SrfcPress  inclusive                  910                 1000  mbar</span>
+</pre></div>
+</td></tr></table></div>
+<p>Alternatively, individual settings can be accessed, but not modified, using
+attributes.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">site_name</span><span class="p">)</span>
+
+<span class="go">    kitt_peak</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">receivers</span><span class="p">)</span>
-<span class="go">    [&#39;AZAM&#39;, &#39;KITT&#39;]</span>
+
+<span class="go">    [&#39;AZAM&#39;, &#39;KITT&#39;, &#39;P014&#39;, &#39;SA46&#39;, &#39;SA48&#39;]</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">primary_rec</span><span class="p">)</span>
-<span class="go">    KITT</span>
+
+<span class="go">    &#39;KITT&#39;</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">supplement_rec</span><span class="p">)</span>
-<span class="go">    []</span>
+
+<span class="go">    [&#39;AZAM&#39;, &#39;P014&#39;, &#39;SA46&#39;, &#39;SA48&#39;]</span>
 </pre></div>
 </td></tr></table></div>
 <p>Users can export the configuration file for the currently modeled location by
