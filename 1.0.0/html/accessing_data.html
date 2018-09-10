@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>2. Accessing PWV Data &mdash; pwv_kpno 1.0.0 documentation</title>
+  <title>3. Accessing PWV Data &mdash; pwv_kpno 1.0.0 documentation</title>
   
 
   
@@ -28,8 +28,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="3. Modeling the Atmosphere" href="atmospheric_modeling.html" />
-    <link rel="prev" title="1. Installation and Setup" href="install.html" /> 
+    <link rel="next" title="4. Modeling the Atmosphere" href="atmospheric_modeling.html" />
+    <link rel="prev" title="2. Modeling Custom Locations" href="modeling_custom_locations.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -84,17 +84,18 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">1. Installation and Setup</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">2. Accessing PWV Data</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#checking-for-available-data">2.1. Checking For Available Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#updating-data">2.2. Updating Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#measured-pwv-data">2.3. Measured PWV Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#modeled-pwv-data">2.4. Modeled PWV Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pwv-for-a-given-date">2.5. PWV For a Given Date</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modeling_custom_locations.html">2. Modeling Custom Locations</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3. Accessing PWV Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#checking-for-available-data">3.1. Checking For Available Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#updating-data">3.2. Updating Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#measured-pwv-data">3.3. Measured PWV Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#modeled-pwv-data">3.4. Modeled PWV Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pwv-for-a-given-date">3.5. PWV For a Given Date</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">3. Modeling the Atmosphere</a></li>
-<li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">4. Modeling a Black Body</a></li>
-<li class="toctree-l1"><a class="reference internal" href="correcting_observations.html">5. Correcting Observations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">4. Modeling the Atmosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">5. Modeling a Black Body</a></li>
+<li class="toctree-l1"><a class="reference internal" href="correcting_observations.html">6. Correcting Observations</a></li>
 </ul>
 
             
@@ -140,7 +141,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>2. Accessing PWV Data</li>
+      <li>3. Accessing PWV Data</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -160,14 +161,14 @@
            <div itemprop="articleBody">
             
   <div class="section" id="accessing-pwv-data">
-<h1>2. Accessing PWV Data<a class="headerlink" href="#accessing-pwv-data" title="Permalink to this headline">¶</a></h1>
+<h1>3. Accessing PWV Data<a class="headerlink" href="#accessing-pwv-data" title="Permalink to this headline">¶</a></h1>
 <p>In order to model the PWV absorption for a given date and time, SuomiNet data
 for that date must be available on your local machine. By default, each release
 of <strong>pwv_kpno</strong> contains all necessary SuomiNet data from 2010 through the end
 of the previous year. Access to the locally available PWV data is available
 through the <code class="docutils literal notranslate"><span class="pre">pwv_atm</span></code> module.</p>
 <div class="section" id="checking-for-available-data">
-<h2>2.1. Checking For Available Data<a class="headerlink" href="#checking-for-available-data" title="Permalink to this headline">¶</a></h2>
+<h2>3.1. Checking For Available Data<a class="headerlink" href="#checking-for-available-data" title="Permalink to this headline">¶</a></h2>
 <p>To check what years of SuomiNet data are locally available, use the
 <code class="docutils literal notranslate"><span class="pre">available_data</span></code> function.</p>
 <dl class="function">
@@ -189,7 +190,7 @@ been released by SuomiNet for a given year that is not locally available.</p>
 </dd></dl>
 
 <div class="section" id="examples">
-<h3>2.1.1. Examples:<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<h3>3.1.1. Examples:<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -202,7 +203,7 @@ been released by SuomiNet for a given year that is not locally available.</p>
 </div>
 </div>
 <div class="section" id="updating-data">
-<h2>2.2. Updating Data<a class="headerlink" href="#updating-data" title="Permalink to this headline">¶</a></h2>
+<h2>3.2. Updating Data<a class="headerlink" href="#updating-data" title="Permalink to this headline">¶</a></h2>
 <p>To download new SuomiNet data to your local machine, use the <code class="docutils literal notranslate"><span class="pre">update_models</span></code>
 function. This function will download new data from the SuomiNet web server,
 and use that data to update the modeled precipitable water vapor for Kitt Peak
@@ -234,7 +235,7 @@ present day.</p>
 </dd></dl>
 
 <div class="section" id="id1">
-<h3>2.2.1. Examples:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<h3>3.2.1. Examples:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>To ensure that the PWV data for <strong>pwv_kpno</strong> is up to date run:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -257,7 +258,7 @@ specific year:</p>
 </div>
 </div>
 <div class="section" id="measured-pwv-data">
-<h2>2.3. Measured PWV Data<a class="headerlink" href="#measured-pwv-data" title="Permalink to this headline">¶</a></h2>
+<h2>3.3. Measured PWV Data<a class="headerlink" href="#measured-pwv-data" title="Permalink to this headline">¶</a></h2>
 <p>Data that has been downloaded from SuomiNet can be accessed using the
 <code class="docutils literal notranslate"><span class="pre">measured_pwv</span></code> function.</p>
 <dl class="function">
@@ -287,7 +288,7 @@ optionally refined by year, month, day, and hour.</p>
 </dd></dl>
 
 <div class="section" id="id2">
-<h3>2.3.1. Examples:<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<h3>3.3.1. Examples:<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>To retrieve all SuomiNet data available on the local machine as an <code class="docutils literal notranslate"><span class="pre">astropy</span></code>
 table:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
@@ -338,7 +339,7 @@ returned table will be empty.</p>
 </div>
 </div>
 <div class="section" id="modeled-pwv-data">
-<h2>2.4. Modeled PWV Data<a class="headerlink" href="#modeled-pwv-data" title="Permalink to this headline">¶</a></h2>
+<h2>3.4. Modeled PWV Data<a class="headerlink" href="#modeled-pwv-data" title="Permalink to this headline">¶</a></h2>
 <p>To retrieve the modeled PWV level at Kitt Peak National Observatory, use the
 <code class="docutils literal notranslate"><span class="pre">modeled_pwv</span></code> function.</p>
 <dl class="function">
@@ -368,7 +369,7 @@ Results can be optionally refined by year, month, day, and hour.</p>
 </dd></dl>
 
 <div class="section" id="id3">
-<h3>2.4.1. Examples:<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<h3>3.4.1. Examples:<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p>To retrieve the entire PWV model from 2010 onward:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -414,7 +415,7 @@ Results can be optionally refined by year, month, day, and hour.</p>
 </div>
 </div>
 <div class="section" id="pwv-for-a-given-date">
-<h2>2.5. PWV For a Given Date<a class="headerlink" href="#pwv-for-a-given-date" title="Permalink to this headline">¶</a></h2>
+<h2>3.5. PWV For a Given Date<a class="headerlink" href="#pwv-for-a-given-date" title="Permalink to this headline">¶</a></h2>
 <p>For convenience, users can interpolate from the modeled PWV concentration at
 Kitt Peak using the <code class="docutils literal notranslate"><span class="pre">pwv_date</span></code> function. Note that this function does not
 return an uncertainty on the measured value.</p>
@@ -443,7 +444,7 @@ The error in modeled PWV column density</p>
 </dd></dl>
 
 <div class="section" id="id4">
-<h3>2.5.1. Examples:<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<h3>3.5.1. Examples:<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>To retrieve the modeled PWV level for November 14, 2016 at 11:06 AM:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -470,10 +471,10 @@ The error in modeled PWV column density</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="atmospheric_modeling.html" class="btn btn-neutral float-right" title="3. Modeling the Atmosphere" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="atmospheric_modeling.html" class="btn btn-neutral float-right" title="4. Modeling the Atmosphere" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="install.html" class="btn btn-neutral" title="1. Installation and Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="modeling_custom_locations.html" class="btn btn-neutral" title="2. Modeling Custom Locations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

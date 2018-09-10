@@ -24,6 +24,7 @@
     :numbered:
 
     install
+    modeling_custom_locations
     accessing_data
     atmospheric_modeling
     blackbody_modeling

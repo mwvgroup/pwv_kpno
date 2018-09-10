@@ -82,10 +82,11 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">1. Installation and Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../accessing_data.html">2. Accessing PWV Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../atmospheric_modeling.html">3. Modeling the Atmosphere</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../blackbody_modeling.html">4. Modeling a Black Body</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../correcting_observations.html">5. Correcting Observations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modeling_custom_locations.html">2. Modeling Custom Locations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../accessing_data.html">3. Accessing PWV Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../atmospheric_modeling.html">4. Modeling the Atmosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../blackbody_modeling.html">5. Modeling a Black Body</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../correcting_observations.html">6. Correcting Observations</a></li>
 </ul>
 
             
@@ -347,11 +348,10 @@
         <span class="n">download_years</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ending_year</span><span class="p">)</span>
         <span class="n">years</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">download_years</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">years</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">year</span> <span class="o">&gt;</span> <span class="n">current_year</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;Cannot update models for years greater than the current year.&#39;</span>
-            <span class="p">)</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">((</span><span class="n">year</span> <span class="o">&gt;</span> <span class="n">current_year</span> <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">years</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Cannot update models for years greater than the current year.&#39;</span>
+        <span class="p">)</span>
 
     <span class="n">updated_years</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">years</span><span class="p">:</span>

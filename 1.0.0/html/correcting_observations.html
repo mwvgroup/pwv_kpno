@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>5. Correcting Observations &mdash; pwv_kpno 1.0.0 documentation</title>
+  <title>6. Correcting Observations &mdash; pwv_kpno 1.0.0 documentation</title>
   
 
   
@@ -28,7 +28,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="4. Modeling a Black Body" href="blackbody_modeling.html" /> 
+    <link rel="prev" title="5. Modeling a Black Body" href="blackbody_modeling.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -83,12 +83,13 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">1. Installation and Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="accessing_data.html">2. Accessing PWV Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">3. Modeling the Atmosphere</a></li>
-<li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">4. Modeling a Black Body</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">5. Correcting Observations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#spectrographic-observations">5.1. Spectrographic Observations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#photometric-observations">5.2. Photometric Observations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modeling_custom_locations.html">2. Modeling Custom Locations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="accessing_data.html">3. Accessing PWV Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">4. Modeling the Atmosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">5. Modeling a Black Body</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">6. Correcting Observations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#spectrographic-observations">6.1. Spectrographic Observations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#photometric-observations">6.2. Photometric Observations</a></li>
 </ul>
 </li>
 </ul>
@@ -136,7 +137,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>5. Correcting Observations</li>
+      <li>6. Correcting Observations</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -156,9 +157,9 @@
            <div itemprop="articleBody">
             
   <div class="section" id="correcting-observations">
-<h1>5. Correcting Observations<a class="headerlink" href="#correcting-observations" title="Permalink to this headline">¶</a></h1>
+<h1>6. Correcting Observations<a class="headerlink" href="#correcting-observations" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="spectrographic-observations">
-<h2>5.1. Spectrographic Observations<a class="headerlink" href="#spectrographic-observations" title="Permalink to this headline">¶</a></h2>
+<h2>6.1. Spectrographic Observations<a class="headerlink" href="#spectrographic-observations" title="Permalink to this headline">¶</a></h2>
 <p>Correcting observed spectra for PWV effects is achieved in four steps:</p>
 <ol class="arabic simple">
 <li>Use <strong>pwv_kpno</strong> to determine the PWV transmission function corresponding to a given observation</li>
@@ -239,7 +240,7 @@ this is programmatically equivalent to:</p>
 </td></tr></table></div>
 </div>
 <div class="section" id="photometric-observations">
-<h2>5.2. Photometric Observations<a class="headerlink" href="#photometric-observations" title="Permalink to this headline">¶</a></h2>
+<h2>6.2. Photometric Observations<a class="headerlink" href="#photometric-observations" title="Permalink to this headline">¶</a></h2>
 <p>For an atmospheric transmission <span class="math notranslate">\(T(\lambda)\)</span>, the photometric correction
 for an object with an intrinsic spectral energy distribution <span class="math notranslate">\(S(\lambda)\)</span>
 is given by</p>
@@ -302,7 +303,7 @@ the <code class="docutils literal notranslate"><span class="pre">Numpy</span></c
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="blackbody_modeling.html" class="btn btn-neutral" title="4. Modeling a Black Body" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="blackbody_modeling.html" class="btn btn-neutral" title="5. Modeling a Black Body" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
