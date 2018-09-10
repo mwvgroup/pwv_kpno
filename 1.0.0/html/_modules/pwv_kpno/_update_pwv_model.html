@@ -313,39 +313,54 @@
     <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">_pwv_model_path</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="update_models"><a class="viewcode-back" href="../../accessing_data.html#pwv_kpno.pwv_atm.update_models">[docs]</a><span class="k">def</span> <span class="nf">update_models</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="c1"># type: (int, float) -&gt; list[int]</span>
+<div class="viewcode-block" id="update_models"><a class="viewcode-back" href="../../accessing_data.html#pwv_kpno.pwv_atm.update_models">[docs]</a><span class="k">def</span> <span class="nf">update_models</span><span class="p">(</span><span class="n">years</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># type: (list, float) -&gt; list[int]</span>
     <span class="sd">&quot;&quot;&quot;Download data from SuomiNet and update the locally stored PWV model</span>
 
 <span class="sd">    Update the modeled PWV column density for the current site by downloading</span>
-<span class="sd">    new data releases from the SuomiNet website. If a year is provided, use</span>
-<span class="sd">    only data for that year. If not, download any published data that is not</span>
-<span class="sd">    available on the local machine.</span>
+<span class="sd">    new data releases from the SuomiNet website. Suominet organizes its data</span>
+<span class="sd">    by year. If the years argument is not provided, download any missing</span>
+<span class="sd">    data from the earliest available date on the current machine through the</span>
+<span class="sd">    present day.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        year      (int): A Year from 2010 onward</span>
+<span class="sd">        years    (list): A list of integer years to download</span>
 <span class="sd">        timeout (float): Optional seconds to wait while connecting to SuomiNet</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A list of years for which models where updated</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># Check for valid args</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">year</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Argument &#39;year&#39; must be an integer&quot;</span><span class="p">)</span>
+    <span class="n">current_year</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">year</span>
+    <span class="n">available_years</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">_available_years</span>
+    <span class="k">if</span> <span class="n">years</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">available_years</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s1">&#39;No data has been downloaded for the current location yet.&#39;</span>
+                <span class="s1">&#39; Cannot auto determine what years to download without a&#39;</span>
+                <span class="s1">&#39; starting point.&#39;</span>
+            <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">year</span> <span class="o">&lt;</span> <span class="mi">2010</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot update models for years prior to 2010&#39;</span><span class="p">)</span>
+        <span class="n">starting_year</span><span class="p">,</span> <span class="n">ending_year</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">available_years</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">available_years</span><span class="p">)</span>
+        <span class="n">all_years</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">starting_year</span><span class="p">,</span> <span class="n">current_year</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">download_years</span> <span class="o">=</span> <span class="n">all_years</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">available_years</span><span class="p">)</span>
+        <span class="n">download_years</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ending_year</span><span class="p">)</span>
+        <span class="n">years</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">download_years</span><span class="p">)</span>
 
-        <span class="k">elif</span> <span class="n">year</span> <span class="o">&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">year</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Cannot update models for years greater than current year&#39;</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">years</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">year</span> <span class="o">&gt;</span> <span class="n">current_year</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Cannot update models for years greater than the current year.&#39;</span>
+            <span class="p">)</span>
 
-    <span class="c1"># Update the local SuomiData and PWV models</span>
-    <span class="n">updated_years</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">update_local_data</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">timeout</span><span class="p">))</span>
+    <span class="n">updated_years</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">years</span><span class="p">:</span>
+        <span class="n">new_years</span> <span class="o">=</span> <span class="n">update_local_data</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
+        <span class="n">updated_years</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_years</span><span class="p">)</span>
+
     <span class="n">_create_new_pwv_model</span><span class="p">()</span>
-
+    <span class="n">all_years</span> <span class="o">=</span> <span class="n">available_years</span> <span class="o">+</span> <span class="n">updated_years</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">_replace_years</span><span class="p">(</span><span class="n">all_years</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">updated_years</span></div>
 </pre></div>
 

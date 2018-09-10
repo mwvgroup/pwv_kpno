@@ -169,18 +169,19 @@ the corresponding spectral energy distribution of a black body as seen through
 the atmosphere.</p>
 <dl class="function">
 <dt id="pwv_kpno.blackbody_with_atm.sed">
-<code class="descclassname">pwv_kpno.blackbody_with_atm.</code><code class="descname">sed</code><span class="sig-paren">(</span><em>temp</em>, <em>wavelengths</em>, <em>pwv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/blackbody_with_atm.html#sed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.blackbody_with_atm.sed" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pwv_kpno.blackbody_with_atm.</code><code class="descname">sed</code><span class="sig-paren">(</span><em>temp</em>, <em>wavelengths</em>, <em>pwv</em>, <em>bins=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/blackbody_with_atm.html#sed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.blackbody_with_atm.sed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the flux of a black body under the influence of pwv absorption</p>
-<p>Flux is returned in units of ergs / (angstrom * cm2 * s). Atmospheric
-features are interpolated from the modeled transmission function.</p>
+<p>Flux is returned in units of ergs / (angstrom * cm2 * s).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>temp</strong> (<em>float</em>) – The desired temperature of the black body</li>
-<li><strong>wavelengths</strong> (<em>ndarray</em>) – An array like object containing wavelengths</li>
+<li><strong>temp</strong> (<em>float</em>) – The temperature of the black body in Kelvin</li>
+<li><strong>wavelengths</strong> (<em>array</em>) – The SED’s wavelengths in Angstroms</li>
 <li><strong>pwv</strong> (<em>float</em>) – The PWV concentration along line of sight in mm</li>
+<li><strong>bins</strong> (<em>int</em><em> or </em><em>list</em>) – Integer number of bins or sequence of bin edges
+used to smooth atmospheric transmission</li>
 </ul>
 </td>
 </tr>
@@ -222,16 +223,15 @@ given band as seen under the effects of PWV absorption.</p>
 <dt id="pwv_kpno.blackbody_with_atm.magnitude">
 <code class="descclassname">pwv_kpno.blackbody_with_atm.</code><code class="descname">magnitude</code><span class="sig-paren">(</span><em>temp</em>, <em>band</em>, <em>pwv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/blackbody_with_atm.html#magnitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.blackbody_with_atm.magnitude" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the magnitude of a black body with and without pwv absorption</p>
-<p>Magnitudes are calculated relative to a zero point of 3631 Jy. Atmospheric
-features are interpolated from the modeled transmission function.</p>
+<p>Magnitudes are calculated relative to a zero point of 3631 Jy.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>temp</strong> (<em>float</em>) – The temperature of the desired black body</li>
-<li><strong>band</strong> (<em>tuple</em>) – Tuple with the beginning and end wavelengths of the
-desired band in angstroms</li>
+<li><strong>temp</strong> (<em>float</em>) – The temperature of the black body in Kelvin</li>
+<li><strong>band</strong> (<em>tuple</em>) – Tuple with the beginning and end wavelengths of a
+photometric band in Angstroms</li>
 <li><strong>pwv</strong> (<em>float</em>) – The PWV concentration along line of sight in mm</li>
 </ul>
 </td>
@@ -280,23 +280,22 @@ considering absorption by precipitable water vapor can be found using the
 <p>Using a black body approximation, calculate the residual error in the zero
 point of a photometric image cause by not considering the PWV transmission
 function. Returned values are in units of magnitude relative to a zero
-point of 3631 Jy. Atmospheric effects are found by interpolating from the
-modeled transmission function.</p>
+point of 3631 Jy.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ref_temp</strong> (<em>float</em>) – The temperature of a star used to calibrate the image</li>
-<li><strong>cal_temp</strong> (<em>float</em>) – The temperature of another star in the same image to
-calculate the error for</li>
-<li><strong>band</strong> (<em>tuple</em>) – Tuple specifying the beginning and end points
-of the desired band in angstroms</li>
-<li><strong>pwv</strong> (<em>float</em>) – The PWV concentration along line of sight</li>
+<li><strong>ref_temp</strong> (<em>float</em>) – The temperature of the star used to calibrate the
+image in Kelvin</li>
+<li><strong>cal_temp</strong> (<em>float</em>) – The temperature of another star in the same image</li>
+<li><strong>band</strong> (<em>tuple</em>) – A tuple with the beginning and end wavelengths of a
+photometric band in Angstroms</li>
+<li><strong>pwv</strong> (<em>float</em>) – The PWV concentration along line of sight in mm</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The residual error in the photometric zero point for the given band</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The error in magnitudes for the photometric zero point of the given band</p>
 </td>
 </tr>
 </tbody>

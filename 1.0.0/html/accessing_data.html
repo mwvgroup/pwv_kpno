@@ -209,18 +209,19 @@ and use that data to update the modeled precipitable water vapor for Kitt Peak
 National Observatory.</p>
 <dl class="function">
 <dt id="pwv_kpno.pwv_atm.update_models">
-<code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">update_models</code><span class="sig-paren">(</span><em>year=None</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/_update_pwv_model.html#update_models"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.update_models" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">update_models</code><span class="sig-paren">(</span><em>years=None</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/_update_pwv_model.html#update_models"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.update_models" title="Permalink to this definition">¶</a></dt>
 <dd><p>Download data from SuomiNet and update the locally stored PWV model</p>
 <p>Update the modeled PWV column density for the current site by downloading
-new data releases from the SuomiNet website. If a year is provided, use
-only data for that year. If not, download any published data that is not
-available on the local machine.</p>
+new data releases from the SuomiNet website. Suominet organizes its data
+by year. If the years argument is not provided, download any missing
+data from the earliest available date on the current machine through the
+present day.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>year</strong> (<em>int</em>) – A Year from 2010 onward</li>
+<li><strong>years</strong> (<em>list</em>) – A list of integer years to download</li>
 <li><strong>timeout</strong> (<em>float</em>) – Optional seconds to wait while connecting to SuomiNet</li>
 </ul>
 </td>
@@ -421,9 +422,8 @@ return an uncertainty on the measured value.</p>
 <dt id="pwv_kpno.pwv_atm.pwv_date">
 <code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">pwv_date</code><span class="sig-paren">(</span><em>date</em>, <em>airmass=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/pwv_atm.html#pwv_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.pwv_date" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the modeled PWV column density at the current site</p>
-<p>Interpolate from the modeled PWV column density at at the current site
-being modeled and return the PWV column density for a given datetime and
-airmass.</p>
+<p>Interpolate from the modeled PWV column density at the current site being
+modeled and return the PWV column density for a given datetime and airmass.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

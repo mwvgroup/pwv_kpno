@@ -213,17 +213,18 @@
 <span class="n">__status__</span> <span class="o">=</span> <span class="s1">&#39;Release&#39;</span>
 
 
-<div class="viewcode-block" id="sed"><a class="viewcode-back" href="../../blackbody_modeling.html#pwv_kpno.blackbody_with_atm.sed">[docs]</a><span class="k">def</span> <span class="nf">sed</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">wavelengths</span><span class="p">,</span> <span class="n">pwv</span><span class="p">):</span>
+<div class="viewcode-block" id="sed"><a class="viewcode-back" href="../../blackbody_modeling.html#pwv_kpno.blackbody_with_atm.sed">[docs]</a><span class="k">def</span> <span class="nf">sed</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">wavelengths</span><span class="p">,</span> <span class="n">pwv</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="c1"># type: (float, np.ndarray, float) -&gt; np.ndarray[float]</span>
     <span class="sd">&quot;&quot;&quot;Return the flux of a black body under the influence of pwv absorption</span>
 
-<span class="sd">     Flux is returned in units of ergs / (angstrom * cm2 * s). Atmospheric</span>
-<span class="sd">     features are interpolated from the modeled transmission function.</span>
+<span class="sd">     Flux is returned in units of ergs / (angstrom * cm2 * s).</span>
 
 <span class="sd">     Args:</span>
-<span class="sd">         temp          (float): The desired temperature of the black body</span>
-<span class="sd">         wavelengths (ndarray): An array like object containing wavelengths</span>
-<span class="sd">         pwv           (float): The PWV concentration along line of sight in mm</span>
+<span class="sd">         temp        (float): The temperature of the black body in Kelvin</span>
+<span class="sd">         wavelengths (array): The SED&#39;s wavelengths in Angstroms</span>
+<span class="sd">         pwv         (float): The PWV concentration along line of sight in mm</span>
+<span class="sd">         bins  (int or list): Integer number of bins or sequence of bin edges</span>
+<span class="sd">                               used to smooth atmospheric transmission</span>
 
 <span class="sd">     Returns:</span>
 <span class="sd">         An array of flux values in units of ergs / (angstrom * cm2 * s * sr)</span>
@@ -233,7 +234,7 @@
     <span class="n">bb_sed</span> <span class="o">=</span> <span class="n">blackbody_lambda</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">,</span> <span class="n">temp</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
 
     <span class="k">if</span> <span class="n">pwv</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">transmission</span> <span class="o">=</span> <span class="n">trans_for_pwv</span><span class="p">(</span><span class="n">pwv</span><span class="p">)</span>
+        <span class="n">transmission</span> <span class="o">=</span> <span class="n">trans_for_pwv</span><span class="p">(</span><span class="n">pwv</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">)</span>
         <span class="n">sampled_transmission</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">,</span>
                                          <span class="n">transmission</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">],</span>
                                          <span class="n">transmission</span><span class="p">[</span><span class="s1">&#39;transmission&#39;</span><span class="p">])</span>
@@ -247,13 +248,12 @@
     <span class="c1"># type: (float, tuple[float], float) -&gt; float</span>
     <span class="sd">&quot;&quot;&quot;Return the magnitude of a black body with and without pwv absorption</span>
 
-<span class="sd">    Magnitudes are calculated relative to a zero point of 3631 Jy. Atmospheric</span>
-<span class="sd">    features are interpolated from the modeled transmission function.</span>
+<span class="sd">    Magnitudes are calculated relative to a zero point of 3631 Jy.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        temp (float): The temperature of the desired black body</span>
-<span class="sd">        band (tuple): Tuple with the beginning and end wavelengths of the</span>
-<span class="sd">                       desired band in angstroms</span>
+<span class="sd">        temp (float): The temperature of the black body in Kelvin</span>
+<span class="sd">        band (tuple): Tuple with the beginning and end wavelengths of a</span>
+<span class="sd">                        photometric band in Angstroms</span>
 <span class="sd">        pwv  (float): The PWV concentration along line of sight in mm</span>
 
 <span class="sd">    Returns:</span>
@@ -283,19 +283,18 @@
 <span class="sd">    Using a black body approximation, calculate the residual error in the zero</span>
 <span class="sd">    point of a photometric image cause by not considering the PWV transmission</span>
 <span class="sd">    function. Returned values are in units of magnitude relative to a zero</span>
-<span class="sd">    point of 3631 Jy. Atmospheric effects are found by interpolating from the</span>
-<span class="sd">    modeled transmission function.</span>
+<span class="sd">    point of 3631 Jy.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        ref_temp (float): The temperature of a star used to calibrate the image</span>
-<span class="sd">        cal_temp (float): The temperature of another star in the same image to</span>
-<span class="sd">                           calculate the error for</span>
-<span class="sd">        band     (tuple): Tuple specifying the beginning and end points</span>
-<span class="sd">                           of the desired band in angstroms</span>
-<span class="sd">        pwv      (float): The PWV concentration along line of sight</span>
+<span class="sd">        ref_temp (float): The temperature of the star used to calibrate the</span>
+<span class="sd">                            image in Kelvin</span>
+<span class="sd">        cal_temp (float): The temperature of another star in the same image</span>
+<span class="sd">        band     (tuple): A tuple with the beginning and end wavelengths of a</span>
+<span class="sd">                            photometric band in Angstroms</span>
+<span class="sd">        pwv      (float): The PWV concentration along line of sight in mm</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        The residual error in the photometric zero point for the given band</span>
+<span class="sd">        The error in magnitudes for the photometric zero point of the given band</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Values for reference star</span>
