@@ -60,35 +60,35 @@ def _check_attrs(iterable, **kwargs):
 
 
 class SearchArgumentErrors(TestCase):
-    """Test that _check_search_args raises the appropriate errors
+    """Test that _check_date_time_args raises the appropriate errors
 
-    _check_search_args is responsible for checking the arguments for both
+    _check_date_time_args is responsible for checking the arguments for both
     pwv_kpno.pwv_atm.measured_pwv and pwv_kpno.pwv_atm.modeled_pwv"""
 
-    def assert_raises_iter(self, iterable, error):
+    def assert_raises_iter(self, kwarg, iterable, error):
         for val in iterable:
-            self.assertRaises(error, pwv_atm._check_date_time_args, val)
+            self.assertRaises(error, pwv_atm._check_date_time_args, **{kwarg: val})
 
     def test_checks_for_valid_year(self):
         """Test for correct errors due to bad year argument"""
 
         next_year = datetime.now().year + 1
-        self.assert_raises_iter([-2010, 2009, next_year], ValueError)
+        self.assert_raises_iter('year', [next_year], ValueError)
 
     def test_checks_for_valid_month(self):
         """Test for correct errors due to bad month argument"""
 
-        self.assert_raises_iter([-3, 0, 13], ValueError)
+        self.assert_raises_iter('month', [-3, 0, 13], ValueError)
 
     def test_checks_for_valid_day(self):
         """Test for correct errors due to bad day argument"""
 
-        self.assert_raises_iter([-3, 0, 32], ValueError)
+        self.assert_raises_iter('day', [-3, 0, 32], ValueError)
 
     def test_checks_for_valid_hour(self):
         """Test for correct errors due to bad hour argument"""
 
-        self.assert_raises_iter([-3, 24, 30], ValueError)
+        self.assert_raises_iter('hour', [-3, 24, 30], ValueError)
 
 
 class MeasuredPWV(TestCase):

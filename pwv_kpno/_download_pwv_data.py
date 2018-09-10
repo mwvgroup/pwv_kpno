@@ -112,7 +112,6 @@ def _read_file(path):
     """
 
     # Credit goes to Jessica Kroboth for identifying conditions 1 and 2 above
-    print(path)
     site_id = path[-15:-11]
     names = ['date', site_id, site_id + '_err', 'ZenithDelay',
              'SrfcPress', 'SrfcTemp', 'SrfcRH']
@@ -268,7 +267,8 @@ def update_local_data(year=None, timeout=None):
     for yr in years:
         new_data = _download_data_for_year(yr, timeout)
         stacked_tables = vstack([local_data, new_data])
-        local_data = unique(stacked_tables, keys=['date'], keep='last')
+        if stacked_tables:
+            local_data = unique(stacked_tables, keys=['date'], keep='last')
         new_years.append(yr)
 
     # Update local files
