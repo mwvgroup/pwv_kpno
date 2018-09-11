@@ -1,89 +1,169 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>6. Correcting Observations &mdash; pwv_kpno 1.0.0 documentation</title>
-  
 
-  
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>6. Correcting Observations &#8212; pwv_kpno 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom_style.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="5. Modeling a Black Body" href="blackbody_modeling.html" /> 
+    <link rel="prev" title="5. Modeling a Black Body" href="blackbody_modeling.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
 
-  
-  <script src="_static/js/modernizr.min.js"></script>
+  </head><body>
 
-</head>
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          pwv_kpno</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.0.0</b></span>
+      </div>
 
-<body class="wy-body-for-nav">
-
-   
-  <div class="wy-grid-for-nav">
-
-    
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
-
-          
-            <a href="index.html" class="icon icon-home"> pwv_kpno
-          
-
-          
-          </a>
-
-          
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="./install.html">Documentation</a></li>
+                <li><a href="./install.html">Examples</a></li>
+                <li><a href="https://github.com/mwvgroup/pwv_kpno/issues/new.html">Need Help?</a></li>
             
             
-              <div class="version">
-                1.0.0
-              </div>
-            
-          
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">1. Installation and Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#installation">1.1. Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="install.html#using-pip-recommended">1.1.1. Using PIP (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="install.html#using-setup-py">1.1.2. Using setup.py</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#package-setup">1.2. Package Setup</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modeling_custom_locations.html">2. Modeling Custom Sites</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modeling_custom_locations.html#available-sites-and-settings">2.1. Available Sites and Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modeling_custom_locations.html#defining-a-new-location">2.2. Defining a New Location</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modeling_custom_locations.html#examples">2.2.1. Examples:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modeling_custom_locations.html#specifying-data-cuts">2.3. Specifying Data Cuts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modeling_custom_locations.html#importing-a-new-location">2.4. Importing a New Location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modeling_custom_locations.html#accessing-current-settings">2.5. Accessing Current Settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="accessing_data.html">3. Accessing PWV Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="accessing_data.html#checking-for-available-data">3.1. Checking For Available Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="accessing_data.html#examples">3.1.1. Examples:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="accessing_data.html#updating-data">3.2. Updating Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="accessing_data.html#id1">3.2.1. Examples:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="accessing_data.html#measured-pwv-data">3.3. Measured PWV Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="accessing_data.html#id2">3.3.1. Examples:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="accessing_data.html#modeled-pwv-data">3.4. Modeled PWV Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="accessing_data.html#id3">3.4.1. Examples:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="accessing_data.html#pwv-for-a-given-date">3.5. PWV For a Given Date</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="accessing_data.html#id4">3.5.1. Examples:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">4. Modeling the Atmosphere</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="atmospheric_modeling.html#transmission-for-datetime">4.1. Transmission for Datetime</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="atmospheric_modeling.html#examples">4.1.1. Examples:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="atmospheric_modeling.html#transmission-for-pwv">4.2. Transmission for PWV</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="atmospheric_modeling.html#id1">4.2.1. Examples:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="atmospheric_modeling.html#binned-the-transmission">4.3. Binned the Transmission</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">5. Modeling a Black Body</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="blackbody_modeling.html#generating-an-sed">5.1. Generating an SED</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="blackbody_modeling.html#example">5.1.1. Example:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="blackbody_modeling.html#magnitude">5.2. Magnitude</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="blackbody_modeling.html#examples">5.2.1. Examples:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="blackbody_modeling.html#estimating-zero-point-error">5.3. Estimating Zero Point Error</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="blackbody_modeling.html#id1">5.3.1. Examples:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">6. Correcting Observations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#spectrographic-observations">6.1. Spectrographic Observations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#photometric-observations">6.2. Photometric Observations</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
               
             
             
-              <ul class="current">
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">1. Installation and Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modeling_custom_locations.html">2. Modeling Custom Locations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modeling_custom_locations.html">2. Modeling Custom Sites</a></li>
 <li class="toctree-l1"><a class="reference internal" href="accessing_data.html">3. Accessing PWV Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">4. Modeling the Atmosphere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">5. Modeling a Black Body</a></li>
@@ -94,68 +174,10 @@
 </li>
 </ul>
 
-            
-          
         </div>
       </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
+    <div class="col-md-9 content">
       
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">pwv_kpno</a>
-        
-      </nav>
-
-
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html">Docs</a> &raquo;</li>
-        
-      <li>6. Correcting Observations</li>
-    
-    
-      <li class="wy-breadcrumbs-aside">
-        
-            
-            <a href="_sources/correcting_observations.rst.txt" rel="nofollow"> View page source</a>
-          
-        
-      </li>
-    
-  </ul>
-
-  
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-            
   <div class="section" id="correcting-observations">
 <h1>6. Correcting Observations<a class="headerlink" href="#correcting-observations" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="spectrographic-observations">
@@ -295,67 +317,28 @@ the <code class="docutils literal notranslate"><span class="pre">Numpy</span></c
 </div>
 
 
-           </div>
-           
-          </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-      
-        <a href="blackbody_modeling.html" class="btn btn-neutral" title="5. Modeling a Black Body" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
     </div>
-  
-
-  <hr/>
-
-  <div role="contentinfo">
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="_sources/correcting_observations.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
     <p>
-        &copy; Copyright 2018, Daniel J. Perrefort.
-
+        &copy; Copyright 2018, Daniel J. Perrefort.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
-
 </footer>
-
-        </div>
-      </div>
-
-    </section>
-
-  </div>
-  
-
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'1.0.0',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
-</body>
+  </body>
 </html>

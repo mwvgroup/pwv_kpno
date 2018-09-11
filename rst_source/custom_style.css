@@ -1,0 +1,38 @@
+body {
+    color: #444444 !important;
+}
+
+footer {
+    background-color: #f5f5f5 !important;
+}
+
+a.reference {
+    color: #4c72b0 !important;
+}
+
+/* Controls all inline code plus first line of autodoc */
+code {
+    color: #49759c !important;
+    background-color: #f5f5f5 !important;
+}
+
+/* Controls first line of autodoc */
+code.descname, code.descclassname {
+    color: #444444 !important;
+    background-color: #f5f5f5 !important;
+}
+
+/* Controls function name in first line of autodoc */
+code.descclassname + code.descname {
+    margin-left: -6px;
+    padding-left: 0px;
+}
+
+dl.function {
+    background-color: #f5f5f5 !important;
+    padding: 10px;
+}
+
+.highlight {
+    background-color: red !important;
+}

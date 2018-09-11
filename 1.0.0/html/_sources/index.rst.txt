@@ -1,10 +1,10 @@
 .. figure::  _static/LOGO.png
    :align:   center
 
-.. image:: https://img.shields.io/badge/version-0.12.1-blue.svg
+.. image:: https://img.shields.io/badge/version-1.0.0-blue.svg
     :target: https://pypi.python.org/pypi/pwv-kpno/
 
-.. image:: https://img.shields.io/badge/python-2.7,%203.5,%203.6,%203.7-blue.svg
+.. image:: https://img.shields.io/badge/python-2.7,%203.5+-blue.svg
     :target: #
 
 .. image:: https://img.shields.io/badge/license-GPL%20v3.0-blue.svg
@@ -38,35 +38,33 @@ Overview
 ********
 
 **pwv_kpno** is a Python package for modeling the atmospheric absorption due
-to H\ :sub:`2`\ O. It provides atmospheric models from 3,000 to 12,000 Angstroms
-at a resolution of 0.05 Angstroms.
-
-Atmospheric absorption in the near-infrared is highly dependent on the column
-density of precipitable water vapor (PWV). By measuring the delay of GPS
-signals through the atmosphere, the `SuomiNet project
-<http://www.suominet.ucar.edu>`_ provides accurate PWV measurements for
-multiple, international locations. The **pwv_kpno** package uses published
+to H\ :sub:`2`\ O. Atmospheric absorption in the optical and near-infrared
+is highly dependent on the column density of precipitable water vapor (PWV).
+By measuring the delay of GPS signals through the atmosphere, the
+`SuomiNet project <http://www.suominet.ucar.edu>`_ provides PWV measurements
+for hundreds of locations world wide. The *pwv_kpno* package uses published
 SuomiNet data in conjunction with MODTRAN models to determine the modeled
-atmospheric transmission function as a function of date and time.
+atmospheric transmission as a function of date and time.
 
 By default the package provides access to the time dependent transmission
 function at Kitt Peak National Observatory. However, this package is designed
-to be easily extensible to other locations around within the SuomiNet Network.
-Additionally, **pwv_kpno** provides access to atmospheric models as a function
-of PWV, which is independent of a geographical location.
+to be easily extensible to other locations within the SuomiNet Network.
+Additionally, *pwv_kpno* provides access to atmospheric models as a function
+of PWV, which is independent of geographical location. Atmospheric models
+are provided from 3,000 to 12,000 Angstroms at a resolution of 0.05 Angstroms.
 
 
 ****************************
 Contributing and Attribution
 ****************************
 
-pwv_kpno is open source software released under the GNU General Public License.
-Issues raised on `GitHub <https://github.com/mwvgroup/pwv_kpno>`_ and pull
-requests from contributors are welcome. Additionally, pull requests introducing
-custom configuration files that extend **pwv_kpno** to new locations are also
-welcome.
+*pwv_kpno* is open source software released under the GNU General Public
+License. Issues raised on `GitHub <https://github.com/mwvgroup/pwv_kpno>`_ and
+pull requests from contributors are welcome. Additionally, pull requests
+introducing custom configuration files that extend *pwv_kpno* to new
+locations are also welcome.
 
-If you use **pwv_kpno** as part of any published work or research, we ask that
+If you use *pwv_kpno* as part of any published work or research, we ask that
 you please use the following standard acknowledgement:
 
     *This research made use of the pwv_kpno python package, an open source project that provides models for the atmospheric absorption due to precipitable water vapor in the near-infrared (Perrefort, Wood-Vasey et al. 2018)*
@@ -93,7 +91,7 @@ Additional Resources
 ********************
 
 - An up time monitor for the SuomiNet website can be found
-  `here <https://stats.uptimerobot.com/gn1xqsJvj>`_.
+  `here <https://stats.uptimerobot.com/gn1xqsJvj/780552028>`_.
 
 - For more information on the Kitt Peak National Observatory, see
   `www.noao.edu/kpno/ <https://www.noao.edu/kpno/>`_

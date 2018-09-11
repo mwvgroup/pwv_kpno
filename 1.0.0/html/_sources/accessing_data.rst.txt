@@ -14,13 +14,16 @@ Checking For Available Data
 To check what years of SuomiNet data are locally available, use the
 ``available_data`` function.
 
+------------
+
 .. autofunction:: pwv_kpno.pwv_atm.available_data
+
+------------
 
 Examples:
 ---------
 
 .. code-block:: python
-    :linenos:
 
     >>> from pwv_kpno import pwv_atm
     >>> pwv_atm.available_data()
@@ -43,7 +46,6 @@ Examples:
 To ensure that the PWV data for **pwv_kpno** is up to date run:
 
 .. code-block:: python
-    :linenos:
 
     >>> from pwv_kpno import pwv_atm
     >>> pwv_atm.update_models()
@@ -54,7 +56,6 @@ If desired, **pwv_kpno** can be forced to (re)download SuomiNet data for a
 specific year:
 
 .. code-block:: python
-    :linenos:
 
     >>> pwv_atm.update_models(2010)
 
@@ -67,7 +68,11 @@ Measured PWV Data
 Data that has been downloaded from SuomiNet can be accessed using the
 ``measured_pwv`` function.
 
+------------
+
 .. autofunction:: pwv_kpno.pwv_atm.measured_pwv
+
+------------
 
 Examples:
 ---------
@@ -76,7 +81,6 @@ To retrieve all SuomiNet data available on the local machine as an ``astropy``
 table:
 
 .. code-block:: python
-    :linenos:
 
     >>> from pwv_kpno import pwv_atm
     >>> pwv_atm.measured_pwv()
@@ -94,7 +98,6 @@ datetime using keyword arguments. Note in the below example that there is no
 data available from the SA48 receiver for this date:
 
 .. code-block:: python
-    :linenos:
 
     >>> pwv_atm.measured_pwv(year=2016, month=11, day=14)
 
@@ -115,7 +118,11 @@ Modeled PWV Data
 To retrieve the modeled PWV level at Kitt Peak National Observatory, use the
 ``modeled_pwv`` function.
 
+------------
+
 .. autofunction:: pwv_kpno.pwv_atm.modeled_pwv
+
+------------
 
 Examples:
 ---------
@@ -123,7 +130,6 @@ Examples:
 To retrieve the entire PWV model from 2010 onward:
 
 .. code-block:: python
-    :linenos:
 
     >>> from pwv_kpno import pwv_atm
     >>> pwv_atm.modeled_pwv()
@@ -139,7 +145,6 @@ To retrieve the entire PWV model from 2010 onward:
 To retrieve the modeled PWV level for November 14th, 2016:
 
 .. code-block:: python
-    :linenos:
 
     >>> pwv_atm.modeled_pwv(year=2016, month=11, day=14)
 
@@ -158,7 +163,11 @@ For convenience, users can interpolate from the modeled PWV concentration at
 Kitt Peak using the ``pwv_date`` function. Note that this function does not
 return an uncertainty on the measured value.
 
+------------
+
 .. autofunction:: pwv_kpno.pwv_atm.pwv_date
+
+------------
 
 Examples:
 ---------

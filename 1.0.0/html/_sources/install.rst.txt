@@ -61,9 +61,10 @@ Package Setup
 **pwv_kpno** relies on PWV measurements taken by the SuomiNet project. In order
 to model the PWV transmission function for a given date, SuomiNet data for that
 date must be available on the host machine. By default, each release of
-**pwv_kpno** contains all necessary SuomiNet data from 2010 through the end of
-the previous year. It is recommended to update the local SuomiNet data after
-installing or updating the package, and periodically as necessary.
+**pwv_kpno** contains all SuomiNet data for Kitt Peak National Observatory
+from 2010 through the end of the previous year. It is recommended to update the
+local SuomiNet data after installing or updating the package, and periodically
+as necessary.
 
 To download any new SuomiNet data use the ``update_models`` function:
 
@@ -73,10 +74,5 @@ To download any new SuomiNet data use the ``update_models`` function:
     >>> from pwv_kpno import pwv_atm
     >>> pwv_atm.update_models()
 
-Optionally, you can download data only for a specific year by passing the year
-as an argument:
-
-.. code-block:: python
-    :linenos:
-
-    >>> pwv_atm.update_models(year=2018)
+Further documentation on updating the locally available data can be found
+`here <./accessing_data.html>`_.

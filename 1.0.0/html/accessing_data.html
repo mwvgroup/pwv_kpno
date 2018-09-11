@@ -1,96 +1,191 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>3. Accessing PWV Data &mdash; pwv_kpno 1.0.0 documentation</title>
-  
 
-  
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>3. Accessing PWV Data &#8212; pwv_kpno 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom_style.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="4. Modeling the Atmosphere" href="atmospheric_modeling.html" />
-    <link rel="prev" title="2. Modeling Custom Locations" href="modeling_custom_locations.html" /> 
+    <link rel="prev" title="2. Modeling Custom Sites" href="modeling_custom_locations.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
 
-  
-  <script src="_static/js/modernizr.min.js"></script>
+  </head><body>
 
-</head>
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          pwv_kpno</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.0.0</b></span>
+      </div>
 
-<body class="wy-body-for-nav">
-
-   
-  <div class="wy-grid-for-nav">
-
-    
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
-
-          
-            <a href="index.html" class="icon icon-home"> pwv_kpno
-          
-
-          
-          </a>
-
-          
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="./install.html">Documentation</a></li>
+                <li><a href="./install.html">Examples</a></li>
+                <li><a href="https://github.com/mwvgroup/pwv_kpno/issues/new.html">Need Help?</a></li>
             
             
-              <div class="version">
-                1.0.0
-              </div>
-            
-          
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">1. Installation and Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#installation">1.1. Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="install.html#using-pip-recommended">1.1.1. Using PIP (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="install.html#using-setup-py">1.1.2. Using setup.py</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#package-setup">1.2. Package Setup</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modeling_custom_locations.html">2. Modeling Custom Sites</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modeling_custom_locations.html#available-sites-and-settings">2.1. Available Sites and Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modeling_custom_locations.html#defining-a-new-location">2.2. Defining a New Location</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modeling_custom_locations.html#examples">2.2.1. Examples:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modeling_custom_locations.html#specifying-data-cuts">2.3. Specifying Data Cuts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modeling_custom_locations.html#importing-a-new-location">2.4. Importing a New Location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modeling_custom_locations.html#accessing-current-settings">2.5. Accessing Current Settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3. Accessing PWV Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#checking-for-available-data">3.1. Checking For Available Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#examples">3.1.1. Examples:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#updating-data">3.2. Updating Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">3.2.1. Examples:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#measured-pwv-data">3.3. Measured PWV Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">3.3.1. Examples:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#modeled-pwv-data">3.4. Modeled PWV Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">3.4.1. Examples:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pwv-for-a-given-date">3.5. PWV For a Given Date</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">3.5.1. Examples:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">4. Modeling the Atmosphere</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="atmospheric_modeling.html#transmission-for-datetime">4.1. Transmission for Datetime</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="atmospheric_modeling.html#examples">4.1.1. Examples:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="atmospheric_modeling.html#transmission-for-pwv">4.2. Transmission for PWV</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="atmospheric_modeling.html#id1">4.2.1. Examples:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="atmospheric_modeling.html#binned-the-transmission">4.3. Binned the Transmission</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">5. Modeling a Black Body</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="blackbody_modeling.html#generating-an-sed">5.1. Generating an SED</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="blackbody_modeling.html#example">5.1.1. Example:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="blackbody_modeling.html#magnitude">5.2. Magnitude</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="blackbody_modeling.html#examples">5.2.1. Examples:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="blackbody_modeling.html#estimating-zero-point-error">5.3. Estimating Zero Point Error</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="blackbody_modeling.html#id1">5.3.1. Examples:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="correcting_observations.html">6. Correcting Observations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="correcting_observations.html#spectrographic-observations">6.1. Spectrographic Observations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="correcting_observations.html#photometric-observations">6.2. Photometric Observations</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
               
             
             
-              <ul class="current">
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">1. Installation and Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modeling_custom_locations.html">2. Modeling Custom Locations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modeling_custom_locations.html">2. Modeling Custom Sites</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">3. Accessing PWV Data</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#checking-for-available-data">3.1. Checking For Available Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#updating-data">3.2. Updating Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#measured-pwv-data">3.3. Measured PWV Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#modeled-pwv-data">3.4. Modeled PWV Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pwv-for-a-given-date">3.5. PWV For a Given Date</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#checking-for-available-data">3.1. Checking For Available Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#examples">3.1.1. Examples:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#updating-data">3.2. Updating Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">3.2.1. Examples:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#measured-pwv-data">3.3. Measured PWV Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">3.3.1. Examples:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#modeled-pwv-data">3.4. Modeled PWV Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">3.4.1. Examples:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pwv-for-a-given-date">3.5. PWV For a Given Date</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">3.5.1. Examples:</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">4. Modeling the Atmosphere</a></li>
@@ -98,68 +193,10 @@
 <li class="toctree-l1"><a class="reference internal" href="correcting_observations.html">6. Correcting Observations</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
+    <div class="col-md-9 content">
       
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">pwv_kpno</a>
-        
-      </nav>
-
-
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html">Docs</a> &raquo;</li>
-        
-      <li>3. Accessing PWV Data</li>
-    
-    
-      <li class="wy-breadcrumbs-aside">
-        
-            
-            <a href="_sources/accessing_data.rst.txt" rel="nofollow"> View page source</a>
-          
-        
-      </li>
-    
-  </ul>
-
-  
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-            
   <div class="section" id="accessing-pwv-data">
 <h1>3. Accessing PWV Data<a class="headerlink" href="#accessing-pwv-data" title="Permalink to this headline">¶</a></h1>
 <p>In order to model the PWV absorption for a given date and time, SuomiNet data
@@ -171,6 +208,7 @@ through the <code class="docutils literal notranslate"><span class="pre">pwv_atm
 <h2>3.1. Checking For Available Data<a class="headerlink" href="#checking-for-available-data" title="Permalink to this headline">¶</a></h2>
 <p>To check what years of SuomiNet data are locally available, use the
 <code class="docutils literal notranslate"><span class="pre">available_data</span></code> function.</p>
+<hr class="docutils" />
 <dl class="function">
 <dt id="pwv_kpno.pwv_atm.available_data">
 <code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">available_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/pwv_atm.html#available_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.available_data" title="Permalink to this definition">¶</a></dt>
@@ -189,17 +227,15 @@ been released by SuomiNet for a given year that is not locally available.</p>
 </table>
 </dd></dl>
 
+<hr class="docutils" />
 <div class="section" id="examples">
 <h3>3.1.1. Examples:<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">available_data</span><span class="p">()</span>
 
 <span class="go">  [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017]</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 </div>
 <div class="section" id="updating-data">
@@ -237,30 +273,26 @@ present day.</p>
 <div class="section" id="id1">
 <h3>3.2.1. Examples:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>To ensure that the PWV data for <strong>pwv_kpno</strong> is up to date run:</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">update_models</span><span class="p">()</span>
 
 <span class="go">  [2017, 2018]</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <p>If desired, <strong>pwv_kpno</strong> can be forced to (re)download SuomiNet data for a
 specific year:</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">update_models</span><span class="p">(</span><span class="mi">2010</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">update_models</span><span class="p">(</span><span class="mi">2010</span><span class="p">)</span>
 
 <span class="go">  [2010]</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 </div>
 <div class="section" id="measured-pwv-data">
 <h2>3.3. Measured PWV Data<a class="headerlink" href="#measured-pwv-data" title="Permalink to this headline">¶</a></h2>
 <p>Data that has been downloaded from SuomiNet can be accessed using the
 <code class="docutils literal notranslate"><span class="pre">measured_pwv</span></code> function.</p>
+<hr class="docutils" />
 <dl class="function">
 <dt id="pwv_kpno.pwv_atm.measured_pwv">
 <code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">measured_pwv</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>hour=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/pwv_atm.html#measured_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.measured_pwv" title="Permalink to this definition">¶</a></dt>
@@ -287,20 +319,12 @@ optionally refined by year, month, day, and hour.</p>
 </table>
 </dd></dl>
 
+<hr class="docutils" />
 <div class="section" id="id2">
 <h3>3.3.1. Examples:<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>To retrieve all SuomiNet data available on the local machine as an <code class="docutils literal notranslate"><span class="pre">astropy</span></code>
 table:</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">measured_pwv</span><span class="p">()</span>
 
 <span class="go">           date       KITT KITT_err P014 P014_err SA46 SA46_err SA48 ...</span>
@@ -311,19 +335,11 @@ table:</p>
 <span class="go">  2010-01-01 01:15:00   --       --  3.7    0.025  3.4    0.125  3.6 ...</span>
 <span class="go">               ...     ...      ...  ...      ...  ...      ...  ... ...</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <p>To retrieve SuomiNet data taken on a specific date, specify the desired
 datetime using keyword arguments. Note in the below example that there is no
 data available from the SA48 receiver for this date:</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">measured_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">measured_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 
 <span class="go">           date       KITT KITT_err P014 P014_err SA46 SA46_err SA48 ...</span>
 <span class="go">           UTC         mm     mm     mm     mm     mm     mm     mm  ...</span>
@@ -333,7 +349,7 @@ data available from the SA48 receiver for this date:</p>
 <span class="go">  2016-11-14 01:15:00  3.9    0.925  6.7    0.425  9.7    0.525   -- ...</span>
 <span class="go">               ...     ...      ...  ...      ...  ...      ...  ... ...</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <p><strong>Note:</strong> If no SuomiNet data is available at all during the specified datetime, then the
 returned table will be empty.</p>
 </div>
@@ -342,6 +358,7 @@ returned table will be empty.</p>
 <h2>3.4. Modeled PWV Data<a class="headerlink" href="#modeled-pwv-data" title="Permalink to this headline">¶</a></h2>
 <p>To retrieve the modeled PWV level at Kitt Peak National Observatory, use the
 <code class="docutils literal notranslate"><span class="pre">modeled_pwv</span></code> function.</p>
+<hr class="docutils" />
 <dl class="function">
 <dt id="pwv_kpno.pwv_atm.modeled_pwv">
 <code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">modeled_pwv</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>hour=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/pwv_atm.html#modeled_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.modeled_pwv" title="Permalink to this definition">¶</a></dt>
@@ -368,19 +385,11 @@ Results can be optionally refined by year, month, day, and hour.</p>
 </table>
 </dd></dl>
 
+<hr class="docutils" />
 <div class="section" id="id3">
 <h3>3.4.1. Examples:<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p>To retrieve the entire PWV model from 2010 onward:</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">modeled_pwv</span><span class="p">()</span>
 
 <span class="go">           date       pwv   pwv_err</span>
@@ -391,17 +400,9 @@ Results can be optionally refined by year, month, day, and hour.</p>
 <span class="go">  2010-01-01 01:15:00 1.178   1.175</span>
 <span class="go">                  ...   ...     ...</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <p>To retrieve the modeled PWV level for November 14th, 2016:</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">modeled_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">modeled_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 
 <span class="go">           date       pwv pwv_err</span>
 <span class="go">           UTC         mm    mm</span>
@@ -411,7 +412,7 @@ Results can be optionally refined by year, month, day, and hour.</p>
 <span class="go">  2016-11-14 01:15:00 3.9   0.925</span>
 <span class="go">                  ... ...    ...</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 </div>
 <div class="section" id="pwv-for-a-given-date">
@@ -419,6 +420,7 @@ Results can be optionally refined by year, month, day, and hour.</p>
 <p>For convenience, users can interpolate from the modeled PWV concentration at
 Kitt Peak using the <code class="docutils literal notranslate"><span class="pre">pwv_date</span></code> function. Note that this function does not
 return an uncertainty on the measured value.</p>
+<hr class="docutils" />
 <dl class="function">
 <dt id="pwv_kpno.pwv_atm.pwv_date">
 <code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">pwv_date</code><span class="sig-paren">(</span><em>date</em>, <em>airmass=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/pwv_atm.html#pwv_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.pwv_date" title="Permalink to this definition">¶</a></dt>
@@ -443,6 +445,7 @@ The error in modeled PWV column density</p>
 </table>
 </dd></dl>
 
+<hr class="docutils" />
 <div class="section" id="id4">
 <h3>3.5.1. Examples:<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>To retrieve the modeled PWV level for November 14, 2016 at 11:06 AM:</p>
@@ -464,69 +467,28 @@ The error in modeled PWV column density</p>
 </div>
 
 
-           </div>
-           
-          </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="atmospheric_modeling.html" class="btn btn-neutral float-right" title="4. Modeling the Atmosphere" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="modeling_custom_locations.html" class="btn btn-neutral" title="2. Modeling Custom Locations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
     </div>
-  
-
-  <hr/>
-
-  <div role="contentinfo">
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="_sources/accessing_data.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
     <p>
-        &copy; Copyright 2018, Daniel J. Perrefort.
-
+        &copy; Copyright 2018, Daniel J. Perrefort.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
-
 </footer>
-
-        </div>
-      </div>
-
-    </section>
-
-  </div>
-  
-
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'1.0.0',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
-</body>
+  </body>
 </html>
