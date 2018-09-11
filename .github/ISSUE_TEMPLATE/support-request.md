@@ -4,7 +4,7 @@ about: General support and usage questions
 
 ---
 
-### Need some help?
+**Need some help?**
 
 If you have not already done so, please have a look through our online 
 documentation [here](mwvgroup.github.io/pwv_kpno). If that doesn't provide the
