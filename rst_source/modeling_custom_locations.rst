@@ -15,7 +15,7 @@ SuomiNet connected GPS receiver. A list of sites that are available with a
 particular install of *pwv_kpno* can be retrieved by running
 
 .. code-block:: python
-
+    :linenos:
 
     >>> from pwv_kpno.package_settings import settings
     >>> print(settings.available_sites)
@@ -29,7 +29,7 @@ modeled can be accessed by printing the ``settings`` object. For example, the
 settings for Kitt Peak are as follows
 
 .. code-block:: python
-
+    :linenos:
 
     >>> settings.set_site('kitt_peak')
     >>> print(settings)
@@ -69,7 +69,7 @@ Alternatively, individual settings can be accessed, but not modified, using
 attributes.
 
 .. code-block:: python
-
+    :linenos:
 
     >>> print(settings.site_name)
 
@@ -104,7 +104,7 @@ We create a new configuration file for the Cerro Tololo Inter-American
 Observatory near La Serena, Chile.
 
 .. code-block:: python
-
+    :linenos:
 
     >>> from pwv_kpno.package_settings import ConfigBuilder
     >>>
@@ -129,7 +129,7 @@ cross section of H\ :sub:`2`\ O. from 3,000 to 12,000 Angstroms. The optional
 these cross sections in units of Angstroms and cm^2 respectively.
 
 .. code-block:: python
-
+    :linenos:
 
     >>> from pwv_kpno.package_settings import ConfigBuilder
     >>>
@@ -157,7 +157,7 @@ and relative humidity (``"SrfcRH"``).
 suggestion on how to find those data cuts.
 
 .. code-block:: python
-
+    :linenos:
 
     >>> data_cuts = {'CTIO':
             {'SrfcPress': [[880, 925],]}
@@ -176,7 +176,7 @@ Once a configuration file has been created, it can be permanently added to the
 *pwv_kpno* package by running
 
 .. code-block:: python
-
+    :linenos:
 
     >>> from pwv_kpno.package_settings import settings
     >>> settings.import_site('./cerro_tololo.ecsv')
@@ -186,7 +186,7 @@ the new model on disk, even in between package updates. The package can then be
 configured to use the new model by running
 
 .. code-block:: python
-
+    :linenos:
 
     >>> settings.set_site('cerro_tololo')
 
@@ -205,6 +205,6 @@ Users can export the configuration file for the currently modeled location by
 running
 
 .. code-block:: python
-
+    :linenos:
 
     >>> settings.export_site('./kitt_two_receivers.ecsv')

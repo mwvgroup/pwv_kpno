@@ -196,18 +196,53 @@ modeling for user customized sites.</p>
 <code class="docutils literal notranslate"><span class="pre">package_settings</span></code> module, and allows modeling at any location with a
 SuomiNet connected GPS receiver. A list of sites that are available with a
 particular install of <em>pwv_kpno</em> can be retrieved by running</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno.package_settings</span> <span class="kn">import</span> <span class="n">settings</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno.package_settings</span> <span class="kn">import</span> <span class="n">settings</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">available_sites</span><span class="p">)</span>
 
 <span class="go">    [&#39;kitt_peak&#39;]</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 <p>The returned list will contain the default location (<code class="docutils literal notranslate"><span class="pre">'kitt_peak'</span></code>) in
 addition to any custom locations that have been installed on your current
 machine. A complete summary of package settings for the current site being
 modeled can be accessed by printing the <code class="docutils literal notranslate"><span class="pre">settings</span></code> object. For example, the
 settings for Kitt Peak are as follows</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">settings</span><span class="o">.</span><span class="n">set_site</span><span class="p">(</span><span class="s1">&#39;kitt_peak&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">settings</span><span class="o">.</span><span class="n">set_site</span><span class="p">(</span><span class="s1">&#39;kitt_peak&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
 
 <span class="go">                         pwv_kpno Current Site Information</span>
@@ -241,10 +276,24 @@ settings for Kitt Peak are as follows</p>
 <span class="go">    SA46    SrfcPress  inclusive                  900                 1000  mbar</span>
 <span class="go">    SA48    SrfcPress  inclusive                  910                 1000  mbar</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 <p>Alternatively, individual settings can be accessed, but not modified, using
 attributes.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">site_name</span><span class="p">)</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">site_name</span><span class="p">)</span>
 
 <span class="go">    kitt_peak</span>
 
@@ -260,7 +309,7 @@ attributes.</p>
 
 <span class="go">    [&#39;AZAM&#39;, &#39;P014&#39;, &#39;SA46&#39;, &#39;SA48&#39;]</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 </div>
 <div class="section" id="defining-a-new-location">
 <h2>2.2. Defining a New Location<a class="headerlink" href="#defining-a-new-location" title="Permalink to this headline">¶</a></h2>
@@ -321,7 +370,15 @@ and range from 3,000 to 12,000 Angstroms in 0.05 Angstrom increments.</p>
 <h3>2.2.1. Examples:<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
 <p>We create a new configuration file for the Cerro Tololo Inter-American
 Observatory near La Serena, Chile.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno.package_settings</span> <span class="kn">import</span> <span class="n">ConfigBuilder</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno.package_settings</span> <span class="kn">import</span> <span class="n">ConfigBuilder</span>
 <span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">new_config</span> <span class="o">=</span> <span class="n">ConfigBuilder</span><span class="p">(</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="n">site_name</span><span class="o">=</span><span class="s1">&#39;cerro_tololo&#39;</span><span class="p">,</span>
@@ -331,7 +388,7 @@ Observatory near La Serena, Chile.</p>
 <span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">new_config</span><span class="o">.</span><span class="n">save_to_ecsv</span><span class="p">(</span><span class="s1">&#39;./cerro_tololo.ecsv&#39;</span><span class="p">)</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 <p>Here <code class="docutils literal notranslate"><span class="pre">site_name</span></code> specifies a unique identifier for the site being
 modeled, <code class="docutils literal notranslate"><span class="pre">primary_rec</span></code> is the SuomiNet ID code for the GPS receiver
 located at the modeled site, and <code class="docutils literal notranslate"><span class="pre">sup_rec</span></code> is a list of SuomiNet ID codes
@@ -342,7 +399,16 @@ is left empty.</p>
 cross section of H<sub>2</sub>O. from 3,000 to 12,000 Angstroms. The optional
 <code class="docutils literal notranslate"><span class="pre">wavelengths</span></code> and <code class="docutils literal notranslate"><span class="pre">cross_sections</span></code> arguments allow a user to customize
 these cross sections in units of Angstroms and cm^2 respectively.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno.package_settings</span> <span class="kn">import</span> <span class="n">ConfigBuilder</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno.package_settings</span> <span class="kn">import</span> <span class="n">ConfigBuilder</span>
 <span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">new_config</span> <span class="o">=</span> <span class="n">ConfigBuilder</span><span class="p">(</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="n">site_name</span><span class="o">=</span><span class="s1">&#39;cerro_tololo&#39;</span><span class="p">,</span> <span class="n">primary_rec</span><span class="o">=</span><span class="s1">&#39;CTIO&#39;</span><span class="p">,</span>
@@ -353,7 +419,7 @@ these cross sections in units of Angstroms and cm^2 respectively.</p>
 <span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">new_config</span><span class="o">.</span><span class="n">save_to_ecsv</span><span class="p">(</span><span class="s1">&#39;./cerro_tololo.ecsv&#39;</span><span class="p">)</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 </div>
 </div>
 <div class="section" id="specifying-data-cuts">
@@ -367,7 +433,14 @@ surface pressure (<code class="docutils literal notranslate"><span class="pre">&
 and relative humidity (<code class="docutils literal notranslate"><span class="pre">&quot;SrfcRH&quot;</span></code>).</p>
 <p><strong>Note:</strong> This example needs to be updated with correct data cut values and a
 suggestion on how to find those data cuts.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data_cuts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;CTIO&#39;</span><span class="p">:</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data_cuts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;CTIO&#39;</span><span class="p">:</span>
 <span class="go">        {&#39;SrfcPress&#39;: [[880, 925],]}</span>
 <span class="go">    }</span>
 
@@ -376,22 +449,23 @@ suggestion on how to find those data cuts.</p>
 <span class="go">        primary_rec=&#39;CTIO&#39;,</span>
 <span class="go">        data_cuts = data_cuts)</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 </div>
 <div class="section" id="importing-a-new-location">
 <h2>2.4. Importing a New Location<a class="headerlink" href="#importing-a-new-location" title="Permalink to this headline">¶</a></h2>
 <p>Once a configuration file has been created, it can be permanently added to the
 <em>pwv_kpno</em> package by running</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno.package_settings</span> <span class="kn">import</span> <span class="n">settings</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno.package_settings</span> <span class="kn">import</span> <span class="n">settings</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">settings</span><span class="o">.</span><span class="n">import_site</span><span class="p">(</span><span class="s1">&#39;./cerro_tololo.ecsv&#39;</span><span class="p">)</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 <p>This command only needs to be run once, after which <em>pwv_kpno</em> will retain
 the new model on disk, even in between package updates. The package can then be
 configured to use the new model by running</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">settings</span><span class="o">.</span><span class="n">set_site</span><span class="p">(</span><span class="s1">&#39;cerro_tololo&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">settings</span><span class="o">.</span><span class="n">set_site</span><span class="p">(</span><span class="s1">&#39;cerro_tololo&#39;</span><span class="p">)</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 <p>After setting <strong>pwv_kpno</strong> to a new location, the package will exclusively use
 the new model until the current Python environment is terminated. It is
 important to note that this setting is not persistent. When <strong>pwv_kpno</strong> is
@@ -402,9 +476,9 @@ the standard model for Kitt Peak, and the above command will have to be rerun.</
 <h2>2.5. Accessing Current Settings<a class="headerlink" href="#accessing-current-settings" title="Permalink to this headline">¶</a></h2>
 <p>Users can export the configuration file for the currently modeled location by
 running</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">settings</span><span class="o">.</span><span class="n">export_site</span><span class="p">(</span><span class="s1">&#39;./kitt_two_receivers.ecsv&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">settings</span><span class="o">.</span><span class="n">export_site</span><span class="p">(</span><span class="s1">&#39;./kitt_two_receivers.ecsv&#39;</span><span class="p">)</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 </div>
 </div>
 

@@ -1,13 +1,16 @@
 body {
     color: #444444 !important;
+    text-align: justify;
 }
 
 footer {
     background-color: #f5f5f5 !important;
+    padding: 20px 0px !important;
 }
 
 a.reference {
     color: #4c72b0 !important;
+    padding: 20px 0;
 }
 
 /* Controls all inline code plus first line of autodoc */
@@ -25,7 +28,7 @@ code.descname, code.descclassname {
 /* Controls function name in first line of autodoc */
 code.descclassname + code.descname {
     margin-left: -6px;
-    padding-left: 0px;
+    padding-left: 0;
 }
 
 dl.function {
@@ -33,6 +36,16 @@ dl.function {
     padding: 10px;
 }
 
-.highlight {
-    background-color: red !important;
+table.highlighttable {
+    width: 90%;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+thead tr th:first-child,
+tbody tr td:first-child {
+  width: 2em;
+  min-width: 2em;
+  max-width: 2em;
+  text-align: right;
 }
