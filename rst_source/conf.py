@@ -42,7 +42,7 @@ html_theme_options = {
     'navbar_sidebarrel': False,  # Disable next / last page buttons in nav bar
     'navbar_links': links,       # Specifies custom nav bar links
 
-    'bootswatch_theme': "Cosmo",
+    'bootswatch_theme': "cosmo",
     'navbar_class': "navbar navbar-inverse",  # Invert nav bar color
     'source_link_position': "footer"
 }
