@@ -1,23 +1,30 @@
-.. figure::  _static/LOGO.png
-   :align:   center
-
-.. image:: https://img.shields.io/badge/version-1.0.0-blue.svg
+.. |version| image:: https://img.shields.io/badge/version-1.0.0-blue.svg
     :target: https://pypi.python.org/pypi/pwv-kpno/
 
-.. image:: https://img.shields.io/badge/python-2.7,%203.5+-blue.svg
+.. |python| image:: https://img.shields.io/badge/python-2.7,%203.5+-blue.svg
     :target: #
 
-.. image:: https://img.shields.io/badge/license-GPL%20v3.0-blue.svg
+.. |license| image:: https://img.shields.io/badge/license-GPL%20v3.0-blue.svg
     :target: https://www.gnu.org/licenses/gpl-3.0.en.html
 
-.. image:: https://travis-ci.org/mwvgroup/pwv_kpno.svg?branch=master
+.. |travis| image:: https://travis-ci.org/mwvgroup/pwv_kpno.svg?branch=master
     :target: https://travis-ci.org/mwvgroup/pwv_kpno
 
-.. image:: https://coveralls.io/repos/github/mwvgroup/pwv_kpno/badge.svg?branch=master
+.. |cover| image:: https://coveralls.io/repos/github/mwvgroup/pwv_kpno/badge.svg?branch=master
     :target: https://coveralls.io/github/mwvgroup/pwv_kpno?branch=master
 
-.. image:: https://img.shields.io/badge/astro--ph.IM-arXiv%3A1806.09701-B31B1B.svg
+.. |arxiv| image:: https://img.shields.io/badge/astro--ph.IM-arXiv%3A1806.09701-B31B1B.svg
     :target: https://arxiv.org/abs/1806.09701
+
+.. rst-class:: logo
+.. figure::  _static/LOGO.png
+    :align:   center
+
+.. rst-class:: badges
+
+   +-------------------------------------------------------+
+   | |version| |python| |license| |travis| |cover| |arxiv| |
+   +-------------------------------------------------------+
 
 .. toctree::
     :hidden:
@@ -29,9 +36,6 @@
     atmospheric_modeling
     blackbody_modeling
     correcting_observations
-
-|
-|
 
 ********
 Overview

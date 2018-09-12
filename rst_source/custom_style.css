@@ -53,3 +53,12 @@ tbody tr td:first-child {
 .row {
     padding-bottom: 50px;
 }
+
+table.badges td {
+  text-align: center !important;
+    border: 0 !important;
+}
+
+.align-center.figure.logo {
+    max-width: 800px;
+}

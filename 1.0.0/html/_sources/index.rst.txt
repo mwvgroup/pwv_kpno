@@ -1,23 +1,30 @@
-.. figure::  _static/LOGO.png
-   :align:   center
-
-.. image:: https://img.shields.io/badge/version-1.0.0-blue.svg
+.. |version| image:: https://img.shields.io/badge/version-1.0.0-blue.svg
     :target: https://pypi.python.org/pypi/pwv-kpno/
 
-.. image:: https://img.shields.io/badge/python-2.7,%203.5+-blue.svg
+.. |python| image:: https://img.shields.io/badge/python-2.7,%203.5+-blue.svg
     :target: #
 
-.. image:: https://img.shields.io/badge/license-GPL%20v3.0-blue.svg
+.. |license| image:: https://img.shields.io/badge/license-GPL%20v3.0-blue.svg
     :target: https://www.gnu.org/licenses/gpl-3.0.en.html
 
-.. image:: https://travis-ci.org/mwvgroup/pwv_kpno.svg?branch=master
+.. |travis| image:: https://travis-ci.org/mwvgroup/pwv_kpno.svg?branch=master
     :target: https://travis-ci.org/mwvgroup/pwv_kpno
 
-.. image:: https://coveralls.io/repos/github/mwvgroup/pwv_kpno/badge.svg?branch=master
+.. |cover| image:: https://coveralls.io/repos/github/mwvgroup/pwv_kpno/badge.svg?branch=master
     :target: https://coveralls.io/github/mwvgroup/pwv_kpno?branch=master
 
-.. image:: https://img.shields.io/badge/astro--ph.IM-arXiv%3A1806.09701-B31B1B.svg
+.. |arxiv| image:: https://img.shields.io/badge/astro--ph.IM-arXiv%3A1806.09701-B31B1B.svg
     :target: https://arxiv.org/abs/1806.09701
+
+.. rst-class:: logo
+.. figure::  _static/LOGO.png
+    :align:   center
+
+.. rst-class:: badges
+
+   +-------------------------------------------------------+
+   | |version| |python| |license| |travis| |cover| |arxiv| |
+   +-------------------------------------------------------+
 
 .. toctree::
     :hidden:
@@ -29,9 +36,6 @@
     atmospheric_modeling
     blackbody_modeling
     correcting_observations
-
-|
-|
 
 ********
 Overview
@@ -52,6 +56,25 @@ to be easily extensible to other locations within the SuomiNet Network.
 Additionally, *pwv_kpno* provides access to atmospheric models as a function
 of PWV, which is independent of geographical location. Atmospheric models
 are provided from 3,000 to 12,000 Angstroms at a resolution of 0.05 Angstroms.
+
+****************************
+Contributing and Attribution
+****************************
+
+*pwv_kpno* is open source software released under the GNU General Public
+License. Issues raised on `GitHub <https://github.com/mwvgroup/pwv_kpno>`_ and
+pull requests from contributors are welcome. Additionally, pull requests
+introducing custom configuration files that extend *pwv_kpno* to new
+locations are also welcome.
+
+If you use *pwv_kpno* as part of any published work or research, we ask that
+you please use the following standard acknowledgement:
+
+    *This research made use of the pwv_kpno python package, an open source project that provides models for the atmospheric absorption due to precipitable water vapor in the near-infrared (Perrefort, Wood-Vasey et al. 2018)*
+
+If the publisher allows, you can also include a footnote with a link pointing
+to the documentation page
+`https://mwvgroup.github.io/pwv_kpno/ <https://mwvgroup.github.io/pwv_kpno/>`_.
 
 ****************
 Acknowledgements
