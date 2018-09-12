@@ -53,7 +53,6 @@ Additionally, *pwv_kpno* provides access to atmospheric models as a function
 of PWV, which is independent of geographical location. Atmospheric models
 are provided from 3,000 to 12,000 Angstroms at a resolution of 0.05 Angstroms.
 
-
 ****************************
 Contributing and Attribution
 ****************************

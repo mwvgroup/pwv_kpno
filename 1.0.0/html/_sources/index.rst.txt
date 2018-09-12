@@ -53,26 +53,6 @@ Additionally, *pwv_kpno* provides access to atmospheric models as a function
 of PWV, which is independent of geographical location. Atmospheric models
 are provided from 3,000 to 12,000 Angstroms at a resolution of 0.05 Angstroms.
 
-
-****************************
-Contributing and Attribution
-****************************
-
-*pwv_kpno* is open source software released under the GNU General Public
-License. Issues raised on `GitHub <https://github.com/mwvgroup/pwv_kpno>`_ and
-pull requests from contributors are welcome. Additionally, pull requests
-introducing custom configuration files that extend *pwv_kpno* to new
-locations are also welcome.
-
-If you use *pwv_kpno* as part of any published work or research, we ask that
-you please use the following standard acknowledgement:
-
-    *This research made use of the pwv_kpno python package, an open source project that provides models for the atmospheric absorption due to precipitable water vapor in the near-infrared (Perrefort, Wood-Vasey et al. 2018)*
-
-If the publisher allows, you can also include a footnote with a link pointing
-to the documentation page
-`https://mwvgroup.github.io/pwv_kpno/ <https://mwvgroup.github.io/pwv_kpno/>`_.
-
 ****************
 Acknowledgements
 ****************
