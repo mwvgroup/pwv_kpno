@@ -7,7 +7,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="{{ pathto(master_doc) }}">
+        <a class="navbar-brand" href="../../documentation/html/index.html">
           {%- block sidebarlogo %}
             {%- if logo %}<span><img src="{{ pathto('_static/' + logo, 1) }}"></span>{%- endif %}
           {%- endblock %}
@@ -29,12 +29,15 @@
               {% endblock %}
             {% endif %}
             {% block navbarextra %}
-
             {% endblock %}
             {% if theme_source_link_position == "nav" %}
               <li class="hidden-sm">{% include "sourcelink.html" %}</li>
             {% endif %}
           </ul>
+
+          {% block navbarsearch %}
+                 {% include "navbarsearchbox.html" %}
+          {% endblock %}
         </div>
     </div>
   </div>
