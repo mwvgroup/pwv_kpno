@@ -35,7 +35,6 @@
     accessing_data
     atmospheric_modeling
     blackbody_modeling
-    correcting_observations
 
 ********
 Overview

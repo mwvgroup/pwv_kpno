@@ -12,6 +12,7 @@ extensions = [
     ]
 
 # Rendering settings
+templates_path = ['./templates']
 autosectionlabel_prefix_document = True  # Add file name prefix to section labels
 source_suffix = ['.rst']                 # The suffixes of source files
 master_doc = 'index'                     # Document with master table of contents
@@ -32,13 +33,11 @@ release = pk_version
 html_theme = 'bootstrap'
 links = [
     ("Documentation", "./install.html", 1),
-    ("Examples", "./install.html", 1),
-    ("Need Help?", "https://github.com/mwvgroup/pwv_kpno/issues/new?template=support-request.md", 1)
+    ("Examples", "./examples.html", 1),
+    ("Need Help?", "https://github.com/mwvgroup/pwv_kpno/issues/new/choose", 1)
 ]
 
 html_theme_options = {
-    'navigation_depth': 0,       # Depth of the headers in the side bar
-    'navbar_pagenav': False,     # Disable "Page" menu in nav bar
     'navbar_sidebarrel': False,  # Disable next / last page buttons in nav bar
     'navbar_links': links,       # Specifies custom nav bar links
 
@@ -47,14 +46,17 @@ html_theme_options = {
     'source_link_position': "footer"
 }
 
-side_bar_contents = ['localtoc.html']
+# Set default sidebar options
+# These will be overwritten by the custom_toc extension
+side_bar_contents = ['searchbox.html', 'localtoc.html']
 pages_with_sidebar = [
     'install',
     'accessing_data',
     'atmospheric_modeling',
     'blackbody_modeling',
     'correcting_observations',
-    'modeling_custom_locations'
+    'modeling_custom_locations',
+    'correcting_observations'
 ]
 
 html_sidebars = {page: side_bar_contents for page in pages_with_sidebar}

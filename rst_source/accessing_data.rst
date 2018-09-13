@@ -14,11 +14,8 @@ Checking For Available Data
 To check what years of SuomiNet data are locally available, use the
 ``available_data`` function.
 
-------------
-
 .. autofunction:: pwv_kpno.pwv_atm.available_data
 
-------------
 
 Examples:
 ---------
@@ -68,11 +65,7 @@ Measured PWV Data
 Data that has been downloaded from SuomiNet can be accessed using the
 ``measured_pwv`` function.
 
-------------
-
 .. autofunction:: pwv_kpno.pwv_atm.measured_pwv
-
-------------
 
 Examples:
 ---------
@@ -118,11 +111,7 @@ Modeled PWV Data
 To retrieve the modeled PWV level at Kitt Peak National Observatory, use the
 ``modeled_pwv`` function.
 
-------------
-
 .. autofunction:: pwv_kpno.pwv_atm.modeled_pwv
-
-------------
 
 Examples:
 ---------
@@ -163,11 +152,7 @@ For convenience, users can interpolate from the modeled PWV concentration at
 Kitt Peak using the ``pwv_date`` function. Note that this function does not
 return an uncertainty on the measured value.
 
-------------
-
 .. autofunction:: pwv_kpno.pwv_atm.pwv_date
-
-------------
 
 Examples:
 ---------
