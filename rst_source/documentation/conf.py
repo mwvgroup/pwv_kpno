@@ -34,6 +34,7 @@ html_theme = 'bootstrap'
 links = [
     ("Documentation", "./install.html", 1),
     ("Examples", "../../examples/html/custom_locations.html", 1),
+    ("Validation", "../../validation/html/overview.html", 1),
     ("Need Help?", "https://github.com/mwvgroup/pwv_kpno/issues/new/choose", 1)
 ]
 
