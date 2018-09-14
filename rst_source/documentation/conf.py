@@ -53,11 +53,10 @@ side_bar_contents = ['localtoc.html']
 pages_with_sidebar = [
     'install',
     'accessing_data',
+    'custom_locations',
     'atmospheric_modeling',
     'blackbody_modeling',
     'correcting_observations',
-    'modeling_custom_locations',
-    'correcting_observations'
 ]
 
 html_sidebars = {page: side_bar_contents for page in pages_with_sidebar}
