@@ -59,6 +59,10 @@ table.badges td {
     border: 0 !important;
 }
 
-.align-center.figure.logo {
+.figure.logo {
     max-width: 800px;
+}
+
+.figure.validation-figure {
+    max-width: 80%;
 }
