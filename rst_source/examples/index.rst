@@ -2,4 +2,4 @@
     :hidden:
     :numbered:
 
-    custom_locations
+    correcting_observations

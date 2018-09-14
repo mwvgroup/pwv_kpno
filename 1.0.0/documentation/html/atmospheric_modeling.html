@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>3. Modeling the Atmosphere &#8212; pwv_kpno 1.0.0 documentation</title>
+    <title>4. Modeling the Atmosphere &#8212; pwv_kpno 1.0.0 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/custom_style.css" type="text/css" />
@@ -19,8 +19,8 @@
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="4. Modeling a Black Body" href="blackbody_modeling.html" />
-    <link rel="prev" title="2. Accessing PWV Data" href="accessing_data.html" />
+    <link rel="next" title="5. Modeling a Black Body" href="blackbody_modeling.html" />
+    <link rel="prev" title="3. Accessing PWV Data" href="accessing_data.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -46,7 +46,7 @@
           <ul class="nav navbar-nav">
             
                 <li><a href="./install.html">Documentation</a></li>
-                <li><a href="../../examples/html/custom_locations.html">Examples</a></li>
+                <li><a href="../../examples/html/correcting_observations.html">Examples</a></li>
                 <li><a href="../../validation/html/overview.html">Validation</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno/issues/new/choose">Need Help?</a></li>
             
@@ -75,20 +75,21 @@
       <div class="col-md-3">
         <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">1. Installation and Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="accessing_data.html">2. Accessing PWV Data</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">3. Modeling the Atmosphere</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#transmission-for-datetime">3.1. Transmission for Datetime</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#examples">3.1.1. Examples:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom_locations.html">2. Modeling Custom Sites</a></li>
+<li class="toctree-l1"><a class="reference internal" href="accessing_data.html">3. Accessing PWV Data</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">4. Modeling the Atmosphere</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#transmission-for-datetime">4.1. Transmission for Datetime</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#examples">4.1.1. Examples:</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#transmission-for-pwv">3.2. Transmission for PWV</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">3.2.1. Examples:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#transmission-for-pwv">4.2. Transmission for PWV</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">4.2.1. Examples:</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#binned-the-transmission">3.3. Binned the Transmission</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#binned-the-transmission">4.3. Binned the Transmission</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">4. Modeling a Black Body</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">5. Modeling a Black Body</a></li>
 </ul>
 
         </div>
@@ -96,13 +97,13 @@
     <div class="col-md-9 content">
       
   <div class="section" id="modeling-the-atmosphere">
-<h1>3. Modeling the Atmosphere<a class="headerlink" href="#modeling-the-atmosphere" title="Permalink to this headline">¶</a></h1>
+<h1>4. Modeling the Atmosphere<a class="headerlink" href="#modeling-the-atmosphere" title="Permalink to this headline">¶</a></h1>
 <p>The <code class="docutils literal notranslate"><span class="pre">pwv_atm</span></code> module provides models for the atmospheric transmission due to
 precipitable water vapor at Kitt Peak National Observatory. These models can be
 retrieved by providing either a datetime and airmass value or a PWV column
 density along line of sight.</p>
 <div class="section" id="transmission-for-datetime">
-<h2>3.1. Transmission for Datetime<a class="headerlink" href="#transmission-for-datetime" title="Permalink to this headline">¶</a></h2>
+<h2>4.1. Transmission for Datetime<a class="headerlink" href="#transmission-for-datetime" title="Permalink to this headline">¶</a></h2>
 <p>Modeling the atmospheric transmission function for a given datetime requires
 SuomiNet data to be available on the local machine. See the
 <a class="reference internal" href="accessing_data.html#updating-data"><span class="std std-ref">Updating Data</span></a> section for more details.</p>
@@ -135,7 +136,7 @@ specifying the <cite>bins</cite> argument.</p>
 </dd></dl>
 
 <div class="section" id="examples">
-<h3>3.1.1. Examples:<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<h3>4.1.1. Examples:<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
 <p>For an airmass of 1.2, the transmission function at 2013-12-15 05:35:00 is
 given by:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
@@ -182,7 +183,7 @@ given by:</p>
 </div>
 </div>
 <div class="section" id="transmission-for-pwv">
-<h2>3.2. Transmission for PWV<a class="headerlink" href="#transmission-for-pwv" title="Permalink to this headline">¶</a></h2>
+<h2>4.2. Transmission for PWV<a class="headerlink" href="#transmission-for-pwv" title="Permalink to this headline">¶</a></h2>
 <p>Instead of relying on SuomiNet measurements, users can also retrieve the
 modeled transmission function by directly specifying a PWV column density. This
 can be done using the <code class="docutils literal notranslate"><span class="pre">trans_for_pwv</span></code> method.</p>
@@ -212,7 +213,7 @@ be binned by specifying the <cite>bins</cite> argument.</p>
 </dd></dl>
 
 <div class="section" id="id1">
-<h3>3.2.1. Examples:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<h3>4.2.1. Examples:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>For a 13.5 mm PWV column density along line of sight, the transmission function
 is given by:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
@@ -262,7 +263,7 @@ transmission if the <cite>pwv_err</cite> argument is specified:</p>
 </div>
 </div>
 <div class="section" id="binned-the-transmission">
-<h2>3.3. Binned the Transmission<a class="headerlink" href="#binned-the-transmission" title="Permalink to this headline">¶</a></h2>
+<h2>4.3. Binned the Transmission<a class="headerlink" href="#binned-the-transmission" title="Permalink to this headline">¶</a></h2>
 <p>Both the <cite>trans_for_date</cite> and the <cite>trans_for_pwv</cite> functions provided support
 for binning the returned transmission function via the <cite>bins</cite> argument. The
 returned transmission in each bin is calculated as:</p>
