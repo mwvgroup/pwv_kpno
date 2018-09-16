@@ -19,12 +19,53 @@
 
 """This code provides access to package wide settings for the pwv_kpno package
 
+Access to current package settings is provided by the `settings` object.
+Configuration files used to model the atmosphere at a custom site can be
+created using the `ConfigBuilder` class.
+
 For full documentation on a function use the builtin Python `help` function
 or see https://mwvgroup.github.io/pwv_kpno/.
 
 An Incomplete Guide to Getting Started:
 
-    # Todo
+    For an overview of package settings:
+
+      >>> from pwv_kpno.package_settings import settings
+      >>> print(settings)
+
+
+    To get a list of sites that this installation of pwv_kpno has been
+    configured to model:
+
+      >>> print(settings.available_sites)
+
+
+    To model the time dependent atmosphere at a specific site:
+
+      >>> settings.set_site(<site_name>)
+
+
+    To export the config file for the current site being modeled:
+
+      >>> settings.export_ecsv_config(<out_path>)
+
+
+    To import a config file for a new site, and permanently add it to the
+    package:
+
+      >>> settings.import_site(<config_path>, overwrite=False)
+      >>> settings.set_site(<new_site_name>)  # To model the imported site
+
+
+    To create a config file for a given site use the below. Further options
+    for specifying custom H2O cross sections, and data cuts for downloaded
+    SuomiNet data are outlined in the online documentation.
+
+      >>> new_config = ConfigBuilder(
+      >>>     site_name='custom_kitt_peak',     # Required name for modeled site
+      >>>     primary_rec='KITT',               # Required primary receiver
+      >>>     supplement_rec=['AZAM', 'SA48'],  # Optional secondary receivers
+      >>> )
 """
 
 import json
@@ -68,12 +109,12 @@ def site_property(f):
     return wrapper
 
 
-# Todo: Add usage demo
 # Todo: Needs getters and setters
 class Settings:
     """Represents pwv_kpno settings for a particular geographical site
 
-    Represents settings for Kitt Peak by default
+    An overview of the current package settings can be accessed by printing
+    this object.
 
     Attributes:
         site_name       : The current site being modeled
@@ -83,8 +124,8 @@ class Settings:
         supplement_rec  : Same as receivers but without the primary receiver
 
     Methods:
-        set_site      : Configure pwv_kpno to model a given site
-        export_config : Save the current site's configuration data to file
+        set_site           : Configure pwv_kpno to model a given site
+        export_ecsv_config : Save the current site's configuration data to file
     """
 
     _site_name = None  # The name of the current site
@@ -202,19 +243,23 @@ class Settings:
 
         return self._config_data['data_cuts']
 
-    def export_config(self, out_dir):
+    def export_ecsv_config(self, out_path):
         # type: (str) -> None
-        """Save the current site's config file to <out_dir>/<site_name>.ecsv
+        """Save the current site's config file in ecsv format
 
         Args:
-            out_dir (str): The desired output directory
+            out_path (str): The desired output file path
         """
 
-        os.mkdir(out_dir)
+        if not out_path.endswith('.ecsv'):
+            out_path += '.ecsv'
+
+        out_dir = os.path.dirname(out_path)
+        if not os.path.exists(out_dir):
+            os.mkdir(out_dir)
+
         atm_model = Table.read(self._atm_model_path)
         atm_model.meta = self._config_data
-
-        out_path = os.path.join(out_dir, self.site_name + '.ecsv')
         atm_model.write(out_path)
 
     def import_site(self, path, force_name=None, overwrite=False):
@@ -345,7 +390,6 @@ settings = Settings()
 
 
 # Todo: Add test coverage
-# Todo: Add usage demo
 class ConfigBuilder:
     """The ConfigBuilder class is used to build config files for a custom site
 
