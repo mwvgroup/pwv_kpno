@@ -202,14 +202,38 @@ class Settings:
         self._site_name = self._config_data['site_name']
 
     @site_property
-    def _available_years(self):
-        """A list of years for which SuomiNet data has been downloaded"""
+    def _downloaded_years(self):
+        """A list of years for which SuomiNet data has been downloaded
+
+        If a user has attempted to download data for a given year, and no data
+        is available for that year, the year is still included in this list. To
+        retrieve a list of years for which any amount of SuomiNet data is
+        available on this machine, see the _years_with_data property.
+        """
 
         with open(self._config_path, 'r') as ofile:
             return sorted(json.load(ofile)['years'])
 
+    @site_property
+    def _years_with_data(self):
+        """Return years with locally available data
+
+        For a list of all years that have been downloaded from SuomiNet,
+        regardless of whether any data was actually available during that year,
+        see the _downloaded_years property.
+        """
+
+        try:
+            timestamp_column = Table.read(self._pwv_measred_path)['date']
+            get_year = lambda t_stamp: datetime.utcfromtimestamp(t_stamp).year
+            get_year_vec = np.vectorize(get_year)
+            return np.unique(get_year_vec(timestamp_column))
+
+        except FileNotFoundError:
+            return np.array([])
+
     def _replace_years(self, yr_list):
-        # Replaces the list of years in the site's config file
+        # Replaces the list of downloaded years in the site's config file
 
         # Note: self._config_path calls @site_property decorator
         with open(self._config_path, 'r+') as ofile:
@@ -312,8 +336,8 @@ class Settings:
         rep = '<pwv_kpno.Settings, Current Site Name: {}>'
         return rep.format(self.site_name)
 
-    def __str__(self):
-        """Print metadata for the current site being modeled"""
+    def _get_status_header(self):
+        """Return the header for the class string representation"""
 
         status_table = (
             "                     pwv_kpno Current Site Information\n"
@@ -322,8 +346,8 @@ class Settings:
             "Primary Receiver:     {}\n"
             "Secondary Receivers:\n"
             "    {}\n\n"
-            "Available Data:\n"
-            "    {}\n\n"
+            "Years Downloaded from SuomiNet:\n"
+            "{}\n"
             "                                 Data Cuts\n"
             "============================================================================\n"
             "Reveiver    Value       Type          Lower_Bound          Upper_Bound  unit\n"
@@ -336,19 +360,27 @@ class Settings:
         else:
             receivers = '    NONE'
 
-        if self._available_years:
-            years = '\n    '.join(str(x) for x in self._available_years)
+        years_downloaded_str = ''
+        years_with_data = self._years_with_data
+        for year in self._downloaded_years:
+            years_downloaded_str += '    {}'.format(year)
+            if year not in years_with_data:
+                years_downloaded_str += '    (No Data Available)'
 
-        else:
-            years = '    NONE'
+            years_downloaded_str += '\n'
 
-        status = status_table.format(
-            self.site_name,
-            self.primary_rec,
-            receivers,
-            years
-        )
+        if not years_downloaded_str:
+            years_downloaded_str = '    NONE\n'
 
+        header = status_table.format(self.site_name,
+                                     self.primary_rec,
+                                     receivers,
+                                     years_downloaded_str)
+        return header
+
+    def __str__(self):
+        # Get an ascii table outlining current package settings
+        status = self._get_status_header()
         units = {
             'date': 'UTC',
             'PWV': 'mm',
@@ -359,8 +391,7 @@ class Settings:
             'SrfcRH': '%'
         }
 
-        # Todo: This will be simplified once the config file format
-        #  is modified in version 1.0.0
+        # Add a summary of data cuts for the current site to the status table
         for site, cuts in self.data_cuts.items():
             for value, bounds in cuts.items():
                 for start, end in bounds:

@@ -181,7 +181,7 @@ def update_models(years=None, timeout=None):
     """
 
     current_year = datetime.now().year
-    available_years = settings._available_years
+    available_years = settings._downloaded_years
     if years is None:
         if not available_years:
             raise RuntimeError(

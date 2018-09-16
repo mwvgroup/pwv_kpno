@@ -75,7 +75,7 @@ class CorrectConfigData(TestCase):
     def test_config_years(self):
         """Check config file for correct years"""
 
-        config_years = set(settings._available_years)
+        config_years = set(settings._downloaded_years)
         self.assertEqual(EXPECTED_YEARS, config_years)
 
     def test_config_ids(self):
