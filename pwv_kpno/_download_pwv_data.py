@@ -251,7 +251,7 @@ def update_local_data(year=None, timeout=None):
 
     # Determine what years to download
     current_years = settings._downloaded_years
-    if year is None:
+    if year is None or not current_years:
         all_years = range(2010, datetime.now().year + 1)
         years = [yr for yr in all_years if yr not in current_years]
         years.append(max(current_years))
