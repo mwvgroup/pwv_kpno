@@ -31,6 +31,7 @@
     :numbered:
 
     install
+    accessing_settings
     custom_locations
     accessing_data
     atmospheric_modeling

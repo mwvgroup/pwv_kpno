@@ -19,7 +19,7 @@
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="2. Modeling Custom Sites" href="custom_locations.html" />
+    <link rel="next" title="2. Accessing Package Settings" href="accessing_settings.html" />
     <link rel="prev" title="Overview" href="index.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -83,10 +83,11 @@
 <li class="toctree-l2"><a class="reference internal" href="#package-setup">1.2. Package Setup</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="custom_locations.html">2. Modeling Custom Sites</a></li>
-<li class="toctree-l1"><a class="reference internal" href="accessing_data.html">3. Accessing PWV Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">4. Modeling the Atmosphere</a></li>
-<li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">5. Modeling a Black Body</a></li>
+<li class="toctree-l1"><a class="reference internal" href="accessing_settings.html">2. Accessing Package Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom_locations.html">3. Modeling Custom Sites</a></li>
+<li class="toctree-l1"><a class="reference internal" href="accessing_data.html">4. Accessing PWV Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">5. Modeling the Atmosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">6. Modeling a Black Body</a></li>
 </ul>
 
         </div>
@@ -106,7 +107,7 @@ suggestions below, please raise an issue on <a class="reference external" href="
 <h3>1.1.1. Using PIP (Recommended)<a class="headerlink" href="#using-pip-recommended" title="Permalink to this headline">¶</a></h3>
 <p>Using the <a class="reference external" href="https://pip.pypa.io/en/stable/">pip package manager</a> is the
 recommended method for installing <strong>pwv_kpno</strong>. To install with pip, run:</p>
-<div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span> pip install pwv_kpno
+<div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span> $ pip install pwv_kpno
 </pre></div>
 </td></tr></table></div>
 <p>The pip package manager will automatically install any missing dependencies
@@ -117,11 +118,11 @@ Dependencies can be installed with pip by running:</p>
 2
 3
 4
-5</pre></div></td><td class="code"><div class="highlight"><pre><span></span> pip install numpy
- pip install astropy
- pip install requests
- pip install pytz
- pip install scipy
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span> $ pip install numpy
+ $ pip install astropy
+ $ pip install requests
+ $ pip install pytz
+ $ pip install scipy
 </pre></div>
 </td></tr></table></div>
 </div>

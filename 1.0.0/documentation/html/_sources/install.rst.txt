@@ -22,7 +22,7 @@ recommended method for installing **pwv_kpno**. To install with pip, run:
 .. code-block:: bash
    :linenos:
 
-    pip install pwv_kpno
+    $ pip install pwv_kpno
 
 The pip package manager will automatically install any missing dependencies
 in your Python environment. If you have any issues installing the package,
@@ -32,11 +32,11 @@ Dependencies can be installed with pip by running:
 .. code-block:: bash
    :linenos:
 
-    pip install numpy
-    pip install astropy
-    pip install requests
-    pip install pytz
-    pip install scipy
+    $ pip install numpy
+    $ pip install astropy
+    $ pip install requests
+    $ pip install pytz
+    $ pip install scipy
 
 
 Using setup.py

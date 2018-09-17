@@ -2,106 +2,13 @@
 Modeling Custom Sites
 *********************
 
-By default *pwv_kpno* provides models for the PWV transmission function at
-Kitt Peak National Observatory. However, *pwv_kpno* also provides atmospheric
-modeling for user customized sites.
-
-Available Sites and Settings
-============================
-
-Support for modeling multiple geographical sites is handled by the
-``package_settings`` module, and allows modeling at any location with a
-SuomiNet connected GPS receiver. A list of sites that are available with a
-particular install of *pwv_kpno* can be retrieved by running
-
-.. code-block:: python
-    :linenos:
-
-    >>> from pwv_kpno.package_settings import settings
-    >>> print(settings.available_sites)
-
-        ['kitt_peak']
-
-The returned list will contain the default location (``'kitt_peak'``) in
-addition to any custom locations that have been installed on your current
-machine. A complete summary of package settings for the current site being
-modeled can be accessed by printing the ``settings`` object. For example, the
-settings for Kitt Peak are as follows
-
-.. code-block:: python
-    :linenos:
-
-    >>> settings.set_site('kitt_peak')
-    >>> print(settings)
-
-                             pwv_kpno Current Site Information
-        ============================================================================
-        Site Name:            kitt_peak
-        Primary Receiver:     KITT
-        Secondary Receivers:
-            AZAM
-            P014
-            SA46
-            SA48
-
-        Available Data:
-            2010
-            2011
-            2012
-            2013
-            2014
-            2015
-            2016
-            2017
-
-                                         Data Cuts
-        ============================================================================
-        Reveiver    Value       Type          Lower_Bound          Upper_Bound  unit
-        ----------------------------------------------------------------------------
-        AZAM    SrfcPress  inclusive                  880                  925  mbar
-        KITT    SrfcPress  inclusive                  775                 1000  mbar
-        KITT         date  exclusive  2016-01-01 00:00:00  2016-04-01 00:00:00   UTC
-        P014    SrfcPress  inclusive                  850                 1000  mbar
-        SA46    SrfcPress  inclusive                  900                 1000  mbar
-        SA48    SrfcPress  inclusive                  910                 1000  mbar
-
-Alternatively, individual settings can be accessed, but not modified, using
-attributes.
-
-.. code-block:: python
-    :linenos:
-
-    >>> print(settings.site_name)
-
-        kitt_peak
-
-    >>> print(settings.receivers)
-
-        ['AZAM', 'KITT', 'P014', 'SA46', 'SA48']
-
-    >>> print(settings.primary_rec)
-
-        'KITT'
-
-    >>> print(settings.supplement_rec)
-
-        ['AZAM', 'P014', 'SA46', 'SA48']
-
-
 Defining a New Location
 =======================
 
 Each site modeled by *pwv_kpno* is defined by a unique configuration file.
 Using the ``ConfigBuilder`` class, users can create customized configuration
-files for any SuomiNet site.
-
-.. autoclass:: pwv_kpno.package_settings.ConfigBuilder
-
-Examples:
----------
-
-We create a new configuration file for the Cerro Tololo Inter-American
-Observatory near La Serena, Chile.
+files for any SuomiNet site. As a simple example, we create a new configuration
+file for the Cerro Tololo Inter-American Observatory near La Serena, Chile.
 
 .. code-block:: python
     :linenos:
@@ -122,6 +29,9 @@ located at the modeled site, and ``sup_rec`` is a list of SuomiNet ID codes
 for supplementary, off site receivers. Unlike the default model for KPNO, there
 are no additional receivers near the CTIO and so ``sup_rec`` in this example
 is left empty.
+
+Custom Transmission Models
+==========================
 
 By default *pwv_kpno* models use MODTRAN estimates for the wavelength dependent
 cross section of H\ :sub:`2`\ O. from 3,000 to 12,000 Angstroms. The optional
@@ -149,18 +59,26 @@ If desired, users can specify custom data cuts on SuomiNet data used by the
 package. Data cuts are defined using a 2d dictionary of boundary values.
 The first key specifies which receiver the data cuts apply to. The second key
 specifies what values to cut. Following SuomiNet's naming convention, values
-that can be cut include PWV (``"PWV"``), the PWV error (``"PWVerr"``),
-surface pressure (``"SrfcPress"``), surface temperature (``"SrfcTemp"``),
-and relative humidity (``"SrfcRH"``).
+that can be cut include the following:
 
-**Note:** This example needs to be updated with correct data cut values and a
-suggestion on how to find those data cuts.
+ Value                Key              Expected Units   Data Cut Type
+===================  ===============  ===============  ===============
+Date of Measurement  ``"Date"``       UTC timestamp    Exclude data
+Water Vapor          ``"PWV"``        mm               Include data
+Water Vapor Error    ``"PWVerr"``     mm               Include data
+Surface Pressure     ``"SrfcPress"``  mbar             Include data
+Surface Temperature  ``"SrfcTemp"``   Kelvin           Include data
+Relative Humidity    ``"SrfcRH"``     %                Include data
+
+For example, if weather station at CTIO began to malfunction between
+January 1st, 2050 and February 1st, 2050, we could ignore these measurements
+by specifying:
 
 .. code-block:: python
     :linenos:
 
     >>> data_cuts = {'CTIO':
-            {'SrfcPress': [[880, 925],]}
+            {'Date': [[, ],]}
         }
 
     >>> new_config = ConfigBuilder(
@@ -196,13 +114,11 @@ important to note that this setting is not persistent. When **pwv_kpno** is
 first imported into a new environment the package will always default to using
 the standard model for Kitt Peak, and the above command will have to be rerun.
 
-Accessing Current Settings
+Exporting Current Settings
 ==========================
 
-
-
-Users can export the configuration file for the currently modeled location by
-running
+The configuration file for the currently modeled location can be exported in
+ecsv format by running:
 
 .. code-block:: python
     :linenos:
