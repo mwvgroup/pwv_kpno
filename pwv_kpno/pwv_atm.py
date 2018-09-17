@@ -188,12 +188,17 @@ def _pwv_date(date, airmass=1., test_model=None):
     else:
         pwv_model = test_model
 
-    # Determine the PWV level along line of sight as pwv(zenith) * airmass
     _raise_available_data(date, pwv_model)
     time_stamp = _timestamp(date)
-    pwv = np.interp(time_stamp, pwv_model['date'], pwv_model['pwv']) * airmass
+    print(1262304900.0, time_stamp)
+    pwv = np.interp(time_stamp, pwv_model['date'], pwv_model['pwv'])
     pwv_err = np.interp(time_stamp, pwv_model['date'], pwv_model['pwv_err'])
-    return pwv, pwv_err
+
+    # Determine the PWV level along line of sight as outlined in
+    # Horne et al. 2012
+    pwv_los = pwv * (airmass ** .6)
+    pwv_err_los = pwv_err * (airmass ** .6)
+    return pwv_los, pwv_err_los
 
 
 def pwv_date(date, airmass=1.):

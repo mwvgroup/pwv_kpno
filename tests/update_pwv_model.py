@@ -96,12 +96,8 @@ class UpdateModelsArgs(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        from pwv_kpno.package_settings import settings
-        print(settings._downloaded_years)
         cls.call_1_years = update_models()
-        print(settings._downloaded_years)
         cls.call_2_years = update_models()
-        print(settings._downloaded_years)
 
     def test_future_year(self):
         """
