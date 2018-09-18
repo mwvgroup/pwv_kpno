@@ -31,8 +31,7 @@
     :numbered:
 
     install
-    accessing_settings
-    custom_locations
+    sites_and_settings
     accessing_data
     atmospheric_modeling
     blackbody_modeling

@@ -1,12 +1,93 @@
-*********************
-Modeling Custom Sites
-*********************
+*************************
+Custom Sites and Settings
+*************************
 
-Defining a New Location
-=======================
+Available Sites and Settings
+============================
+
+*pwv_kpno* is capable of modeling the atmosphere at any location withing the
+SuomiNet GPS network. A list of sites that are available with a
+particular install of *pwv_kpno* can be retrieved by running
+
+.. code-block:: python
+    :linenos:
+
+    >>> from pwv_kpno.package_settings import settings
+    >>> print(settings.available_sites)
+
+        ['kitt_peak']
+
+The returned list will contain the default location (``'kitt_peak'``) in
+addition to any custom locations that have been installed on your current
+machine (see xx for instructions on how to create a custom site). A complete
+summary of package settings for the current site being modeled can be accessed
+by printing the ``settings`` object. For example, the settings for Kitt Peak
+are as follows
+
+.. code-block:: python
+    :linenos:
+
+    >>> settings.set_site('kitt_peak')
+    >>> print(settings)
+
+                             pwv_kpno Current Site Information
+        ============================================================================
+        Site Name:            kitt_peak
+        Primary Receiver:     KITT
+        Secondary Receivers:
+            AZAM
+            P014
+            SA46
+            SA48
+
+        Available Data:
+            2010
+            2011
+            2012
+            2013
+            2014
+            2015
+            2016
+            2017
+
+                                         Data Cuts
+        ============================================================================
+        Reveiver    Value       Type          Lower_Bound          Upper_Bound  unit
+        ----------------------------------------------------------------------------
+        AZAM    SrfcPress  inclusive                  880                  925  mbar
+        KITT    SrfcPress  inclusive                  775                 1000  mbar
+        KITT         date  exclusive  2016-01-01 00:00:00  2016-04-01 00:00:00   UTC
+        P014    SrfcPress  inclusive                  850                 1000  mbar
+        SA46    SrfcPress  inclusive                  900                 1000  mbar
+        SA48    SrfcPress  inclusive                  910                 1000  mbar
+
+Alternatively, individual settings can be accessed, but not modified, using
+attributes.
+
+.. code-block:: python
+    :linenos:
+
+    >>> print(settings.site_name)
+
+        kitt_peak
+
+    >>> print(settings.receivers)
+
+        ['AZAM', 'KITT', 'P014', 'SA46', 'SA48']
+
+    >>> print(settings.primary_rec)
+
+        'KITT'
+
+    >>> print(settings.supplement_rec)
+
+        ['AZAM', 'P014', 'SA46', 'SA48']
+
+Modeling a Custom Location
+==========================
 
 Each site modeled by *pwv_kpno* is defined by a unique configuration file.
-Using the ``ConfigBuilder`` class, users can create customized configuration
+The ``ConfigBuilder`` class allows users to create customized configuration
 files for any SuomiNet site. As a simple example, we create a new configuration
 file for the Cerro Tololo Inter-American Observatory near La Serena, Chile.
 
@@ -26,9 +107,9 @@ file for the Cerro Tololo Inter-American Observatory near La Serena, Chile.
 Here ``site_name`` specifies a unique identifier for the site being
 modeled, ``primary_rec`` is the SuomiNet ID code for the GPS receiver
 located at the modeled site, and ``sup_rec`` is a list of SuomiNet ID codes
-for supplementary, off site receivers. Unlike the default model for KPNO, there
-are no additional receivers near the CTIO and so ``sup_rec`` in this example
-is left empty.
+of other, nearby receivers that can be used to suppliment data taken by
+``primary_rec``. Unlike the default model for KPNO, there are no additional
+receivers near the CTIO and so ``sup_rec`` in this example is left empty.
 
 Custom Transmission Models
 ==========================
@@ -100,8 +181,8 @@ Once a configuration file has been created, it can be permanently added to the
     >>> settings.import_site('./cerro_tololo.ecsv')
 
 This command only needs to be run once, after which *pwv_kpno* will retain
-the new model on disk, even in between package updates. The package can then be
-configured to use the new model by running
+the new model on disk. The package can then be configured to use the new model
+by running
 
 .. code-block:: python
     :linenos:

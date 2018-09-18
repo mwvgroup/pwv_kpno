@@ -63,8 +63,8 @@ to model the PWV transmission function for a given date, SuomiNet data for that
 date must be available on the host machine. By default, each release of
 **pwv_kpno** contains all SuomiNet data for Kitt Peak National Observatory
 from 2010 through the end of the previous year. It is recommended to update the
-local SuomiNet data after installing or updating the package, and periodically
-as necessary.
+local SuomiNet data for KPNO after installing or updating the package, and
+periodically as necessary.
 
 To download any new SuomiNet data use the ``update_models`` function:
 

@@ -52,9 +52,8 @@ html_theme_options = {
 side_bar_contents = ['localtoc.html']
 pages_with_sidebar = [
     'install',
-    'accessing_settings',
+    'sites_and_settings',
     'accessing_data',
-    'custom_locations',
     'atmospheric_modeling',
     'blackbody_modeling',
     'correcting_observations',

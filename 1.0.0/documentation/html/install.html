@@ -19,7 +19,7 @@
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="2. Accessing Package Settings" href="accessing_settings.html" />
+    <link rel="next" title="2. Custom Sites and Settings" href="sites_and_settings.html" />
     <link rel="prev" title="Overview" href="index.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -83,11 +83,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#package-setup">1.2. Package Setup</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="accessing_settings.html">2. Accessing Package Settings</a></li>
-<li class="toctree-l1"><a class="reference internal" href="custom_locations.html">3. Modeling Custom Sites</a></li>
-<li class="toctree-l1"><a class="reference internal" href="accessing_data.html">4. Accessing PWV Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">5. Modeling the Atmosphere</a></li>
-<li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">6. Modeling a Black Body</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sites_and_settings.html">2. Custom Sites and Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="accessing_data.html">3. Accessing PWV Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">4. Modeling the Atmosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">5. Modeling a Black Body</a></li>
 </ul>
 
         </div>
@@ -146,8 +145,8 @@ to model the PWV transmission function for a given date, SuomiNet data for that
 date must be available on the host machine. By default, each release of
 <strong>pwv_kpno</strong> contains all SuomiNet data for Kitt Peak National Observatory
 from 2010 through the end of the previous year. It is recommended to update the
-local SuomiNet data after installing or updating the package, and periodically
-as necessary.</p>
+local SuomiNet data for KPNO after installing or updating the package, and
+periodically as necessary.</p>
 <p>To download any new SuomiNet data use the <code class="docutils literal notranslate"><span class="pre">update_models</span></code> function:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
