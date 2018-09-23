@@ -28,7 +28,7 @@ An incomplete guide to getting started:
     modeled:
 
       >>> from pwv_kpno import pwv_atm
-      >>> pwv_atm.available_data()
+      >>> pwv_atm.downloaded_years()
 
 
     To update the locally available data with any new SuomiNet measurements:
@@ -220,7 +220,7 @@ def pwv_date(date, airmass=1.):
     return _pwv_date(date, airmass)
 
 
-def available_data():
+def downloaded_years():
     # type: () -> list[int]
     """Return a list of years for which SuomiNet data has been downloaded
 
