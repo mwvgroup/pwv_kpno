@@ -47,6 +47,8 @@ An Incomplete Guide to Getting Started:
     >>>                       pwv)
 """
 
+from typing import Union
+
 import numpy as np
 from astropy import units as u
 from astropy.constants import c
@@ -94,26 +96,36 @@ def sed(temp, wavelengths, pwv, bins=None):
 
 
 def magnitude(temp, band, pwv):
-    # type: (float, tuple[float], float) -> float
-    """Return the magnitude of a black body with and without pwv absorption
+    # type: (float, Union[tuple, np.ndarray], float) -> float
+    """Return the AB magnitude of a black body in a given band
 
-    Magnitudes are calculated relative to a zero point of 3631 Jy.
+    Magnitudes are calculated relative to a zero point of 3631 Jy. If the band
+    argument is a 1d array of wavelengths, then the photometric band is treated
+    as a top-hat function ranging from the first value in the array to the
+    last. If it is two dimensional then the first dimension is treated as
+    wavelength values and the second as the response function for the given
+    band. All wavelengths values are expected in Angstroms
 
     Args:
         temp (float): The temperature of the black body in Kelvin
-        band (tuple): Tuple with the beginning and end wavelengths of a
-                        photometric band in Angstroms
+        band (tuple): A array specifying a photometric bandpass
         pwv  (float): The PWV concentration along line of sight in mm
 
     Returns:
         The magnitude of the desired black body as effected by H2O absorption
     """
 
-    wavelengths = np.arange(band[0], band[1])
-    lambda_over_c = (np.median(band) * u.AA) / c
+    if np.ndim(band) == 1:
+        wavelengths = np.arange(band[0], band[-1])
+        flux_pwv = sed(temp, wavelengths, pwv)
 
-    # We reintroduce units here to make dimensional analysis easier
-    flux_pwv = sed(temp, wavelengths, pwv)
+    else:
+        wavelengths = band[0]
+        flux_pwv = sed(temp, wavelengths, pwv)
+        flux_pwv *= band[1]
+
+    # We introduce units here to make dimensional analysis easier
+    lambda_over_c = (np.median(wavelengths) * u.AA) / c
     flux_pwv *= u.erg / (u.AA * u.cm * u.cm * u.s * u.sr)
     flux_pwv *= 2 * np.pi * u.sr  # integrate over angular coordinates
     flux_pwv *= lambda_over_c.cgs
@@ -126,7 +138,7 @@ def magnitude(temp, band, pwv):
 
 
 def zp_bias(ref_temp, cal_temp, band, pwv):
-    # type: (float, float, tuple[float], float) -> float
+    # type: (float, float, tuple[float, int], float) -> float
     """Calculate the residual error in the photometric zero point due to PWV
 
     Using a black body approximation, calculate the residual error in the zero
