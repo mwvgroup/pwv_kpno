@@ -157,8 +157,8 @@ class PwvDate(TestCase):
         """Tests that _pwv_date returns correct value for a tabulated date"""
 
         error_msg = "pwv_date returned incorrect PWV value for tabulated date"
-        test_date = datetime.fromtimestamp(self.pwv_model['date'][0])
-        test_date = test_date.astimezone(utc)
+        test_date = datetime.utcfromtimestamp(self.pwv_model['date'][0])
+        test_date = test_date.replace(tzinfo=utc)
         test_pwv = self.pwv_model['pwv'][0]
 
         pwv, pwv_err = pwv_atm._pwv_date(test_date, test_model=self.pwv_model)
@@ -196,8 +196,8 @@ class PwvDate(TestCase):
         This PWV airmass relation is presented in  Horne et al. 2012
         """
 
-        test_date = datetime.fromtimestamp(self.pwv_model['date'][0])
-        test_date = test_date.astimezone(utc)
+        test_date = datetime.utcfromtimestamp(self.pwv_model['date'][0])
+        test_date = test_date.replace(tzinfo=utc)
         pwv, pwv_err = pwv_atm._pwv_date(test_date)
         pwv_los, pwv_err_los = pwv_atm._pwv_date(test_date, airmass=2)
 
