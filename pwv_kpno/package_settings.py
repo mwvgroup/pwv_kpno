@@ -110,7 +110,7 @@ def site_property(f):
     return wrapper
 
 
-class Settings:
+class Settings(object):
     """Represents pwv_kpno settings for a particular geographical site
 
     An overview of the current package settings can be accessed by printing
@@ -446,7 +446,7 @@ class Settings:
 settings = Settings()
 
 
-class ConfigBuilder:
+class ConfigBuilder(object):
     """The ConfigBuilder class is used to build config files for a custom site
 
     Default wavelengths and cross sections are provided by MODTRAN estimates
