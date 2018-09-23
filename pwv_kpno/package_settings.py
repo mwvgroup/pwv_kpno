@@ -53,7 +53,7 @@ An Incomplete Guide to Getting Started:
     To import a config file for a new site, and permanently add it to the
     package:
 
-      >>> settings.import_site(<config_path>, overwrite=False)
+      >>> settings.import_site_config(<config_path>, overwrite=False)
       >>> settings.set_site(<new_site_name>)  # To model the imported site
 
 
@@ -98,6 +98,7 @@ class ModelingConfigError(Exception):
 
 
 def site_property(f):
+    # A custom wrapper that requires the _site_name attribute to not be None
     @property
     def wrapper(self, *args, **kwargs):
         if self._site_name is None:
@@ -109,7 +110,6 @@ def site_property(f):
     return wrapper
 
 
-# Todo: Needs getters and setters
 class Settings:
     """Represents pwv_kpno settings for a particular geographical site
 
@@ -145,12 +145,30 @@ class Settings:
     @property
     def site_name(self):
         # type: () -> str
+        """The name of the current site being modeled"""
+
         return self._site_name
+
+    @site_name.setter
+    def site_name(self, value):
+        raise RuntimeError(
+            'Use the set_site method to change the site '
+            'being modeled by pwv_kpno'
+        )
 
     @site_property
     def primary_rec(self):
         # type: () -> str
+        """The SuomiNet ID code for the primary receiver of the current site"""
+
         return self._config_data['primary_rec']
+
+    @primary_rec.setter
+    def primary_rec(self, value):
+        raise RuntimeError(
+            'The primary receiver for a site cannot be changed. Use the '
+            'set_site method to change the site being modeled by pwv_kpno'
+        )
 
     @site_property
     def _loc_dir(self):
@@ -267,7 +285,15 @@ class Settings:
 
         return self._config_data['data_cuts']
 
-    def export_ecsv_config(self, out_path):
+    @data_cuts.setter
+    def data_cuts(self, value):
+        self._config_data['data_cuts'] = value
+        with open(self._config_path, 'r+') as ofile:
+            ofile.seek(0)
+            json.dump(self._config_data, ofile, indent=4, sort_keys=True)
+            ofile.truncate()
+
+    def export_site_config(self, out_path):
         # type: (str) -> None
         """Save the current site's config file in ecsv format
 
@@ -286,7 +312,7 @@ class Settings:
         atm_model.meta = self._config_data
         atm_model.write(out_path)
 
-    def import_site(self, path, force_name=None, overwrite=False):
+    def import_site_config(self, path, force_name=None, overwrite=False):
         # type: (str, bool) -> None
         """Load a custom configuration file and save it to the package
 
@@ -300,7 +326,7 @@ class Settings:
             overwrite (bool): Whether to overwrite an existing site
         """
 
-        config_data = Table.read(path)
+        config_data = Table.read(path, format='ascii.ecsv')
         if force_name:
             config_data.meta['site_name'] = str(force_name)
 
@@ -445,11 +471,12 @@ class ConfigBuilder:
         self.primary_rec = None  # type: str
         self.sup_rec = []
 
+        # Get the default MODTRAN cross sections used for Kitt Peak
         settings_obj = Settings()
         settings_obj.set_site('kitt_peak')
-        atm_cross_sections = np.genfromtxt(settings_obj._h2o_cs_path).transpose()
-        self.wavelengths = atm_cross_sections[0]
-        self.cross_sections = atm_cross_sections[1]
+        atm_cross_section = np.genfromtxt(settings_obj._h2o_cs_path).transpose()
+        self.wavelength = atm_cross_section[0]
+        self.cross_section = atm_cross_section[1]
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -534,8 +561,8 @@ class ConfigBuilder:
         config_data['sup_rec'] = [id_code.upper() for id_code in self.sup_rec]
         return config_data
 
-    def save_to_dir(self, out_dir, overwrite=False):
-        # type: (str) -> None
+    def save_to_ecsv(self, out_path, overwrite=False):
+        # type: (str, bool) -> None
         """Create a custom config file <out_dir>/<self.site_name>.ecsv
 
         Args:
@@ -544,13 +571,15 @@ class ConfigBuilder:
         """
 
         self._raise_unset_attributes()
-        model = create_pwv_atm_model(mod_lambda=np.array(self.wavelengths),
-                                     mod_cs=np.array(self.cross_sections),
-                                     out_lambda=np.array(self.wavelengths))
+        model = create_pwv_atm_model(mod_lambda=np.array(self.wavelength),
+                                     mod_cs=np.array(self.cross_section),
+                                     out_lambda=np.array(self.wavelength))
 
         model.meta = self._create_config_dict()
-        out_path = os.path.join(out_dir, self.site_name + '.ecsv')
-        model.write(out_path, overwrite=overwrite)
+        if not out_path.endswith('.ecsv'):
+            out_path += '.ecsv'
+
+        model.write(out_path, overwrite=overwrite, format='ascii.ecsv')
 
     def __repr__(self):
         rep = '<ConfigBuilder site_name={}, primary_rec={}>'
