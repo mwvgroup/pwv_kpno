@@ -321,7 +321,7 @@ class Settings:
         forced_name argument.
 
         Args:
-            path       (str): The path of the desired config file
+            path       (str): The path of a pwv_kpno config file
             force_name (str): Optional site name to overwrite config file
             overwrite (bool): Whether to overwrite an existing site
         """
@@ -446,7 +446,6 @@ class Settings:
 settings = Settings()
 
 
-# Todo: Add test coverage
 class ConfigBuilder:
     """The ConfigBuilder class is used to build config files for a custom site
 
@@ -566,7 +565,7 @@ class ConfigBuilder:
         """Create a custom config file <out_dir>/<self.site_name>.ecsv
 
         Args:
-            out_dir    (str): The desired output directory
+            out_path   (str): The desired output file path ending with .ecsv
             overwrite (bool): Whether to overwrite an existing file
         """
 

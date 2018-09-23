@@ -375,7 +375,7 @@ def _calc_transmission(atm_model, pwv, bins=None, ignore_lim=False):
     """Calculate the PWV transmission from an atmospheric model
 
     atm_model should be a table with columns for wavelength ('wavelength') and
-    conversion factor from PWV to cross section ('1/mm_cm_2').
+    conversion factor from PWV to cross section ('1/mm').
 
     Args:
         atm_model  (Table): Atmospheric model
@@ -390,7 +390,7 @@ def _calc_transmission(atm_model, pwv, bins=None, ignore_lim=False):
     if not ignore_lim and pwv < 0:
         raise ValueError('PWV concentration cannot be negative')
 
-    transmission = np.exp(- pwv * atm_model['1/mm_cm_2'])
+    transmission = np.exp(- pwv * atm_model['1/mm'])
 
     if bins is not None:
         dx = atm_model['wavelength'][1] - atm_model['wavelength'][0]

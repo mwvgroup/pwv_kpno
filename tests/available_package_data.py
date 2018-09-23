@@ -19,6 +19,8 @@
 """This file tests that the necessary SuomiNet data files are available within
 the package, and that the config file accurately represents what data is
 available.
+
+Data files should be included for Kitt Peak for 2010 through the previous year
 """
 
 import os
@@ -29,7 +31,7 @@ from unittest import TestCase
 from pytz import utc
 
 from pwv_kpno import pwv_atm
-from pwv_kpno._download_pwv_data import _get_local_data
+from pwv_kpno import _download_pwv_data
 from pwv_kpno.package_settings import settings
 
 __authors__ = ['Daniel Perrefort']
@@ -86,7 +88,7 @@ class CorrectConfigData(TestCase):
 
 
 class CorrectReturnedYears(TestCase):
-    """Test that the end user is returned data for the correct years"""
+    """Test that the pwv_atm module returns data for the correct years"""
 
     def test_correct_measured_years(self):
         """Checks pwv_atm.measured_pwv() for missing years"""
@@ -118,7 +120,7 @@ class LocalData(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.data = _get_local_data()
+        cls.data = _download_pwv_data._get_local_data()
 
     def test_correct_col_names(self):
         """Test that the returned table has a 'date' column plus a data
