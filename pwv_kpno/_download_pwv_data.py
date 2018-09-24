@@ -28,7 +28,7 @@ from warnings import catch_warnings, simplefilter, warn
 
 import numpy as np
 import requests
-from astropy.table import Table, join, vstack, unique
+from astropy.table import Table, join, unique, vstack
 
 from .package_settings import settings
 
@@ -232,48 +232,38 @@ def _get_local_data():
         return Table(names=col_names)
 
 
-def update_local_data(year=None, timeout=None):
-    # type: (int, float) -> list[int]
-    """Download data from SuomiNet and update PWV_TAB_DIR/measured_pwv.csv
+def update_local_data(year, timeout=None):
+    # type: (int, float) -> bool
+    """Download data from SuomiNet for a given year
 
-    If a year is provided, download SuomiNet data for that year to SUOMI_DIR.
-    If not, download all available data not included with the release of this
-    package version. Use this data to update the master table of PWV
-    measurements located at PWV_TAB_DIR/measured_pwv.csv.
+    New data is written to settings._pwv_measred_path
 
     Args:
         year      (int): The year to update data for
         timeout (float): Optional seconds to wait while connecting to SuomiNet
 
     Returns:
-        A list of years for which data was updated
+        Whether any data was downloaded as a boolean
     """
 
     # Determine what years to download
-    current_years = settings._downloaded_years
-    if year is None or not current_years:
-        all_years = range(2010, datetime.now().year + 1)
-        years = [yr for yr in all_years if yr not in current_years]
-        years.append(max(current_years))
-
-    else:
-        years = {year}
+    if year > datetime.now().year:
+        raise ValueError(
+            'Cannot download data for years greater than the current year.'
+        )
 
     # Get any local data that has already been downloaded
     local_data = _get_local_data()
 
     # Download new data from SuomiNet
-    new_years = []
-    for yr in years:
-        new_data = _download_data_for_year(yr, timeout)
-        stacked_tables = vstack([local_data, new_data])
-        if stacked_tables:
-            local_data = unique(stacked_tables, keys=['date'], keep='last')
-        new_years.append(yr)
+    new_data = _download_data_for_year(year, timeout)
+    stacked_tables = vstack([local_data, new_data])
+    if stacked_tables:
+        updated_data = unique(stacked_tables, keys=['date'], keep='last')
 
-    # Update local files
-    local_data.write(settings._pwv_measred_path, overwrite=True)
-    current_years.extend(new_years)
-    settings._replace_years(current_years)
+        # Update local files
+        updated_data.write(settings._pwv_measred_path, overwrite=True)
+        return True
 
-    return new_years
+    else:
+        return False

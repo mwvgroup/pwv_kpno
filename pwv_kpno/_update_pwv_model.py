@@ -50,8 +50,8 @@ def _linear_regression(x, y, sx, sy):
     the applied model f(x).
 
     Args:
-        x  (MaskedArray): The independent variable of the regression
-        y  (MaskedArray): The dependent variable of the regression
+        x   (MaskedArray): The independent variable of the regression
+        y   (MaskedArray): The dependent variable of the regression
         sx  (MaskedArray): Standard deviations of x
         sy  (MaskedArray): Standard deviations of y
 
@@ -62,6 +62,9 @@ def _linear_regression(x, y, sx, sy):
 
     x = np.ma.array(x)  # This type cast will propagate into returns
     y = np.ma.array(y)  # It also ensures that x, y have a .mask attribute
+
+    if y.mask.all():
+        return y, sy
 
     # Fit data with orthogonal distance regression (ODR)
     indices = ~np.logical_or(x.mask, y.mask)
@@ -75,8 +78,7 @@ def _linear_regression(x, y, sx, sy):
 
     b, m = fit_results.beta
     applied_fit = m * x + b
-    applied_fit.mask = np.logical_or(np.logical_or(x.mask, y.mask),
-                                     applied_fit <= 0)
+    applied_fit.mask = np.logical_or(x.mask, applied_fit <= 0)
 
     error = np.minimum(1 + 0.1 * x, 3)
     error.mask = applied_fit.mask
@@ -130,7 +132,7 @@ def _create_new_pwv_model(debug=False):
     """Create a new model for the PWV level at the current site
 
     Create first order polynomials relating the PWV measured by the current
-    site's supplimentary recievers to its primary receiver (one per off site
+    site's supplementary receivers to its primary receiver (one per off site
     receiver). Use these polynomials to supplement PWV measurements taken by
     the primary receiver times when it is unavailable. Write the supplemented
     PWV data to a csv file at settings._pwv_model_path.
@@ -162,6 +164,48 @@ def _create_new_pwv_model(debug=False):
     out.write(settings._pwv_model_path, overwrite=True)
 
 
+def _get_years_to_download(years=None):
+    """Return a list of years to download data for
+
+    If the years argument is not provided, include all years from the earliest
+    available data onward. If no data is available then start from 2010.
+
+    If a list of years is provided, return the list minus any years that are
+    already downloaded
+
+    Args:
+        years (list): A list of years
+
+    Returns:
+        A list of years to download
+    """
+
+    available_years = settings._downloaded_years
+    current_year = datetime.now().year
+    if years is None:
+        if not available_years:
+            starting_year = 2010
+            ending_year = datetime.now().year
+
+        else:
+            starting_year = min(available_years)
+            ending_year = max(available_years)
+
+        all_years = set(range(starting_year, current_year + 1))
+        download_years = all_years - set(available_years)
+        download_years.add(ending_year)
+
+    else:
+        if any((year > current_year for year in years)):
+            raise ValueError(
+                'Cannot update models for years greater than the current year.'
+            )
+
+        download_years = years
+
+    return sorted(download_years)
+
+
 def update_models(years=None, timeout=None):
     # type: (list, float) -> list[int]
     """Download data from SuomiNet and update the locally stored PWV model
@@ -180,33 +224,14 @@ def update_models(years=None, timeout=None):
         A list of years for which models where updated
     """
 
-    current_year = datetime.now().year
-    available_years = settings._downloaded_years
-    if years is None:
-        if not available_years:
-            raise RuntimeError(
-                'No data has been downloaded for the current location yet.'
-                ' Cannot auto determine what years to download without a'
-                ' starting point.'
-            )
-
-        starting_year, ending_year = min(available_years), max(available_years)
-        all_years = set(range(starting_year, current_year + 1))
-        download_years = all_years - set(available_years)
-        download_years.add(ending_year)
-        years = sorted(download_years)
-
-    if any((year > current_year for year in years)):
-        raise ValueError(
-            'Cannot update models for years greater than the current year.'
-        )
+    download_years = _get_years_to_download(years)
 
     updated_years = []
-    for year in years:
-        new_years = update_local_data(year, timeout)
-        updated_years.extend(new_years)
+    for year in download_years:
+        if update_local_data(year, timeout):
+            updated_years.append(year)
 
     _create_new_pwv_model()
-    all_years = available_years + updated_years
+    all_years = settings._downloaded_years + updated_years
     settings._replace_years(all_years)
     return updated_years
