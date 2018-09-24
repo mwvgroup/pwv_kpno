@@ -47,7 +47,7 @@ An Incomplete Guide to Getting Started:
 
     To export the config file for the current site being modeled:
 
-      >>> settings.export_ecsv_config(<out_path>)
+      >>> settings.export_site_config(<out_path>)
 
 
     To import a config file for a new site, and permanently add it to the
@@ -125,7 +125,7 @@ class Settings(object):
 
     Methods:
         set_site           : Configure pwv_kpno to model a given site
-        export_ecsv_config : Save the current site's configuration data to file
+        export_site_config : Save the current site's configuration data to file
     """
 
     _site_name = None  # The name of the current site
@@ -304,7 +304,7 @@ class Settings(object):
         if not out_path.endswith('.ecsv'):
             out_path += '.ecsv'
 
-        out_dir = os.path.dirname(out_path)
+        out_dir = os.path.dirname(os.path.abspath(out_path))
         if not os.path.exists(out_dir):
             os.mkdir(out_dir)
 
@@ -350,7 +350,7 @@ class Settings(object):
             config_data.meta['years'] = []
             json.dump(config_data.meta, ofile, indent=4, sort_keys=True)
 
-        atm_model_path = os.path.join(temp_dir, 'atm_model.json')
+        atm_model_path = os.path.join(temp_dir, 'atm_model.csv')
         config_data.write(atm_model_path, format='ascii.csv')
 
         if os.path.exists(out_dir):
