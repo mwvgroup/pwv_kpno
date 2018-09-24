@@ -48,6 +48,7 @@
                 <li><a href="../../examples/html/correcting_observations.html">Examples</a></li>
                 <li><a href="../../validation/html/overview.html">Validation</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno/issues/new/choose">Need Help?</a></li>
+                <li><a href="https://github.com/mwvgroup/pwv_kpno">Source Code</a></li>
             
             
             
@@ -163,16 +164,20 @@ given band as seen under the effects of PWV absorption.</p>
 <dl class="function">
 <dt id="pwv_kpno.blackbody_with_atm.magnitude">
 <code class="descclassname">pwv_kpno.blackbody_with_atm.</code><code class="descname">magnitude</code><span class="sig-paren">(</span><em>temp</em>, <em>band</em>, <em>pwv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/blackbody_with_atm.html#magnitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.blackbody_with_atm.magnitude" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the magnitude of a black body with and without pwv absorption</p>
-<p>Magnitudes are calculated relative to a zero point of 3631 Jy.</p>
+<dd><p>Return the AB magnitude of a black body in a given band</p>
+<p>Magnitudes are calculated relative to a zero point of 3631 Jy. If the band
+argument is a 1d array of wavelengths, then the photometric band is treated
+as a top-hat function ranging from the first value in the array to the
+last. If it is two dimensional then the first dimension is treated as
+wavelength values and the second as the response function for the given
+band. All wavelengths values are expected in Angstroms</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>temp</strong> (<em>float</em>) – The temperature of the black body in Kelvin</li>
-<li><strong>band</strong> (<em>tuple</em>) – Tuple with the beginning and end wavelengths of a
-photometric band in Angstroms</li>
+<li><strong>band</strong> (<em>tuple</em>) – A array specifying a photometric bandpass</li>
 <li><strong>pwv</strong> (<em>float</em>) – The PWV concentration along line of sight in mm</li>
 </ul>
 </td>

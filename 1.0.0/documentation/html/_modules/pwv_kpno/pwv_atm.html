@@ -47,6 +47,7 @@
                 <li><a href="../../../../examples/html/correcting_observations.html">Examples</a></li>
                 <li><a href="../../../../validation/html/overview.html">Validation</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno/issues/new/choose">Need Help?</a></li>
+                <li><a href="https://github.com/mwvgroup/pwv_kpno">Source Code</a></li>
             
             
             
@@ -103,7 +104,7 @@
 <span class="sd">    modeled:</span>
 
 <span class="sd">      &gt;&gt;&gt; from pwv_kpno import pwv_atm</span>
-<span class="sd">      &gt;&gt;&gt; pwv_atm.available_data()</span>
+<span class="sd">      &gt;&gt;&gt; pwv_atm.downloaded_years()</span>
 
 
 <span class="sd">    To update the locally available data with any new SuomiNet measurements:</span>
@@ -263,12 +264,16 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">pwv_model</span> <span class="o">=</span> <span class="n">test_model</span>
 
-    <span class="c1"># Determine the PWV level along line of sight as pwv(zenith) * airmass</span>
     <span class="n">_raise_available_data</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">pwv_model</span><span class="p">)</span>
     <span class="n">time_stamp</span> <span class="o">=</span> <span class="n">_timestamp</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
-    <span class="n">pwv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">time_stamp</span><span class="p">,</span> <span class="n">pwv_model</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">],</span> <span class="n">pwv_model</span><span class="p">[</span><span class="s1">&#39;pwv&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">airmass</span>
+    <span class="n">pwv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">time_stamp</span><span class="p">,</span> <span class="n">pwv_model</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">],</span> <span class="n">pwv_model</span><span class="p">[</span><span class="s1">&#39;pwv&#39;</span><span class="p">])</span>
     <span class="n">pwv_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">time_stamp</span><span class="p">,</span> <span class="n">pwv_model</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">],</span> <span class="n">pwv_model</span><span class="p">[</span><span class="s1">&#39;pwv_err&#39;</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">pwv</span><span class="p">,</span> <span class="n">pwv_err</span>
+
+    <span class="c1"># Determine the PWV level along line of sight as outlined in</span>
+    <span class="c1"># Horne et al. 2012</span>
+    <span class="n">pwv_los</span> <span class="o">=</span> <span class="n">pwv</span> <span class="o">*</span> <span class="p">(</span><span class="n">airmass</span> <span class="o">**</span> <span class="o">.</span><span class="mi">6</span><span class="p">)</span>
+    <span class="n">pwv_err_los</span> <span class="o">=</span> <span class="n">pwv_err</span> <span class="o">*</span> <span class="p">(</span><span class="n">airmass</span> <span class="o">**</span> <span class="o">.</span><span class="mi">6</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pwv_los</span><span class="p">,</span> <span class="n">pwv_err_los</span>
 
 
 <div class="viewcode-block" id="pwv_date"><a class="viewcode-back" href="../../accessing_data.html#pwv_kpno.pwv_atm.pwv_date">[docs]</a><span class="k">def</span> <span class="nf">pwv_date</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">airmass</span><span class="o">=</span><span class="mf">1.</span><span class="p">):</span>
@@ -290,7 +295,7 @@
     <span class="k">return</span> <span class="n">_pwv_date</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">airmass</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="available_data"><a class="viewcode-back" href="../../accessing_data.html#pwv_kpno.pwv_atm.available_data">[docs]</a><span class="k">def</span> <span class="nf">available_data</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">downloaded_years</span><span class="p">():</span>
     <span class="c1"># type: () -&gt; list[int]</span>
     <span class="sd">&quot;&quot;&quot;Return a list of years for which SuomiNet data has been downloaded</span>
 
@@ -303,7 +308,7 @@
 <span class="sd">        A list of years with locally available SuomiNet data</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">_available_years</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">_downloaded_years</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_check_date_time_args</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -313,17 +318,14 @@
 <span class="sd">    `measured_pwv` and `modeled_pwv`.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        year  (int): An integer value between 2010 and the current year</span>
+<span class="sd">        year  (int): An integer value less than or equal to the current year</span>
 <span class="sd">        month (int): An integer value between 1 and 12 (inclusive)</span>
 <span class="sd">        day   (int): An integer value between 1 and 31 (inclusive)</span>
 <span class="sd">        hour  (int): An integer value between 0 and 23 (inclusive)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">year</span> <span class="o">&lt;</span> <span class="mi">2010</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;pwv_kpno does not provide data years prior to 2010&#39;</span><span class="p">)</span>
-
-    <span class="k">elif</span> <span class="n">year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">year</span> <span class="o">&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">year</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Argument &#39;year&#39; (pos 1) is larger than current year&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">year</span> <span class="o">&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">year</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Provided year is larger than current year&quot;</span><span class="p">)</span>
 
     <span class="n">arg_constraints</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">)),</span>
                        <span class="p">(</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">31</span><span class="p">)),</span>
@@ -448,7 +450,7 @@
     <span class="sd">&quot;&quot;&quot;Calculate the PWV transmission from an atmospheric model</span>
 
 <span class="sd">    atm_model should be a table with columns for wavelength (&#39;wavelength&#39;) and</span>
-<span class="sd">    conversion factor from PWV to cross section (&#39;1/mm_cm_2&#39;).</span>
+<span class="sd">    conversion factor from PWV to cross section (&#39;1/mm&#39;).</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        atm_model  (Table): Atmospheric model</span>
@@ -463,7 +465,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">ignore_lim</span> <span class="ow">and</span> <span class="n">pwv</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;PWV concentration cannot be negative&#39;</span><span class="p">)</span>
 
-    <span class="n">transmission</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span> <span class="n">pwv</span> <span class="o">*</span> <span class="n">atm_model</span><span class="p">[</span><span class="s1">&#39;1/mm_cm_2&#39;</span><span class="p">])</span>
+    <span class="n">transmission</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span> <span class="n">pwv</span> <span class="o">*</span> <span class="n">atm_model</span><span class="p">[</span><span class="s1">&#39;1/mm&#39;</span><span class="p">])</span>
 
     <span class="k">if</span> <span class="n">bins</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">dx</span> <span class="o">=</span> <span class="n">atm_model</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">atm_model</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>

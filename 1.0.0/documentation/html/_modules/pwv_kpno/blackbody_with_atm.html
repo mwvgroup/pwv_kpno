@@ -47,6 +47,7 @@
                 <li><a href="../../../../examples/html/correcting_observations.html">Examples</a></li>
                 <li><a href="../../../../validation/html/overview.html">Validation</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno/issues/new/choose">Need Help?</a></li>
+                <li><a href="https://github.com/mwvgroup/pwv_kpno">Source Code</a></li>
             
             
             
@@ -82,7 +83,7 @@
 <span class="sd">For full documentation on a function use the builtin Python `help` function</span>
 <span class="sd">or see https://mwvgroup.github.io/pwv_kpno/.</span>
 
-<span class="sd">An Incomplete Guide to Getting Started:</span>
+<span class="sd">An incomplete guide to getting started:</span>
 
 <span class="sd">    To determine the SED of a black body under the influence of atmospheric</span>
 <span class="sd">    effects due to a known PWV concentration (in mm):</span>
@@ -121,6 +122,8 @@
 <span class="sd">    &gt;&gt;&gt;                       i_band,</span>
 <span class="sd">    &gt;&gt;&gt;                       pwv)</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">astropy</span> <span class="k">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
@@ -169,26 +172,36 @@
 
 
 <div class="viewcode-block" id="magnitude"><a class="viewcode-back" href="../../blackbody_modeling.html#pwv_kpno.blackbody_with_atm.magnitude">[docs]</a><span class="k">def</span> <span class="nf">magnitude</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">band</span><span class="p">,</span> <span class="n">pwv</span><span class="p">):</span>
-    <span class="c1"># type: (float, tuple[float], float) -&gt; float</span>
-    <span class="sd">&quot;&quot;&quot;Return the magnitude of a black body with and without pwv absorption</span>
+    <span class="c1"># type: (float, Union[tuple, np.ndarray], float) -&gt; float</span>
+    <span class="sd">&quot;&quot;&quot;Return the AB magnitude of a black body in a given band</span>
 
-<span class="sd">    Magnitudes are calculated relative to a zero point of 3631 Jy.</span>
+<span class="sd">    Magnitudes are calculated relative to a zero point of 3631 Jy. If the band</span>
+<span class="sd">    argument is a 1d array of wavelengths, then the photometric band is treated</span>
+<span class="sd">    as a top-hat function ranging from the first value in the array to the</span>
+<span class="sd">    last. If it is two dimensional then the first dimension is treated as</span>
+<span class="sd">    wavelength values and the second as the response function for the given</span>
+<span class="sd">    band. All wavelengths values are expected in Angstroms</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        temp (float): The temperature of the black body in Kelvin</span>
-<span class="sd">        band (tuple): Tuple with the beginning and end wavelengths of a</span>
-<span class="sd">                        photometric band in Angstroms</span>
+<span class="sd">        band (tuple): A array specifying a photometric bandpass</span>
 <span class="sd">        pwv  (float): The PWV concentration along line of sight in mm</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The magnitude of the desired black body as effected by H2O absorption</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">wavelengths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">band</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">band</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-    <span class="n">lambda_over_c</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">band</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">AA</span><span class="p">)</span> <span class="o">/</span> <span class="n">c</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">band</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">wavelengths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">band</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">band</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">flux_pwv</span> <span class="o">=</span> <span class="n">sed</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">wavelengths</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
 
-    <span class="c1"># We reintroduce units here to make dimensional analysis easier</span>
-    <span class="n">flux_pwv</span> <span class="o">=</span> <span class="n">sed</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">wavelengths</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">wavelengths</span> <span class="o">=</span> <span class="n">band</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">flux_pwv</span> <span class="o">=</span> <span class="n">sed</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">wavelengths</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
+        <span class="n">flux_pwv</span> <span class="o">*=</span> <span class="n">band</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># We introduce units here to make dimensional analysis easier</span>
+    <span class="n">lambda_over_c</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">AA</span><span class="p">)</span> <span class="o">/</span> <span class="n">c</span>
     <span class="n">flux_pwv</span> <span class="o">*=</span> <span class="n">u</span><span class="o">.</span><span class="n">erg</span> <span class="o">/</span> <span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">AA</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">cm</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">cm</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">sr</span><span class="p">)</span>
     <span class="n">flux_pwv</span> <span class="o">*=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">sr</span>  <span class="c1"># integrate over angular coordinates</span>
     <span class="n">flux_pwv</span> <span class="o">*=</span> <span class="n">lambda_over_c</span><span class="o">.</span><span class="n">cgs</span>
@@ -201,7 +214,7 @@
 
 
 <div class="viewcode-block" id="zp_bias"><a class="viewcode-back" href="../../blackbody_modeling.html#pwv_kpno.blackbody_with_atm.zp_bias">[docs]</a><span class="k">def</span> <span class="nf">zp_bias</span><span class="p">(</span><span class="n">ref_temp</span><span class="p">,</span> <span class="n">cal_temp</span><span class="p">,</span> <span class="n">band</span><span class="p">,</span> <span class="n">pwv</span><span class="p">):</span>
-    <span class="c1"># type: (float, float, tuple[float], float) -&gt; float</span>
+    <span class="c1"># type: (float, float, tuple[float, int], float) -&gt; float</span>
     <span class="sd">&quot;&quot;&quot;Calculate the residual error in the photometric zero point due to PWV</span>
 
 <span class="sd">    Using a black body approximation, calculate the residual error in the zero</span>
