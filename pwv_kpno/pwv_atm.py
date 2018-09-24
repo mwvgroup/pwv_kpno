@@ -190,7 +190,6 @@ def _pwv_date(date, airmass=1., test_model=None):
 
     _raise_available_data(date, pwv_model)
     time_stamp = _timestamp(date)
-    print(1262304900.0, time_stamp)
     pwv = np.interp(time_stamp, pwv_model['date'], pwv_model['pwv'])
     pwv_err = np.interp(time_stamp, pwv_model['date'], pwv_model['pwv_err'])
 

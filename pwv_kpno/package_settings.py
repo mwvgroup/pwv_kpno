@@ -26,7 +26,7 @@ created using the `ConfigBuilder` class.
 For full documentation on a function use the builtin Python `help` function
 or see https://mwvgroup.github.io/pwv_kpno/.
 
-An Incomplete Guide to Getting Started:
+An incomplete guide to getting started:
 
     For an overview of package settings:
 

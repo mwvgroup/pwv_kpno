@@ -7,7 +7,7 @@ due to precipitable water vapor (PWV) on a black body.
 For full documentation on a function use the builtin Python `help` function
 or see https://mwvgroup.github.io/pwv_kpno/.
 
-An Incomplete Guide to Getting Started:
+An incomplete guide to getting started:
 
     To determine the SED of a black body under the influence of atmospheric
     effects due to a known PWV concentration (in mm):

@@ -67,7 +67,9 @@ class SearchArgumentErrors(TestCase):
 
     def assert_raises_iter(self, kwarg, iterable, error):
         for val in iterable:
-            self.assertRaises(error, pwv_atm._check_date_time_args, **{kwarg: val})
+            self.assertRaises(error,
+                              pwv_atm._check_date_time_args,
+                              **{kwarg: val})
 
     def test_checks_for_valid_year(self):
         """Test for correct errors due to bad year argument"""

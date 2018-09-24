@@ -30,8 +30,8 @@ from unittest import TestCase
 
 from pytz import utc
 
-from pwv_kpno import pwv_atm
 from pwv_kpno import _download_pwv_data
+from pwv_kpno import pwv_atm
 from pwv_kpno.package_settings import settings
 
 __authors__ = ['Daniel Perrefort']

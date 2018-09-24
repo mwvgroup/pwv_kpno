@@ -16,10 +16,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
-"""This code downloads precipitable water vapor (PWV) measurements from
-suominet.ucar.edu. Data is added to a master table located at
-site_data/<current site name>/measured_pwv.csv where the current site name
-is specified by the settings class pwv_kpno._package_settings.settings
+"""This module downloads precipitable water vapor measurements from
+suominet.ucar.edu.
 """
 
 import os
@@ -42,13 +40,13 @@ __status__ = 'Release'
 
 
 def _suomi_date_to_timestamp(year, days_str):
-    """Convert the SuomiNet date format to UTC _timestamp
+    """Convert the SuomiNet date format into UTC timestamp
 
     SuomiNet dates are stored as decimal days in a given year. For example,
     February 1st, 00:15 would be 36.01042.
 
     Args:
-        year     (int): The year of the desired _timestamp
+        year     (int): The year of the desired timestamp
         days_str (str): The number of days that have passed since january 1st
 
     Returns:
@@ -76,6 +74,9 @@ def _apply_data_cuts(data, site_id):
     """
 
     data = data[data[site_id] > 0]
+
+    # SuomiNet rounds their error and can report an error of zero
+    # We compensate by adding an error of 0.025
     data[site_id + '_err'] = np.round(data[site_id + '_err'] + 0.025, 3)
 
     data_cuts = settings.data_cuts
@@ -85,6 +86,9 @@ def _apply_data_cuts(data, site_id):
     for param_name, cut_list in data_cuts[site_id].items():
         for start, end in cut_list:
             indices = (start < data[param_name]) & (data[param_name] < end)
+
+            # Data cuts on dates specify what data to ignore
+            # All others specify what data to include
             if param_name == 'date':
                 indices = ~indices
 
@@ -123,11 +127,13 @@ def _read_file(path):
 
     data = _apply_data_cuts(data, site_id)
     data = Table(data)['date', site_id, site_id + '_err']
+
     if data:
         data = unique(data, keys='date', keep='none')
         year = int(path[-8: -4])
         to_timestamp_vectorized = np.vectorize(_suomi_date_to_timestamp)
         data['date'] = to_timestamp_vectorized(year, data['date'])
+
     return data
 
 
@@ -147,42 +153,50 @@ def _download_data_for_site(year, site_id, timeout=None):
         A list of file paths containing downloaded data
     """
 
-    downloaded_paths = []
+    # CONUS daily data releases:
     day_path = os.path.join(settings._suomi_dir, '{0}dy_{1}.plt')
     day_url = 'https://www.suominet.ucar.edu/data/staYrDay/{0}pp_{1}.plt'
+
+    # Conus hourly data releases:
     hour_path = os.path.join(settings._suomi_dir, '{0}hr_{1}.plt')
     hour_url = 'https://www.suominet.ucar.edu/data/staYrHr/{0}nrt_{1}.plt'
+
+    # Global daily releases:
     globl_day_path = os.path.join(settings._suomi_dir, '{0}gl_{1}.plt')
     globl_day_url = 'https://www.suominet.ucar.edu/data/staYrDayGlob/{0}_{1}global.plt'
 
-    for general_path, url in ((globl_day_path, globl_day_url),
-                              (day_path, day_url),
-                              (hour_path, hour_url)):
+    # The preferred data should be first in the iteration
+    download_data = (
+        (globl_day_path, globl_day_url),
+        (day_path, day_url),
+        (hour_path, hour_url)
+    )
 
+    downloaded_paths = []
+    for general_path, url in download_data:
         with catch_warnings():
             simplefilter('ignore')
             response = requests.get(url.format(site_id, year),
                                     timeout=timeout, verify=False)
 
+        # 404 error code means SuomiNet has no data file to download
         if response.status_code != 404:
             response.raise_for_status()
-
             path = general_path.format(site_id, year)
             with open(path, 'wb') as ofile:
                 ofile.write(response.content)
 
-            # The preferred data file should be first in the list
             downloaded_paths.append(path)
 
     return downloaded_paths
 
 
 def _download_data_for_year(yr, timeout=None):
-    """Download and return data for a given year from available SuomiNet sites
+    """Download and return data for a given year from each SuomiNet receiver
 
-    Downloaded data for each enabled SuomiNet sites. Return this data as an
+    Downloaded data for each SuomiNet receiver. Return this data as an
     astropy table with all available data from the daily data releases
-    supplemented by the hourly release data.
+    supplemented by any hourly release data.
 
     Args:
         yr        (int): The year of the desired data
@@ -234,16 +248,14 @@ def _get_local_data():
 
 def update_local_data(year, timeout=None):
     # type: (int, float) -> bool
-    """Download data from SuomiNet for a given year
-
-    New data is written to settings._pwv_measred_path
+    """Download data from SuomiNet for a given year and update the master table
 
     Args:
         year      (int): The year to update data for
         timeout (float): Optional seconds to wait while connecting to SuomiNet
 
     Returns:
-        Whether any data was downloaded as a boolean
+        A boolean representing whether any data was downloaded
     """
 
     # Determine what years to download

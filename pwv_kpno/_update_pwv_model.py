@@ -16,10 +16,11 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
-"""This document updates the PWV model using new data downloaded from SuomiNet.
-Linear functions are fitted to relate the PWV level at secondary locations
-to the PWV level at the primary location. The resulting polynomials are then
-used to supplement gaps in PWV measurements taken at the primary location.
+"""This document updates the modeled PWV using new data downloaded from
+SuomiNet. Linear functions are fitted to relate the PWV level at secondary
+locations to the PWV level at the primary location. The resulting polynomials
+are then used to supplement gaps in PWV measurements taken at the primary
+location.
 """
 
 import warnings
@@ -27,7 +28,7 @@ from datetime import datetime
 
 import numpy as np
 from astropy.table import Table
-from scipy.odr import RealData, ODR, polynomial
+from scipy.odr import ODR, RealData, polynomial
 
 from ._download_pwv_data import update_local_data
 from .package_settings import settings
@@ -47,7 +48,7 @@ def _linear_regression(x, y, sx, sy):
     """Optimize and apply a linear regression using masked arrays
 
     Generates a linear fit f using orthogonal distance regression and returns
-    the applied model f(x).
+    the applied model f(x). If y is completely masked, return y and sy.
 
     Args:
         x   (MaskedArray): The independent variable of the regression
@@ -76,6 +77,7 @@ def _linear_regression(x, y, sx, sy):
     if fit_fail:
         raise RuntimeError(fit_results.stopreason)
 
+    # Apply the linear regression
     b, m = fit_results.beta
     applied_fit = m * x + b
     applied_fit.mask = np.logical_or(x.mask, applied_fit <= 0)
@@ -90,7 +92,7 @@ def _calc_avg_pwv_model(pwv_data, primary_rec):
     """Determines a PWV model using each off site receiver and averages them
 
     Args:
-        pwv_data (Table): A table of pwv data
+        pwv_data (Table): A table of pwv measurements
 
     Returns:
         A masked array of the averaged PWV model
@@ -171,13 +173,14 @@ def _get_years_to_download(years=None):
     available data onward. If no data is available then start from 2010.
 
     If a list of years is provided, return the list minus any years that are
-    already downloaded
+    already downloaded. Always include the most recent year in the provided
+    list.
 
     Args:
-        years (list): A list of years
+        years (list): A list of years that a user is requesting to download
 
     Returns:
-        A list of years to download
+        A list of years without data already on the current machine
     """
 
     available_years = settings._downloaded_years

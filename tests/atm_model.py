@@ -46,7 +46,7 @@ def calc_conv_factor(cross_section):
     mock_model = create_pwv_atm_model(
         mod_lambda=[0],  # Dummy value
         mod_cs=[cross_section],
-        out_lambda=[0]   # Dummy value
+        out_lambda=[0]  # Dummy value
     )
 
     return mock_model['1/mm'][0]
@@ -81,9 +81,9 @@ class CreatePWVModel(TestCase):
         mock_lambda_out = np.array([0, 2.5, 5, 7.5, 10])
 
         mock_model = create_pwv_atm_model(
-            mod_lambda = mock_lambda_in,
-            mod_cs = mock_cross_sections,
-            out_lambda = mock_lambda_out
+            mod_lambda=mock_lambda_in,
+            mod_cs=mock_cross_sections,
+            out_lambda=mock_lambda_out
         )
 
         arr_equals = np.array_equal(mock_model['wavelength'], mock_lambda_out)

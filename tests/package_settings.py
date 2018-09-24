@@ -16,7 +16,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno. If not, see <http://www.gnu.org/licenses/>.
 
-"""This file provides tests for the function "transmission"."""
+"""This file provides tests for the pwv_kpno.package_settings.Settings class"""
 
 from unittest import TestCase
 
@@ -41,7 +41,7 @@ class SettingErrors(TestCase):
         """site_name should be a protected property"""
 
         with self.assertRaises(RuntimeError):
-           self.settings.site_name = 'dummy string'
+            self.settings.site_name = 'dummy string'
 
     def test_change_primary_rec(self):
         """primary_rec should be a protected property"""

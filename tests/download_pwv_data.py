@@ -16,10 +16,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno. If not, see <http://www.gnu.org/licenses/>.
 
-"""This file tests that SuomiNet data is downloaded and parsed correctly.
-
-Primary tested modules:
-    pwv_kpno._download_pwv_data
+"""This file tests the pwv_kpno._download_pwv_data module to ensure SuomiNet
+data is downloaded and parsed correctly.
 """
 
 import os

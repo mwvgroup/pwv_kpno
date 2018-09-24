@@ -17,12 +17,12 @@
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
 """pwv_kpno provides models for the atmospheric transmission function due to
-precipitable water vapor (PWV). Models cover wavelengths from 7,000 to 11,000
-Angstroms at a resolution of 0.05 Angstroms. Using PWV measurements published
+precipitable water vapor (PWV). Using PWV measurements published
 by the SuomiNet project (https://www.suominet.ucar.edu), this package is
 capable of returning the modeled PWV transmission for a given date, time, and
 airmass at customizable geographic locations. By default, this functionality
-is set to model Kitt Peak National Observatory.
+is set to model Kitt Peak National Observatory. Default models cover
+wavelengths from 3,000 to 12,000 Angstroms at a resolution of 0.05 Angstroms.
 
 For more information on using this package, documentation is available online
 at https://mwvgroup.github.io/pwv_kpno/ or through the standard python help
@@ -55,8 +55,13 @@ from . import pwv_atm
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
-__credits__ = ['Michael Wood-Vasey', 'Azalee Bostroem',
-               'Jessica Kroboth', 'Alexander Afanasyev']
+__credits__ = [
+    'W. M. Wood-Vasey',
+    'K.Azalee Bostroem',
+    'Jessica Kroboth',
+    'Tom Matheson',
+    'Alexander Afanasyev',
+]
 
 __license__ = 'GPL V3'
 __version__ = '1.0.0'
