@@ -2,13 +2,20 @@
 Blackbody Modeling
 ******************
 
+When calibrating photometric images, astronomers typically choose bright stars
+of a known spectral type with very few absorption features. Early A type stars
+are commonly used for this purpose due to their few, weak metal lines and
+reasonable approximation as a black body at about 10,000 K. It is therefore
+useful to understand the impact of atmospheric absorption on the spectral
+energy distribution (SED) of a black body.
+
 Absorption Features
 ===================
 
-The SED of a blackbody at 8,000 K (black) across the i-band (left) and z-band
-(right). Shown in grey, the modeled atmospheric absorption for a PWV column
-density of 15 mm is applied to the SED. This is compared to the black body SED
-scaled using the integrated absorption in each band in red.
+The SED of a blackbody at 8,000 K (black) is shown across the i-band (left)
+and z-band (right) ranges. Shown in grey, the modeled atmospheric absorption
+for a PWV column density of 15 mm is applied to the SED. This is compared to
+the black body SED scaled using the integrated absorption in each band in red.
 
 .. rst-class:: validation_figure
 .. figure::  _static/blackbody.png

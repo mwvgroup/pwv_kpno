@@ -2,6 +2,20 @@
 Transmission Function
 *********************
 
+Line Saturation and Binning
+===========================
+
+.. rst-class:: validation_figure
+.. figure::  _static/transmission_binning.pdf
+    :align:   center
+
+PWV Scaling
+===========
+
+.. rst-class:: validation_figure
+.. figure::  _static/transmission_levels.pdf
+    :align:   center
+
 Comparison to Observations
 ==========================
 
