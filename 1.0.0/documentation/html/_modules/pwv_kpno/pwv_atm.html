@@ -295,7 +295,7 @@
     <span class="k">return</span> <span class="n">_pwv_date</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">airmass</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">downloaded_years</span><span class="p">():</span>
+<div class="viewcode-block" id="downloaded_years"><a class="viewcode-back" href="../../accessing_data.html#pwv_kpno.pwv_atm.downloaded_years">[docs]</a><span class="k">def</span> <span class="nf">downloaded_years</span><span class="p">():</span>
     <span class="c1"># type: () -&gt; list[int]</span>
     <span class="sd">&quot;&quot;&quot;Return a list of years for which SuomiNet data has been downloaded</span>
 
@@ -308,7 +308,7 @@
 <span class="sd">        A list of years with locally available SuomiNet data</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">_downloaded_years</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">_downloaded_years</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">_check_date_time_args</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
