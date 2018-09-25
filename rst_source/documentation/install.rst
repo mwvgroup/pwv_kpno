@@ -15,7 +15,7 @@ To install the package, please choose from one of the options below.
 
 .. warning:: Reinstalling or updating the **pwv_kpno** package will erase
   any custom sites that you have added to the previous installation.
-  Click `here <sites_and_settings.html#exporting-current-settings>`_
+  Click `here <sites_and_settings.html#importing-a-new-location>`_
   for more information and for instructions on backing up your data.
 
 Using PIP (Recommended)
