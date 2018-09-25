@@ -18,11 +18,8 @@ To find the atmospheric transmission for a given datetime, use the
 
 .. autofunction:: pwv_kpno.pwv_atm.trans_for_date
 
-Examples:
----------
-
-For an airmass of 1.2, the transmission function at 2013-12-15 05:35:00 is
-given by:
+For example, given an airmass of 1.2, the transmission function at 2013-12-15
+05:35:00 UTC is given by:
 
 .. code-block:: python
     :linenos:
@@ -58,9 +55,6 @@ can be done using the ``trans_for_pwv`` method.
 
 .. autofunction:: pwv_kpno.pwv_atm.trans_for_pwv
 
-Examples:
----------
-
 For a 13.5 mm PWV column density along line of sight, the transmission function
 is given by:
 
@@ -95,8 +89,8 @@ transmission if the `pwv_err` argument is specified:
          3000.10 0.999999922774 1.7161443266e-08
              ...            ...              ...
 
-Binned the Transmission
-=======================
+Binning the Transmission
+========================
 
 Both the `trans_for_date` and the `trans_for_pwv` functions provided support
 for binning the returned transmission function via the `bins` argument. The

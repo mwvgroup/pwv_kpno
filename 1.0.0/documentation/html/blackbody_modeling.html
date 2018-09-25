@@ -44,7 +44,7 @@
         <div class="collapse navbar-collapse nav-collapse">
           <ul class="nav navbar-nav">
             
-                <li><a href="./install.html">Documentation</a></li>
+                <li><a href="../../documentation/html/install.html">Documentation</a></li>
                 <li><a href="../../examples/html/correcting_spectra.html">Examples</a></li>
                 <li><a href="../../validation/html/overview.html">Validation</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno/issues/new/choose">Need Help?</a></li>
@@ -79,18 +79,9 @@
 <li class="toctree-l1"><a class="reference internal" href="accessing_data.html">3. Accessing PWV Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">4. Modeling the Atmosphere</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">5. Modeling a Black Body</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#generating-an-sed">5.1. Generating an SED</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#example">5.1.1. Example:</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#magnitude">5.2. Magnitude</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#examples">5.2.1. Examples:</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#estimating-zero-point-error">5.3. Estimating Zero Point Error</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">5.3.1. Examples:</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#generating-an-sed">5.1. Generating an SED</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#magnitude">5.2. Magnitude</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#estimating-zero-point-error">5.3. Estimating Zero Point Error</a></li>
 </ul>
 </li>
 </ul>
@@ -134,8 +125,8 @@ used to smooth atmospheric transmission</li>
 </table>
 </dd></dl>
 
-<div class="section" id="example">
-<h3>5.1.1. Example:<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<p>Here we demonstrate how to find the SED of a black body between 7,000 and
+10,000 Angstroms:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -155,7 +146,6 @@ used to smooth atmospheric transmission</li>
 </td></tr></table></div>
 <p><strong>Note:</strong> If desired, the SED of a black body without atmospheric effects can
 be achieved by specifying a PWV level of zero.</p>
-</div>
 </div>
 <div class="section" id="magnitude">
 <h2>5.2. Magnitude<a class="headerlink" href="#magnitude" title="Permalink to this headline">¶</a></h2>
@@ -189,10 +179,8 @@ band. All wavelengths values are expected in Angstroms</p>
 </table>
 </dd></dl>
 
-<div class="section" id="examples">
-<h3>5.2.1. Examples:<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
-<p>In the <em>i</em> band from 7,000 to 8,500 Angstroms, the magnitude of a
-black body is found by running</p>
+<p>If we want to treat the <em>i</em> band as a top hat function from 7,000 to 8,500
+Angstroms, the magnitude of a black body is found by running</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -208,9 +196,33 @@ black body is found by running</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">bb_mag</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">magnitude</span><span class="p">(</span><span class="n">bb_temp</span><span class="p">,</span> <span class="n">i_band</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
+<p>We can also determine the magnitude for a real world filter by turning band
+into a two dimensional array.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">blackbody_with_atm</span> <span class="k">as</span> <span class="n">bb_atm</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bb_temp</span> <span class="o">=</span> <span class="mi">8000</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">i_band</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">bandpass_wavelengths</span><span class="p">,</span>       <span class="c1"># Array of values in Angstroms</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">bandpass_response_function</span>  <span class="c1"># Array of transmission for each wavelength</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">])</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pwv</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bb_mag</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">magnitude</span><span class="p">(</span><span class="n">bb_temp</span><span class="p">,</span> <span class="n">i_band</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
 <p><strong>Note:</strong> If desired, the absolute magnitude of a black body without
 atmospheric effects can also be achieved by specifying a PWV level of zero.</p>
-</div>
 </div>
 <div class="section" id="estimating-zero-point-error">
 <h2>5.3. Estimating Zero Point Error<a class="headerlink" href="#estimating-zero-point-error" title="Permalink to this headline">¶</a></h2>
@@ -248,8 +260,8 @@ photometric band in Angstroms</li>
 </table>
 </dd></dl>
 
-<div class="section" id="id1">
-<h3>5.3.1. Examples:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>The error introduced (in AB magnitudes) when calibrating a 10,000 Kelvin black
+body with a 4,000 Kelvin black body is given by:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -261,7 +273,6 @@ photometric band in Angstroms</li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">bias</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">zp_bias</span><span class="p">(</span><span class="n">reference_star_temp</span><span class="p">,</span> <span class="n">other_star_temp</span><span class="p">,</span> <span class="n">i_band</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
-</div>
 </div>
 </div>
 

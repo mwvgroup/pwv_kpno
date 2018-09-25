@@ -15,8 +15,8 @@ the atmosphere.
 
 .. autofunction:: pwv_kpno.blackbody_with_atm.sed
 
-Example:
---------
+Here we demonstrate how to find the SED of a black body between 7,000 and
+10,000 Angstroms:
 
 .. code-block:: python
     :linenos:
@@ -41,11 +41,8 @@ given band as seen under the effects of PWV absorption.
 
 .. autofunction:: pwv_kpno.blackbody_with_atm.magnitude
 
-Examples:
----------
-
-In the *i* band from 7,000 to 8,500 Angstroms, the magnitude of a
-black body is found by running
+If we want to treat the *i* band as a top hat function from 7,000 to 8,500
+Angstroms, the magnitude of a black body is found by running
 
 .. code-block:: python
     :linenos:
@@ -54,6 +51,24 @@ black body is found by running
     >>>
     >>> bb_temp = 8000
     >>> i_band = (7000, 8500)
+    >>> pwv = 15
+    >>>
+    >>> bb_mag = bb_atm.magnitude(bb_temp, i_band, pwv)
+
+We can also determine the magnitude for a real world filter by turning band
+into a two dimensional array.
+
+.. code-block:: python
+    :linenos:
+
+    >>> from pwv_kpno import blackbody_with_atm as bb_atm
+    >>>
+    >>> bb_temp = 8000
+    >>> i_band = np.array([
+    >>>     bandpass_wavelengths,       # Array of values in Angstroms
+    >>>     bandpass_response_function  # Array of transmission for each wavelength
+    >>> ])
+    >>>
     >>> pwv = 15
     >>>
     >>> bb_mag = bb_atm.magnitude(bb_temp, i_band, pwv)
@@ -73,8 +88,8 @@ considering absorption by precipitable water vapor can be found using the
 
 .. autofunction:: pwv_kpno.blackbody_with_atm.zp_bias
 
-Examples:
----------
+The error introduced (in AB magnitudes) when calibrating a 10,000 Kelvin black
+body with a 4,000 Kelvin black body is given by:
 
 .. code-block:: python
     :linenos:

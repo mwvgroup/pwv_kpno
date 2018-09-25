@@ -45,7 +45,7 @@
         <div class="collapse navbar-collapse nav-collapse">
           <ul class="nav navbar-nav">
             
-                <li><a href="./install.html">Documentation</a></li>
+                <li><a href="../../documentation/html/install.html">Documentation</a></li>
                 <li><a href="../../examples/html/correcting_spectra.html">Examples</a></li>
                 <li><a href="../../validation/html/overview.html">Validation</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno/issues/new/choose">Need Help?</a></li>
@@ -79,15 +79,9 @@
 <li class="toctree-l1"><a class="reference internal" href="sites_and_settings.html">2. Custom Sites and Settings</a></li>
 <li class="toctree-l1"><a class="reference internal" href="accessing_data.html">3. Accessing PWV Data</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">4. Modeling the Atmosphere</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#transmission-for-datetime">4.1. Transmission for Datetime</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#examples">4.1.1. Examples:</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#transmission-for-pwv">4.2. Transmission for PWV</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">4.2.1. Examples:</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#binned-the-transmission">4.3. Binned the Transmission</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#transmission-for-datetime">4.1. Transmission for Datetime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#transmission-for-pwv">4.2. Transmission for PWV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#binning-the-transmission">4.3. Binning the Transmission</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">5. Modeling a Black Body</a></li>
@@ -136,10 +130,8 @@ specifying the <cite>bins</cite> argument.</p>
 </table>
 </dd></dl>
 
-<div class="section" id="examples">
-<h3>4.1.1. Examples:<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
-<p>For an airmass of 1.2, the transmission function at 2013-12-15 05:35:00 is
-given by:</p>
+<p>For example, given an airmass of 1.2, the transmission function at 2013-12-15
+05:35:00 UTC is given by:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -182,7 +174,6 @@ given by:</p>
 </pre></div>
 </td></tr></table></div>
 </div>
-</div>
 <div class="section" id="transmission-for-pwv">
 <h2>4.2. Transmission for PWV<a class="headerlink" href="#transmission-for-pwv" title="Permalink to this headline">¶</a></h2>
 <p>Instead of relying on SuomiNet measurements, users can also retrieve the
@@ -213,8 +204,6 @@ be binned by specifying the <cite>bins</cite> argument.</p>
 </table>
 </dd></dl>
 
-<div class="section" id="id1">
-<h3>4.2.1. Examples:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>For a 13.5 mm PWV column density along line of sight, the transmission function
 is given by:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
@@ -262,9 +251,8 @@ transmission if the <cite>pwv_err</cite> argument is specified:</p>
 </pre></div>
 </td></tr></table></div>
 </div>
-</div>
-<div class="section" id="binned-the-transmission">
-<h2>4.3. Binned the Transmission<a class="headerlink" href="#binned-the-transmission" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="binning-the-transmission">
+<h2>4.3. Binning the Transmission<a class="headerlink" href="#binning-the-transmission" title="Permalink to this headline">¶</a></h2>
 <p>Both the <cite>trans_for_date</cite> and the <cite>trans_for_pwv</cite> functions provided support
 for binning the returned transmission function via the <cite>bins</cite> argument. The
 returned transmission in each bin is calculated as:</p>
