@@ -235,7 +235,7 @@ ecsv format by running:
 .. code-block:: python
     :linenos:
 
-    >>> settings.export_site_config(''./cerro_tololo.ecsv'')
+    >>> settings.export_site_config('./cerro_tololo.ecsv')
 
 It is recommended to keep a backup of any custom configuration files added
 to your **pwv_kpno** install. This is especially important because

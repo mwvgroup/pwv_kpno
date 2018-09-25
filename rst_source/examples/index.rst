@@ -2,4 +2,5 @@
     :hidden:
     :numbered:
 
-    correcting_observations
+    correcting_spectra
+    correcting_photometry

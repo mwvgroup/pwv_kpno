@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>1. Correcting Observations &#8212; pwv_kpno 1.0.0 documentation</title>
+    <title>1. Correcting Spectrographic Observations &#8212; pwv_kpno 1.0.0 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/custom_style.css" type="text/css" />
@@ -19,6 +19,7 @@
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="2. Correcting Photometric Observations" href="correcting_photometry.html" />
     <link rel="prev" title="&lt;no title&gt;" href="index.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -45,7 +46,7 @@
           <ul class="nav navbar-nav">
             
                 <li><a href="../../documentation/html/install.html">Documentation</a></li>
-                <li><a href="./correcting_observations.html">Examples</a></li>
+                <li><a href="./correcting_spectra.html">Examples</a></li>
                 <li><a href="../../validation/html/overview.html">Validation</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno/issues/new/choose">Need Help?</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno">Source Code</a></li>
@@ -74,21 +75,16 @@
   <div class="row">
       <div class="col-md-3">
         <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">1. Correcting Observations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#spectrographic-observations">1.1. Spectrographic Observations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#photometric-observations">1.2. Photometric Observations</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1. Correcting Spectrographic Observations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="correcting_photometry.html">2. Correcting Photometric Observations</a></li>
 </ul>
 
         </div>
       </div>
     <div class="col-md-9 content">
       
-  <div class="section" id="correcting-observations">
-<h1>1. Correcting Observations<a class="headerlink" href="#correcting-observations" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="spectrographic-observations">
-<h2>1.1. Spectrographic Observations<a class="headerlink" href="#spectrographic-observations" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="correcting-spectrographic-observations">
+<h1>1. Correcting Spectrographic Observations<a class="headerlink" href="#correcting-spectrographic-observations" title="Permalink to this headline">¶</a></h1>
 <p>Correcting observed spectra for PWV effects is achieved in four steps:</p>
 <ol class="arabic simple">
 <li>Use <strong>pwv_kpno</strong> to determine the PWV transmission function corresponding to a given observation</li>
@@ -104,7 +100,7 @@ resolution before interpolating to the observed wavelengths. Fortunately,
 <p>For demonstration purposes, assume you wish to correct an observation that was
 taken through an airmass of 1.5 on December 15, 2013 at 05:35:00 UTC.
 Furthermore, assume that this observed spectra has a wavelength resolution of
-16 <span class="math notranslate">\(\unicode{x212B}\)</span>. The binned transmission function corresponding to
+16 Angstroms. The binned transmission function corresponding to
 this observation is given by:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -168,60 +164,6 @@ this is programmatically equivalent to:</p>
 </pre></div>
 </td></tr></table></div>
 </div>
-<div class="section" id="photometric-observations">
-<h2>1.2. Photometric Observations<a class="headerlink" href="#photometric-observations" title="Permalink to this headline">¶</a></h2>
-<p>For an atmospheric transmission <span class="math notranslate">\(T(\lambda)\)</span>, the photometric correction
-for an object with an intrinsic spectral energy distribution <span class="math notranslate">\(S(\lambda)\)</span>
-is given by</p>
-<div class="math notranslate">
-\[C = \frac{\int S(\lambda) \cdot T(\lambda) \, d\lambda}
-          {\int S(\lambda) \, d\lambda}\]</div>
-<p>where the integration bounds are defined by the wavelength range of the
-photometric bandpass. In practice an SED of the desired object may not be
-available. In such a case spectral templates should be used instead.</p>
-<p>For demonstration purposes, we consider an observation of a black body. Note
-that product in the numerator <span class="math notranslate">\(S(\lambda) \cdot T(\lambda)\)</span> represents
-the SED under the influence of atmospheric effects. For a photometric
-observation taken in the <em>i</em> band (7,000 to 8,500 <span class="math notranslate">\(\unicode{x212B}\)</span>),
-the integration arguments can be found as:</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">blackbody_with_atm</span> <span class="k">as</span> <span class="n">bb_atm</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="go">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pwv</span> <span class="o">=</span> <span class="mi">15</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">temp</span> <span class="o">=</span> <span class="mi">8000</span>
-<span class="go">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">i_band</span> <span class="o">=</span> <span class="p">(</span><span class="mi">7000</span><span class="p">,</span> <span class="mi">8500</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sample_rate</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">wavelengths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">i_band</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">i_band</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">sample_rate</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sed_with_atm</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">sed</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">wavelengths</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>  <span class="c1"># S(lambda) T(lambda)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">intrinsic_sed</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">sed</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">wavelengths</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># S(lambda)</span>
-</pre></div>
-</td></tr></table></div>
-<p>Trapezoidal integration of array like objects in Python can be performed using
-the <code class="docutils literal notranslate"><span class="pre">Numpy</span></code> package. Using results from the spectrographic example we have:</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">numerator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">sed_with_atm</span><span class="p">,</span> <span class="n">i_band</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">denominator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">intrinsic_sed</span><span class="p">,</span> <span class="n">i_band</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">photo_corr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">numerator</span><span class="p">,</span> <span class="n">denominator</span><span class="p">)</span>
-</pre></div>
-</td></tr></table></div>
-</div>
-</div>
 
 
     </div>
@@ -236,7 +178,7 @@ the <code class="docutils literal notranslate"><span class="pre">Numpy</span></c
         <br/>
         
 <div id="sourcelink">
-  <a href="_sources/correcting_observations.rst.txt"
+  <a href="_sources/correcting_spectra.rst.txt"
      rel="nofollow">Source</a>
 </div>
       

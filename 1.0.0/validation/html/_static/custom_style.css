@@ -1,3 +1,8 @@
+.warning {
+    background-color: rgba(244, 247, 23, 0.36);
+    color: #000000;
+}
+
 body {
     color: #444444 !important;
     text-align: justify;

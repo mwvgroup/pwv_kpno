@@ -32,8 +32,8 @@ release = pk_version
 # Specify theme specific settings
 html_theme = 'bootstrap'
 links = [
-    ("Documentation", "./install.html", 1),
-    ("Examples", "../../examples/html/correcting_observations.html", 1),
+    ("Documentation", "../../documentation/html/install.html", 1),
+    ("Examples", "../../examples/html/correcting_spectra.html", 1),
     ("Validation", "../../validation/html/overview.html", 1),
     ("Need Help?", "https://github.com/mwvgroup/pwv_kpno/issues/new/choose", 1),
     ("Source Code", "https://github.com/mwvgroup/pwv_kpno", 1)
