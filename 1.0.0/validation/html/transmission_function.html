@@ -79,8 +79,8 @@
 <li class="toctree-l1"><a class="reference internal" href="data_cuts.html">3. Data Cuts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="blackbody.html">4. Blackbody Modeling</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">5. Transmission Function</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#line-saturation-and-binning">5.1. Line Saturation and Binning</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pwv-scaling">5.2. PWV Scaling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pwv-scaling">5.1. PWV Scaling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#line-saturation-and-binning">5.2. Line Saturation and Binning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#comparison-to-observations">5.3. Comparison to Observations</a></li>
 </ul>
 </li>
@@ -92,16 +92,31 @@
       
   <div class="section" id="transmission-function">
 <h1>5. Transmission Function<a class="headerlink" href="#transmission-function" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="line-saturation-and-binning">
-<h2>5.1. Line Saturation and Binning<a class="headerlink" href="#line-saturation-and-binning" title="Permalink to this headline">¶</a></h2>
-<div class="validation-figure figure align-center">
-<img alt="_static/transmission_binning.pdf" src="_static/transmission_binning.pdf" />
-</div>
-</div>
 <div class="section" id="pwv-scaling">
-<h2>5.2. PWV Scaling<a class="headerlink" href="#pwv-scaling" title="Permalink to this headline">¶</a></h2>
+<h2>5.1. PWV Scaling<a class="headerlink" href="#pwv-scaling" title="Permalink to this headline">¶</a></h2>
+<p>The r, i and z band mosaic filters of Kitt Peak National Observatory (grey)
+compared against the MODTRAN modeled atmospheric transmission function due to
+precipitable water vapor (blue). Atmospheric transmission functions are shown
+for an airmass of one and a (PWV) column density of 1 mm (top), 15 mm (middle),
+and 30 mm (bottom). Note that absorption features do not scale linearly with
+PWV, and some saturate at relatively low column densities.</p>
 <div class="validation-figure figure align-center">
 <img alt="_static/transmission_levels.pdf" src="_static/transmission_levels.pdf" />
+</div>
+</div>
+<div class="section" id="line-saturation-and-binning">
+<h2>5.2. Line Saturation and Binning<a class="headerlink" href="#line-saturation-and-binning" title="Permalink to this headline">¶</a></h2>
+<p>The atmospheric models used by <strong>pwv_kpno</strong> do not directly account for the
+smoothing that occurs in observed spectra due to a spectrograph’s spectral
+resolution function. As a result, directly dividing the observed and modeled
+spectra will produce a very high, unphysical flux for wavelengths where the
+transmission function is saturated. To account for any saturated features, the
+modeled transmission can be binned to approximately match the observed
+spectra’s resolution. Here we compare the modeled transmission function binned
+to two different resolutions for an airmass of one and a PWV column density of
+1 mm (top), 15 mm (middle), and 30 mm (bottom).</p>
+<div class="validation-figure figure align-center">
+<img alt="_static/transmission_binning.pdf" src="_static/transmission_binning.pdf" />
 </div>
 </div>
 <div class="section" id="comparison-to-observations">
@@ -115,6 +130,16 @@ corrected using catalog values (green) multiplied by the smoothed transmission
 (orange). Residuals between the catalog corrected and model corrected spectra
 are shown in the bottom panel. Hydrogen alpha lines are highlighted in red and
 O<sub>2</sub>lines in grey.</p>
+<p>Corrections for the PWV absorption features agree reasonably well between the
+catalog and model corrected spectra. The largest deviations between the
+corrected spectra occur redward of 9,000 Angstroms. Some of these deviations
+can be attributed to cloudy observation conditions, creating large spatial
+and time variations in the PWV concentration along line of sight. However,
+correcting this feature is also difficult since it is in fact a number of
+thin, saturated lines that have been blended together. Overall we find that
+the model struggles to correct the observed spectra past 9,000 AAngstroms, but
+performed well enough overall to be used to satisfactorily correct photometric
+observations.</p>
 <div class="validation-figure figure align-center">
 <img alt="_static/spectral_correction.png" src="_static/spectral_correction.png" />
 </div>

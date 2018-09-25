@@ -10,7 +10,7 @@ that these results should not be taken as a complete overview of our validation
 process. It is instead meant to provide a basic, qualitative overview of
 our investigation.
 
-Much of the work shown here can be found in the **pwv_kpno** science paper
+Much of the work shown here can be found in the **pwv_kpno** science paper:
 `Perrefort, Wood-Vasey et al. 2018 <https://arxiv.org/abs/1806.09701>`_.
 Scientific questions concerning the package and its modeling capabilities are
 welcomed, and can be submitted via GitHub (see the "Need Help?" link above) or
