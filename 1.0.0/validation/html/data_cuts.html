@@ -7,12 +7,12 @@
     <title>3. Data Cuts &#8212; pwv_kpno 1.0.0 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/custom_style.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/custom_style.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
@@ -78,8 +78,8 @@
 <li class="toctree-l1"><a class="reference internal" href="overview.html">1. Validation Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pwv_modeling.html">2. PWV Modeling</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">3. Data Cuts</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#general-data-cuts">3.1. General Data Cuts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#kpno-pressure-cuts">3.2. KPNO Pressure Cuts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#kpno-pressure-cuts">3.1. KPNO Pressure Cuts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#general-data-cuts">3.2. General Data Cuts</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="blackbody.html">4. Blackbody Modeling</a></li>
@@ -92,16 +92,26 @@
       
   <div class="section" id="data-cuts">
 <h1>3. Data Cuts<a class="headerlink" href="#data-cuts" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="general-data-cuts">
-<h2>3.1. General Data Cuts<a class="headerlink" href="#general-data-cuts" title="Permalink to this headline">¶</a></h2>
-<div class="validation-figure figure align-center">
-<img alt="_static/data_cuts.png" src="_static/data_cuts.png" />
-</div>
-</div>
 <div class="section" id="kpno-pressure-cuts">
-<h2>3.2. KPNO Pressure Cuts<a class="headerlink" href="#kpno-pressure-cuts" title="Permalink to this headline">¶</a></h2>
+<h2>3.1. KPNO Pressure Cuts<a class="headerlink" href="#kpno-pressure-cuts" title="Permalink to this headline">¶</a></h2>
+<p>The barometric sensor at Kitt Peak was malfunctioning in 2016 from January
+through March, so we ignore any SuomiNet data published for Kitt Peak during
+this time period. The sensor has since been repaired, but occasionally records
+a non-physical drop in pressure. We disregard these measurements by ignoring
+any meteorological measurements taken for Kitt Peak with a pressure below 775
+mbar. Here we demonstrate the distribution of pressure measurements taken at
+Kitt Peak from March 2015 through the end of 2017.</p>
 <div class="validation-figure figure align-center">
 <img alt="_static/pressure_cut.pdf" src="_static/pressure_cut.pdf" />
+</div>
+</div>
+<div class="section" id="general-data-cuts">
+<h2>3.2. General Data Cuts<a class="headerlink" href="#general-data-cuts" title="Permalink to this headline">¶</a></h2>
+<p>We expect the surface pressure for a given location to lie within a fairly
+narrow range. To eliminate outlier data points, we ignore PWV measurements
+that lie outside a site specific pressure range.</p>
+<div class="validation-figure figure align-center">
+<img alt="_static/data_cuts.png" src="_static/data_cuts.png" />
 </div>
 </div>
 </div>
@@ -126,7 +136,7 @@
     </p>
     <p>
         &copy; Copyright 2018, Daniel J. Perrefort.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.<br/>
     </p>
   </div>
 </footer>

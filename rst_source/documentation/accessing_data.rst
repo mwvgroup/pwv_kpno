@@ -18,6 +18,7 @@ By default, each release of **pwv_kpno** contains all necessary SuomiNet data
 from 2010 through the end of the previous year.
 
 .. code-block:: python
+    :linenos:
 
     >>> from pwv_kpno import pwv_atm
     >>> pwv_atm.downloaded_years()
@@ -37,6 +38,7 @@ National Observatory.
 To ensure that the PWV data for **pwv_kpno** is up to date run:
 
 .. code-block:: python
+    :linenos:
 
     >>> from pwv_kpno import pwv_atm
     >>>
@@ -68,6 +70,7 @@ To retrieve all SuomiNet data available on the local machine as an ``astropy``,
 call ``measured_pwv`` without any arguments:
 
 .. code-block:: python
+    :linenos:
 
     >>> from pwv_kpno import pwv_atm
     >>> pwv_atm.measured_pwv()
@@ -84,6 +87,7 @@ To retrieve SuomiNet data taken on a specific date, specify the desired
 datetime using keyword arguments:
 
 .. code-block:: python
+    :linenos:
 
     >>> pwv_atm.measured_pwv(year=2016, month=11, day=14)
 

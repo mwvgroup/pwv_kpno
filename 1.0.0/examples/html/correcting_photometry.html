@@ -7,12 +7,12 @@
     <title>2. Correcting Photometric Observations &#8212; pwv_kpno 1.0.0 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/custom_style.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/custom_style.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
@@ -45,7 +45,7 @@
           <ul class="nav navbar-nav">
             
                 <li><a href="../../documentation/html/install.html">Documentation</a></li>
-                <li><a href="./correcting_spectra.html">Examples</a></li>
+                <li><a href="../../examples/html/correcting_spectra.html">Examples</a></li>
                 <li><a href="../../validation/html/overview.html">Validation</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno/issues/new/choose">Need Help?</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno">Source Code</a></li>
@@ -84,19 +84,19 @@
       
   <div class="section" id="correcting-photometric-observations">
 <h1>2. Correcting Photometric Observations<a class="headerlink" href="#correcting-photometric-observations" title="Permalink to this headline">¶</a></h1>
-<p>For an atmospheric transmission <span class="math notranslate">\(T(\lambda)\)</span>, the photometric correction
-for an object with an intrinsic spectral energy distribution <span class="math notranslate">\(S(\lambda)\)</span>
+<p>For an atmospheric transmission <span class="math notranslate nohighlight">\(T(\lambda)\)</span>, the photometric correction
+for an object with an intrinsic spectral energy distribution <span class="math notranslate nohighlight">\(S(\lambda)\)</span>
 is given by</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[C = \frac{\int S(\lambda) \cdot T(\lambda) \, d\lambda}
           {\int S(\lambda) \, d\lambda}\]</div>
 <p>where the integration bounds are defined by the wavelength range of the
 photometric bandpass. In practice an SED of the desired object may not be
 available. In such a case spectral templates should be used instead.</p>
 <p>For demonstration purposes, we consider an observation of a black body. Note
-that product in the numerator <span class="math notranslate">\(S(\lambda) \cdot T(\lambda)\)</span> represents
+that product in the numerator <span class="math notranslate nohighlight">\(S(\lambda) \cdot T(\lambda)\)</span> represents
 the SED under the influence of atmospheric effects. For a photometric
-observation taken in the <em>i</em> band (7,000 to 8,500 <span class="math notranslate">\(\unicode{x212B}\)</span>),
+observation taken in the <em>i</em> band (7,000 to 8,500 <span class="math notranslate nohighlight">\(\unicode{x212B}\)</span>),
 the integration arguments can be found as:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -156,7 +156,7 @@ the <code class="docutils literal notranslate"><span class="pre">Numpy</span></c
     </p>
     <p>
         &copy; Copyright 2018, Daniel J. Perrefort.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.<br/>
     </p>
   </div>
 </footer>

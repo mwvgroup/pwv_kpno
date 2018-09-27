@@ -1,6 +1,11 @@
 .warning {
     background-color: rgba(244, 247, 23, 0.36);
     color: #000000;
+    margin: 0 20px 0 20px  !important;
+}
+
+.admonition.warning.alert.alert-warning.a{
+    color: #2e82e0 !important;
 }
 
 body {

@@ -7,12 +7,12 @@
     <title>3. Accessing PWV Data &#8212; pwv_kpno 1.0.0 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/custom_style.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/custom_style.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
@@ -122,12 +122,15 @@ been released by SuomiNet for a given year that is not locally available.</p>
 
 <p>By default, each release of <strong>pwv_kpno</strong> contains all necessary SuomiNet data
 from 2010 through the end of the previous year.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">downloaded_years</span><span class="p">()</span>
 
 <span class="go">  [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017]</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 </div>
 <div class="section" id="updating-data">
 <h2>3.2. Updating Data<a class="headerlink" href="#updating-data" title="Permalink to this headline">¶</a></h2>
@@ -162,7 +165,17 @@ present day.</p>
 </dd></dl>
 
 <p>To ensure that the PWV data for <strong>pwv_kpno</strong> is up to date run:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
 <span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Download any new / missing data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">update_models</span><span class="p">()</span>
@@ -174,7 +187,7 @@ present day.</p>
 
 <span class="go">  [2010]</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 <p>If <strong>pwv_kpno</strong> has beed set to model a custom site and no data has already
 been downloaded from SuomiNet, the <code class="docutils literal notranslate"><span class="pre">update_models</span></code> will default to downloading
 data from 2010 onward.</p>
@@ -211,7 +224,16 @@ optionally refined by year, month, day, and hour.</p>
 
 <p>To retrieve all SuomiNet data available on the local machine as an <code class="docutils literal notranslate"><span class="pre">astropy</span></code>,
 call <code class="docutils literal notranslate"><span class="pre">measured_pwv</span></code> without any arguments:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">measured_pwv</span><span class="p">()</span>
 
 <span class="go">           date       KITT KITT_err P014 P014_err SA46 SA46_err SA48 ...</span>
@@ -222,10 +244,18 @@ call <code class="docutils literal notranslate"><span class="pre">measured_pwv</
 <span class="go">  2010-01-01 01:15:00   --       --  3.7    0.025  3.4    0.125  3.6 ...</span>
 <span class="go">               ...     ...      ...  ...      ...  ...      ...  ... ...</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 <p>To retrieve SuomiNet data taken on a specific date, specify the desired
 datetime using keyword arguments:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">measured_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">measured_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 
 <span class="go">           date       KITT KITT_err P014 P014_err SA46 SA46_err SA48 ...</span>
 <span class="go">           UTC         mm     mm     mm     mm     mm     mm     mm  ...</span>
@@ -235,7 +265,7 @@ datetime using keyword arguments:</p>
 <span class="go">  2016-11-14 01:15:00  3.9    0.925  6.7    0.425  9.7    0.525   -- ...</span>
 <span class="go">               ...     ...      ...  ...      ...  ...      ...  ... ...</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 <p><strong>Note:</strong> If no SuomiNet data is available at all during the specified datetime, then the
 returned table will be empty.</p>
 </div>
@@ -361,7 +391,7 @@ The error in modeled PWV column density</p>
     </p>
     <p>
         &copy; Copyright 2018, Daniel J. Perrefort.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.<br/>
     </p>
   </div>
 </footer>
