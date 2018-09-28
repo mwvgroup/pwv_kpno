@@ -521,8 +521,8 @@ def trans_for_date(date, airmass, bins=None):
 def get_all_site_data(receiver_id, apply_cuts=True):
     """Returns a table of all local SuomiNet data for a given receiver id
 
-    Data is returned as an astropy table with columns 'date', '<receiver_id>',
-    '<receiver_id>_err', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', and 'SrfcRH'.
+    Data is returned as an astropy table with columns 'date', 'PWV',
+    'PWV_err', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', and 'SrfcRH'.
 
     Args:
         receiver_id (str): A SuomiNet receiver id code (eg. KITT)
