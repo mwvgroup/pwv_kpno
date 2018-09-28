@@ -2,14 +2,16 @@
 Customizing Data Cuts
 *********************
 
-
+For various reasons, you may wish to apply cuts to the SuomiNet measurements
+used by **pwv_kpno**. THe most obvious use case would be to ignore a period of
+time when a SuomiNet weather station was experiencing technical difficulties,
+or if there is some unexplained, unphysical spike in the measurements.
 
 .. code-block:: python
     :linenos:
 
     from astropy.table import setdiff
     from matplotlib import pyplot as plt
-
     from pwv_kpno import pwv_atm
 
 
