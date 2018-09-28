@@ -299,10 +299,10 @@ these cross sections in units of Angstroms and cm<sup>2</sup> respectively.</p>
 <div class="section" id="specifying-data-cuts">
 <h2>2.4. Specifying Data Cuts<a class="headerlink" href="#specifying-data-cuts" title="Permalink to this headline">¶</a></h2>
 <p>If desired, users can specify custom data cuts on SuomiNet data used by the
-package. Data cuts are defined using a 2d dictionary of boundary values.
-The first key specifies which receiver the data cuts apply to. The second key
-specifies what values to cut. Following SuomiNet’s naming convention, values
-that can be cut include the following:</p>
+package. Data cuts are defined using a 2 dimensional dictionary of boundary
+values. The first key specifies which receiver the data cuts apply to. The
+second key specifies what values to cut. Following SuomiNet’s naming
+convention, values that can be cut include the following:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="29%" />
@@ -378,11 +378,16 @@ two dates we could ignore these measurements by specifying:</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">settings</span><span class="o">.</span><span class="n">data_cuts</span><span class="p">[</span><span class="s1">&#39;CTIO&#39;</span><span class="p">][</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">timestamp_start</span><span class="p">,</span> <span class="n">timestamp_start</span><span class="p">])</span>
 </pre></div>
 </td></tr></table></div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">A full worked out example on how to choose and visualize your chosen data cuts
+is available in the <a class="reference external" href="../../examples/html/data_cuts.html">Examples</a> section.</p>
+</div>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">Any modifications to the data cuts for a given site cannot be
-automatically undone. To undo any changes to <code class="docutils literal notranslate"><span class="pre">settings.data_cuts</span></code> you will need to
-manually modify the attribute to its previous state.</p>
+automatically undone. To undo any changes to <code class="docutils literal notranslate"><span class="pre">settings.data_cuts</span></code> you will
+need to manually modify the attribute to its previous state.</p>
 </div>
 </div>
 <div class="section" id="importing-a-new-location">
@@ -397,14 +402,19 @@ locally installed <strong>pwv_kpno</strong> package by running</p>
 <p>This command only needs to be run once, after which <strong>pwv_kpno</strong> will retain
 the new model on disk. The package can then be configured to use the new model
 by running</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">settings</span><span class="o">.</span><span class="n">set_site</span><span class="p">(</span><span class="s1">&#39;cerro_tololo&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">settings</span><span class="o">.</span><span class="n">set_site</span><span class="p">(</span><span class="s1">&#39;cerro_tololo&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">site_name</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
 <p>After setting <strong>pwv_kpno</strong> to a new location, the package will exclusively use
-the new model until the current Python environment is terminated. It is
-important to note that this setting is not persistent. When <strong>pwv_kpno</strong> is
+the new model until the current Python environment is terminated.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This setting is not persistent. When <strong>pwv_kpno</strong> is
 first imported into a new environment the package will always default to using
 the standard model for Kitt Peak, and the above command will have to be rerun.</p>
+</div>
 </div>
 <div class="section" id="exporting-current-settings">
 <h2>2.6. Exporting Current Settings<a class="headerlink" href="#exporting-current-settings" title="Permalink to this headline">¶</a></h2>

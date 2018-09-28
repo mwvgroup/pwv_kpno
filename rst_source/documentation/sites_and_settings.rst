@@ -149,10 +149,10 @@ Specifying Data Cuts
 ====================
 
 If desired, users can specify custom data cuts on SuomiNet data used by the
-package. Data cuts are defined using a 2d dictionary of boundary values.
-The first key specifies which receiver the data cuts apply to. The second key
-specifies what values to cut. Following SuomiNet's naming convention, values
-that can be cut include the following:
+package. Data cuts are defined using a 2 dimensional dictionary of boundary
+values. The first key specifies which receiver the data cuts apply to. The
+second key specifies what values to cut. Following SuomiNet's naming
+convention, values that can be cut include the following:
 
 +---------------------+------------------+------------------+----------------+
 | Value               |  Key             |  Expected Units  | Data Cut Type  |
@@ -195,9 +195,13 @@ Data cuts can also be modified for the current site being modeled via the
     >>> from pwv_kpno.package_settings import settings
     >>> settings.data_cuts['CTIO']['Date'].append([timestamp_start, timestamp_start])
 
+.. note:: A full worked out example on how to choose and visualize your chosen data cuts
+    is available in the `Examples <../../examples/html/data_cuts.html>`_ section.
+
+
 .. warning:: Any modifications to the data cuts for a given site cannot be
-  automatically undone. To undo any changes to ``settings.data_cuts`` you will need to
-  manually modify the attribute to its previous state.
+  automatically undone. To undo any changes to ``settings.data_cuts`` you will
+  need to manually modify the attribute to its previous state.
 
 Importing a New Location
 ========================
@@ -219,12 +223,14 @@ by running
     :linenos:
 
     >>> settings.set_site('cerro_tololo')
+    >>> print(settings.site_name)
 
 After setting **pwv_kpno** to a new location, the package will exclusively use
-the new model until the current Python environment is terminated. It is
-important to note that this setting is not persistent. When **pwv_kpno** is
-first imported into a new environment the package will always default to using
-the standard model for Kitt Peak, and the above command will have to be rerun.
+the new model until the current Python environment is terminated.
+
+.. note:: This setting is not persistent. When **pwv_kpno** is
+    first imported into a new environment the package will always default to using
+    the standard model for Kitt Peak, and the above command will have to be rerun.
 
 Exporting Current Settings
 ==========================

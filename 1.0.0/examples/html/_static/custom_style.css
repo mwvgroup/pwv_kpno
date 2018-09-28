@@ -4,6 +4,16 @@
     margin: 0 20px 0 20px  !important;
 }
 
+.note {
+    background-color: rgba(46, 130, 224, 0.36);
+    color: #000000;
+    margin: 0 20px 0 20px  !important;
+}
+
+.highlighttable {
+    margin: 0 20px 0 20px  !important;
+}
+
 body {
     color: #444444 !important;
     text-align: justify;

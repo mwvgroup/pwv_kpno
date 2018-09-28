@@ -3,9 +3,12 @@ Customizing Data Cuts
 *********************
 
 For various reasons, you may wish to apply cuts to the SuomiNet measurements
-used by **pwv_kpno**. THe most obvious use case would be to ignore a period of
+used by **pwv_kpno**. The most obvious use case would be to ignore a period of
 time when a SuomiNet weather station was experiencing technical difficulties,
 or if there is some unexplained, unphysical spike in the measurements.
+Following SuomiNet’s naming convention, values that can be cut include PWV
+(``PWV``), the PWV error (``PWVerr``), surface pressure (``SrfcPress``),
+surface temperature (``SrfcTemp``), and relative humidity (``SrfcRH``).
 
 .. code-block:: python
     :linenos:
@@ -15,7 +18,7 @@ or if there is some unexplained, unphysical spike in the measurements.
     from pwv_kpno import pwv_atm
 
 
-    def plot_package_data(receiver_id):
+    def plot_data_cuts(receiver_id):
         """Plots PWV vs Temperature, Pressure, and RH at a given SuomiNet site
 
         Args:
@@ -61,4 +64,4 @@ or if there is some unexplained, unphysical spike in the measurements.
 
         plt.show()
 
-    plot_package_data('KITT')
+    plot_data_cuts('KITT')
