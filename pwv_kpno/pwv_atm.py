@@ -92,13 +92,15 @@ An incomplete guide to getting started:
 
 import os
 from datetime import datetime, timedelta
+from glob import glob
 from typing import Tuple, Union
 
 import numpy as np
-from astropy.table import Table
+from astropy.table import Table, unique, vstack
 from pytz import utc
 from scipy.stats import binned_statistic
 
+from ._download_pwv_data import _read_file
 from ._update_pwv_model import update_models
 from .package_settings import settings
 
@@ -514,3 +516,50 @@ def trans_for_date(date, airmass, bins=None):
     """
 
     return _trans_for_date(date, airmass, bins)
+
+
+def get_all_site_data(receiver_id, apply_cuts=True):
+    """Returns a table of all local SuomiNet data for a given receiver id
+
+    Data is returned as an astropy table with columns 'date', '<receiver_id>',
+    '<receiver_id>_err', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', and 'SrfcRH'.
+
+    Args:
+        receiver_id (str): A SuomiNet receiver id code (eg. KITT)
+        apply_cuts (bool): Whether to apply data cuts from the package settings
+
+    Returns:
+        An astropy table with SuomiNet data for the given site
+    """
+
+    if receiver_id not in settings.receivers:
+        err_msg = 'Receiver is not part of currently modeled site: {}'
+        raise ValueError(err_msg.format(receiver_id))
+
+    out_table = None
+    for year in settings._downloaded_years:
+        path_pattern = os.path.join(settings._suomi_dir, '{}*_{}.plt')
+        path_pattern = path_pattern.format(receiver_id, year)
+
+        # Sorting ensures that daily data releases take precedent over
+        # hourly data releases. We are not concerned here with the global
+        # data releases, since they do not have two published data sets
+        path_list = sorted(glob(path_pattern))
+        table_list = [_read_file(path, apply_cuts, False) for path in path_list]
+
+        if table_list and any(table_list):
+            data_for_year = unique(
+                vstack(table_list),
+                keep='first',
+                keys=['date']
+            )
+
+            if out_table is None:
+                out_table = data_for_year
+
+            else:
+                out_table = vstack([out_table, data_for_year])
+
+    out_table.rename_column(receiver_id, 'PWV')
+    out_table.rename_column(receiver_id + '_err', 'PWV_err')
+    return out_table

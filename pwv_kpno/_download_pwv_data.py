@@ -97,7 +97,7 @@ def _apply_data_cuts(data, site_id):
     return data
 
 
-def _read_file(path):
+def _read_file(path, apply_cuts=True, pwv_only=True):
     """Return PWV measurements from a SuomiNet data file as an astropy table
 
     Expects data files from http://www.suominet.ucar.edu/data.html under the
@@ -109,7 +109,8 @@ def _read_file(path):
         2. Dates are duplicates with unequal measurements
 
     Args:
-        path (str): File path to be read
+        path        (str): File path to be read
+        apply_cuts (bool): Whether to apply data cuts from the package settings
 
     Returns:
         An astropy Table with data from path
@@ -125,8 +126,12 @@ def _read_file(path):
                          usecols=range(0, len(names)),
                          dtype=[float for _ in names])
 
-    data = _apply_data_cuts(data, site_id)
-    data = Table(data)['date', site_id, site_id + '_err']
+    data = Table(data)
+    if apply_cuts:
+        data = _apply_data_cuts(data, site_id)
+
+    if pwv_only:
+        data = data['date', site_id, site_id + '_err']
 
     if data:
         data = unique(data, keys='date', keep='none')
