@@ -527,7 +527,7 @@ def trans_for_date(date, airmass, bins=None):
     return _trans_for_date(date, airmass, bins)
 
 
-def get_all_site_data(receiver_id, apply_cuts=True):
+def get_all_receiver_data(receiver_id, apply_cuts=True):
     """Returns a table of all local SuomiNet data for a given receiver id
 
     Data is returned as an astropy table with columns 'date', 'PWV',
