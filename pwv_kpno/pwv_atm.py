@@ -346,8 +346,17 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
         An astropy table of measured PWV values in mm
     """
 
-    return _get_pwv_data_table(settings._pwv_measred_path,
-                               year, month, day, hour)
+    # Specify the order of returned columns
+    col_order = ['date', settings.primary_rec, settings.primary_rec + '_err']
+    for receiver in settings.supplement_rec:
+        col_order.append(receiver)
+        col_order.append(receiver + '_err')
+
+    data = _get_pwv_data_table(
+        settings._pwv_measred_path, year, month, day, hour
+    )
+
+    return data[col_order]
 
 
 def modeled_pwv(year=None, month=None, day=None, hour=None):
