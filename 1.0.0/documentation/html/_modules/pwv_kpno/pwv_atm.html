@@ -168,13 +168,15 @@
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">glob</span> <span class="k">import</span> <span class="n">glob</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">astropy.table</span> <span class="k">import</span> <span class="n">Table</span>
+<span class="kn">from</span> <span class="nn">astropy.table</span> <span class="k">import</span> <span class="n">Table</span><span class="p">,</span> <span class="n">unique</span><span class="p">,</span> <span class="n">vstack</span>
 <span class="kn">from</span> <span class="nn">pytz</span> <span class="k">import</span> <span class="n">utc</span>
 <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">binned_statistic</span>
 
+<span class="kn">from</span> <span class="nn">._download_pwv_data</span> <span class="k">import</span> <span class="n">_read_file</span>
 <span class="kn">from</span> <span class="nn">._update_pwv_model</span> <span class="k">import</span> <span class="n">update_models</span>
 <span class="kn">from</span> <span class="nn">.package_settings</span> <span class="k">import</span> <span class="n">settings</span>
 
@@ -420,8 +422,17 @@
 <span class="sd">        An astropy table of measured PWV values in mm</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">return</span> <span class="n">_get_pwv_data_table</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">_pwv_measred_path</span><span class="p">,</span>
-                               <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">hour</span><span class="p">)</span></div>
+    <span class="c1"># Specify the order of returned columns</span>
+    <span class="n">col_order</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">primary_rec</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">primary_rec</span> <span class="o">+</span> <span class="s1">&#39;_err&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">receiver</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">supplement_rec</span><span class="p">:</span>
+        <span class="n">col_order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">receiver</span><span class="p">)</span>
+        <span class="n">col_order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">receiver</span> <span class="o">+</span> <span class="s1">&#39;_err&#39;</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">_get_pwv_data_table</span><span class="p">(</span>
+        <span class="n">settings</span><span class="o">.</span><span class="n">_pwv_measred_path</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">hour</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">col_order</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="modeled_pwv"><a class="viewcode-back" href="../../accessing_data.html#pwv_kpno.pwv_atm.modeled_pwv">[docs]</a><span class="k">def</span> <span class="nf">modeled_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -590,6 +601,53 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">return</span> <span class="n">_trans_for_date</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">airmass</span><span class="p">,</span> <span class="n">bins</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_all_site_data"><a class="viewcode-back" href="../../accessing_data.html#pwv_kpno.pwv_atm.get_all_site_data">[docs]</a><span class="k">def</span> <span class="nf">get_all_site_data</span><span class="p">(</span><span class="n">receiver_id</span><span class="p">,</span> <span class="n">apply_cuts</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns a table of all local SuomiNet data for a given receiver id</span>
+
+<span class="sd">    Data is returned as an astropy table with columns &#39;date&#39;, &#39;PWV&#39;,</span>
+<span class="sd">    &#39;PWV_err&#39;, &#39;ZenithDelay&#39;, &#39;SrfcPress&#39;, &#39;SrfcTemp&#39;, and &#39;SrfcRH&#39;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        receiver_id (str): A SuomiNet receiver id code (eg. KITT)</span>
+<span class="sd">        apply_cuts (bool): Whether to apply data cuts from the package settings</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        An astropy table with SuomiNet data for the given site</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">receiver_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">receivers</span><span class="p">:</span>
+        <span class="n">err_msg</span> <span class="o">=</span> <span class="s1">&#39;Receiver is not part of currently modeled site: </span><span class="si">{}</span><span class="s1">&#39;</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err_msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">receiver_id</span><span class="p">))</span>
+
+    <span class="n">out_table</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">_downloaded_years</span><span class="p">:</span>
+        <span class="n">path_pattern</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">_suomi_dir</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">*_</span><span class="si">{}</span><span class="s1">.plt&#39;</span><span class="p">)</span>
+        <span class="n">path_pattern</span> <span class="o">=</span> <span class="n">path_pattern</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">receiver_id</span><span class="p">,</span> <span class="n">year</span><span class="p">)</span>
+
+        <span class="c1"># Sorting ensures that daily data releases take precedent over</span>
+        <span class="c1"># hourly data releases. We are not concerned here with the global</span>
+        <span class="c1"># data releases, since they do not have two published data sets</span>
+        <span class="n">path_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="p">(</span><span class="n">path_pattern</span><span class="p">))</span>
+        <span class="n">table_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">_read_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">apply_cuts</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">path_list</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">table_list</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">table_list</span><span class="p">):</span>
+            <span class="n">data_for_year</span> <span class="o">=</span> <span class="n">unique</span><span class="p">(</span>
+                <span class="n">vstack</span><span class="p">(</span><span class="n">table_list</span><span class="p">),</span>
+                <span class="n">keep</span><span class="o">=</span><span class="s1">&#39;first&#39;</span><span class="p">,</span>
+                <span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">out_table</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">out_table</span> <span class="o">=</span> <span class="n">data_for_year</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">out_table</span> <span class="o">=</span> <span class="n">vstack</span><span class="p">([</span><span class="n">out_table</span><span class="p">,</span> <span class="n">data_for_year</span><span class="p">])</span>
+
+    <span class="n">out_table</span><span class="o">.</span><span class="n">rename_column</span><span class="p">(</span><span class="n">receiver_id</span><span class="p">,</span> <span class="s1">&#39;PWV&#39;</span><span class="p">)</span>
+    <span class="n">out_table</span><span class="o">.</span><span class="n">rename_column</span><span class="p">(</span><span class="n">receiver_id</span> <span class="o">+</span> <span class="s1">&#39;_err&#39;</span><span class="p">,</span> <span class="s1">&#39;PWV_err&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out_table</span></div>
 </pre></div>
 
     </div>

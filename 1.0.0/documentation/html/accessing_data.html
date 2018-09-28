@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>3. Accessing PWV Data &#8212; pwv_kpno 1.0.0 documentation</title>
+    <title>3. Accessing Site Data &#8212; pwv_kpno 1.0.0 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/custom_style.css" />
@@ -77,12 +77,13 @@
         <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">1. Installation and Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sites_and_settings.html">2. Custom Sites and Settings</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">3. Accessing PWV Data</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3. Accessing Site Data</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#checking-for-available-data">3.1. Checking For Available Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#updating-data">3.2. Updating Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#measured-pwv-data">3.3. Measured PWV Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#modeled-pwv-data">3.4. Modeled PWV Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pwv-for-a-given-date">3.5. PWV For a Given Date</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#additional-meteorological-data">3.6. Additional Meteorological Data</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">4. Modeling the Atmosphere</a></li>
@@ -93,8 +94,8 @@
       </div>
     <div class="col-md-9 content">
       
-  <div class="section" id="accessing-pwv-data">
-<h1>3. Accessing PWV Data<a class="headerlink" href="#accessing-pwv-data" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="accessing-site-data">
+<h1>3. Accessing Site Data<a class="headerlink" href="#accessing-site-data" title="Permalink to this headline">¶</a></h1>
 <p>In order to model the PWV absorption for a given date and time, SuomiNet data
 for that date must be available on your local machine. Downloading and
 accessing new SuomiNet data is handled by the <code class="docutils literal notranslate"><span class="pre">pwv_atm</span></code> module.</p>
@@ -368,6 +369,36 @@ The error in modeled PWV column density</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pwv</span> <span class="o">=</span> <span class="n">pwv_atm</span><span class="o">.</span><span class="n">pwv_date</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
+</div>
+<div class="section" id="additional-meteorological-data">
+<h2>3.6. Additional Meteorological Data<a class="headerlink" href="#additional-meteorological-data" title="Permalink to this headline">¶</a></h2>
+<p>The full set of downloaded SuomiNet measurements for a particular GPS receiver
+can be found using the <code class="docutils literal notranslate"><span class="pre">get_all_site_data</span></code> function. The returned table
+includes the PWV measurements for a given receiver, plus measurements of the
+GPS zenith delay, surface pressure, surface temperature, and relative humidity.</p>
+<dl class="function">
+<dt id="pwv_kpno.pwv_atm.get_all_site_data">
+<code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">get_all_site_data</code><span class="sig-paren">(</span><em>receiver_id</em>, <em>apply_cuts=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/pwv_atm.html#get_all_site_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.get_all_site_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a table of all local SuomiNet data for a given receiver id</p>
+<p>Data is returned as an astropy table with columns ‘date’, ‘PWV’,
+‘PWV_err’, ‘ZenithDelay’, ‘SrfcPress’, ‘SrfcTemp’, and ‘SrfcRH’.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>receiver_id</strong> (<em>str</em>) – A SuomiNet receiver id code (eg. KITT)</li>
+<li><strong>apply_cuts</strong> (<em>bool</em>) – Whether to apply data cuts from the package settings</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An astropy table with SuomiNet data for the given site</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 </div>
 

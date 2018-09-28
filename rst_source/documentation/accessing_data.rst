@@ -1,6 +1,6 @@
-******************
-Accessing PWV Data
-******************
+*******************
+Accessing Site Data
+*******************
 
 In order to model the PWV absorption for a given date and time, SuomiNet data
 for that date must be available on your local machine. Downloading and
@@ -159,3 +159,14 @@ To retrieve the modeled PWV level for November 14, 2016 at 11:06 AM:
     >>>
     >>> date = datetime(2016, 11, 14, 11, 6, tzinfo=pytz.utc)
     >>> pwv = pwv_atm.pwv_date(date)
+
+Additional Meteorological Data
+==============================
+
+The full set of downloaded SuomiNet measurements for a particular GPS receiver
+can be found using the ``get_all_site_data`` function. The returned table
+includes the PWV measurements for a given receiver, plus measurements of the
+GPS zenith delay, surface pressure, surface temperature, and relative humidity.
+
+.. autofunction:: pwv_kpno.pwv_atm.get_all_site_data
+
