@@ -373,12 +373,12 @@ The error in modeled PWV column density</p>
 <div class="section" id="additional-meteorological-data">
 <h2>3.6. Additional Meteorological Data<a class="headerlink" href="#additional-meteorological-data" title="Permalink to this headline">¶</a></h2>
 <p>The full set of downloaded SuomiNet measurements for a particular GPS receiver
-can be found using the <code class="docutils literal notranslate"><span class="pre">get_all_site_data</span></code> function. The returned table
+can be found using the <code class="docutils literal notranslate"><span class="pre">get_all_receiver_data</span></code> function. The returned table
 includes the PWV measurements for a given receiver, plus measurements of the
 GPS zenith delay, surface pressure, surface temperature, and relative humidity.</p>
 <dl class="function">
-<dt id="pwv_kpno.pwv_atm.get_all_site_data">
-<code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">get_all_site_data</code><span class="sig-paren">(</span><em>receiver_id</em>, <em>apply_cuts=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/pwv_atm.html#get_all_site_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.get_all_site_data" title="Permalink to this definition">¶</a></dt>
+<dt id="pwv_kpno.pwv_atm.get_all_receiver_data">
+<code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">get_all_receiver_data</code><span class="sig-paren">(</span><em>receiver_id</em>, <em>apply_cuts=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/pwv_atm.html#get_all_receiver_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.get_all_receiver_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a table of all local SuomiNet data for a given receiver id</p>
 <p>Data is returned as an astropy table with columns ‘date’, ‘PWV’,
 ‘PWV_err’, ‘ZenithDelay’, ‘SrfcPress’, ‘SrfcTemp’, and ‘SrfcRH’.</p>

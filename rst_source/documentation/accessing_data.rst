@@ -164,9 +164,9 @@ Additional Meteorological Data
 ==============================
 
 The full set of downloaded SuomiNet measurements for a particular GPS receiver
-can be found using the ``get_all_site_data`` function. The returned table
+can be found using the ``get_all_receiver_data`` function. The returned table
 includes the PWV measurements for a given receiver, plus measurements of the
 GPS zenith delay, surface pressure, surface temperature, and relative humidity.
 
-.. autofunction:: pwv_kpno.pwv_atm.get_all_site_data
+.. autofunction:: pwv_kpno.pwv_atm.get_all_receiver_data
 
