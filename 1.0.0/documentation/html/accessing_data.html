@@ -96,9 +96,9 @@
       
   <div class="section" id="accessing-site-data">
 <h1>3. Accessing Site Data<a class="headerlink" href="#accessing-site-data" title="Permalink to this headline">¶</a></h1>
-<p>In order to model the PWV absorption for a given date and time, SuomiNet data
-for that date must be available on your local machine. Downloading and
-accessing new SuomiNet data is handled by the <code class="docutils literal notranslate"><span class="pre">pwv_atm</span></code> module.</p>
+<p>In order to model the PWV absorption for a given date and time, GPS
+measurements for that date must be available on your local machine. Accessing
+and downloading new GPS data is handled by the <code class="docutils literal notranslate"><span class="pre">pwv_atm</span></code> module.</p>
 <div class="section" id="checking-for-available-data">
 <h2>3.1. Checking For Available Data<a class="headerlink" href="#checking-for-available-data" title="Permalink to this headline">¶</a></h2>
 <p>To check what years of SuomiNet data are locally available, use the
@@ -135,10 +135,10 @@ from 2010 through the end of the previous year.</p>
 </div>
 <div class="section" id="updating-data">
 <h2>3.2. Updating Data<a class="headerlink" href="#updating-data" title="Permalink to this headline">¶</a></h2>
-<p>To download new SuomiNet data to your local machine, use the <code class="docutils literal notranslate"><span class="pre">update_models</span></code>
+<p>To download new data to your local machine, use the <code class="docutils literal notranslate"><span class="pre">update_models</span></code>
 function. This function will download new data from the SuomiNet web server,
-and use that data to update the modeled precipitable water vapor for Kitt Peak
-National Observatory.</p>
+and use that data to update the modeled precipitable water vapor for the
+current site being modeled.</p>
 <dl class="function">
 <dt id="pwv_kpno.pwv_atm.update_models">
 <code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">update_models</code><span class="sig-paren">(</span><em>years=None</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/_update_pwv_model.html#update_models"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.update_models" title="Permalink to this definition">¶</a></dt>
@@ -189,14 +189,17 @@ present day.</p>
 <span class="go">  [2010]</span>
 </pre></div>
 </td></tr></table></div>
-<p>If <strong>pwv_kpno</strong> has beed set to model a custom site and no data has already
-been downloaded from SuomiNet, the <code class="docutils literal notranslate"><span class="pre">update_models</span></code> will default to downloading
-data from 2010 onward.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If <strong>pwv_kpno</strong> has been set to model a custom site and no data has
+already been downloaded from SuomiNet, this function will download any
+available data from 2010 onward.</p>
+</div>
 </div>
 <div class="section" id="measured-pwv-data">
 <h2>3.3. Measured PWV Data<a class="headerlink" href="#measured-pwv-data" title="Permalink to this headline">¶</a></h2>
-<p>Data that has been downloaded from SuomiNet can be accessed using the
-<code class="docutils literal notranslate"><span class="pre">measured_pwv</span></code> function.</p>
+<p>Any locally available PWV data for the current site being modeled can be
+accessed using the <code class="docutils literal notranslate"><span class="pre">measured_pwv</span></code> function.</p>
 <dl class="function">
 <dt id="pwv_kpno.pwv_atm.measured_pwv">
 <code class="descclassname">pwv_kpno.pwv_atm.</code><code class="descname">measured_pwv</code><span class="sig-paren">(</span><em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>hour=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/pwv_atm.html#measured_pwv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.pwv_atm.measured_pwv" title="Permalink to this definition">¶</a></dt>
@@ -223,8 +226,7 @@ optionally refined by year, month, day, and hour.</p>
 </table>
 </dd></dl>
 
-<p>To retrieve all SuomiNet data available on the local machine as an <code class="docutils literal notranslate"><span class="pre">astropy</span></code>,
-call <code class="docutils literal notranslate"><span class="pre">measured_pwv</span></code> without any arguments:</p>
+<p>To retrieve all SuomiNet data available on the local machine:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -246,8 +248,7 @@ call <code class="docutils literal notranslate"><span class="pre">measured_pwv</
 <span class="go">               ...     ...      ...  ...      ...  ...      ...  ... ...</span>
 </pre></div>
 </td></tr></table></div>
-<p>To retrieve SuomiNet data taken on a specific date, specify the desired
-datetime using keyword arguments:</p>
+<p>To retrieve SuomiNet data taken on a specific date or time:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -267,8 +268,11 @@ datetime using keyword arguments:</p>
 <span class="go">               ...     ...      ...  ...      ...  ...      ...  ... ...</span>
 </pre></div>
 </td></tr></table></div>
-<p><strong>Note:</strong> If no SuomiNet data is available at all during the specified datetime, then the
-returned table will be empty.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If no SuomiNet data is available at all during the specified
+datetime, then the returned table will be empty.</p>
+</div>
 </div>
 <div class="section" id="modeled-pwv-data">
 <h2>3.4. Modeled PWV Data<a class="headerlink" href="#modeled-pwv-data" title="Permalink to this headline">¶</a></h2>
@@ -300,7 +304,7 @@ Results can be optionally refined by year, month, day, and hour.</p>
 </table>
 </dd></dl>
 
-<p>To retrieve the entire PWV model from 2010 onward:</p>
+<p>To retrieve the entire PWV model for all available dates:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">modeled_pwv</span><span class="p">()</span>
 
@@ -313,7 +317,7 @@ Results can be optionally refined by year, month, day, and hour.</p>
 <span class="go">                  ...   ...     ...</span>
 </pre></div>
 </div>
-<p>To retrieve the modeled PWV level for November 14th, 2016:</p>
+<p>To retrieve the modeled PWV level for a specific date or time:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">modeled_pwv</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 
 <span class="go">           date       pwv pwv_err</span>

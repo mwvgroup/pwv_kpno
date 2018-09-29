@@ -2,9 +2,9 @@
 Accessing Site Data
 *******************
 
-In order to model the PWV absorption for a given date and time, SuomiNet data
-for that date must be available on your local machine. Downloading and
-accessing new SuomiNet data is handled by the ``pwv_atm`` module.
+In order to model the PWV absorption for a given date and time, GPS
+measurements for that date must be available on your local machine. Accessing
+and downloading new GPS data is handled by the ``pwv_atm`` module.
 
 Checking For Available Data
 ===========================
@@ -28,10 +28,10 @@ from 2010 through the end of the previous year.
 Updating Data
 =============
 
-To download new SuomiNet data to your local machine, use the ``update_models``
+To download new data to your local machine, use the ``update_models``
 function. This function will download new data from the SuomiNet web server,
-and use that data to update the modeled precipitable water vapor for Kitt Peak
-National Observatory.
+and use that data to update the modeled precipitable water vapor for the
+current site being modeled.
 
 .. autofunction:: pwv_kpno.pwv_atm.update_models
 
@@ -52,22 +52,21 @@ To ensure that the PWV data for **pwv_kpno** is up to date run:
 
       [2010]
 
-If **pwv_kpno** has beed set to model a custom site and no data has already
-been downloaded from SuomiNet, the ``update_models`` will default to downloading
-data from 2010 onward.
+.. note:: If **pwv_kpno** has been set to model a custom site and no data has
+    already been downloaded from SuomiNet, this function will download any
+    available data from 2010 onward.
 
 
 Measured PWV Data
 =================
 
-Data that has been downloaded from SuomiNet can be accessed using the
-``measured_pwv`` function.
+Any locally available PWV data for the current site being modeled can be
+accessed using the ``measured_pwv`` function.
 
 .. autofunction:: pwv_kpno.pwv_atm.measured_pwv
 
 
-To retrieve all SuomiNet data available on the local machine as an ``astropy``,
-call ``measured_pwv`` without any arguments:
+To retrieve all SuomiNet data available on the local machine:
 
 .. code-block:: python
     :linenos:
@@ -83,8 +82,7 @@ call ``measured_pwv`` without any arguments:
       2010-01-01 01:15:00   --       --  3.7    0.025  3.4    0.125  3.6 ...
                    ...     ...      ...  ...      ...  ...      ...  ... ...
 
-To retrieve SuomiNet data taken on a specific date, specify the desired
-datetime using keyword arguments:
+To retrieve SuomiNet data taken on a specific date or time:
 
 .. code-block:: python
     :linenos:
@@ -99,8 +97,8 @@ datetime using keyword arguments:
       2016-11-14 01:15:00  3.9    0.925  6.7    0.425  9.7    0.525   -- ...
                    ...     ...      ...  ...      ...  ...      ...  ... ...
 
-**Note:** If no SuomiNet data is available at all during the specified datetime, then the
-returned table will be empty.
+.. Note:: If no SuomiNet data is available at all during the specified
+    datetime, then the returned table will be empty.
 
 Modeled PWV Data
 ================
@@ -110,7 +108,7 @@ To retrieve the modeled PWV level at Kitt Peak National Observatory, use the
 
 .. autofunction:: pwv_kpno.pwv_atm.modeled_pwv
 
-To retrieve the entire PWV model from 2010 onward:
+To retrieve the entire PWV model for all available dates:
 
 .. code-block:: python
 
@@ -125,7 +123,7 @@ To retrieve the entire PWV model from 2010 onward:
       2010-01-01 01:15:00 1.178   1.175
                       ...   ...     ...
 
-To retrieve the modeled PWV level for November 14th, 2016:
+To retrieve the modeled PWV level for a specific date or time:
 
 .. code-block:: python
 

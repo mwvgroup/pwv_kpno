@@ -6,6 +6,7 @@ The **pwv_kpno** package provides access to models for the atmospheric
 transmission due to PWV at any site within the
 `SuomiNet <http://www.suominet.ucar.edu>`_  GPS network. However, the package
 is configured by default to return models for Kitt Peak National Observatory.
+This page provides instructions on how to retrieve models for additional sites.
 
 Available Sites and Settings
 ============================
@@ -30,7 +31,6 @@ the settings for Kitt Peak are as follows:
 .. code-block:: python
     :linenos:
 
-    >>> settings.set_site('kitt_peak')
     >>> print(settings)
 
                              pwv_kpno Current Site Information
@@ -100,6 +100,8 @@ Each site modeled by **pwv_kpno** is defined by a unique configuration file.
 The ``ConfigBuilder`` class allows users to create customized configuration
 files for any SuomiNet site. As a simple example, we create a new configuration
 file for the Cerro Tololo Inter-American Observatory near La Serena, Chile.
+
+.. autoclass:: pwv_kpno.package_settings.ConfigBuilder
 
 .. code-block:: python
     :linenos:

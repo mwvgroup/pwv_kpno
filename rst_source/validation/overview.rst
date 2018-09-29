@@ -7,7 +7,7 @@ Observatory. During this period various investigations were performed to
 validate not only the performance of the package, but the scientific results
 as well. We present a limited subset of these results here. Please note
 that these results should not be taken as a complete overview of our validation
-process. It is instead meant to provide a basic, qualitative overview of
+process. It is instead meant to provide a basic overview of key points from
 our investigation.
 
 Much of the work shown here can be found in the **pwv_kpno** paper:

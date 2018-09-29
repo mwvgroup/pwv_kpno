@@ -99,7 +99,8 @@
 <p><strong>pwv_kpno</strong> is designed to be compatible with Python 2.7, and 3.5 through 3.7.
 The use of other python versions is possible, but not explicitly supported.
 If you experience installation problems that are not resolved by trying the
-suggestions below, please raise an issue on <a class="reference external" href="https://github.com/mwvgroup/pwv_kpno">GitHub</a>.</p>
+suggestions below, please raise an issue on
+<a class="reference external" href="https://github.com/mwvgroup/pwv_kpno/issues/new/choose">GitHub</a>.</p>
 <div class="section" id="installation">
 <h2>1.1. Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p>To install the package, please choose from one of the options below.</p>
@@ -108,7 +109,7 @@ suggestions below, please raise an issue on <a class="reference external" href="
 <p class="last">Reinstalling or updating the <strong>pwv_kpno</strong> package will erase
 any custom sites that you have added to the previous installation.
 Click <a class="reference external" href="sites_and_settings.html#importing-a-new-location">here</a>
-for more information and for instructions on backing up your data.</p>
+for instructions on backing up your data.</p>
 </div>
 <div class="section" id="using-pip-recommended">
 <h3>1.1.1. Using PIP (Recommended)<a class="headerlink" href="#using-pip-recommended" title="Permalink to this headline">¶</a></h3>
@@ -135,9 +136,10 @@ Dependencies can be installed with pip by running:</p>
 </div>
 <div class="section" id="using-setup-py">
 <h3>1.1.2. Using setup.py<a class="headerlink" href="#using-setup-py" title="Permalink to this headline">¶</a></h3>
-<p>If you don’t have pip available on your system, the source code can be
-downloaded from <a class="reference external" href="https://github.com/mwvgroup/pwv_kpno">GitHub</a>. <strong>pwv_kpno</strong>
-can be installed by directly running:</p>
+<p>If you don’t have pip available on your system, the package source code can be
+downloaded from <a class="reference external" href="https://github.com/mwvgroup/pwv_kpno">GitHub</a>.
+The package can then be installed by running the following from the project’s
+root directory:</p>
 <div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span> python setup.py install --user
 </pre></div>
 </td></tr></table></div>
@@ -149,11 +151,11 @@ package, first install each dependency individually and then try again.</p>
 <div class="section" id="package-setup">
 <h2>1.2. Package Setup<a class="headerlink" href="#package-setup" title="Permalink to this headline">¶</a></h2>
 <p><strong>pwv_kpno</strong> relies on PWV measurements taken by the SuomiNet project. In order
-to model the PWV transmission function for a given date, SuomiNet data for that
-date must be available on the host machine. By default, each release of
-<strong>pwv_kpno</strong> contains all SuomiNet data for Kitt Peak National Observatory
-from 2010 through the end of the previous year. It is recommended to update the
-local SuomiNet data for KPNO after installing or updating the package, and
+to model the PWV transmission function for specific site and date, SuomiNet
+data for that date must be available on your machine. By default, each release
+of <strong>pwv_kpno</strong> contains all SuomiNet data for Kitt Peak National Observatory
+from 2010 through the end of 2017. It is recommended to update the local
+SuomiNet data for KPNO after installing or updating the package, and
 periodically as necessary.</p>
 <p>To download any new SuomiNet data use the <code class="docutils literal notranslate"><span class="pre">update_models</span></code> function:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
