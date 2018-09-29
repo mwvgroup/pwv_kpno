@@ -52,6 +52,7 @@ html_theme_options = {
 # These will be overwritten by the custom_toc extension
 side_bar_contents = ['localtoc.html']
 pages_with_sidebar = [
+    'overview',
     'install',
     'sites_and_settings',
     'accessing_data',

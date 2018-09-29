@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>1. Package Overview &#8212; pwv_kpno 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/custom_style.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="2. Installation and Setup" href="install.html" />
+    <link rel="prev" title="Overview" href="index.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../documentation/html/index.html">
+          pwv_kpno</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.0.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../documentation/html/install.html">Documentation</a></li>
+                <li><a href="../../examples/html/correcting_spectra.html">Examples</a></li>
+                <li><a href="../../validation/html/overview.html">Validation</a></li>
+                <li><a href="https://github.com/mwvgroup/pwv_kpno/issues/new/choose">Need Help?</a></li>
+                <li><a href="https://github.com/mwvgroup/pwv_kpno">Source Code</a></li>
+            
+            
+            
+            
+            
+          </ul>
+
+          
+                 
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1. Package Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-is-pwv-kpno">1.1. What is pwv_kpno?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-handling">1.2. Data Handling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#suominet-rounding-error">1.2.1. SuomiNet Rounding Error</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#duplicate-and-negative-data">1.2.2. Duplicate and Negative Data</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">2. Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sites_and_settings.html">3. Custom Sites and Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="accessing_data.html">4. Accessing Site Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">5. Modeling the Atmosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">6. Modeling a Black Body</a></li>
+</ul>
+
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <div class="section" id="package-overview">
+<h1>1. Package Overview<a class="headerlink" href="#package-overview" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="what-is-pwv-kpno">
+<h2>1.1. What is pwv_kpno?<a class="headerlink" href="#what-is-pwv-kpno" title="Permalink to this headline">¶</a></h2>
+<p><strong>pwv_kpno</strong> is a science focused Python package that provides access to
+models for the atmospheric absorption due to H2O. The strength of H2O
+absorption features have been observed to correlate strongly with measurements
+of localized PWV column density. By measuring the delay of dual band GPS
+signals traveling through the atmosphere, it is possible to determine the PWV
+column density along line of sight. <strong>pwv_kpno</strong> leverages this principle to
+provide atmospheric models for user definable sites as a function of date,
+time, and airmass.</p>
+<p>The SuomiNet project is a meteorological initiative that provides semi-hourly
+PWV measurements for hundreds of GPS receivers world wide. The <strong>pwv_kpno</strong>
+package uses published SuomiNet data in conjunction with MODTRAN models to
+determine the modeled, time dependent atmospheric transmission.
+By default this package provides access to the modeled transmission
+function at Kitt Peak National Observatory. However, this package is designed
+to be easily extensible to other locations within the SuomiNet Network.
+Additionally, <strong>pwv_kpno</strong> provides access to atmospheric models as a function
+of PWV, which is independent of geographical location. Atmospheric models
+are provided from 3,000 to 12,000 Angstroms at a resolution of 0.05 Angstroms.</p>
+</div>
+<div class="section" id="data-handling">
+<h2>1.2. Data Handling<a class="headerlink" href="#data-handling" title="Permalink to this headline">¶</a></h2>
+<p>We provide here a few key points on how <strong>pwv_kpno</strong> handles the parsing,
+fitting, and error propagation of raw SuomiNet data. Questions not already
+answered by the <strong>pwv_kpno</strong> science paper <a class="reference external" href="https://arxiv.org/abs/1806.09701">Perrefort, Wood-Vasey et al. 2018</a> are welcomed, and can be submitted via
+GitHub (see the “Need Help?” link above).</p>
+<div class="section" id="suominet-rounding-error">
+<h3>1.2.1. SuomiNet Rounding Error<a class="headerlink" href="#suominet-rounding-error" title="Permalink to this headline">¶</a></h3>
+<p>Standard SuomiNet data files are published with PWV and PWV error values
+recorded to a one decimal point precision. Unfortunately, the error in PWV can
+sometimes be less than 0.05. As a result the SuomiNet data pipeline will round
+these results to have an error of 0. To account for this loss of information,
+<strong>pwv_kpno</strong> adds a conservative 0.025 error to all downloaded PWV
+measurements.</p>
+<p>The datetime format used by SuomiNet also suffers intrinsically from rounding
+error. This only effects certain datetimes, and is automatically corrected.</p>
+</div>
+<div class="section" id="duplicate-and-negative-data">
+<h3>1.2.2. Duplicate and Negative Data<a class="headerlink" href="#duplicate-and-negative-data" title="Permalink to this headline">¶</a></h3>
+<p>In very rare instances, SuomiNet data files may contain two measurements for
+a given datetime that are unequal. Since there is no way to determine from
+the data files themselves which on is correct, <strong>pwv_kpno</strong> ignores both of
+these entries. In the case where there are duplicate datetime entries with the
+same measurements, these entries are kept.</p>
+<p>In the published SuomiNet data there are also occasional instances when the
+measured PWV column density is negative. In some (but not necessarily all)
+cases this can be attributed to a malfunction of a particular GPS receiver.
+measurements for any time when the reported PWV concentration is negative
+are ignored.</p>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="_sources/overview.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, Daniel J. Perrefort.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

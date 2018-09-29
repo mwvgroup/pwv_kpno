@@ -30,6 +30,7 @@
     :hidden:
     :numbered:
 
+    overview
     install
     sites_and_settings
     accessing_data
