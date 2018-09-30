@@ -23,8 +23,8 @@ General Data Cuts
 Unlike temperature or PWV column density, we expect the atmospheric pressure
 at a given location to fluctuate within a fairly narrow range. This makes
 pressure measurements a natural indicator for outlier and non-physical data
-points. Demonstrated below, we ignore PWV measurements that lie outside a site
-specific pressure range. Note that measurements for Kitt Peak have an
+points. Demonstrated below, we ignore PWV measurements that lie outside a
+site-specific pressure range. Note that measurements for Kitt Peak have an
 additional cut for periods when the barometric sensor was malfunctioning.
 
 

@@ -16,7 +16,7 @@ receiver was installed.
 Comparing Seasonal Trends
 =========================
 
-THe figure below demonstrates measurements of precipitable water vapor (PWV)
+The figure below demonstrates measurements of precipitable water vapor (PWV)
 from the SuomiNet project from 2010 onward. From top to bottom, SuomiNet
 measurements for Kitt Peak National Observatory, Sahuarita AZ, and Sells AZ
 (Blue). The modeled PWV level at Kitt peak is shown in Orange. Periods of one

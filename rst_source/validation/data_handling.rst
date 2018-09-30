@@ -5,7 +5,7 @@ Data Handling
 Here we discuss how **pwv_kpno** handles the parsing, fitting, and error
 propagation of raw SuomiNet data. While this is not technically part of the
 validation process, the design decisions outlined here have a direct effect
-on carious values and errors reported by the package.
+on the various values and errors reported by the package.
 
 SuomiNet Rounding Error
 =======================
@@ -13,7 +13,7 @@ SuomiNet Rounding Error
 Standard SuomiNet data files are published with PWV and PWV error values
 recorded to a one decimal point precision. Unfortunately, the error in PWV can
 sometimes be less than 0.05. As a result, the SuomiNet data pipeline will round
-these some measurements to have an error of 0.0. To account for this loss of
+the error in these measurements to 0.0. To account for this loss of
 information, **pwv_kpno** adds a conservative 0.025 error to all downloaded PWV
 measurements.
 
@@ -31,19 +31,19 @@ same measurements, these entries are kept.
 
 In the published SuomiNet data there are occasional instances when the
 measured PWV column density is unmasked and negative. In some (but not
-necessarily all) cases this can be attributed to a malfunction of a particular
-GPS receiver. Measurements for any time when the reported PWV concentration is
-negative are ignored.
+necessarily all) cases this can be attributed to a hardware malfunction.
+Measurements for any time when the reported PWV concentration is negative are
+ignored.
 
 Hourly and Daily Publications
 =============================
 
-For GPS sites located within the continental United States, SuomiNet
+For GPS sites located within the continental United States, **SuomiNet**
 measurements are published hourly and then reprocessed and published again
-daily. Hourly data releases are provided for convenience, but may not be
-as accurate as the daily releases. As such **pwv_kpno** uses measurements from
-the daily data releases whenever possible, and suppliments these measurements
-with the hourly releases when daily data is not available.
+daily. Hourly data releases are provided for convenience but may not be as
+accurate as the daily releases. As such pwv_kpno uses measurements from the
+daily data releases whenever possible and supplements these measurements with
+the hourly releases when daily data is not available.
 
 Supplemental Receivers
 ======================

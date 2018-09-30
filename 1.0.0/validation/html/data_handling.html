@@ -98,13 +98,13 @@
 <p>Here we discuss how <strong>pwv_kpno</strong> handles the parsing, fitting, and error
 propagation of raw SuomiNet data. While this is not technically part of the
 validation process, the design decisions outlined here have a direct effect
-on carious values and errors reported by the package.</p>
+on the various values and errors reported by the package.</p>
 <div class="section" id="suominet-rounding-error">
 <h2>2.1. SuomiNet Rounding Error<a class="headerlink" href="#suominet-rounding-error" title="Permalink to this headline">¶</a></h2>
 <p>Standard SuomiNet data files are published with PWV and PWV error values
 recorded to a one decimal point precision. Unfortunately, the error in PWV can
 sometimes be less than 0.05. As a result, the SuomiNet data pipeline will round
-these some measurements to have an error of 0.0. To account for this loss of
+the error in these measurements to 0.0. To account for this loss of
 information, <strong>pwv_kpno</strong> adds a conservative 0.025 error to all downloaded PWV
 measurements.</p>
 <p>The datetime format used by SuomiNet also suffers intrinsically from rounding
@@ -119,18 +119,18 @@ both entries. In the case where there are duplicate datetime entries with the
 same measurements, these entries are kept.</p>
 <p>In the published SuomiNet data there are occasional instances when the
 measured PWV column density is unmasked and negative. In some (but not
-necessarily all) cases this can be attributed to a malfunction of a particular
-GPS receiver. Measurements for any time when the reported PWV concentration is
-negative are ignored.</p>
+necessarily all) cases this can be attributed to a hardware malfunction.
+Measurements for any time when the reported PWV concentration is negative are
+ignored.</p>
 </div>
 <div class="section" id="hourly-and-daily-publications">
 <h2>2.3. Hourly and Daily Publications<a class="headerlink" href="#hourly-and-daily-publications" title="Permalink to this headline">¶</a></h2>
-<p>For GPS sites located within the continental United States, SuomiNet
+<p>For GPS sites located within the continental United States, <strong>SuomiNet</strong>
 measurements are published hourly and then reprocessed and published again
-daily. Hourly data releases are provided for convenience, but may not be
-as accurate as the daily releases. As such <strong>pwv_kpno</strong> uses measurements from
-the daily data releases whenever possible, and suppliments these measurements
-with the hourly releases when daily data is not available.</p>
+daily. Hourly data releases are provided for convenience but may not be as
+accurate as the daily releases. As such pwv_kpno uses measurements from the
+daily data releases whenever possible and supplements these measurements with
+the hourly releases when daily data is not available.</p>
 </div>
 <div class="section" id="supplemental-receivers">
 <h2>2.4. Supplemental Receivers<a class="headerlink" href="#supplemental-receivers" title="Permalink to this headline">¶</a></h2>
