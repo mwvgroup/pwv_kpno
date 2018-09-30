@@ -45,7 +45,7 @@
         <div class="collapse navbar-collapse nav-collapse">
           <ul class="nav navbar-nav">
             
-                <li><a href="../../documentation/html/install.html">Documentation</a></li>
+                <li><a href="../../documentation/html/overview.html">Documentation</a></li>
                 <li><a href="../../examples/html/correcting_spectra.html">Examples</a></li>
                 <li><a href="../../validation/html/overview.html">Validation</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno/issues/new/choose">Need Help?</a></li>
@@ -77,11 +77,7 @@
         <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">1. Package Overview</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#what-is-pwv-kpno">1.1. What is pwv_kpno?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#data-handling">1.2. Data Handling</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#suominet-rounding-error">1.2.1. SuomiNet Rounding Error</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#duplicate-and-negative-data">1.2.2. Duplicate and Negative Data</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#how-it-works">1.2. How it Works</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">2. Installation and Setup</a></li>
@@ -107,6 +103,9 @@ signals traveling through the atmosphere, it is possible to determine the PWV
 column density along line of sight. <strong>pwv_kpno</strong> leverages this principle to
 provide atmospheric models for user definable sites as a function of date,
 time, and airmass.</p>
+</div>
+<div class="section" id="how-it-works">
+<h2>1.2. How it Works<a class="headerlink" href="#how-it-works" title="Permalink to this headline">¶</a></h2>
 <p>The SuomiNet project is a meteorological initiative that provides semi-hourly
 PWV measurements for hundreds of GPS receivers world wide. The <strong>pwv_kpno</strong>
 package uses published SuomiNet data in conjunction with MODTRAN models to
@@ -117,37 +116,6 @@ to be easily extensible to other locations within the SuomiNet Network.
 Additionally, <strong>pwv_kpno</strong> provides access to atmospheric models as a function
 of PWV, which is independent of geographical location. Atmospheric models
 are provided from 3,000 to 12,000 Angstroms at a resolution of 0.05 Angstroms.</p>
-</div>
-<div class="section" id="data-handling">
-<h2>1.2. Data Handling<a class="headerlink" href="#data-handling" title="Permalink to this headline">¶</a></h2>
-<p>We provide here a few key points on how <strong>pwv_kpno</strong> handles the parsing,
-fitting, and error propagation of raw SuomiNet data. Questions not already
-answered by the <strong>pwv_kpno</strong> science paper <a class="reference external" href="https://arxiv.org/abs/1806.09701">Perrefort, Wood-Vasey et al. 2018</a> are welcomed, and can be submitted via
-GitHub (see the “Need Help?” link above).</p>
-<div class="section" id="suominet-rounding-error">
-<h3>1.2.1. SuomiNet Rounding Error<a class="headerlink" href="#suominet-rounding-error" title="Permalink to this headline">¶</a></h3>
-<p>Standard SuomiNet data files are published with PWV and PWV error values
-recorded to a one decimal point precision. Unfortunately, the error in PWV can
-sometimes be less than 0.05. As a result the SuomiNet data pipeline will round
-these results to have an error of 0. To account for this loss of information,
-<strong>pwv_kpno</strong> adds a conservative 0.025 error to all downloaded PWV
-measurements.</p>
-<p>The datetime format used by SuomiNet also suffers intrinsically from rounding
-error. This only effects certain datetimes, and is automatically corrected.</p>
-</div>
-<div class="section" id="duplicate-and-negative-data">
-<h3>1.2.2. Duplicate and Negative Data<a class="headerlink" href="#duplicate-and-negative-data" title="Permalink to this headline">¶</a></h3>
-<p>In very rare instances, SuomiNet data files may contain two measurements for
-a given datetime that are unequal. Since there is no way to determine from
-the data files themselves which on is correct, <strong>pwv_kpno</strong> ignores both of
-these entries. In the case where there are duplicate datetime entries with the
-same measurements, these entries are kept.</p>
-<p>In the published SuomiNet data there are also occasional instances when the
-measured PWV column density is negative. In some (but not necessarily all)
-cases this can be attributed to a malfunction of a particular GPS receiver.
-measurements for any time when the reported PWV concentration is negative
-are ignored.</p>
-</div>
 </div>
 </div>
 

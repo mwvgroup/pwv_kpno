@@ -64,10 +64,9 @@ package, first install each dependency individually and then try again.
 Package Setup
 =============
 
-**pwv_kpno** relies on PWV measurements taken by the SuomiNet project. In order
-to model the PWV transmission function for specific site and date, SuomiNet
+In order to model the PWV transmission function for specific site and date, GPS
 data for that date must be available on your machine. By default, each release
-of **pwv_kpno** contains all SuomiNet data for Kitt Peak National Observatory
+of **pwv_kpno** contains all public SuomiNet data for Kitt Peak National Observatory
 from 2010 through the end of 2017. It is recommended to update the local
 SuomiNet data for KPNO after installing or updating the package, and
 periodically as necessary.

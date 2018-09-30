@@ -32,7 +32,7 @@ release = pk_version
 # Specify theme specific settings
 html_theme = 'bootstrap'
 links = [
-    ("Documentation", "../../documentation/html/install.html", 1),
+    ("Documentation", "../../documentation/html/overview.html", 1),
     ("Examples", "../../examples/html/correcting_spectra.html", 1),
     ("Validation", "../../validation/html/overview.html", 1),
     ("Need Help?", "https://github.com/mwvgroup/pwv_kpno/issues/new/choose", 1),
@@ -53,6 +53,7 @@ html_theme_options = {
 side_bar_contents = ['localtoc.html']
 pages_with_sidebar = [
     'overview',
+    'data_handling',
     'install',
     'sites_and_settings',
     'accessing_data',
