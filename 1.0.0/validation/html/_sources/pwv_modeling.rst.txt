@@ -5,8 +5,8 @@ PWV Modeling
 In March of 2015, we installed SuomiNet connected weather station on top of
 the WIYN 3.5 meter telescope building at Kitt Peak National Observatory.
 In order to prevent equipment damage, the weather station at Kitt Peak is
-powered down during lightning storms. This creates gaps in the available
-SuomiNet data for Kitt Peak.
+powered down during lightning storms. This procedure, combined with occasional
+hardware issues, creates gaps in the available SuomiNet data for Kitt Peak.
 
 In order to determine the PWV level during periods without direct SuomiNet
 data, measurements from other nearby receivers can be used to model the PWV
@@ -23,7 +23,7 @@ measurements for Kitt Peak National Observatory, Sahuarita AZ, and Sells AZ
 day or longer where there are no modeled PWV values are shown in the top panel
 in grey. The geographic proximity of these locations means that the primary
 difference in PWV between locations is due to differences in altitude.
-Measurements taken at Kitt Peak National Observatory begin in March of 2015.
+Measurements were taken at Kitt Peak National Observatory begin in March of 2015.
 
 .. rst-class:: validation_figure
 .. figure::  _static/modeled_vs_measured_pwv.png
@@ -44,4 +44,3 @@ locations.
 .. rst-class:: validation_figure
 .. figure::  _static/linear_pwv_fits.png
     :align:   center
-

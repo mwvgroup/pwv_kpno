@@ -80,7 +80,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#suominet-rounding-error">2.1. SuomiNet Rounding Error</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#duplicate-and-negative-data">2.2. Duplicate and Negative Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#hourly-and-daily-publications">2.3. Hourly and Daily Publications</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#supplemental-receivers">2.4. Supplemental Receivers</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pwv_modeling.html">3. PWV Modeling</a></li>
@@ -95,27 +94,25 @@
       
   <div class="section" id="data-handling">
 <h1>2. Data Handling<a class="headerlink" href="#data-handling" title="Permalink to this headline">¶</a></h1>
-<p>Here we discuss how <strong>pwv_kpno</strong> handles the parsing, fitting, and error
-propagation of raw SuomiNet data. While this is not technically part of the
-validation process, the design decisions outlined here have a direct effect
-on the various values and errors reported by the package.</p>
+<p>Here we discuss how <strong>pwv_kpno</strong> handles the parsing of raw SuomiNet data.
+While this is not technically part of the validation process, the design
+decisions outlined here have a direct effect on the various values and
+errors reported by the package.</p>
 <div class="section" id="suominet-rounding-error">
 <h2>2.1. SuomiNet Rounding Error<a class="headerlink" href="#suominet-rounding-error" title="Permalink to this headline">¶</a></h2>
 <p>Standard SuomiNet data files are published with PWV and PWV error values
 recorded to a one decimal point precision. Unfortunately, the error in PWV can
 sometimes be less than 0.05. As a result, the SuomiNet data pipeline will round
-the error in these measurements to 0.0. To account for this loss of
+the error in these measurements down to zero. To account for this loss of
 information, <strong>pwv_kpno</strong> adds a conservative 0.025 error to all downloaded PWV
 measurements.</p>
-<p>The datetime format used by SuomiNet also suffers intrinsically from rounding
-error. This only effects certain datetimes, and is automatically corrected.</p>
 </div>
 <div class="section" id="duplicate-and-negative-data">
 <h2>2.2. Duplicate and Negative Data<a class="headerlink" href="#duplicate-and-negative-data" title="Permalink to this headline">¶</a></h2>
 <p>In very rare instances, SuomiNet data files may contain two measurements for
 a given location and datetime that are unequal. Since there is no way to
 determine from the data files which value is correct, <strong>pwv_kpno</strong> ignores
-both entries. In the case where there are duplicate datetime entries with the
+both entries. In the case where there are multiple datetime entries with the
 same measurements, these entries are kept.</p>
 <p>In the published SuomiNet data there are occasional instances when the
 measured PWV column density is unmasked and negative. In some (but not
@@ -127,13 +124,10 @@ ignored.</p>
 <h2>2.3. Hourly and Daily Publications<a class="headerlink" href="#hourly-and-daily-publications" title="Permalink to this headline">¶</a></h2>
 <p>For GPS sites located within the continental United States, <strong>SuomiNet</strong>
 measurements are published hourly and then reprocessed and published again
-daily. Hourly data releases are provided for convenience but may not be as
-accurate as the daily releases. As such pwv_kpno uses measurements from the
+daily. Although the hourly data releases are convenient, they are not necessarily
+as accurate as the daily releases. As such pwv_kpno uses measurements from the
 daily data releases whenever possible and supplements these measurements with
 the hourly releases when daily data is not available.</p>
-</div>
-<div class="section" id="supplemental-receivers">
-<h2>2.4. Supplemental Receivers<a class="headerlink" href="#supplemental-receivers" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 

@@ -2,11 +2,11 @@
 Blackbody Modeling
 ******************
 
-When calibrating photometric images, astronomers typically choose bright stars
-of a known spectral type with very few absorption features. Early A type stars
-are commonly used for this purpose due to their few, weak metal lines and
-reasonable approximation as a black body at about 10,000 K. It is therefore
-useful to understand the impact of atmospheric absorption on the spectral
+When calibrating photometric images, astronomers traditionally rely on bright
+stars of a known spectral type with very few absorption features. Early A-type
+stars are commonly used for this purpose due to their few, weak metal lines and
+reasonable approximation as a black body at about 10,000 K. For this reason,
+it is useful to understand the impact of atmospheric absorption on the spectral
 energy distribution (SED) of a black body.
 
 Absorption Features
