@@ -15,8 +15,8 @@ To install the package, please choose from one of the options below.
 
 .. warning:: Reinstalling or updating the **pwv_kpno** package will erase
   any custom sites that you have added to the previous installation.
-  Click `here <sites_and_settings.html#importing-a-new-location>`_
-  for instructions on backing up your data.
+  See the `Installing Updates <install.html#installing-updates>`_
+  section to update an existing installation.
 
 Using PIP (Recommended)
 -----------------------
@@ -60,6 +60,10 @@ root directory:
 As in the previous method, any missing dependencies in your Python environment
 should be installed automatically. If you have any issues installing the
 package, first install each dependency individually and then try again.
+
+Installing Updates
+==================
+
 
 Package Setup
 =============

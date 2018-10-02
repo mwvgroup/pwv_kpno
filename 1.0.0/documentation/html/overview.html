@@ -96,25 +96,25 @@
 <div class="section" id="what-is-pwv-kpno">
 <h2>1.1. What is pwv_kpno?<a class="headerlink" href="#what-is-pwv-kpno" title="Permalink to this headline">¶</a></h2>
 <p><strong>pwv_kpno</strong> is a science focused Python package that provides access to
-models for the atmospheric absorption due to H2O. The strength of H2O
-absorption features have been observed to correlate strongly with measurements
-of localized PWV column density. By measuring the delay of dual band GPS
-signals traveling through the atmosphere, it is possible to determine the PWV
-column density along line of sight. <strong>pwv_kpno</strong> leverages this principle to
-provide atmospheric models for user definable sites as a function of date,
-time, and airmass.</p>
+models for the atmospheric absorption due to H<sub>2</sub>O. The strength of
+H<sub>2</sub>O absorption features have been observed to correlate strongly
+with measurements of localized PWV column density. By measuring the delay of
+dual-band GPS signals traveling through the atmosphere, it is possible to
+determine the PWV column density along line of sight. <strong>pwv_kpno</strong> leverages
+this principle to provide atmospheric models for user definable sites as a
+function of date, time, and airmass.</p>
 </div>
 <div class="section" id="how-it-works">
 <h2>1.2. How it Works<a class="headerlink" href="#how-it-works" title="Permalink to this headline">¶</a></h2>
 <p>The SuomiNet project is a meteorological initiative that provides semi-hourly
-PWV measurements for hundreds of GPS receivers world wide. The <strong>pwv_kpno</strong>
+PWV measurements for hundreds of GPS receivers worldwide. The <strong>pwv_kpno</strong>
 package uses published SuomiNet data in conjunction with MODTRAN models to
-determine the modeled, time dependent atmospheric transmission.
-By default this package provides access to the modeled transmission
+determine the modeled, time-dependent atmospheric transmission.
+By default, the package provides access to the modeled transmission
 function at Kitt Peak National Observatory. However, this package is designed
 to be easily extensible to other locations within the SuomiNet Network.
 Additionally, <strong>pwv_kpno</strong> provides access to atmospheric models as a function
-of PWV, which is independent of geographical location. Atmospheric models
+of PWV, which is independent of geographical location. Default atmospheric models
 are provided from 3,000 to 12,000 Angstroms at a resolution of 0.05 Angstroms.</p>
 </div>
 </div>

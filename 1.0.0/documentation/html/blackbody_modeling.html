@@ -94,12 +94,11 @@
   <div class="section" id="modeling-a-black-body">
 <h1>6. Modeling a Black Body<a class="headerlink" href="#modeling-a-black-body" title="Permalink to this headline">¶</a></h1>
 <p>The <code class="docutils literal notranslate"><span class="pre">blackbody_with_atm</span></code> module provides functions for modeling the effects
-of PWV absorption on a black body. We suggest importing this module as
-<code class="docutils literal notranslate"><span class="pre">bb_atm</span></code>.</p>
+of PWV absorption on a black body. We suggest importing this module as <code class="docutils literal notranslate"><span class="pre">bb_atm</span></code>.</p>
 <div class="section" id="generating-an-sed">
 <h2>6.1. Generating an SED<a class="headerlink" href="#generating-an-sed" title="Permalink to this headline">¶</a></h2>
 <p>For a given array of wavelengths in Angstroms, the <code class="docutils literal notranslate"><span class="pre">sed</span></code> function returns
-the corresponding spectral energy distribution of a black body as seen through
+the corresponding spectral energy distribution (SED) of a black body as seen through
 the atmosphere.</p>
 <dl class="function">
 <dt id="pwv_kpno.blackbody_with_atm.sed">
@@ -145,8 +144,6 @@ used to smooth atmospheric transmission</li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sed</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">sed</span><span class="p">(</span><span class="n">bb_temp</span><span class="p">,</span> <span class="n">wavelengths</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
-<p><strong>Note:</strong> If desired, the SED of a black body without atmospheric effects can
-be achieved by specifying a PWV level of zero.</p>
 </div>
 <div class="section" id="magnitude">
 <h2>6.2. Magnitude<a class="headerlink" href="#magnitude" title="Permalink to this headline">¶</a></h2>
@@ -197,8 +194,8 @@ Angstroms, the magnitude of a black body is found by running</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">bb_mag</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">magnitude</span><span class="p">(</span><span class="n">bb_temp</span><span class="p">,</span> <span class="n">i_band</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
-<p>We can also determine the magnitude for a real world filter by turning band
-into a two dimensional array.</p>
+<p>We can also determine the magnitude for a real-world filter by specifying
+<code class="docutils literal notranslate"><span class="pre">band</span></code> as a two dimensional array.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -222,8 +219,6 @@ into a two dimensional array.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">bb_mag</span> <span class="o">=</span> <span class="n">bb_atm</span><span class="o">.</span><span class="n">magnitude</span><span class="p">(</span><span class="n">bb_temp</span><span class="p">,</span> <span class="n">i_band</span><span class="p">,</span> <span class="n">pwv</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
-<p><strong>Note:</strong> If desired, the absolute magnitude of a black body without
-atmospheric effects can also be achieved by specifying a PWV level of zero.</p>
 </div>
 <div class="section" id="estimating-zero-point-error">
 <h2>6.3. Estimating Zero Point Error<a class="headerlink" href="#estimating-zero-point-error" title="Permalink to this headline">¶</a></h2>

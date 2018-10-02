@@ -11,8 +11,8 @@ This page provides instructions on how to retrieve models for additional sites.
 Available Sites and Settings
 ============================
 
-A list of sites that are available with a
-particular install of **pwv_kpno** can be retrieved by running
+A list of sites that are available with a particular install of **pwv_kpno**
+can be retrieved by running
 
 .. code-block:: python
     :linenos:
@@ -151,7 +151,7 @@ Specifying Data Cuts
 ====================
 
 If desired, users can specify custom data cuts on SuomiNet data used by the
-package. Data cuts are defined using a 2 dimensional dictionary of boundary
+package. Data cuts are defined using a 2-dimensional dictionary of boundary
 values. The first key specifies which receiver the data cuts apply to. The
 second key specifies what values to cut. Following SuomiNet's naming
 convention, values that can be cut include the following:
@@ -172,7 +172,7 @@ convention, values that can be cut include the following:
 | Relative Humidity   | ``"SrfcRH"``     | %                | Include data   |
 +---------------------+------------------+------------------+----------------+
 
-For example, if weather station at Cerro Tololo began to malfunction between
+For example, if the weather station at Cerro Tololo began to malfunction between
 two dates we could ignore these measurements by specifying:
 
 .. code-block:: python
@@ -197,7 +197,7 @@ Data cuts can also be modified for the current site being modeled via the
     >>> from pwv_kpno.package_settings import settings
     >>> settings.data_cuts['CTIO']['Date'].append([timestamp_start, timestamp_start])
 
-.. note:: A full worked out example on how to choose and visualize your chosen data cuts
+.. note:: A fully worked out example on how to choose and visualize your chosen data cuts
     is available in the `Examples <../../examples/html/data_cuts.html>`_ section.
 
 
@@ -232,7 +232,7 @@ the new model until the current Python environment is terminated.
 
 .. note:: This setting is not persistent. When **pwv_kpno** is
     first imported into a new environment the package will always default to using
-    the standard model for Kitt Peak, and the above command will have to be rerun.
+    the standard model for Kitt Peak and the above command will have to be rerun.
 
 Exporting Current Settings
 ==========================

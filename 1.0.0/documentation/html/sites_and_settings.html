@@ -104,8 +104,8 @@ is configured by default to return models for Kitt Peak National Observatory.
 This page provides instructions on how to retrieve models for additional sites.</p>
 <div class="section" id="available-sites-and-settings">
 <h2>3.1. Available Sites and Settings<a class="headerlink" href="#available-sites-and-settings" title="Permalink to this headline">¶</a></h2>
-<p>A list of sites that are available with a
-particular install of <strong>pwv_kpno</strong> can be retrieved by running</p>
+<p>A list of sites that are available with a particular install of <strong>pwv_kpno</strong>
+can be retrieved by running</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -397,7 +397,7 @@ these cross sections in units of Angstroms and cm<sup>2</sup> respectively.</p>
 <div class="section" id="specifying-data-cuts">
 <h2>3.4. Specifying Data Cuts<a class="headerlink" href="#specifying-data-cuts" title="Permalink to this headline">¶</a></h2>
 <p>If desired, users can specify custom data cuts on SuomiNet data used by the
-package. Data cuts are defined using a 2 dimensional dictionary of boundary
+package. Data cuts are defined using a 2-dimensional dictionary of boundary
 values. The first key specifies which receiver the data cuts apply to. The
 second key specifies what values to cut. Following SuomiNet’s naming
 convention, values that can be cut include the following:</p>
@@ -448,7 +448,7 @@ convention, values that can be cut include the following:</p>
 </tr>
 </tbody>
 </table>
-<p>For example, if weather station at Cerro Tololo began to malfunction between
+<p>For example, if the weather station at Cerro Tololo began to malfunction between
 two dates we could ignore these measurements by specifying:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -478,7 +478,7 @@ two dates we could ignore these measurements by specifying:</p>
 </td></tr></table></div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">A full worked out example on how to choose and visualize your chosen data cuts
+<p class="last">A fully worked out example on how to choose and visualize your chosen data cuts
 is available in the <a class="reference external" href="../../examples/html/data_cuts.html">Examples</a> section.</p>
 </div>
 <div class="admonition warning">
@@ -511,7 +511,7 @@ the new model until the current Python environment is terminated.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">This setting is not persistent. When <strong>pwv_kpno</strong> is
 first imported into a new environment the package will always default to using
-the standard model for Kitt Peak, and the above command will have to be rerun.</p>
+the standard model for Kitt Peak and the above command will have to be rerun.</p>
 </div>
 </div>
 <div class="section" id="exporting-current-settings">

@@ -9,7 +9,7 @@ and downloading new GPS data is handled by the ``pwv_atm`` module.
 Checking For Available Data
 ===========================
 
-To check what years of SuomiNet data are locally available, use the
+To check what years of data have been downloaded from the SuomiNet server, use the
 ``downloaded_years`` function.
 
 .. autofunction:: pwv_kpno.pwv_atm.downloaded_years
@@ -53,7 +53,7 @@ To ensure that the PWV data for **pwv_kpno** is up to date run:
       [2010]
 
 .. note:: If **pwv_kpno** has been set to model a custom site and no data has
-    already been downloaded from SuomiNet, this function will download any
+    already been downloaded from SuomiNet, this function will default to download any
     available data from 2010 onward.
 
 
@@ -103,7 +103,7 @@ To retrieve SuomiNet data taken on a specific date or time:
 Modeled PWV Data
 ================
 
-To retrieve the modeled PWV level at Kitt Peak National Observatory, use the
+To retrieve the modeled PWV level for the site's primary GPS receiver, use the
 ``modeled_pwv`` function.
 
 .. autofunction:: pwv_kpno.pwv_atm.modeled_pwv
@@ -141,8 +141,7 @@ PWV For a Given Date
 ====================
 
 For convenience, users can interpolate from the modeled PWV concentration at
-Kitt Peak using the ``pwv_date`` function. Note that this function does not
-return an uncertainty on the measured value.
+Kitt Peak using the ``pwv_date`` function.
 
 .. autofunction:: pwv_kpno.pwv_atm.pwv_date
 
@@ -156,7 +155,7 @@ To retrieve the modeled PWV level for November 14, 2016 at 11:06 AM:
     >>> import pytz
     >>>
     >>> date = datetime(2016, 11, 14, 11, 6, tzinfo=pytz.utc)
-    >>> pwv = pwv_atm.pwv_date(date)
+    >>> pwv, pwv_err = pwv_atm.pwv_date(date)
 
 Additional Meteorological Data
 ==============================

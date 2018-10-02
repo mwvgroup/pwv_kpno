@@ -3,14 +3,13 @@ Modeling a Black Body
 *********************
 
 The ``blackbody_with_atm`` module provides functions for modeling the effects
-of PWV absorption on a black body. We suggest importing this module as
-``bb_atm``.
+of PWV absorption on a black body. We suggest importing this module as ``bb_atm``.
 
 Generating an SED
 =================
 
 For a given array of wavelengths in Angstroms, the ``sed`` function returns
-the corresponding spectral energy distribution of a black body as seen through
+the corresponding spectral energy distribution (SED) of a black body as seen through
 the atmosphere.
 
 .. autofunction:: pwv_kpno.blackbody_with_atm.sed
@@ -30,8 +29,8 @@ Here we demonstrate how to find the SED of a black body between 7,000 and
     >>>
     >>> sed = bb_atm.sed(bb_temp, wavelengths, pwv)
 
-**Note:** If desired, the SED of a black body without atmospheric effects can
-be achieved by specifying a PWV level of zero.
+.. Note::: If desired, the SED of a black body without atmospheric effects can
+    be achieved by specifying a PWV level of zero.
 
 Magnitude
 =========
@@ -55,8 +54,8 @@ Angstroms, the magnitude of a black body is found by running
     >>>
     >>> bb_mag = bb_atm.magnitude(bb_temp, i_band, pwv)
 
-We can also determine the magnitude for a real world filter by turning band
-into a two dimensional array.
+We can also determine the magnitude for a real-world filter by specifying
+``band`` as a two dimensional array.
 
 .. code-block:: python
     :linenos:
@@ -72,10 +71,6 @@ into a two dimensional array.
     >>> pwv = 15
     >>>
     >>> bb_mag = bb_atm.magnitude(bb_temp, i_band, pwv)
-
-
-**Note:** If desired, the absolute magnitude of a black body without
-atmospheric effects can also be achieved by specifying a PWV level of zero.
 
 Estimating Zero Point Error
 ===========================
