@@ -11,7 +11,7 @@ is given by
              {\int S(\lambda) \, d\lambda}
 
 where the integration bounds are defined by the wavelength range of the
-photometric bandpass. In practice an SED of the desired object may not be
+photometric bandpass. In practice, an SED of the desired object may not be
 available. In such a case spectral templates should be used instead.
 
 For demonstration purposes, we consider an observation of a black body. Note

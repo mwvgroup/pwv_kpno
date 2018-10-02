@@ -6,7 +6,7 @@ Correcting observed spectra for PWV effects is achieved in four steps:
 
 #. Use **pwv_kpno** to determine the PWV transmission function corresponding to a given observation
 #. Interpolate the transmission function to match the observed wavelengths
-#. If desired, use a gaussian kernel to smooth the interpolated transmission function
+#. If desired, use a Gaussian kernel to smooth the interpolated transmission function
 #. Divide the observed flux by the modeled transmission
 
 It is important to note that the atmospheric models used by **pwv_kpno** are
@@ -16,8 +16,8 @@ resolution before interpolating to the observed wavelengths. Fortunately,
 **pwv_kpno** makes this process easy.
 
 For demonstration purposes, assume you wish to correct an observation that was
-taken through an airmass of 1.5 on December 15, 2013 at 05:35:00 UTC.
-Furthermore, assume that this observed spectra has a wavelength resolution of
+taken through an airmass of 1.5 on December 15, 2013, at 05:35:00 UTC.
+Furthermore, assume that this observed spectrum has a wavelength resolution of
 16 Angstroms. The binned transmission function corresponding to
 this observation is given by:
 
@@ -41,7 +41,7 @@ this observation is given by:
     >>> transmission = pwv_atm.trans_for_date(obsv_date, 1.5, bins)
 
 We then interpolate the binned transmission for the observed wavelengths and
-use the ``scipy`` package to smooth the transmission function with a gaussian
+use the ``scipy`` package to smooth the transmission function with a Gaussian
 kernel. Here we assume the wavelengths are stored in the array
 ``observed_wavelength_array``.
 

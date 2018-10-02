@@ -44,7 +44,7 @@
         <div class="collapse navbar-collapse nav-collapse">
           <ul class="nav navbar-nav">
             
-                <li><a href="../../documentation/html/install.html">Documentation</a></li>
+                <li><a href="../../documentation/html/overview.html">Documentation</a></li>
                 <li><a href="../../examples/html/correcting_spectra.html">Examples</a></li>
                 <li><a href="../../validation/html/overview.html">Validation</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno/issues/new/choose">Need Help?</a></li>
@@ -88,10 +88,63 @@
 <p>For various reasons, you may wish to apply cuts to the SuomiNet measurements
 used by <strong>pwv_kpno</strong>. The most obvious use case would be to ignore a period of
 time when a SuomiNet weather station was experiencing technical difficulties,
-or if there is some unexplained, unphysical spike in the measurements.
-Following SuomiNet’s naming convention, values that can be cut include PWV
-(<code class="docutils literal notranslate"><span class="pre">PWV</span></code>), the PWV error (<code class="docutils literal notranslate"><span class="pre">PWVerr</span></code>), surface pressure (<code class="docutils literal notranslate"><span class="pre">SrfcPress</span></code>),
-surface temperature (<code class="docutils literal notranslate"><span class="pre">SrfcTemp</span></code>), and relative humidity (<code class="docutils literal notranslate"><span class="pre">SrfcRH</span></code>).</p>
+or if there is some unexplained, unphysical spike in the measurements. For
+convenience, we demonstrate how to visually explore various choices in data cuts.</p>
+<p>Following SuomiNet’s naming convention, values that can be cut include the PWV
+(<code class="docutils literal notranslate"><span class="pre">PWV</span></code>), PWV error (<code class="docutils literal notranslate"><span class="pre">PWVerr</span></code>), surface pressure (<code class="docutils literal notranslate"><span class="pre">SrfcPress</span></code>),
+surface temperature (<code class="docutils literal notranslate"><span class="pre">SrfcTemp</span></code>), and relative humidity (<code class="docutils literal notranslate"><span class="pre">SrfcRH</span></code>).
+The current data cuts can be accessed via the <code class="docutils literal notranslate"><span class="pre">settings</span></code> object.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno.package_settings</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">data_cuts</span><span class="p">)</span>
+
+<span class="go">  {&#39;AZAM&#39;: {&#39;SrfcPress&#39;: [[880, 925]]},</span>
+<span class="go">   &#39;KITT&#39;: {&#39;SrfcPress&#39;: [[775, 1000]], &#39;date&#39;: [[1451606400.0, 1459468800.0]]},</span>
+<span class="go">   &#39;P014&#39;: {&#39;SrfcPress&#39;: [[870, 1000]]},</span>
+<span class="go">   &#39;SA46&#39;: {&#39;SrfcPress&#39;: [[900, 1000]]},</span>
+<span class="go">   &#39;SA48&#39;: {&#39;SrfcPress&#39;: [[910, 1000]]}</span>
+<span class="go">  }</span>
+</pre></div>
+</td></tr></table></div>
+<p>These data cuts can be changed by directly modifying the <code class="docutils literal notranslate"><span class="pre">data_cuts</span></code> attribute. For
+example, if we wanted to ignore measurements taken between two dates, we can specify
+those dates as UTC timestamps and run</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data_cuts</span><span class="p">[</span><span class="s1">&#39;AZAM&#39;</span><span class="p">]</span> <span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">{</span><span class="s1">&#39;SrfcPress&#39;</span><span class="p">:</span> <span class="p">[</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="p">[</span><span class="n">timestamp_start</span><span class="p">,</span> <span class="n">timestamp_end</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span>     <span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>Note that inorder for these changes to take full effect, the PWV model for the primary
+site must be updated. This must be performed even if you are modeling a custom site
+without any supplimental receivers:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">years_to_download</span> <span class="o">=</span> <span class="n">pwv_atm</span><span class="o">.</span><span class="n">downloaded_years</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">update_models</span><span class="p">(</span><span class="n">years_to_download</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>We can visually inspect these cuts by using the <code class="docutils literal notranslate"><span class="pre">get_all_receiver_data</span></code> to retrieve the
+the data with and without the cuts applied and then plotting them as follows:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -143,58 +196,58 @@ surface temperature (<code class="docutils literal notranslate"><span class="pre
 49
 50
 51
-52</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">astropy.table</span> <span class="kn">import</span> <span class="n">setdiff</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
-
-
-<span class="k">def</span> <span class="nf">plot_data_cuts</span><span class="p">(</span><span class="n">receiver_id</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Plots PWV vs Temperature, Pressure, and RH at a given SuomiNet site</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        receiver_id (str): A SuomiNet receiver id code (eg. KITT)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1"># Clear any pre-existing plot data</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
-    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">8.5</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-
-    <span class="c1"># Get SuomiNet data with and without data cuts</span>
-    <span class="n">all_data</span> <span class="o">=</span> <span class="n">pwv_atm</span><span class="o">.</span><span class="n">get_all_site_data</span><span class="p">(</span><span class="n">receiver_id</span><span class="p">,</span> <span class="n">apply_cuts</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-    <span class="n">data_with_cuts</span> <span class="o">=</span> <span class="n">pwv_atm</span><span class="o">.</span><span class="n">get_all_site_data</span><span class="p">(</span><span class="n">receiver_id</span><span class="p">,</span> <span class="n">apply_cuts</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">cut_data</span> <span class="o">=</span> <span class="n">setdiff</span><span class="p">(</span><span class="n">all_data</span><span class="p">,</span> <span class="n">data_with_cuts</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">])</span>
-
-    <span class="c1"># Temperature data</span>
-    <span class="n">axis_label</span> <span class="o">=</span> <span class="s1">&#39;PWV for {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">receiver_id</span><span class="p">)</span>
-    <span class="n">temp_axis</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">temp_axis</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">data_with_cuts</span><span class="p">[</span><span class="s1">&#39;SrfcTemp&#39;</span><span class="p">],</span> <span class="n">data_with_cuts</span><span class="p">[</span><span class="s1">&#39;PWV&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">temp_axis</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">cut_data</span><span class="p">[</span><span class="s1">&#39;SrfcTemp&#39;</span><span class="p">],</span> <span class="n">cut_data</span><span class="p">[</span><span class="s1">&#39;PWV&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">temp_axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;SrfcTemp&#39;</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-    <span class="n">temp_axis</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">axis_label</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-    <span class="n">temp_axis</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
-    <span class="n">temp_axis</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
-
-    <span class="c1"># Pressure data</span>
-    <span class="n">press_axis</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="n">press_axis</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">data_with_cuts</span><span class="p">[</span><span class="s1">&#39;SrfcPress&#39;</span><span class="p">],</span> <span class="n">data_with_cuts</span><span class="p">[</span><span class="s1">&#39;PWV&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">press_axis</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">cut_data</span><span class="p">[</span><span class="s1">&#39;SrfcPress&#39;</span><span class="p">],</span> <span class="n">cut_data</span><span class="p">[</span><span class="s1">&#39;PWV&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">press_axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;SrfcPress&#39;</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-    <span class="n">press_axis</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_ticklabels</span><span class="p">([])</span>
-    <span class="n">press_axis</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">650</span><span class="p">,</span> <span class="mi">850</span><span class="p">)</span>
-    <span class="n">press_axis</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
-
-    <span class="c1"># Relative humidity data</span>
-    <span class="n">rh_axis</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-    <span class="n">rh_axis</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">data_with_cuts</span><span class="p">[</span><span class="s1">&#39;SrfcRH&#39;</span><span class="p">],</span> <span class="n">data_with_cuts</span><span class="p">[</span><span class="s1">&#39;PWV&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">rh_axis</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">cut_data</span><span class="p">[</span><span class="s1">&#39;SrfcRH&#39;</span><span class="p">],</span> <span class="n">cut_data</span><span class="p">[</span><span class="s1">&#39;PWV&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">rh_axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;RH&#39;</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-    <span class="n">rh_axis</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_ticklabels</span><span class="p">([])</span>
-    <span class="n">rh_axis</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-    <span class="n">rh_axis</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
-
-    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
-<span class="n">plot_data_cuts</span><span class="p">(</span><span class="s1">&#39;KITT&#39;</span><span class="p">)</span>
+52</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">astropy.table</span> <span class="kn">import</span> <span class="n">setdiff</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">plot_data_cuts</span><span class="p">(</span><span class="n">receiver_id</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;&quot;&quot;Plots PWV vs Temperature, Pressure, and RH at a given SuomiNet site</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">Args</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">receiver_id</span> <span class="p">(</span><span class="nb">str</span><span class="p">):</span> <span class="n">A</span> <span class="n">SuomiNet</span> <span class="n">receiver</span> <span class="nb">id</span> <span class="n">code</span> <span class="p">(</span><span class="n">eg</span><span class="o">.</span> <span class="n">KITT</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;&quot;&quot;</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># Clear any pre-existing plot data</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">8.5</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># Get SuomiNet data with and without data cuts</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">all_data</span> <span class="o">=</span> <span class="n">pwv_atm</span><span class="o">.</span><span class="n">get_all_receiver_data</span><span class="p">(</span><span class="n">receiver_id</span><span class="p">,</span> <span class="n">apply_cuts</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">data_with_cuts</span> <span class="o">=</span> <span class="n">pwv_atm</span><span class="o">.</span><span class="n">get_all_receiver_data</span><span class="p">(</span><span class="n">receiver_id</span><span class="p">,</span> <span class="n">apply_cuts</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">cut_data</span> <span class="o">=</span> <span class="n">setdiff</span><span class="p">(</span><span class="n">all_data</span><span class="p">,</span> <span class="n">data_with_cuts</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">])</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># Temperature data</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">axis_label</span> <span class="o">=</span> <span class="s1">&#39;PWV for {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">receiver_id</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">temp_axis</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">temp_axis</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">data_with_cuts</span><span class="p">[</span><span class="s1">&#39;SrfcTemp&#39;</span><span class="p">],</span> <span class="n">data_with_cuts</span><span class="p">[</span><span class="s1">&#39;PWV&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">temp_axis</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">cut_data</span><span class="p">[</span><span class="s1">&#39;SrfcTemp&#39;</span><span class="p">],</span> <span class="n">cut_data</span><span class="p">[</span><span class="s1">&#39;PWV&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">temp_axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;SrfcTemp&#39;</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">temp_axis</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">axis_label</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">temp_axis</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">temp_axis</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># Pressure data</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">press_axis</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">press_axis</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">data_with_cuts</span><span class="p">[</span><span class="s1">&#39;SrfcPress&#39;</span><span class="p">],</span> <span class="n">data_with_cuts</span><span class="p">[</span><span class="s1">&#39;PWV&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">press_axis</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">cut_data</span><span class="p">[</span><span class="s1">&#39;SrfcPress&#39;</span><span class="p">],</span> <span class="n">cut_data</span><span class="p">[</span><span class="s1">&#39;PWV&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">press_axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;SrfcPress&#39;</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">press_axis</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_ticklabels</span><span class="p">([])</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">press_axis</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">650</span><span class="p">,</span> <span class="mi">850</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">press_axis</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># Relative humidity data</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">rh_axis</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">rh_axis</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">data_with_cuts</span><span class="p">[</span><span class="s1">&#39;SrfcRH&#39;</span><span class="p">],</span> <span class="n">data_with_cuts</span><span class="p">[</span><span class="s1">&#39;PWV&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">rh_axis</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">cut_data</span><span class="p">[</span><span class="s1">&#39;SrfcRH&#39;</span><span class="p">],</span> <span class="n">cut_data</span><span class="p">[</span><span class="s1">&#39;PWV&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">rh_axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;RH&#39;</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">rh_axis</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_ticklabels</span><span class="p">([])</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">rh_axis</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">rh_axis</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_data_cuts</span><span class="p">(</span><span class="s1">&#39;KITT&#39;</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
 </div>

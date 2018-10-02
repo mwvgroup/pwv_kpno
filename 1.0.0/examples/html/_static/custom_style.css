@@ -1,13 +1,20 @@
+.admonition a.reference {
+    color: rgb(25, 99, 224) !important;
+    padding: 20px 0;
+}
+
 .warning {
     background-color: rgba(244, 247, 23, 0.36);
     color: #000000;
-    margin: 0 20px 0 20px  !important;
+    margin: 15px 20px !important;
+    padding: 10px !important;
 }
 
 .note {
     background-color: rgba(46, 130, 224, 0.36);
     color: #000000;
-    margin: 0 20px 0 20px  !important;
+    margin: 15px 20px !important;
+    padding: 10px !important;
 }
 
 .highlighttable {
@@ -15,7 +22,7 @@
 }
 
 body {
-    color: #444444 !important;
+    color: #444444;
     text-align: justify;
 }
 
@@ -33,26 +40,26 @@ a.reference {
     padding: 20px 0;
 }
 
-/* Controls all inline code plus first line of autodoc */
+/* All inline code plus first line of autodoc */
 code {
-    color: #49759c !important;
-    background-color: #f5f5f5 !important;
+    color: #49759c;
+    background-color: #f5f5f5;
 }
 
-/* Controls first line of autodoc */
+/* First line of autodoc */
 code.descname, code.descclassname {
-    color: #444444 !important;
-    background-color: #f5f5f5 !important;
+    color: #444444;
 }
 
-/* Controls function name in first line of autodoc */
+/* Function name in first line of autodoc */
 code.descclassname + code.descname {
     margin-left: -6px;
     padding-left: 0;
 }
 
+/* Autodoc function documentation sections */
 dl.function {
-    background-color: #f5f5f5 !important;
+    background-color: #f5f5f5;
     padding: 10px;
 }
 
@@ -76,7 +83,6 @@ tbody tr td:first-child {
 
 table.badges td {
   text-align: center !important;
-    border: 0 !important;
 }
 
 .figure.logo {
