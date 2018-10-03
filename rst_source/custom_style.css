@@ -101,7 +101,6 @@ table.home-table td {
     max-width: 80%;
 }
 
-.form-control {
+.form-inline .form-control {
     width: 400px !important;
 }
-
