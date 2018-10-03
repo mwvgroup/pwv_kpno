@@ -101,3 +101,7 @@ table.home-table td {
 .figure.validation-figure {
     max-width: 80%;
 }
+
+.class {
+    background-color: #f5f5f5;
+}
