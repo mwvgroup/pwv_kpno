@@ -85,6 +85,15 @@ table.badges td {
   text-align: center !important;
 }
 
+table.home-table th {
+    text-align: center !important;
+}
+
+table.home-table td {
+    text-align: left !important;
+    border: 0 !important;
+}
+
 .figure.logo {
     max-width: 800px;
 }

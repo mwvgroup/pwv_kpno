@@ -15,7 +15,7 @@ To install the package, please choose from one of the options below.
 
 .. warning:: Reinstalling or updating the **pwv_kpno** package will erase
   any custom sites that you have added to the previous installation.
-  See the `Installing Updates <install.html#installing-updates>`_
+  See the :ref:`install:Installing Updates`
   section to update an existing installation.
 
 Using PIP (Recommended)
@@ -55,7 +55,7 @@ root directory:
 .. code-block:: bash
    :linenos:
 
-    python setup.py install --user
+    $ python setup.py install --user
 
 As in the previous method, any missing dependencies in your Python environment
 should be installed automatically. If you have any issues installing the
@@ -64,6 +64,42 @@ package, first install each dependency individually and then try again.
 Installing Updates
 ==================
 
+Before updating or reinstalling **pwv_kpno**, it is important to back up any user
+defined sites that have been added to the local installation. This can be accomplished
+by running
+
+.. code-block:: python
+   :linenos:
+
+    >>> from pwv_kpno.package_settings import settings
+    >>>
+    >>> sites_to_backup = settings.available_sites
+    >>> general_path = './site_backups/{}.ecsv'
+    >>> for site in sites_to_backup:
+    >>>     settings.set_site(site)
+    >>>     out_path = general_path.format(site)
+    >>>     settings.settings.export_site_config(out_path)
+    >>>
+    >>> quit()
+    
+This will create a directory *site_backups* containing a *.ecsv* format config
+file for each site. The package can then be updated using pip
+
+.. code-block:: bash
+   :linenos:
+   
+   $ pip install pwv_kpno --upgrade
+   
+Finally, the backed up config files can be re-added to the package. Letting
+``config_filepaths`` be a list of the saved config files
+
+.. code-block:: python
+   :linenos:
+
+    >>> from pwv_kpno.package_settings import settings
+    >>>
+    >>> for config_path in config_filepaths:
+    >>>     settings.import_site_config(config_path)
 
 Package Setup
 =============

@@ -32,37 +32,37 @@ the settings for Kitt Peak are as follows:
     :linenos:
 
     >>> print(settings)
-
-                             pwv_kpno Current Site Information
-        ============================================================================
-        Site Name:            kitt_peak
-        Primary Receiver:     KITT
-        Secondary Receivers:
-            AZAM
-            P014
-            SA46
-            SA48
-
-        Available Data:
-            2010
-            2011
-            2012
-            2013
-            2014
-            2015
-            2016
-            2017
-
-                                         Data Cuts
-        ============================================================================
-        Receiver    Value       Type          Lower_Bound          Upper_Bound  unit
-        ----------------------------------------------------------------------------
-        AZAM    SrfcPress  inclusive                  880                  925  mbar
-        KITT    SrfcPress  inclusive                  775                 1000  mbar
-        KITT         date  exclusive  2016-01-01 00:00:00  2016-04-01 00:00:00   UTC
-        P014    SrfcPress  inclusive                  850                 1000  mbar
-        SA46    SrfcPress  inclusive                  900                 1000  mbar
-        SA48    SrfcPress  inclusive                  910                 1000  mbar
+      
+                           pwv_kpno Current Site Information
+      ============================================================================
+      Site Name:            kitt_peak 
+      Primary Receiver:     KITT
+      Secondary Receivers:
+          AZAM
+          P014
+          SA46
+          SA48
+      
+      Years Downloaded from SuomiNet:
+          2010
+          2011
+          2012
+          2013
+          2014
+          2015
+          2016
+          2017
+      
+                                       Data Cuts
+      ============================================================================
+      Reveiver    Value       Type          Lower_Bound          Upper_Bound  unit
+      ----------------------------------------------------------------------------
+      AZAM    SrfcPress  inclusive                  880                  925  mbar
+      KITT    SrfcPress  inclusive                  775                 1000  mbar
+      KITT         date  exclusive  2016-01-01 00:00:00  2016-04-01 00:00:00   UTC
+      P014    SrfcPress  inclusive                  870                 1000  mbar
+      SA46    SrfcPress  inclusive                  900                 1000  mbar
+      SA48    SrfcPress  inclusive                  910                 1000  mbar
 
 Alternatively, individual settings can be accessed, but not modified, using
 attributes.
@@ -167,7 +167,7 @@ convention, values that can be cut include the following:
 +---------------------+------------------+------------------+----------------+
 | Surface Pressure    | ``"SrfcPress"``  | mbar             | Include data   |
 +---------------------+------------------+------------------+----------------+
-| Surface Temperature | ``"SrfcTemp"``   | Kelvin           | Include data   |
+| Surface Temperature | ``"SrfcTemp"``   | Centigrade       | Include data   |
 +---------------------+------------------+------------------+----------------+
 | Relative Humidity   | ``"SrfcRH"``     | %                | Include data   |
 +---------------------+------------------+------------------+----------------+

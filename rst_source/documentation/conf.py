@@ -32,7 +32,7 @@ release = pk_version
 # Specify theme specific settings
 html_theme = 'bootstrap'
 links = [
-    ("Documentation", "../../documentation/html/overview.html", 1),
+    ("Documentation", "../../documentation/html/install.html", 1),
     ("Examples", "../../examples/html/correcting_spectra.html", 1),
     ("Validation", "../../validation/html/overview.html", 1),
     ("Need Help?", "https://github.com/mwvgroup/pwv_kpno/issues/new/choose", 1),
@@ -60,6 +60,7 @@ pages_with_sidebar = [
     'atmospheric_modeling',
     'blackbody_modeling',
     'correcting_observations',
+    'change_log'
 ]
 
 html_sidebars = {page: side_bar_contents for page in pages_with_sidebar}

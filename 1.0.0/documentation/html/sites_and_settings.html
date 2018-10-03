@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>3. Custom Sites and Settings &#8212; pwv_kpno 1.0.0 documentation</title>
+    <title>2. Custom Sites and Settings &#8212; pwv_kpno 1.0.0 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/custom_style.css" />
@@ -19,8 +19,8 @@
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="4. Accessing Site Data" href="accessing_data.html" />
-    <link rel="prev" title="2. Installation and Setup" href="install.html" />
+    <link rel="next" title="3. Accessing Site Data" href="accessing_data.html" />
+    <link rel="prev" title="1. Installation and Setup" href="install.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -45,7 +45,7 @@
         <div class="collapse navbar-collapse nav-collapse">
           <ul class="nav navbar-nav">
             
-                <li><a href="../../documentation/html/overview.html">Documentation</a></li>
+                <li><a href="../../documentation/html/install.html">Documentation</a></li>
                 <li><a href="../../examples/html/correcting_spectra.html">Examples</a></li>
                 <li><a href="../../validation/html/overview.html">Validation</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno/issues/new/choose">Need Help?</a></li>
@@ -75,20 +75,19 @@
   <div class="row">
       <div class="col-md-3">
         <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="overview.html">1. Package Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="install.html">2. Installation and Setup</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">3. Custom Sites and Settings</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#available-sites-and-settings">3.1. Available Sites and Settings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#modeling-a-custom-location">3.2. Modeling a Custom Location</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#custom-transmission-models">3.3. Custom Transmission Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#specifying-data-cuts">3.4. Specifying Data Cuts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#importing-a-new-location">3.5. Importing a New Location</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#exporting-current-settings">3.6. Exporting Current Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">1. Installation and Setup</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2. Custom Sites and Settings</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#available-sites-and-settings">2.1. Available Sites and Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#modeling-a-custom-location">2.2. Modeling a Custom Location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-transmission-models">2.3. Custom Transmission Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#specifying-data-cuts">2.4. Specifying Data Cuts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#importing-a-new-location">2.5. Importing a New Location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#exporting-current-settings">2.6. Exporting Current Settings</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="accessing_data.html">4. Accessing Site Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">5. Modeling the Atmosphere</a></li>
-<li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">6. Modeling a Black Body</a></li>
+<li class="toctree-l1"><a class="reference internal" href="accessing_data.html">3. Accessing Site Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atmospheric_modeling.html">4. Modeling the Atmosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blackbody_modeling.html">5. Modeling a Black Body</a></li>
 </ul>
 
         </div>
@@ -96,14 +95,14 @@
     <div class="col-md-9 content">
       
   <div class="section" id="custom-sites-and-settings">
-<h1>3. Custom Sites and Settings<a class="headerlink" href="#custom-sites-and-settings" title="Permalink to this headline">¶</a></h1>
+<h1>2. Custom Sites and Settings<a class="headerlink" href="#custom-sites-and-settings" title="Permalink to this headline">¶</a></h1>
 <p>The <strong>pwv_kpno</strong> package provides access to models for the atmospheric
 transmission due to PWV at any site within the
 <a class="reference external" href="http://www.suominet.ucar.edu">SuomiNet</a>  GPS network. However, the package
 is configured by default to return models for Kitt Peak National Observatory.
 This page provides instructions on how to retrieve models for additional sites.</p>
 <div class="section" id="available-sites-and-settings">
-<h2>3.1. Available Sites and Settings<a class="headerlink" href="#available-sites-and-settings" title="Permalink to this headline">¶</a></h2>
+<h2>2.1. Available Sites and Settings<a class="headerlink" href="#available-sites-and-settings" title="Permalink to this headline">¶</a></h2>
 <p>A list of sites that are available with a particular install of <strong>pwv_kpno</strong>
 can be retrieved by running</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
@@ -153,36 +152,36 @@ the settings for Kitt Peak are as follows:</p>
 31
 32</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
 
-<span class="go">                         pwv_kpno Current Site Information</span>
-<span class="go">    ============================================================================</span>
-<span class="go">    Site Name:            kitt_peak</span>
-<span class="go">    Primary Receiver:     KITT</span>
-<span class="go">    Secondary Receivers:</span>
-<span class="go">        AZAM</span>
-<span class="go">        P014</span>
-<span class="go">        SA46</span>
-<span class="go">        SA48</span>
+<span class="go">                       pwv_kpno Current Site Information</span>
+<span class="go">  ============================================================================</span>
+<span class="go">  Site Name:            kitt_peak</span>
+<span class="go">  Primary Receiver:     KITT</span>
+<span class="go">  Secondary Receivers:</span>
+<span class="go">      AZAM</span>
+<span class="go">      P014</span>
+<span class="go">      SA46</span>
+<span class="go">      SA48</span>
 
-<span class="go">    Available Data:</span>
-<span class="go">        2010</span>
-<span class="go">        2011</span>
-<span class="go">        2012</span>
-<span class="go">        2013</span>
-<span class="go">        2014</span>
-<span class="go">        2015</span>
-<span class="go">        2016</span>
-<span class="go">        2017</span>
+<span class="go">  Years Downloaded from SuomiNet:</span>
+<span class="go">      2010</span>
+<span class="go">      2011</span>
+<span class="go">      2012</span>
+<span class="go">      2013</span>
+<span class="go">      2014</span>
+<span class="go">      2015</span>
+<span class="go">      2016</span>
+<span class="go">      2017</span>
 
-<span class="go">                                     Data Cuts</span>
-<span class="go">    ============================================================================</span>
-<span class="go">    Receiver    Value       Type          Lower_Bound          Upper_Bound  unit</span>
-<span class="go">    ----------------------------------------------------------------------------</span>
-<span class="go">    AZAM    SrfcPress  inclusive                  880                  925  mbar</span>
-<span class="go">    KITT    SrfcPress  inclusive                  775                 1000  mbar</span>
-<span class="go">    KITT         date  exclusive  2016-01-01 00:00:00  2016-04-01 00:00:00   UTC</span>
-<span class="go">    P014    SrfcPress  inclusive                  850                 1000  mbar</span>
-<span class="go">    SA46    SrfcPress  inclusive                  900                 1000  mbar</span>
-<span class="go">    SA48    SrfcPress  inclusive                  910                 1000  mbar</span>
+<span class="go">                                   Data Cuts</span>
+<span class="go">  ============================================================================</span>
+<span class="go">  Reveiver    Value       Type          Lower_Bound          Upper_Bound  unit</span>
+<span class="go">  ----------------------------------------------------------------------------</span>
+<span class="go">  AZAM    SrfcPress  inclusive                  880                  925  mbar</span>
+<span class="go">  KITT    SrfcPress  inclusive                  775                 1000  mbar</span>
+<span class="go">  KITT         date  exclusive  2016-01-01 00:00:00  2016-04-01 00:00:00   UTC</span>
+<span class="go">  P014    SrfcPress  inclusive                  870                 1000  mbar</span>
+<span class="go">  SA46    SrfcPress  inclusive                  900                 1000  mbar</span>
+<span class="go">  SA48    SrfcPress  inclusive                  910                 1000  mbar</span>
 </pre></div>
 </td></tr></table></div>
 <p>Alternatively, individual settings can be accessed, but not modified, using
@@ -234,7 +233,7 @@ attributes.</p>
 </td></tr></table></div>
 </div>
 <div class="section" id="modeling-a-custom-location">
-<h2>3.2. Modeling a Custom Location<a class="headerlink" href="#modeling-a-custom-location" title="Permalink to this headline">¶</a></h2>
+<h2>2.2. Modeling a Custom Location<a class="headerlink" href="#modeling-a-custom-location" title="Permalink to this headline">¶</a></h2>
 <p>Each site modeled by <strong>pwv_kpno</strong> is defined by a unique configuration file.
 The <code class="docutils literal notranslate"><span class="pre">ConfigBuilder</span></code> class allows users to create customized configuration
 files for any SuomiNet site. As a simple example, we create a new configuration
@@ -365,7 +364,7 @@ receivers near the CTIO and so <code class="docutils literal notranslate"><span 
 empty list (the default value).</p>
 </div>
 <div class="section" id="custom-transmission-models">
-<h2>3.3. Custom Transmission Models<a class="headerlink" href="#custom-transmission-models" title="Permalink to this headline">¶</a></h2>
+<h2>2.3. Custom Transmission Models<a class="headerlink" href="#custom-transmission-models" title="Permalink to this headline">¶</a></h2>
 <p>By default <strong>pwv_kpno</strong> models use MODTRAN estimates for the wavelength dependent
 cross section of H<sub>2</sub>O. from 3,000 to 12,000 Angstroms. The optional
 <code class="docutils literal notranslate"><span class="pre">wavelengths</span></code> and <code class="docutils literal notranslate"><span class="pre">cross_sections</span></code> arguments allow a user to customize
@@ -395,7 +394,7 @@ these cross sections in units of Angstroms and cm<sup>2</sup> respectively.</p>
 </td></tr></table></div>
 </div>
 <div class="section" id="specifying-data-cuts">
-<h2>3.4. Specifying Data Cuts<a class="headerlink" href="#specifying-data-cuts" title="Permalink to this headline">¶</a></h2>
+<h2>2.4. Specifying Data Cuts<a class="headerlink" href="#specifying-data-cuts" title="Permalink to this headline">¶</a></h2>
 <p>If desired, users can specify custom data cuts on SuomiNet data used by the
 package. Data cuts are defined using a 2-dimensional dictionary of boundary
 values. The first key specifies which receiver the data cuts apply to. The
@@ -438,7 +437,7 @@ convention, values that can be cut include the following:</p>
 </tr>
 <tr class="row-even"><td>Surface Temperature</td>
 <td><code class="docutils literal notranslate"><span class="pre">&quot;SrfcTemp&quot;</span></code></td>
-<td>Kelvin</td>
+<td>Centigrade</td>
 <td>Include data</td>
 </tr>
 <tr class="row-odd"><td>Relative Humidity</td>
@@ -489,7 +488,7 @@ need to manually modify the attribute to its previous state.</p>
 </div>
 </div>
 <div class="section" id="importing-a-new-location">
-<h2>3.5. Importing a New Location<a class="headerlink" href="#importing-a-new-location" title="Permalink to this headline">¶</a></h2>
+<h2>2.5. Importing a New Location<a class="headerlink" href="#importing-a-new-location" title="Permalink to this headline">¶</a></h2>
 <p>Once a configuration file has been created, it can be permanently added to the
 locally installed <strong>pwv_kpno</strong> package by running</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
@@ -515,7 +514,7 @@ the standard model for Kitt Peak and the above command will have to be rerun.</p
 </div>
 </div>
 <div class="section" id="exporting-current-settings">
-<h2>3.6. Exporting Current Settings<a class="headerlink" href="#exporting-current-settings" title="Permalink to this headline">¶</a></h2>
+<h2>2.6. Exporting Current Settings<a class="headerlink" href="#exporting-current-settings" title="Permalink to this headline">¶</a></h2>
 <p>The configuration file for the currently modeled location can be exported in
 ecsv format by running:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">settings</span><span class="o">.</span><span class="n">export_site_config</span><span class="p">(</span><span class="s1">&#39;./cerro_tololo.ecsv&#39;</span><span class="p">)</span>
