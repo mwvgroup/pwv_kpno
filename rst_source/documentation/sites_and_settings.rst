@@ -101,8 +101,6 @@ The ``ConfigBuilder`` class allows users to create customized configuration
 files for any SuomiNet site. As a simple example, we create a new configuration
 file for the Cerro Tololo Inter-American Observatory near La Serena, Chile.
 
-.. autoclass:: pwv_kpno.package_settings.ConfigBuilder
-
 .. code-block:: python
     :linenos:
 
