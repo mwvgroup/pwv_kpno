@@ -85,10 +85,23 @@ table.badges td {
   text-align: center !important;
 }
 
+table.home-table th {
+    text-align: center !important;
+}
+
+table.home-table td {
+    text-align: left !important;
+    border: 0 !important;
+}
+
 .figure.logo {
     max-width: 800px;
 }
 
 .figure.validation-figure {
     max-width: 80%;
+}
+
+.class {
+    background-color: #f5f5f5;
 }

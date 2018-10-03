@@ -51,19 +51,11 @@ html_theme_options = {
 # Set default sidebar options
 # These will be overwritten by the custom_toc extension
 side_bar_contents = ['localtoc.html']
-pages_with_sidebar = [
-    'overview',
-    'data_handling',
-    'install',
-    'sites_and_settings',
-    'accessing_data',
-    'atmospheric_modeling',
-    'blackbody_modeling',
-    'correcting_observations',
-    'change_log'
-]
 
-html_sidebars = {page: side_bar_contents for page in pages_with_sidebar}
+html_sidebars = {
+    '**': ['localtoc.html'],
+    'index': [],
+    'search': []}
 
 
 # Add custom css code

@@ -50,7 +50,7 @@ html_theme_options = {
 
 # Set default sidebar options
 # These will be overwritten by the custom_toc extension
-html_sidebars = {'**': ['localtoc.html']}
+html_sidebars = {'**': ['localtoc.html'], 'search': []}
 
 
 # Add custom css code
