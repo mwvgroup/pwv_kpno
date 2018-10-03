@@ -12,7 +12,7 @@ extensions = [
     ]
 
 # Rendering settings
-templates_path = ['../templates']
+templates_path = ['../templates', './local_templates']
 autosectionlabel_prefix_document = True  # Add file name prefix to section labels
 source_suffix = ['.rst']                 # The suffixes of source files
 master_doc = 'index'                     # Document with master table of contents
