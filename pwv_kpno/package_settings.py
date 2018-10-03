@@ -461,7 +461,7 @@ class ConfigBuilder(object):
         cross_sections (ndarray): Array of PWV cross sections in cm^2 (optional)
 
     Methods:
-        save_to_dir : Create a custom config file <site_name>.ecsv
+        save_to_ecsv : Create a custom config file <site_name>.ecsv
     """
 
     def __init__(self, **kwargs):
