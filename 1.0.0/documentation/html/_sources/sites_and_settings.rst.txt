@@ -70,7 +70,7 @@ the settings for Kitt Peak are as follows:
       
                                        Data Cuts
       ============================================================================
-      Reveiver    Value       Type          Lower_Bound          Upper_Bound  unit
+      Receiver    Value       Type          Lower_Bound          Upper_Bound  unit
       ----------------------------------------------------------------------------
       AZAM    SrfcPress  inclusive                  880                  925  mbar
       KITT    SrfcPress  inclusive                  775                 1000  mbar

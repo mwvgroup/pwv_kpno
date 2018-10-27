@@ -48,13 +48,13 @@ To ensure that the PWV data for **pwv_kpno** is up to date run:
       [2017, 2018]
 
     >>> # Re-download a specific year
-    >>> pwv_atm.update_models(2010)
+    >>> pwv_atm.update_models([2010])
 
       [2010]
 
 .. note:: If **pwv_kpno** has been set to model a custom site and no data has
-    already been downloaded from SuomiNet, this function will default to download any
-    available data from 2010 onward.
+  already been downloaded from SuomiNet, this function will default to download
+  any available data from 2010 onward.
 
 
 Measured PWV Data

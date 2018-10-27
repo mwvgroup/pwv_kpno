@@ -34,7 +34,7 @@ those dates as UTC timestamps and run
 .. code-block:: python
     :linenos:
     
-    >>> data_cuts['AZAM'] : 
+    >>> data_cuts['AZAM'] =
     >>>     {'SrfcPress': [
     >>>         [timestamp_start, timestamp_end]
     >>>      ]
