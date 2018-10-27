@@ -72,7 +72,7 @@ import json
 import os
 import shutil
 from datetime import datetime
-from warnings import warn
+from warnings import warn, simplefilter
 
 import numpy as np
 from astropy.table import Table
@@ -86,6 +86,7 @@ __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Release'
 
+simplefilter('always', UserWarning)
 # Sites included with release that cannot be overwritten by the user
 PROTECTED_NAMES = ['kitt_peak']
 
@@ -492,10 +493,10 @@ class ConfigBuilder(object):
         Site names should be lowercase strings.
         """
 
-        if not self.site_name.islower():
-            msg = ('pwv_kpno uses lowercase site names. The site name {} will '
-                   'be saved as {}.')
-            warn(msg.format(self.site_name, self.site_name.lower()))
+        if not value.islower():
+            raise ValueError('pwv_kpno only allows lowercase site names.')
+
+        self._site_name = value
 
     def _warn_id_code(self, id_code):
         """Raise warnings if SuomiNet ID codes are not the correct format
@@ -507,12 +508,15 @@ class ConfigBuilder(object):
             raise TypeError('site_name attribute must be a string.')
 
         if len(id_code) != 4:
-            warn('ID is not of expected length 4: {}'.format(id_code))
+            warn(
+                'ID code {} is not length 4 as expected for'
+                ' SuomiNet IDs.'.format(id_code)
+            )
 
         if not id_code.isupper():
             warn(
-                'SuomiNet ID codes should be uppercase. ID code {} will'
-                ' be saved as {}.'.format(id_code, id_code.upper())
+                'ID code {} is not alphanumeric uppercase as expected '
+                'for SuomiNet IDs.'.format(id_code)
             )
 
     @property
@@ -586,15 +590,10 @@ class ConfigBuilder(object):
         """
 
         config_data = dict()
-        self._warn_data_cuts()
-        config_data['_data_cuts'] = self._data_cuts
-
-        self._warn_site_name()
+        config_data['data_cuts'] = self._data_cuts
         config_data['site_name'] = self.site_name.lower()
-
-        self._warn_id_codes()
-        config_data['primary_rec'] = self.primary_rec.upper()
-        config_data['sup_rec'] = [id_code.upper() for id_code in self.supplement_rec]
+        config_data['primary_rec'] = self.primary_rec
+        config_data['sup_rec'] = self.supplement_rec
         return config_data
 
     def save_to_ecsv(self, out_path, overwrite=False):
