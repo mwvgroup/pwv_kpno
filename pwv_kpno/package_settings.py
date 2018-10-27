@@ -283,11 +283,11 @@ class Settings(object):
         # type () -> dict
         """Returns restrictions on what SuomiNet measurements to include"""
 
-        return self._config_data['data_cuts']
+        return self._config_data['_data_cuts']
 
     @data_cuts.setter
     def data_cuts(self, value):
-        self._config_data['data_cuts'] = value
+        self._config_data['_data_cuts'] = value
         with open(self._config_path, 'r+') as ofile:
             ofile.seek(0)
             json.dump(self._config_data, ofile, indent=4, sort_keys=True)
@@ -465,10 +465,10 @@ class ConfigBuilder(object):
     """
 
     def __init__(self, **kwargs):
-        self.data_cuts = dict()
-        self.site_name = None  # type: str
-        self.primary_rec = None  # type: str
-        self.supplement_rec = []
+        self._site_name = None  # type: str
+        self._primary_rec = None  # type: str
+        self._supplement_rec = []
+        self._data_cuts = dict()
 
         # Get the default MODTRAN cross sections used for Kitt Peak
         settings_obj = Settings()
@@ -477,26 +477,84 @@ class ConfigBuilder(object):
         self.wavelength = atm_cross_section[0]
         self.cross_section = atm_cross_section[1]
 
+        # Assign any passed arguments to attributes
         for key, value in kwargs.items():
             setattr(self, key, value)
 
-    def _raise_unset_attributes(self):
-        """Ensure user has assigned values to required attributes"""
+    @property
+    def site_name(self):
+        return self._site_name
 
-        err_msg = 'Must specify attribute {} before saving.'
-        attrs = ['site_name', 'primary_rec', 'wavelengths', 'cross_sections']
-        for value in attrs:
-            if getattr(self, value) is None:
-                raise ValueError(err_msg.format(value))
+    @site_name.setter
+    def site_name(self, value):
+        """Raise warnings if site_name is not the correct format
 
-    def _warn_data_cuts(self):
+        Site names should be lowercase strings.
+        """
+
+        if not self.site_name.islower():
+            msg = ('pwv_kpno uses lowercase site names. The site name {} will '
+                   'be saved as {}.')
+            warn(msg.format(self.site_name, self.site_name.lower()))
+
+    def _warn_id_code(self, id_code):
+        """Raise warnings if SuomiNet ID codes are not the correct format
+
+        SuomiNet ID codes should be four characters long and uppercase.
+        """
+
+        if not isinstance(id_code, str):
+            raise TypeError('site_name attribute must be a string.')
+
+        if len(id_code) != 4:
+            warn('ID is not of expected length 4: {}'.format(id_code))
+
+        if not id_code.isupper():
+            warn(
+                'SuomiNet ID codes should be uppercase. ID code {} will'
+                ' be saved as {}.'.format(id_code, id_code.upper())
+            )
+
+    @property
+    def primary_rec(self):
+        # type: () -> str
+        return self._primary_rec
+
+    @primary_rec.setter
+    def primary_rec(self, value):
+        self._warn_id_code(value)
+        self._primary_rec = value
+
+    @property
+    def supplement_rec(self):
+        # type: () -> list
+        return self._supplement_rec
+
+    @supplement_rec.setter
+    def supplement_rec(self, value):
+        for id_code in value:
+            self._warn_id_code(id_code)
+
+        self._supplement_rec = value
+
+    @property
+    def data_cuts(self):
+        return self._data_cuts
+
+    @data_cuts.setter
+    def data_cuts(self, value):
         """Raise warnings if data cuts are not the correct format
 
         Data cuts should be of the form:
             {cut param: [[lower bound, upper bound], ...], ...}
         """
 
-        for dictionary in self.data_cuts.values():
+        if not isinstance(value, dict):
+            raise TypeError('Data cuts must be specified as a dict object')
+
+        self._data_cuts = value
+
+        for dictionary in self._data_cuts.values():
             for key, value in dictionary.items():
                 if key not in CUT_PARAMS:
                     warn(
@@ -511,35 +569,14 @@ class ConfigBuilder(object):
                         ' are not a two dimensional array'.format(key)
                     )
 
-    def _warn_site_name(self):
-        """Raise warnings if site_name is not the correct format
+    def _raise_unset_attributes(self):
+        """Ensure user has assigned values to required attributes"""
 
-        Site names should be lowercase strings.
-        """
-
-        if not self.site_name.islower():
-            warn(
-                'pwv_kpno uses lowercase site names. The site name {} will be'
-                ' saved as {}.'.format(self.site_name, self.site_name.lower())
-            )
-
-    def _warn_id_codes(self):
-        """Raise warnings if SuomiNet ID codes are not the correct format
-
-        SuomiNet ID codes should be four characters long and uppercase.
-        """
-
-        all_id_codes = self.supplement_rec.copy()
-        all_id_codes.append(self.primary_rec)
-        for id_code in all_id_codes:
-            if len(id_code) != 4:
-                warn('ID is not of expected length 4: {}'.format(id_code))
-
-            if not id_code.isupper():
-                warn(
-                    'SuomiNet ID codes should be uppercase. ID code {} will'
-                    ' be saved as {}.'.format(id_code, id_code.upper())
-                )
+        err_msg = 'Must specify attribute {} before saving.'
+        attrs = ['site_name', 'primary_rec']
+        for value in attrs:
+            if getattr(self, value) is None:
+                raise ValueError(err_msg.format(value))
 
     def _create_config_dict(self):
         """Create a dictionary with config data for this site
@@ -550,7 +587,7 @@ class ConfigBuilder(object):
 
         config_data = dict()
         self._warn_data_cuts()
-        config_data['data_cuts'] = self.data_cuts
+        config_data['_data_cuts'] = self._data_cuts
 
         self._warn_site_name()
         config_data['site_name'] = self.site_name.lower()
