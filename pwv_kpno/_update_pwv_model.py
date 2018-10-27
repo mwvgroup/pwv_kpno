@@ -138,10 +138,10 @@ def _create_new_pwv_model(debug=False):
     site's supplementary receivers to its primary receiver (one per off site
     receiver). Use these polynomials to supplement PWV measurements taken by
     the primary receiver times when it is unavailable. Write the supplemented
-    PWV data to a csv file at settings._pwv_model_path.
+    PWV data to a csv file at settings._pwv_modeled_path.
     """
 
-    pwv_data = Table.read(settings._pwv_measred_path)
+    pwv_data = Table.read(settings._pwv_measured_path)
     if not settings.supplement_rec:
         return pwv_data
 
@@ -164,7 +164,7 @@ def _create_new_pwv_model(debug=False):
     if debug:
         return out
 
-    out.write(settings._pwv_model_path, overwrite=True)
+    out.write(settings._pwv_modeled_path, overwrite=True)
 
 
 def _get_years_to_download(years=None):

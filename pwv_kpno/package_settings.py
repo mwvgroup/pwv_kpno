@@ -184,11 +184,11 @@ class Settings(object):
         return self._config_path_unf.format(self.site_name)
 
     @property
-    def _pwv_model_path(self):
+    def _pwv_modeled_path(self):
         return os.path.join(self._loc_dir, 'modeled_pwv.csv')
 
     @property
-    def _pwv_measred_path(self):
+    def _pwv_measured_path(self):
         return os.path.join(self._loc_dir, 'measured_pwv.csv')
 
     @property
@@ -243,7 +243,7 @@ class Settings(object):
         """
 
         try:
-            timestamp_column = Table.read(self._pwv_measred_path)['date']
+            timestamp_column = Table.read(self._pwv_measured_path)['date']
             get_year = lambda t_stamp: datetime.utcfromtimestamp(t_stamp).year
             get_year_vec = np.vectorize(get_year)
             return np.unique(get_year_vec(timestamp_column))
@@ -377,7 +377,7 @@ class Settings(object):
             "{}\n"
             "                                 Data Cuts\n"
             "============================================================================\n"
-            "Reveiver    Value       Type          Lower_Bound          Upper_Bound  unit\n"
+            "Receiver    Value       Type          Lower_Bound          Upper_Bound  unit\n"
             "----------------------------------------------------------------------------"
         )
 

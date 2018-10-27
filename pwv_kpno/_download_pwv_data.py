@@ -164,7 +164,7 @@ def _download_data_for_site(year, site_id, timeout=None):
     day_path = os.path.join(settings._suomi_dir, '{0}dy_{1}.plt')
     day_url = 'https://www.suominet.ucar.edu/data/staYrDay/{0}pp_{1}.plt'
 
-    # Conus hourly data releases:
+    # CONUS hourly data releases:
     hour_path = os.path.join(settings._suomi_dir, '{0}hr_{1}.plt')
     hour_url = 'https://www.suominet.ucar.edu/data/staYrHr/{0}nrt_{1}.plt'
 
@@ -241,8 +241,8 @@ def _get_local_data():
     Data is returned for the current site set in the package settings
     """
 
-    if os.path.exists(settings._pwv_measred_path):
-        return Table.read(settings._pwv_measred_path)
+    if os.path.exists(settings._pwv_measured_path):
+        return Table.read(settings._pwv_measured_path)
 
     else:
         col_names = ['date']
@@ -281,7 +281,7 @@ def update_local_data(year, timeout=None):
         updated_data = unique(stacked_tables, keys=['date'], keep='last')
 
         # Update local files
-        updated_data.write(settings._pwv_measred_path, overwrite=True)
+        updated_data.write(settings._pwv_measured_path, overwrite=True)
         return True
 
     else:

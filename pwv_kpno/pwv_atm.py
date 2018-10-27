@@ -185,7 +185,7 @@ def _pwv_date(date, airmass=1., test_model=None):
     """
 
     if test_model is None:
-        pwv_model = Table.read(settings._pwv_model_path)
+        pwv_model = Table.read(settings._pwv_modeled_path)
 
     else:
         pwv_model = test_model
@@ -353,7 +353,7 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
         col_order.append(receiver + '_err')
 
     data = _get_pwv_data_table(
-        settings._pwv_measred_path, year, month, day, hour
+        settings._pwv_measured_path, year, month, day, hour
     )
 
     return data[col_order]
@@ -377,7 +377,7 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
         An astropy table of modeled PWV values in mm
     """
 
-    return _get_pwv_data_table(settings._pwv_model_path,
+    return _get_pwv_data_table(settings._pwv_modeled_path,
                                year, month, day, hour)
 
 
@@ -391,7 +391,7 @@ def _calc_transmission(atm_model, pwv, bins=None, ignore_lim=False):
         atm_model  (Table): Atmospheric model
         pwv        (float): A PWV concentration in mm
         bins (int or list): Integer number of bins or sequence of bin edges
-        ignore_lim  (bool): Whether to ignore errors for nagative PWV values
+        ignore_lim  (bool): Whether to ignore errors for negative PWV values
 
     Returns:
         A table with wavelengths, transmission, and optional transmission error
