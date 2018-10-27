@@ -267,7 +267,7 @@ class Settings(object):
         """A list of all GPS receivers associated with the current site"""
 
         # list used instead of .copy for python 2.7 compatibility
-        rec_list = list(self._config_data['sup_rec'])
+        rec_list = list(self._config_data['supplement_rec'])
         rec_list.append(self._config_data['primary_rec'])
         return sorted(rec_list)
 
@@ -276,7 +276,7 @@ class Settings(object):
         # type () -> list[str]
         """A list of all supplementary GPS receivers for the current site"""
 
-        return sorted(self._config_data['sup_rec'])
+        return sorted(self._config_data['supplement_rec'])
 
     @site_property
     def data_cuts(self):
@@ -456,9 +456,9 @@ class ConfigBuilder(object):
         data_cuts         (dict): Specifies cuts for SuomiNet data
         site_name          (str): Desired name of the custom site
         primary_rec        (str): SuomiNet ID code for the primary GPS receiver
-        sup_recs          (list): List of id codes for supplemental receivers
-        wavelengths    (ndarray): Array of wavelengths in Angstroms (optional)
-        cross_sections (ndarray): Array of PWV cross sections in cm^2 (optional)
+        supplement_rec    (list): List of id codes for supplemental receivers
+        wavelength     (ndarray): Array of wavelengths in Angstroms (optional)
+        cross_section  (ndarray): Array of PWV cross sections in cm^2 (optional)
 
     Methods:
         save_to_ecsv : Create a custom config file <site_name>.ecsv
@@ -468,7 +468,7 @@ class ConfigBuilder(object):
         self.data_cuts = dict()
         self.site_name = None  # type: str
         self.primary_rec = None  # type: str
-        self.sup_rec = []
+        self.supplement_rec = []
 
         # Get the default MODTRAN cross sections used for Kitt Peak
         settings_obj = Settings()
@@ -529,7 +529,7 @@ class ConfigBuilder(object):
         SuomiNet ID codes should be four characters long and uppercase.
         """
 
-        all_id_codes = self.sup_rec.copy()
+        all_id_codes = self.supplement_rec.copy()
         all_id_codes.append(self.primary_rec)
         for id_code in all_id_codes:
             if len(id_code) != 4:
@@ -557,7 +557,7 @@ class ConfigBuilder(object):
 
         self._warn_id_codes()
         config_data['primary_rec'] = self.primary_rec.upper()
-        config_data['sup_rec'] = [id_code.upper() for id_code in self.sup_rec]
+        config_data['sup_rec'] = [id_code.upper() for id_code in self.supplement_rec]
         return config_data
 
     def save_to_ecsv(self, out_path, overwrite=False):
