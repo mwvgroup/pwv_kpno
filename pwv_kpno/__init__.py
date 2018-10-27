@@ -70,4 +70,6 @@ __status__ = 'Release'
 
 from .package_settings import settings as _settings
 
+from .package_settings import settings as _settings
+
 _settings.set_site('kitt_peak')
