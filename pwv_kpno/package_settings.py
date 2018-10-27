@@ -284,11 +284,11 @@ class Settings(object):
         # type () -> dict
         """Returns restrictions on what SuomiNet measurements to include"""
 
-        return self._config_data['_data_cuts']
+        return self._config_data['data_cuts']
 
     @data_cuts.setter
     def data_cuts(self, value):
-        self._config_data['_data_cuts'] = value
+        self._config_data['data_cuts'] = value
         with open(self._config_path, 'r+') as ofile:
             ofile.seek(0)
             json.dump(self._config_data, ofile, indent=4, sort_keys=True)
@@ -593,7 +593,7 @@ class ConfigBuilder(object):
         config_data['data_cuts'] = self._data_cuts
         config_data['site_name'] = self.site_name.lower()
         config_data['primary_rec'] = self.primary_rec
-        config_data['sup_rec'] = self.supplement_rec
+        config_data['supplement_rec'] = self.supplement_rec
         return config_data
 
     def save_to_ecsv(self, out_path, overwrite=False):
