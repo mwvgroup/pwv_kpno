@@ -104,11 +104,11 @@ def magnitude(temp, band, pwv):
     as a top-hat function ranging from the first value in the array to the
     last. If it is two dimensional then the first dimension is treated as
     wavelength values and the second as the response function for the given
-    band. All wavelengths values are expected in Angstroms
+    band. All wavelengths values are expected in Angstroms.
 
     Args:
         temp (float): The temperature of the black body in Kelvin
-        band (tuple): A array specifying a photometric bandpass
+        band (tuple): An array specifying a photometric bandpass
         pwv  (float): The PWV concentration along line of sight in mm
 
     Returns:
@@ -150,8 +150,7 @@ def zp_bias(ref_temp, cal_temp, band, pwv):
         ref_temp (float): The temperature of the star used to calibrate the
                             image in Kelvin
         cal_temp (float): The temperature of another star in the same image
-        band     (tuple): A tuple with the beginning and end wavelengths of a
-                            photometric band in Angstroms
+        band     (tuple): An array specifying a photometric bandpass
         pwv      (float): The PWV concentration along line of sight in mm
 
     Returns:
