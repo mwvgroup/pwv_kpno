@@ -6,7 +6,8 @@ The **pwv_kpno** package provides access to models for the atmospheric
 transmission due to PWV at any site within the
 `SuomiNet <http://www.suominet.ucar.edu>`_  GPS network. However, the package
 is configured by default to return models for Kitt Peak National Observatory.
-This page provides instructions on how to retrieve models for additional sites.
+This page provides instructions on how to add and retrieve models for
+additional sites.
 
 Available Sites and Settings
 ============================
@@ -24,7 +25,21 @@ can be retrieved by running
 
 The returned list will contain the default location ``'kitt_peak'`` in
 addition to any custom locations that have been installed on your current
-machine. A complete summary of package settings for the current site being
+machine. The package can be configured to model a particular location by
+running
+
+.. code-block:: python
+    :linenos:
+
+    >>> settings.set_site('cerro_tololo')
+
+After setting pwv_kpno to a model a specific site, the package will return
+atmospheric models and PWV data exclusively for that site. It is important to
+note that this setting is not persistent. When pwv_kpno is first imported into
+a new environment the package will always default to using the standard model
+for Kitt Peak, and the above command will have to be rerun.
+
+A complete summary of package settings for the current site being
 modeled can be accessed by printing the ``settings`` object. For example,
 the settings for Kitt Peak are as follows:
 
@@ -64,8 +79,8 @@ the settings for Kitt Peak are as follows:
       SA46    SrfcPress  inclusive                  900                 1000  mbar
       SA48    SrfcPress  inclusive                  910                 1000  mbar
 
-Alternatively, individual settings can be accessed, but not modified, using
-attributes.
+Alternatively, individual settings can be accessed individually using
+attributes. Of these settings,
 
 .. code-block:: python
     :linenos:
@@ -81,7 +96,7 @@ attributes.
 
         ['AZAM', 'KITT', 'P014', 'SA46', 'SA48']
 
-    >>> # The ID code for the GPS receiver that
+    >>> # The ID code for the primary GPS receiver which
     >>> # directly measures PWV for the current site
     >>> print(settings.primary_rec)
 
@@ -93,7 +108,18 @@ attributes.
 
         ['AZAM', 'P014', 'SA46', 'SA48']
 
-Modeling a Custom Location
+    >>> # Cuts applied to data downloaded from SuomiNet
+    >>> print(settings.data_cuts)
+
+        {
+        'AZAM': {'SrfcPress': [[880, 925]]},
+        'KITT': {'SrfcPress': [[775, 1000]], 'date': [[1451606400.0, 1459468800.0]]},
+        'P014': {'SrfcPress': [[870, 1000]]},
+        'SA46': {'SrfcPress': [[900, 1000]]},
+        'SA48': {'SrfcPress': [[910, 1000]]}
+         }
+
+Defining a Custom Location
 ==========================
 
 Each site modeled by **pwv_kpno** is defined by a unique configuration file.
@@ -125,7 +151,7 @@ empty list (the default value).
 Custom Transmission Models
 ==========================
 
-By default **pwv_kpno** models use MODTRAN estimates for the wavelength dependent
+By default, **pwv_kpno** models use MODTRAN estimates for the wavelength dependent
 cross section of H\ :sub:`2`\ O. from 3,000 to 12,000 Angstroms. The optional
 ``wavelengths`` and ``cross_sections`` arguments allow a user to customize
 these cross sections in units of Angstroms and cm\ :sup:`2` respectively.
@@ -196,12 +222,13 @@ Data cuts can also be modified for the current site being modeled via the
     >>> settings.data_cuts['CTIO']['Date'].append([timestamp_start, timestamp_start])
 
 .. note:: A fully worked out example on how to choose and visualize your chosen data cuts
-    is available in the `Examples <../../examples/html/data_cuts.html>`_ section.
+    is available in the `Examples section<../../examples/html/data_cuts.html>`_.
 
 
-.. warning:: Any modifications to the data cuts for a given site cannot be
-  automatically undone. To undo any changes to ``settings.data_cuts`` you will
-  need to manually modify the attribute to its previous state.
+.. warning:: Any modifications to the data cuts for a given site are persistent
+  and cannot be automatically undone. To undo any changes to
+  ``settings.data_cuts`` you will need to manually modify the attribute to
+  its previous state.
 
 Importing a New Location
 ========================

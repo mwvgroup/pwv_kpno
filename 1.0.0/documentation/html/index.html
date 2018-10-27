@@ -45,7 +45,7 @@
           <ul class="nav navbar-nav">
             
                 <li><a href="../../documentation/html/install.html">Documentation</a></li>
-                <li><a href="../../examples/html/correcting_spectra.html">Examples</a></li>
+                <li><a href="../../examples/html/correcting_photometry.html">Examples</a></li>
                 <li><a href="../../validation/html/overview.html">Validation</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno/issues/new/choose">Need Help?</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno">Source Code</a></li>
@@ -93,13 +93,15 @@
 </div>
 <div class="section" id="what-is-pwv-kpno">
 <h1>What is pwv_kpno?<a class="headerlink" href="#what-is-pwv-kpno" title="Permalink to this headline">¶</a></h1>
-<p><strong>pwv_kpno</strong> is a science focused Python package that provides access to
-models for the atmospheric absorption due to H<sub>2</sub>O. The strength of
-H<sub>2</sub>O absorption features are strongly correlated with measurements
-of localized PWV column density. By measuring the delay of dual-band GPS signals
-traveling through the atmosphere, it is possible to determine the PWV column
-density along line of sight. <strong>pwv_kpno</strong> leverages this principle to provide
-atmospheric models for user definable sites as a function of date, time, and airmass.</p>
+<p><strong>pwv_kpno</strong> is a scientific Python package that provides models for the
+atmospheric transmission due to precipitable water vapor (PWV) at user
+specified sites. By measuring the delay of dual-band GPS signals traveling
+through the atmosphere, it is possible to determine the PWV column density
+along the line of sight. <strong>pwv_kpno</strong> leverages this principle to provide
+atmospheric models for user definable sites as a function of date,
+time, and airmass. Using the package, ground-based photometric observations
+taken between 3,000 and 12,000 Å can be easily corrected for atmospheric
+effects due to PWV.</p>
 </div>
 <div class="section" id="how-it-works">
 <h1>How it Works<a class="headerlink" href="#how-it-works" title="Permalink to this headline">¶</a></h1>
@@ -111,8 +113,7 @@ By default, the package provides access to the modeled transmission
 function at Kitt Peak National Observatory. However, the package is designed
 to be easily extensible to other locations within the SuomiNet Network.
 Additionally, <strong>pwv_kpno</strong> provides access to atmospheric models as a function
-of PWV, which is independent of geographical location. Default atmospheric models
-are provided from 3,000 to 12,000 Angstroms at a resolution of 0.05 Angstroms.</p>
+of PWV, which is independent of geographical location.</p>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
@@ -129,7 +130,7 @@ are provided from 3,000 to 12,000 Angstroms at a resolution of 0.05 Angstroms.</
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td rowspan="3"><p class="first"><em>pwv_kpno</em> is open source software released under the GNU General Public
+<tr class="row-even"><td rowspan="4"><p class="first"><em>pwv_kpno</em> is open source software released under the GNU General Public
 License. Issues raised on <a class="reference external" href="https://github.com/mwvgroup/pwv_kpno">GitHub</a> and
 pull requests from contributors are welcome. Additionally, pull requests
 introducing dafault configuration files for new sites are also welcome.</p>
@@ -139,7 +140,7 @@ you please cite
 If the publisher allows, you can also include a footnote with a link pointing
 to this documentation page.</p>
 </td>
-<td rowspan="3"><p class="first">This work is based in part on observations taken at Kitt Peak National
+<td rowspan="4"><p class="first">This work is based in part on observations taken at Kitt Peak National
 Observatory, National Optical Astronomy Observatory (NOAO Prop. IDs: 2011B-0482
 and 2012B-0500; PI: Wood-Vasey), which is operated by the Association of
 Universities for Research in Astronomy (AURA) under a cooperative agreement
@@ -147,13 +148,16 @@ with the National Science Foundation.</p>
 <p class="last">This work was supported in part by the US Department of Energy Office of
 Science under DE-SC0007914.</p>
 </td>
-<td>1. An up time monitor for the SuomiNet web server can be found
+<td>1. The official <strong>pwv_kpno</strong> paper is available on
+<a class="reference external" href="https://arxiv.org/abs/1806.09701">Arxiv.org</a>.</td>
+</tr>
+<tr class="row-odd"><td>2. An up time monitor for the SuomiNet web server can be found
 <a class="reference external" href="https://stats.uptimerobot.com/gn1xqsJvj/780552028">here</a>.</td>
 </tr>
-<tr class="row-odd"><td>2. To learn more about the SuomiNet project, see
+<tr class="row-even"><td>3. To learn more about the SuomiNet project, see
 <a class="reference external" href="http://www.suominet.ucar.edu/overview.html">suominet.ucar.edu</a>.</td>
 </tr>
-<tr class="row-even"><td>3. For an additional example on the correlation between GPS signals and
+<tr class="row-odd"><td>4. For an additional example on the correlation between GPS signals and
 atmospheric modeling, see <a class="reference external" href="https://arxiv.org/abs/1109.6703">Blake and Shaw, 2011</a>.</td>
 </tr>
 </tbody>

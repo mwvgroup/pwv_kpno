@@ -46,7 +46,7 @@
           <ul class="nav navbar-nav">
             
                 <li><a href="../../documentation/html/install.html">Documentation</a></li>
-                <li><a href="../../examples/html/correcting_spectra.html">Examples</a></li>
+                <li><a href="../../examples/html/correcting_photometry.html">Examples</a></li>
                 <li><a href="../../validation/html/overview.html">Validation</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno/issues/new/choose">Need Help?</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno">Source Code</a></li>
@@ -226,8 +226,8 @@ is given by:</p>
 <span class="go">         ...            ...</span>
 </pre></div>
 </td></tr></table></div>
-<p>Note that the <cite>trans_for_pwv</cite> method will only return the error in the modeled
-transmission if the <cite>pwv_err</cite> argument is specified:</p>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">trans_for_pwv</span></code> method will only return the error in the modeled
+transmission if the <code class="docutils literal notranslate"><span class="pre">pwv_err</span></code> argument is specified:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -252,13 +252,13 @@ transmission if the <cite>pwv_err</cite> argument is specified:</p>
 </div>
 <div class="section" id="binning-the-transmission">
 <h2>4.3. Binning the Transmission<a class="headerlink" href="#binning-the-transmission" title="Permalink to this headline">¶</a></h2>
-<p>Both the <cite>trans_for_date</cite> and the <cite>trans_for_pwv</cite> functions provide support
-for binning the returned transmission function via the <cite>bins</cite> argument. The
+<p>Both the <code class="docutils literal notranslate"><span class="pre">trans_for_date</span></code> and the <code class="docutils literal notranslate"><span class="pre">trans_for_pwv</span></code> functions provide support
+for binning the returned transmission function via the <code class="docutils literal notranslate"><span class="pre">bins</span></code> argument. The
 returned transmission in each bin is calculated as:</p>
 <div class="math notranslate nohighlight">
 \[T = \frac{1}{\lambda_1 - \lambda_0} \int_{\lambda_0}^{\lambda_1} T(\lambda) \, d\lambda\]</div>
-<p>If the <cite>bins</cite> argument is an integer, it defines the number of equal-width bins
-to use. If <cite>bins</cite> is a sequence, it defines the bin edges, including the
+<p>If the <code class="docutils literal notranslate"><span class="pre">bins</span></code> argument is an integer, it defines the number of equal-width bins
+to use. If <code class="docutils literal notranslate"><span class="pre">bins</span></code> is a sequence, it defines the bin edges, including the
 rightmost edge, allowing for non-uniform bin widths. Wavelengths in the
 returned transmission function mark the leftmost edge of each bin. For
 example:</p>

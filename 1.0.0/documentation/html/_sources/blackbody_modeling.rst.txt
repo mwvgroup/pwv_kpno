@@ -9,13 +9,12 @@ Generating an SED
 =================
 
 For a given array of wavelengths in Angstroms, the ``sed`` function returns
-the corresponding spectral energy distribution (SED) of a black body as seen through
-the atmosphere.
+the corresponding spectral energy distribution (SED) of a black body as seen
+through the atmosphere.
 
 .. autofunction:: pwv_kpno.blackbody_with_atm.sed
 
-Here we demonstrate how to find the SED of a black body between 7,000 and
-10,000 Angstroms:
+Here we find the SED of a black body between 7,000 and 10,000 Angstroms:
 
 .. code-block:: python
     :linenos:

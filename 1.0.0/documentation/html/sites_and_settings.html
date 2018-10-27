@@ -46,7 +46,7 @@
           <ul class="nav navbar-nav">
             
                 <li><a href="../../documentation/html/install.html">Documentation</a></li>
-                <li><a href="../../examples/html/correcting_spectra.html">Examples</a></li>
+                <li><a href="../../examples/html/correcting_photometry.html">Examples</a></li>
                 <li><a href="../../validation/html/overview.html">Validation</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno/issues/new/choose">Need Help?</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno">Source Code</a></li>
@@ -78,7 +78,7 @@
 <li class="toctree-l1"><a class="reference internal" href="install.html">1. Installation and Setup</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">2. Custom Sites and Settings</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#available-sites-and-settings">2.1. Available Sites and Settings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#modeling-a-custom-location">2.2. Modeling a Custom Location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-a-custom-location">2.2. Defining a Custom Location</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#custom-transmission-models">2.3. Custom Transmission Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#specifying-data-cuts">2.4. Specifying Data Cuts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#importing-a-new-location">2.5. Importing a New Location</a></li>
@@ -100,7 +100,8 @@
 transmission due to PWV at any site within the
 <a class="reference external" href="http://www.suominet.ucar.edu">SuomiNet</a>  GPS network. However, the package
 is configured by default to return models for Kitt Peak National Observatory.
-This page provides instructions on how to retrieve models for additional sites.</p>
+This page provides instructions on how to add and retrieve models for
+additional sites.</p>
 <div class="section" id="available-sites-and-settings">
 <h2>2.1. Available Sites and Settings<a class="headerlink" href="#available-sites-and-settings" title="Permalink to this headline">¶</a></h2>
 <p>A list of sites that are available with a particular install of <strong>pwv_kpno</strong>
@@ -116,7 +117,17 @@ can be retrieved by running</p>
 </td></tr></table></div>
 <p>The returned list will contain the default location <code class="docutils literal notranslate"><span class="pre">'kitt_peak'</span></code> in
 addition to any custom locations that have been installed on your current
-machine. A complete summary of package settings for the current site being
+machine. The package can be configured to model a particular location by
+running</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">settings</span><span class="o">.</span><span class="n">set_site</span><span class="p">(</span><span class="s1">&#39;cerro_tololo&#39;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>After setting pwv_kpno to a model a specific site, the package will return
+atmospheric models and PWV data exclusively for that site. It is important to
+note that this setting is not persistent. When pwv_kpno is first imported into
+a new environment the package will always default to using the standard model
+for Kitt Peak, and the above command will have to be rerun.</p>
+<p>A complete summary of package settings for the current site being
 modeled can be accessed by printing the <code class="docutils literal notranslate"><span class="pre">settings</span></code> object. For example,
 the settings for Kitt Peak are as follows:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
@@ -184,8 +195,8 @@ the settings for Kitt Peak are as follows:</p>
 <span class="go">  SA48    SrfcPress  inclusive                  910                 1000  mbar</span>
 </pre></div>
 </td></tr></table></div>
-<p>Alternatively, individual settings can be accessed, but not modified, using
-attributes.</p>
+<p>Alternatively, individual settings can be accessed individually using
+attributes. Of these settings,</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -207,7 +218,18 @@ attributes.</p>
 19
 20
 21
-22</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># The unique name for the current site being modeled</span>
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># The unique name for the current site being modeled</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">site_name</span><span class="p">)</span>
 
 <span class="go">    kitt_peak</span>
@@ -218,7 +240,7 @@ attributes.</p>
 
 <span class="go">    [&#39;AZAM&#39;, &#39;KITT&#39;, &#39;P014&#39;, &#39;SA46&#39;, &#39;SA48&#39;]</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># The ID code for the GPS receiver that</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># The ID code for the primary GPS receiver which</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># directly measures PWV for the current site</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">primary_rec</span><span class="p">)</span>
 
@@ -229,11 +251,22 @@ attributes.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">supplement_rec</span><span class="p">)</span>
 
 <span class="go">    [&#39;AZAM&#39;, &#39;P014&#39;, &#39;SA46&#39;, &#39;SA48&#39;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Cuts applied to data downloaded from SuomiNet</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">data_cuts</span><span class="p">)</span>
+
+<span class="go">    {</span>
+<span class="go">    &#39;AZAM&#39;: {&#39;SrfcPress&#39;: [[880, 925]]},</span>
+<span class="go">    &#39;KITT&#39;: {&#39;SrfcPress&#39;: [[775, 1000]], &#39;date&#39;: [[1451606400.0, 1459468800.0]]},</span>
+<span class="go">    &#39;P014&#39;: {&#39;SrfcPress&#39;: [[870, 1000]]},</span>
+<span class="go">    &#39;SA46&#39;: {&#39;SrfcPress&#39;: [[900, 1000]]},</span>
+<span class="go">    &#39;SA48&#39;: {&#39;SrfcPress&#39;: [[910, 1000]]}</span>
+<span class="go">     }</span>
 </pre></div>
 </td></tr></table></div>
 </div>
-<div class="section" id="modeling-a-custom-location">
-<h2>2.2. Modeling a Custom Location<a class="headerlink" href="#modeling-a-custom-location" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="defining-a-custom-location">
+<h2>2.2. Defining a Custom Location<a class="headerlink" href="#defining-a-custom-location" title="Permalink to this headline">¶</a></h2>
 <p>Each site modeled by <strong>pwv_kpno</strong> is defined by a unique configuration file.
 The <code class="docutils literal notranslate"><span class="pre">ConfigBuilder</span></code> class allows users to create customized configuration
 files for any SuomiNet site. As a simple example, we create a new configuration
@@ -267,7 +300,7 @@ empty list (the default value).</p>
 </div>
 <div class="section" id="custom-transmission-models">
 <h2>2.3. Custom Transmission Models<a class="headerlink" href="#custom-transmission-models" title="Permalink to this headline">¶</a></h2>
-<p>By default <strong>pwv_kpno</strong> models use MODTRAN estimates for the wavelength dependent
+<p>By default, <strong>pwv_kpno</strong> models use MODTRAN estimates for the wavelength dependent
 cross section of H<sub>2</sub>O. from 3,000 to 12,000 Angstroms. The optional
 <code class="docutils literal notranslate"><span class="pre">wavelengths</span></code> and <code class="docutils literal notranslate"><span class="pre">cross_sections</span></code> arguments allow a user to customize
 these cross sections in units of Angstroms and cm<sup>2</sup> respectively.</p>
@@ -380,13 +413,14 @@ two dates we could ignore these measurements by specifying:</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">A fully worked out example on how to choose and visualize your chosen data cuts
-is available in the <a class="reference external" href="../../examples/html/data_cuts.html">Examples</a> section.</p>
+is available in the <a href="#id1"><span class="problematic" id="id2">`Examples section&lt;../../examples/html/data_cuts.html&gt;`_</span></a>.</p>
 </div>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">Any modifications to the data cuts for a given site cannot be
-automatically undone. To undo any changes to <code class="docutils literal notranslate"><span class="pre">settings.data_cuts</span></code> you will
-need to manually modify the attribute to its previous state.</p>
+<p class="last">Any modifications to the data cuts for a given site are persistent
+and cannot be automatically undone. To undo any changes to
+<code class="docutils literal notranslate"><span class="pre">settings.data_cuts</span></code> you will need to manually modify the attribute to
+its previous state.</p>
 </div>
 </div>
 <div class="section" id="importing-a-new-location">

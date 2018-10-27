@@ -45,7 +45,7 @@
           <ul class="nav navbar-nav">
             
                 <li><a href="../../documentation/html/install.html">Documentation</a></li>
-                <li><a href="../../examples/html/correcting_spectra.html">Examples</a></li>
+                <li><a href="../../examples/html/correcting_photometry.html">Examples</a></li>
                 <li><a href="../../validation/html/overview.html">Validation</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno/issues/new/choose">Need Help?</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno">Source Code</a></li>
@@ -97,8 +97,8 @@ of PWV absorption on a black body. We suggest importing this module as <code cla
 <div class="section" id="generating-an-sed">
 <h2>5.1. Generating an SED<a class="headerlink" href="#generating-an-sed" title="Permalink to this headline">¶</a></h2>
 <p>For a given array of wavelengths in Angstroms, the <code class="docutils literal notranslate"><span class="pre">sed</span></code> function returns
-the corresponding spectral energy distribution (SED) of a black body as seen through
-the atmosphere.</p>
+the corresponding spectral energy distribution (SED) of a black body as seen
+through the atmosphere.</p>
 <dl class="function">
 <dt id="pwv_kpno.blackbody_with_atm.sed">
 <code class="descclassname">pwv_kpno.blackbody_with_atm.</code><code class="descname">sed</code><span class="sig-paren">(</span><em>temp</em>, <em>wavelengths</em>, <em>pwv</em>, <em>bins=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pwv_kpno/blackbody_with_atm.html#sed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pwv_kpno.blackbody_with_atm.sed" title="Permalink to this definition">¶</a></dt>
@@ -124,8 +124,7 @@ used to smooth atmospheric transmission</li>
 </table>
 </dd></dl>
 
-<p>Here we demonstrate how to find the SED of a black body between 7,000 and
-10,000 Angstroms:</p>
+<p>Here we find the SED of a black body between 7,000 and 10,000 Angstroms:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -157,14 +156,14 @@ argument is a 1d array of wavelengths, then the photometric band is treated
 as a top-hat function ranging from the first value in the array to the
 last. If it is two dimensional then the first dimension is treated as
 wavelength values and the second as the response function for the given
-band. All wavelengths values are expected in Angstroms</p>
+band. All wavelengths values are expected in Angstroms.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>temp</strong> (<em>float</em>) – The temperature of the black body in Kelvin</li>
-<li><strong>band</strong> (<em>tuple</em>) – A array specifying a photometric bandpass</li>
+<li><strong>band</strong> (<em>tuple</em>) – An array specifying a photometric bandpass</li>
 <li><strong>pwv</strong> (<em>float</em>) – The PWV concentration along line of sight in mm</li>
 </ul>
 </td>
@@ -242,8 +241,7 @@ point of 3631 Jy.</p>
 <li><strong>ref_temp</strong> (<em>float</em>) – The temperature of the star used to calibrate the
 image in Kelvin</li>
 <li><strong>cal_temp</strong> (<em>float</em>) – The temperature of another star in the same image</li>
-<li><strong>band</strong> (<em>tuple</em>) – A tuple with the beginning and end wavelengths of a
-photometric band in Angstroms</li>
+<li><strong>band</strong> (<em>tuple</em>) – An array specifying a photometric bandpass</li>
 <li><strong>pwv</strong> (<em>float</em>) – The PWV concentration along line of sight in mm</li>
 </ul>
 </td>

@@ -9,8 +9,8 @@ or if there is some unexplained, unphysical spike in the measurements. For
 convenience, we demonstrate how to visually explore various choices in data cuts. 
 
 Following SuomiNet’s naming convention, values that can be cut include the PWV
-(``PWV``), PWV error (``PWVerr``), surface pressure (``SrfcPress``),
-surface temperature (``SrfcTemp``), and relative humidity (``SrfcRH``).
+(``'PWV'``), PWV error (``'PWVerr'``), surface pressure (``'SrfcPress'``),
+surface temperature (``'SrfcTemp'``), and relative humidity (``'SrfcRH'``).
 The current data cuts can be accessed via the ``settings`` object.
 
 .. code-block:: python

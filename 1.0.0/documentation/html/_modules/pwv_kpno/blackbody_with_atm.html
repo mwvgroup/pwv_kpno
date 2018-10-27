@@ -44,7 +44,7 @@
           <ul class="nav navbar-nav">
             
                 <li><a href="../../../../documentation/html/install.html">Documentation</a></li>
-                <li><a href="../../../../examples/html/correcting_spectra.html">Examples</a></li>
+                <li><a href="../../../../examples/html/correcting_photometry.html">Examples</a></li>
                 <li><a href="../../../../validation/html/overview.html">Validation</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno/issues/new/choose">Need Help?</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno">Source Code</a></li>
@@ -191,11 +191,11 @@
 <span class="sd">    as a top-hat function ranging from the first value in the array to the</span>
 <span class="sd">    last. If it is two dimensional then the first dimension is treated as</span>
 <span class="sd">    wavelength values and the second as the response function for the given</span>
-<span class="sd">    band. All wavelengths values are expected in Angstroms</span>
+<span class="sd">    band. All wavelengths values are expected in Angstroms.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        temp (float): The temperature of the black body in Kelvin</span>
-<span class="sd">        band (tuple): A array specifying a photometric bandpass</span>
+<span class="sd">        band (tuple): An array specifying a photometric bandpass</span>
 <span class="sd">        pwv  (float): The PWV concentration along line of sight in mm</span>
 
 <span class="sd">    Returns:</span>
@@ -237,8 +237,7 @@
 <span class="sd">        ref_temp (float): The temperature of the star used to calibrate the</span>
 <span class="sd">                            image in Kelvin</span>
 <span class="sd">        cal_temp (float): The temperature of another star in the same image</span>
-<span class="sd">        band     (tuple): A tuple with the beginning and end wavelengths of a</span>
-<span class="sd">                            photometric band in Angstroms</span>
+<span class="sd">        band     (tuple): An array specifying a photometric bandpass</span>
 <span class="sd">        pwv      (float): The PWV concentration along line of sight in mm</span>
 
 <span class="sd">    Returns:</span>

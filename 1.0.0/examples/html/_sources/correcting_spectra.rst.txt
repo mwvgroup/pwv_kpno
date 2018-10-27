@@ -2,6 +2,12 @@
 Correcting Spectrographic Observations
 **************************************
 
+Although **pwv_kpno** is primarily designed for correcting photometric
+observations, it can also be used to correct spectra. However, it
+strongly recommended to read the
+`Validation section <../../validation/html/transmission_function.html#comparison-to-observations>`_
+first.
+
 Correcting observed spectra for PWV effects is achieved in four steps:
 
 #. Use **pwv_kpno** to determine the PWV transmission function corresponding to a given observation
@@ -17,9 +23,7 @@ resolution before interpolating to the observed wavelengths. Fortunately,
 
 For demonstration purposes, assume you wish to correct an observation that was
 taken through an airmass of 1.5 on December 15, 2013, at 05:35:00 UTC.
-Furthermore, assume that this observed spectrum has a wavelength resolution of
-16 Angstroms. The binned transmission function corresponding to
-this observation is given by:
+The binned transmission function corresponding to this observation is given by:
 
 .. code-block:: python
     :linenos:
@@ -28,7 +32,7 @@ this observation is given by:
     >>> from pwv_kpno import pwv_atm
     >>>
     >>> # Meta-data about the observation to be corrected
-    >>> spectral_resolution = 16
+    >>> bin_resolution = 16
     >>> obsv_date = datetime(year=2013,
     >>>                      month=12,
     >>>                      day=15,
@@ -37,7 +41,7 @@ this observation is given by:
     >>>                      tzinfo=pytz.utc)
     >>>
     >>> # Determine the binned transmission function
-    >>> bins = np.arange(3000, 12000, spectral_resolution)
+    >>> bins = np.arange(3000, 12000, bin_resolution)
     >>> transmission = pwv_atm.trans_for_date(obsv_date, 1.5, bins)
 
 We then interpolate the binned transmission for the observed wavelengths and

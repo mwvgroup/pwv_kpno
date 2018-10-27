@@ -46,7 +46,7 @@
           <ul class="nav navbar-nav">
             
                 <li><a href="../../documentation/html/install.html">Documentation</a></li>
-                <li><a href="../../examples/html/correcting_spectra.html">Examples</a></li>
+                <li><a href="../../examples/html/correcting_photometry.html">Examples</a></li>
                 <li><a href="../../validation/html/overview.html">Validation</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno/issues/new/choose">Need Help?</a></li>
                 <li><a href="https://github.com/mwvgroup/pwv_kpno">Source Code</a></li>
@@ -121,17 +121,9 @@ recommended method for installing <strong>pwv_kpno</strong>. To install with pip
 </td></tr></table></div>
 <p>The pip package manager will automatically install any missing dependencies
 in your Python environment. If you have any issues installing the package,
-try installing each dependency individually and then reinstall <strong>pwv_kpno</strong>.
+try installing the dependency manually and then reinstall <strong>pwv_kpno</strong>.
 Dependencies can be installed with pip by running:</p>
-<div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5</pre></div></td><td class="code"><div class="highlight"><pre><span></span> $ pip install numpy
- $ pip install astropy
- $ pip install requests
- $ pip install pytz
- $ pip install scipy
+<div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span> $ pip install -r requirements.txt
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -146,14 +138,14 @@ root directory:</p>
 </td></tr></table></div>
 <p>As in the previous method, any missing dependencies in your Python environment
 should be installed automatically. If you have any issues installing the
-package, first install each dependency individually and then try again.</p>
+package, install each dependency from <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> and then try again.</p>
 </div>
 </div>
 <div class="section" id="installing-updates">
 <h2>1.2. Installing Updates<a class="headerlink" href="#installing-updates" title="Permalink to this headline">¶</a></h2>
-<p>Before updating or reinstalling <strong>pwv_kpno</strong>, it is important to back up any user
-defined sites that have been added to the local installation. This can be accomplished
-by running</p>
+<p>Before updating or reinstalling <strong>pwv_kpno</strong>, it is important to back up any
+user defined sites that have been added to the local installation. This can be
+accomplished by running</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -175,8 +167,8 @@ by running</p>
  <span class="o">&gt;&gt;&gt;</span> <span class="n">quit</span><span class="p">()</span>
 </pre></div>
 </td></tr></table></div>
-<p>This will create a directory <em>site_backups</em> containing a <em>.ecsv</em> format config
-file for each site. The package can then be updated using pip</p>
+<p>This will create a directory <code class="docutils literal notranslate"><span class="pre">site_backups/</span></code> containing a .ecsv format
+config file for each site. The package can then be updated using pip</p>
 <div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span>$ pip install pwv_kpno --upgrade
 </pre></div>
 </td></tr></table></div>
@@ -194,12 +186,12 @@ file for each site. The package can then be updated using pip</p>
 </div>
 <div class="section" id="package-setup">
 <h2>1.3. Package Setup<a class="headerlink" href="#package-setup" title="Permalink to this headline">¶</a></h2>
-<p>In order to model the PWV transmission function for specific site and date, GPS
-data for that date must be available on your machine. By default, each release
-of <strong>pwv_kpno</strong> contains all public SuomiNet data for Kitt Peak National Observatory
-from 2010 through the end of 2017. It is recommended to update the local
-SuomiNet data for KPNO after installing or updating the package, and
-periodically as necessary.</p>
+<p>In order to model the PWV transmission function for a specific site and date,
+GPS data for that date must be available on your machine. By default, each
+release of <strong>pwv_kpno</strong> contains all public SuomiNet data for Kitt Peak
+National Observatory from 2010 through the end of 2017. It is recommended to
+update the local SuomiNet data for KPNO after installing or updating the
+package, and periodically as necessary.</p>
 <p>To download any new SuomiNet data use the <code class="docutils literal notranslate"><span class="pre">update_models</span></code> function:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>

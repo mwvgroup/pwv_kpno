@@ -2,6 +2,6 @@
     :hidden:
     :numbered:
 
-    correcting_spectra
     correcting_photometry
+    correcting_spectra
     data_cuts

@@ -71,8 +71,8 @@ is given by:
          3000.10 0.999999922774
              ...            ...
 
-Note that the `trans_for_pwv` method will only return the error in the modeled
-transmission if the `pwv_err` argument is specified:
+Note that the ``trans_for_pwv`` method will only return the error in the modeled
+transmission if the ``pwv_err`` argument is specified:
 
 .. code-block:: python
     :linenos:
@@ -91,15 +91,15 @@ transmission if the `pwv_err` argument is specified:
 Binning the Transmission
 ========================
 
-Both the `trans_for_date` and the `trans_for_pwv` functions provide support
-for binning the returned transmission function via the `bins` argument. The
+Both the ``trans_for_date`` and the ``trans_for_pwv`` functions provide support
+for binning the returned transmission function via the ``bins`` argument. The
 returned transmission in each bin is calculated as:
 
 .. math::
    T = \frac{1}{\lambda_1 - \lambda_0} \int_{\lambda_0}^{\lambda_1} T(\lambda) \, d\lambda
 
-If the `bins` argument is an integer, it defines the number of equal-width bins
-to use. If `bins` is a sequence, it defines the bin edges, including the
+If the ``bins`` argument is an integer, it defines the number of equal-width bins
+to use. If ``bins`` is a sequence, it defines the bin edges, including the
 rightmost edge, allowing for non-uniform bin widths. Wavelengths in the
 returned transmission function mark the leftmost edge of each bin. For
 example:

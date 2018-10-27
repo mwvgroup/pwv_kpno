@@ -31,17 +31,13 @@ recommended method for installing **pwv_kpno**. To install with pip, run:
 
 The pip package manager will automatically install any missing dependencies
 in your Python environment. If you have any issues installing the package,
-try installing each dependency individually and then reinstall **pwv_kpno**.
+try installing the dependency manually and then reinstall **pwv_kpno**.
 Dependencies can be installed with pip by running:
 
 .. code-block:: bash
    :linenos:
 
-    $ pip install numpy
-    $ pip install astropy
-    $ pip install requests
-    $ pip install pytz
-    $ pip install scipy
+    $ pip install -r requirements.txt
 
 
 Using setup.py
@@ -59,14 +55,14 @@ root directory:
 
 As in the previous method, any missing dependencies in your Python environment
 should be installed automatically. If you have any issues installing the
-package, first install each dependency individually and then try again.
+package, install each dependency from ``requirements.txt`` and then try again.
 
 Installing Updates
 ==================
 
-Before updating or reinstalling **pwv_kpno**, it is important to back up any user
-defined sites that have been added to the local installation. This can be accomplished
-by running
+Before updating or reinstalling **pwv_kpno**, it is important to back up any
+user defined sites that have been added to the local installation. This can be
+accomplished by running
 
 .. code-block:: python
    :linenos:
@@ -82,8 +78,8 @@ by running
     >>>
     >>> quit()
     
-This will create a directory *site_backups* containing a *.ecsv* format config
-file for each site. The package can then be updated using pip
+This will create a directory ``site_backups/`` containing a .ecsv format
+config file for each site. The package can then be updated using pip
 
 .. code-block:: bash
    :linenos:
@@ -104,12 +100,12 @@ Finally, the backed up config files can be re-added to the package. Letting
 Package Setup
 =============
 
-In order to model the PWV transmission function for specific site and date, GPS
-data for that date must be available on your machine. By default, each release
-of **pwv_kpno** contains all public SuomiNet data for Kitt Peak National Observatory
-from 2010 through the end of 2017. It is recommended to update the local
-SuomiNet data for KPNO after installing or updating the package, and
-periodically as necessary.
+In order to model the PWV transmission function for a specific site and date,
+GPS data for that date must be available on your machine. By default, each
+release of **pwv_kpno** contains all public SuomiNet data for Kitt Peak
+National Observatory from 2010 through the end of 2017. It is recommended to
+update the local SuomiNet data for KPNO after installing or updating the
+package, and periodically as necessary.
 
 To download any new SuomiNet data use the ``update_models`` function:
 
