@@ -127,17 +127,19 @@ def _read_file(path, apply_cuts=True, pwv_only=True):
                          dtype=[float for _ in names])
 
     data = Table(data)
-    if apply_cuts:
-        data = _apply_data_cuts(data, site_id)
-
-    if pwv_only:
-        data = data['date', site_id, site_id + '_err']
-
     if data:
         data = unique(data, keys='date', keep='none')
         year = int(path[-8: -4])
         to_timestamp_vectorized = np.vectorize(_suomi_date_to_timestamp)
         data['date'] = to_timestamp_vectorized(year, data['date'])
+
+    if apply_cuts:
+        # Important: _apply_data_cuts expects column 'date' to have already
+        # been converted from the suominet format to timestamps
+        data = _apply_data_cuts(data, site_id)
+
+    if pwv_only:
+        data = data['date', site_id, site_id + '_err']
 
     return data
 
