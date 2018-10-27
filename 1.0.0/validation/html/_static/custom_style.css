@@ -4,6 +4,10 @@ body {
     text-align: justify;
 }
 
+h1, h2, h3, h4{
+    text-align: left;
+}
+
 .bs-sidenav {
     text-align: left;
     margin-top: 50px;
