@@ -410,10 +410,22 @@ two dates we could ignore these measurements by specifying:</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">settings</span><span class="o">.</span><span class="n">data_cuts</span><span class="p">[</span><span class="s1">&#39;CTIO&#39;</span><span class="p">][</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">timestamp_start</span><span class="p">,</span> <span class="n">timestamp_start</span><span class="p">])</span>
 </pre></div>
 </td></tr></table></div>
+<p>Note that in order for these changes to take full effect, the PWV model for the
+primary site must be updated. This must be performed even if you are modeling a
+custom site without any supplemental receivers:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwv_kpno</span> <span class="kn">import</span> <span class="n">pwv_atm</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">years_to_download</span> <span class="o">=</span> <span class="n">pwv_atm</span><span class="o">.</span><span class="n">downloaded_years</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pwv_atm</span><span class="o">.</span><span class="n">update_models</span><span class="p">(</span><span class="n">years_to_download</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">A fully worked out example on how to choose and visualize your chosen data cuts
-is available in the <a href="#id1"><span class="problematic" id="id2">`Examples section&lt;../../examples/html/data_cuts.html&gt;`_</span></a>.</p>
+<p class="last">A fully worked out example on how to choose and visualize your chosen
+data cuts is available in the <a href="#id1"><span class="problematic" id="id2">`Examples section&lt;../../examples/html/data_cuts.html&gt;`_</span></a>.</p>
 </div>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>

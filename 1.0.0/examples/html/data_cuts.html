@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>3. Customizing Data Cuts &#8212; pwv_kpno 1.0.0 documentation</title>
+    <title>3. Visualizing Data Cuts &#8212; pwv_kpno 1.0.0 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/custom_style.css" />
@@ -76,15 +76,15 @@
         <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="correcting_photometry.html">1. Correcting Photometric Observations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="correcting_spectra.html">2. Correcting Spectrographic Observations</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">3. Customizing Data Cuts</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3. Visualizing Data Cuts</a></li>
 </ul>
 
         </div>
       </div>
     <div class="col-md-9 content">
       
-  <div class="section" id="customizing-data-cuts">
-<h1>3. Customizing Data Cuts<a class="headerlink" href="#customizing-data-cuts" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="visualizing-data-cuts">
+<h1>3. Visualizing Data Cuts<a class="headerlink" href="#visualizing-data-cuts" title="Permalink to this headline">¶</a></h1>
 <p>For various reasons, you may wish to apply cuts to the SuomiNet measurements
 used by <strong>pwv_kpno</strong>. The most obvious use case would be to ignore a period of
 time when a SuomiNet weather station was experiencing technical difficulties,
@@ -131,9 +131,9 @@ those dates as UTC timestamps and run</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">}</span>
 </pre></div>
 </td></tr></table></div>
-<p>Note that inorder for these changes to take full effect, the PWV model for the primary
+<p>Note that in order for these changes to take full effect, the PWV model for the primary
 site must be updated. This must be performed even if you are modeling a custom site
-without any supplimental receivers:</p>
+without any supplemental receivers:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3

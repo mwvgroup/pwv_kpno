@@ -1,5 +1,5 @@
 *********************
-Customizing Data Cuts
+Visualizing Data Cuts
 *********************
 
 For various reasons, you may wish to apply cuts to the SuomiNet measurements
@@ -41,9 +41,9 @@ those dates as UTC timestamps and run
     >>>     }
     >>> } 
     
-Note that inorder for these changes to take full effect, the PWV model for the primary
+Note that in order for these changes to take full effect, the PWV model for the primary
 site must be updated. This must be performed even if you are modeling a custom site
-without any supplimental receivers:
+without any supplemental receivers:
 
 .. code-block:: python
     :linenos:

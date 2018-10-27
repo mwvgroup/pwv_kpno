@@ -221,8 +221,20 @@ Data cuts can also be modified for the current site being modeled via the
     >>> from pwv_kpno.package_settings import settings
     >>> settings.data_cuts['CTIO']['Date'].append([timestamp_start, timestamp_start])
 
-.. note:: A fully worked out example on how to choose and visualize your chosen data cuts
-    is available in the `Examples section<../../examples/html/data_cuts.html>`_.
+Note that in order for these changes to take full effect, the PWV model for the
+primary site must be updated. This must be performed even if you are modeling a
+custom site without any supplemental receivers:
+
+.. code-block:: python
+    :linenos:
+
+    >>> from pwv_kpno import pwv_atm
+    >>>
+    >>> years_to_download = pwv_atm.downloaded_years()
+    >>> pwv_atm.update_models(years_to_download)
+
+.. note:: A fully worked out example on how to choose and visualize your chosen
+  data cuts is available in the `Examples section<../../examples/html/data_cuts.html>`_.
 
 
 .. warning:: Any modifications to the data cuts for a given site are persistent
