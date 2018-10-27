@@ -82,7 +82,8 @@ def _linear_regression(x, y, sx, sy):
     applied_fit = m * x + b
     applied_fit.mask = np.logical_or(x.mask, applied_fit <= 0)
 
-    error = np.minimum(1 + 0.1 * x, 3)
+    std = np.ma.std(y[indices] - m * x[indices] - b)
+    error = np.ma.zeros(applied_fit.shape) + std
     error.mask = applied_fit.mask
 
     return applied_fit, error
