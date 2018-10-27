@@ -16,10 +16,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno. If not, see <http://www.gnu.org/licenses/>.
 
-"""This file tests that SuomiNet data is downloaded and parsed correctly.
-
-Primary tested modules:
-    pwv_kpno._download_pwv_data
+"""This file tests the pwv_kpno._download_pwv_data module to ensure SuomiNet
+data is downloaded and parsed correctly.
 """
 
 import os
@@ -30,10 +28,10 @@ from unittest import TestCase, skipIf
 import requests
 from pytz import utc
 
-from pwv_kpno import _settings
 from pwv_kpno._download_pwv_data import _download_data_for_year
 from pwv_kpno._download_pwv_data import _read_file
 from pwv_kpno._download_pwv_data import _suomi_date_to_timestamp
+from pwv_kpno.package_settings import settings
 from pwv_kpno.pwv_atm import _timestamp
 
 __authors__ = ['Daniel Perrefort']
@@ -41,7 +39,7 @@ __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Development'
+__status__ = 'Release'
 
 try:
     with warnings.catch_warnings():
@@ -149,7 +147,7 @@ class SuomiNetFileParsing(TestCase):
         cls.azam_hr_path = 'AZAMhr_2015.plt'
         cls.p014_dy_path = 'P014dy_2012.plt'
 
-        data_dir = _settings._suomi_dir
+        data_dir = settings._suomi_dir
         cls.kitt_hr_data = _read_file(os.path.join(data_dir, cls.kitt_hr_path))
         cls.kitt_dy_data = _read_file(os.path.join(data_dir, cls.kitt_dy_path))
         cls.azam_hr_data = _read_file(os.path.join(data_dir, cls.azam_hr_path))
@@ -196,5 +194,5 @@ class SuomiNetFileParsing(TestCase):
         to have a different number of columns from the second half of the year.
         """
 
-        hr_path = os.path.join(_settings._suomi_dir, 'SA48dy_2010.plt')
+        hr_path = os.path.join(settings._suomi_dir, 'SA48dy_2010.plt')
         _read_file(hr_path)

@@ -16,11 +16,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with  If not, see <http://www.gnu.org/licenses/>.
 
-"""This file provides tests for the creation of atmospheric models using
-
-Primary tested modules:
-    pwv_kpno.atm_model module.
-"""
+"""This file provides tests for the pwv_kpno.atm_model module."""
 
 from unittest import TestCase
 
@@ -34,38 +30,61 @@ __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Development'
+__status__ = 'Release'
 
 
-# Todo: add docstring
+def calc_conv_factor(cross_section):
+    """Return the conversion factor from PWV to optical depth in units of 1/mm
+
+    Args:
+        cross_section (float): H2O cross section in units of cm^2
+
+    Returns:
+        The conversion factor from pwv to optical depth
+    """
+
+    mock_model = create_pwv_atm_model(
+        mod_lambda=[0],  # Dummy value
+        mod_cs=[cross_section],
+        out_lambda=[0]  # Dummy value
+    )
+
+    return mock_model['1/mm'][0]
+
+
 class CreatePWVModel(TestCase):
     """Tests for pwv_kpno.atm_model.create_pwv_atm_model"""
 
-    def setUp(self):
-        """Create a model for conversion from mm of PWV to atm cross section"""
+    def test_cross_section_eq_zero(self):
+        """Check the The conversion factor for a cross section of zero should be zero"""
 
-        self.mock_cross_sections = np.array([0, .5, 1])
-        self.mock_lambda_in = np.array([0, 5, 10])
-        self.mock_lambda_out = np.array([0, 2.5, 5, 7.5, 10])
+        returned_conv_factor = calc_conv_factor(0)
+        self.assertEqual(returned_conv_factor, 0)
 
-        self.mock_model = create_pwv_atm_model(
-            self.mock_lambda_in,
-            self.mock_cross_sections,
-            self.mock_lambda_out
-        )
+    def test_cross_section_eq_one(self):
+        """The conversion factor for a cross section of zero should be zero"""
 
-    def test_zero_cross_section(self):
-        self.assertEqual(self.mock_model['1/mm_cm_2'][0], 0)
+        expected_conv_factor = _calc_num_density_conversion()
+        returned_conv_factor = calc_conv_factor(1)
+        self.assertEqual(returned_conv_factor, expected_conv_factor)
 
-    def test_cs_equal_one(self):
-        conv_factor = _calc_num_density_conversion()
-        self.assertEqual(self.mock_model['1/mm_cm_2'][-1], conv_factor)
+    def test_cross_section_negative(self):
+        """A negative cross section should raise a value error"""
+
+        self.assertRaises(ValueError, calc_conv_factor, -1)
 
     def test_returned_wavelengths(self):
-        eq = np.array_equal(self.mock_model['wavelength'],
-                            self.mock_lambda_out)
+        """Returned wavelengths should match the out_lambda argument"""
 
-        self.assertTrue(eq)
+        mock_cross_sections = np.array([0, .5, 1])
+        mock_lambda_in = np.array([0, 5, 10])
+        mock_lambda_out = np.array([0, 2.5, 5, 7.5, 10])
 
-    def test_interpolation(self):
-        pass
+        mock_model = create_pwv_atm_model(
+            mod_lambda=mock_lambda_in,
+            mod_cs=mock_cross_sections,
+            out_lambda=mock_lambda_out
+        )
+
+        arr_equals = np.array_equal(mock_model['wavelength'], mock_lambda_out)
+        self.assertTrue(arr_equals)

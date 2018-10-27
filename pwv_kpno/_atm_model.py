@@ -21,6 +21,8 @@ integrated PWV column density to integrated H2O number density. It is based on
 work done by Azalee Bostroem.
 """
 
+from typing import Union
+
 import numpy as np
 import scipy.interpolate as interpolate
 from astropy.table import Table
@@ -31,14 +33,14 @@ __credits__ = ['Azalee Bostroem']
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.com'
-__status__ = 'Development'
+__status__ = 'Release'
 
 
 def _calc_num_density_conversion():
-    """Calculate conversion factor from PWV to integrated number density
+    """Calculate conversion factor from PWV * cross section to optical depth
 
     Returns:
-        The conversion factor from PWV to number density in 1 / (mm * cm^2)
+        The conversion factor in units of 1 / (mm * cm^2)
     """
 
     n_a = 6.02214129E23       # 1 / mol (Avogadro's constant)
@@ -53,8 +55,8 @@ def _calc_num_density_conversion():
 
 
 def create_pwv_atm_model(mod_lambda, mod_cs, out_lambda):
-    # type: (np.ndarray, np.ndarray, np.ndarray) -> Table
-    """Creates a table of conversion factors from PWV to number density
+    # type: (Union[list, np.ndarray], Union[list, np.ndarray], Union[list, np.ndarray]) -> Table
+    """Creates a table of conversion factors from PWV to optical depth
 
     Expects input and output wavelengths to be in same units. Expects modeled
     cross sections to be in cm^2.
@@ -65,18 +67,24 @@ def create_pwv_atm_model(mod_lambda, mod_cs, out_lambda):
         out_lambda (ndarray): Array of desired output wavelengths
 
     Returns:
-        A table with columns 'wavelength' and '1/mm_cm_2'
+        A table with columns 'wavelength' and '1/mm'
     """
 
+    mod_cs = np.array(mod_cs)
+    if (mod_cs < 0).any():
+        raise ValueError('Cross sections cannot be negative.')
+
     if np.array_equal(mod_lambda, out_lambda):
-        out_cs = mod_cs
+        out_cs = mod_cs  # This function requires ndarray behavior
 
     else:
         interp_cs = interpolate.interp1d(mod_lambda, mod_cs)
         out_cs = interp_cs(out_lambda)
 
     pwv_num_density = out_cs * _calc_num_density_conversion()
-    out_table = Table([out_lambda, pwv_num_density],
-                      names=['wavelength', '1/mm_cm_2'])
+    out_table = Table(
+        data=[out_lambda, pwv_num_density],
+        names=['wavelength', '1/mm']
+    )
 
     return out_table

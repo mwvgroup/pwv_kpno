@@ -16,11 +16,37 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
-"""pwv_kpno provides models for the atmospheric transmission function at Kitt
-Peak National Observatory due to precipitable water vapor. Models cover
-wavelengths from 7,000 to 11,000 Angstroms for years 2010 onward. Documentation
-is available online at https://mwvgroup.github.io/pwv_kpno/ or through the
-standard python help function.
+"""pwv_kpno provides models for the atmospheric transmission function due to
+precipitable water vapor (PWV). Using PWV measurements published
+by the SuomiNet project (https://www.suominet.ucar.edu), this package is
+capable of returning the modeled PWV transmission for a given date, time, and
+airmass at customizable geographic locations. By default, this functionality
+is set to model Kitt Peak National Observatory. Default models cover
+wavelengths from 3,000 to 12,000 Angstroms at a resolution of 0.05 Angstroms.
+
+For more information on using this package, documentation is available online
+at https://mwvgroup.github.io/pwv_kpno/ or through the standard python help
+function.
+
+An incomplete guide to getting started:
+
+    To model the effects of PWV absorption on a black body, see the
+    documentation for the `blackbody_with_atm` module:
+
+      >>> from pwv_kpno import blackbody_with_atm as bb_atm
+
+
+    To model the atmospheric transmission function, either for a known PWV
+    concentration or for a datetime at a particular location, see the `pw_atm`
+    module:
+
+      >>> from pwv_kpno import pwv_atm
+
+
+    To configure this package to model a custom geographical site, and to
+    modify other package settings, see the `package_settings` module:
+
+      >>> from pwv_kpno import package_settings
 """
 
 from . import blackbody_with_atm
@@ -29,13 +55,20 @@ from . import pwv_atm
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
-__credits__ = ['Michael Wood-Vasey', 'Azalee Bostroem',
-               'Jessica Kroboth', 'Alexander Afanasyev']
+__credits__ = [
+    'W. M. Wood-Vasey',
+    'K.Azalee Bostroem',
+    'Jessica Kroboth',
+    'Tom Matheson',
+    'Alexander Afanasyev',
+]
 
 __license__ = 'GPL V3'
-__version__ = '0.12.1'
+__version__ = '1.0.0'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Development'
+__status__ = 'Release'
+
+from .package_settings import settings as _settings
 
 from .package_settings import settings as _settings
 

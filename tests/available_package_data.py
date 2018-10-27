@@ -19,6 +19,8 @@
 """This file tests that the necessary SuomiNet data files are available within
 the package, and that the config file accurately represents what data is
 available.
+
+Data files should be included for Kitt Peak for 2010 through the previous year
 """
 
 import os
@@ -28,16 +30,16 @@ from unittest import TestCase
 
 from pytz import utc
 
-from pwv_kpno import _settings
+from pwv_kpno import _download_pwv_data
 from pwv_kpno import pwv_atm
-from pwv_kpno._download_pwv_data import _get_local_data
+from pwv_kpno.package_settings import settings
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Development'
+__status__ = 'Release'
 
 EXPECTED_YEARS = set(range(2010, datetime.now().year))
 EXPECTED_IDS = {'KITT', 'P014', 'SA46', 'SA48', 'AZAM'}
@@ -53,7 +55,7 @@ class CorrectDataFiles(TestCase):
         cls.data_file_years = set()
         cls.data_file_GPS_ids = set()
 
-        glob_pattern = os.path.join(_settings._suomi_dir, '*.plt')
+        glob_pattern = os.path.join(settings._suomi_dir, '*.plt')
         for fname in glob(glob_pattern):
             cls.data_file_years.add(int(fname[-8: -4]))
             cls.data_file_GPS_ids.add(fname[-15: -11])
@@ -75,18 +77,18 @@ class CorrectConfigData(TestCase):
     def test_config_years(self):
         """Check config file for correct years"""
 
-        config_years = set(_settings._available_years)
+        config_years = set(settings._downloaded_years)
         self.assertEqual(EXPECTED_YEARS, config_years)
 
     def test_config_ids(self):
         """Check config file for correct SuomiNet ids"""
 
-        config_ids = set(_settings.receivers)
+        config_ids = set(settings.receivers)
         self.assertEqual(EXPECTED_IDS, config_ids)
 
 
 class CorrectReturnedYears(TestCase):
-    """Test that the end user is returned data for the correct years"""
+    """Test that the pwv_atm module returns data for the correct years"""
 
     def test_correct_measured_years(self):
         """Checks pwv_atm.measured_pwv() for missing years"""
@@ -116,8 +118,9 @@ class CorrectReturnedYears(TestCase):
 class LocalData(TestCase):
     """Tests for the _get_local_data function"""
 
-    def setUp(self):
-        self.data = _get_local_data()
+    @classmethod
+    def setUpClass(cls):
+        cls.data = _download_pwv_data._get_local_data()
 
     def test_correct_col_names(self):
         """Test that the returned table has a 'date' column plus a data
@@ -126,10 +129,8 @@ class LocalData(TestCase):
 
         # Create a list of expected column names
         col_names = ['date']
-        col_names.extend((rec for rec in _settings.receivers))
-        col_names.extend((rec + '_err' for rec in _settings.receivers))
-        print(col_names)
-        print(self.data.colnames)
+        col_names.extend((rec for rec in settings.receivers))
+        col_names.extend((rec + '_err' for rec in settings.receivers))
 
         try:
             # Python 2.7

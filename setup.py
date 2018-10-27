@@ -21,6 +21,9 @@
 
 from setuptools import setup
 
+with open('requirements.txt') as f:
+    requirements = f.read().splitlines()
+
 
 def long_description():
     with open('README.md') as ofile:
@@ -32,7 +35,7 @@ def long_description():
 
 
 setup(name='pwv_kpno',
-      version='0.12.1',
+      version='1.0.0',
       packages=['pwv_kpno'],
       keywords='KPNO atmospheric transmission PWV precipitable water vapor',
       description='Models the atmospheric transmission function for KPNO',
@@ -58,15 +61,7 @@ setup(name='pwv_kpno',
       license='GPL v3',
 
       python_requires='>=2.7',
-      install_requires=[
-          'numpy',
-          'astropy < 3.0; python_version < "3.0"',
-          'astropy; python_version >= "3.0"',
-          'requests',
-          'pytz',
-          'scipy',
-          'typing; python_version < "3.5"'
-      ],
+      install_requires=requirements,
 
       setup_requires=['pytest-runner'],
       tests_require=['pytest'],

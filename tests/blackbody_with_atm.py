@@ -20,19 +20,19 @@
 
 from unittest import TestCase
 
-from astropy.modeling.blackbody import blackbody_lambda
 import numpy as np
+from astropy.modeling.blackbody import blackbody_lambda
 
-from pwv_kpno.blackbody_with_atm import zp_bias
-from pwv_kpno.blackbody_with_atm import sed
 from pwv_kpno.blackbody_with_atm import magnitude
+from pwv_kpno.blackbody_with_atm import sed
+from pwv_kpno.blackbody_with_atm import zp_bias
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Development'
+__status__ = 'Release'
 
 
 class BlackbodySED(TestCase):

@@ -18,22 +18,22 @@
 
 """This file provides tests for the function "transmission"."""
 
-from unittest import TestCase
 from datetime import datetime, timedelta
+from unittest import TestCase
 
 import numpy as np
 from astropy.table import Table
 from pytz import utc
 
-from ._create_mock_data import create_mock_pwv_model
 from pwv_kpno import pwv_atm
+from ._create_mock_data import create_mock_pwv_model
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Development'
+__status__ = 'Release'
 
 
 def _check_attrs(iterable, **kwargs):
@@ -60,35 +60,37 @@ def _check_attrs(iterable, **kwargs):
 
 
 class SearchArgumentErrors(TestCase):
-    """Test that _check_search_args raises the appropriate errors
+    """Test that _check_date_time_args raises the appropriate errors
 
-    _check_search_args is responsible for checking the arguments for both
+    _check_date_time_args is responsible for checking the arguments for both
     pwv_kpno.pwv_atm.measured_pwv and pwv_kpno.pwv_atm.modeled_pwv"""
 
-    def assert_raises_iter(self, iterable, error):
+    def assert_raises_iter(self, kwarg, iterable, error):
         for val in iterable:
-            self.assertRaises(error, pwv_atm._check_date_time_args, val)
+            self.assertRaises(error,
+                              pwv_atm._check_date_time_args,
+                              **{kwarg: val})
 
     def test_checks_for_valid_year(self):
         """Test for correct errors due to bad year argument"""
 
         next_year = datetime.now().year + 1
-        self.assert_raises_iter([-2010, 2009, next_year], ValueError)
+        self.assert_raises_iter('year', [next_year], ValueError)
 
     def test_checks_for_valid_month(self):
         """Test for correct errors due to bad month argument"""
 
-        self.assert_raises_iter([-3, 0, 13], ValueError)
+        self.assert_raises_iter('month', [-3, 0, 13], ValueError)
 
     def test_checks_for_valid_day(self):
         """Test for correct errors due to bad day argument"""
 
-        self.assert_raises_iter([-3, 0, 32], ValueError)
+        self.assert_raises_iter('day', [-3, 0, 32], ValueError)
 
     def test_checks_for_valid_hour(self):
         """Test for correct errors due to bad hour argument"""
 
-        self.assert_raises_iter([-3, 24, 30], ValueError)
+        self.assert_raises_iter('hour', [-3, 24, 30], ValueError)
 
 
 class MeasuredPWV(TestCase):
@@ -149,21 +151,20 @@ class ModeledPWV(TestCase):
 class PwvDate(TestCase):
     """Tests for the pwv_date function"""
 
-    kitt_peak_pwv_model = pwv_atm.modeled_pwv()
+    @classmethod
+    def setUpClass(cls):
+        cls.pwv_model = create_mock_pwv_model(2010)
 
     def test_known_dates(self):
-        """Tests that pwv_date"""
-
-        test_date_0 = self.kitt_peak_pwv_model['date'][0]
-        test_pwv_0 = self.kitt_peak_pwv_model['pwv'][0]
-        test_date_100 = self.kitt_peak_pwv_model['date'][100]
-        test_pwv_100 = self.kitt_peak_pwv_model['pwv'][100]
+        """Tests that _pwv_date returns correct value for a tabulated date"""
 
         error_msg = "pwv_date returned incorrect PWV value for tabulated date"
-        pwv_0, pwv_err_0 = pwv_atm._pwv_date(test_date_0)
-        pwv_100, pwv_err_100 = pwv_atm._pwv_date(test_date_100)
-        self.assertEqual(test_pwv_0, pwv_0, error_msg)
-        self.assertEqual(test_pwv_100, pwv_100, error_msg)
+        test_date = datetime.utcfromtimestamp(self.pwv_model['date'][0])
+        test_date = test_date.replace(tzinfo=utc)
+        test_pwv = self.pwv_model['pwv'][0]
+
+        pwv, pwv_err = pwv_atm._pwv_date(test_date, test_model=self.pwv_model)
+        self.assertEqual(test_pwv, pwv, error_msg)
 
     def test_data_gap_handling(self):
         """Test errors raised from function call for datetime without PWV data
@@ -179,10 +180,31 @@ class PwvDate(TestCase):
         gaps = [(one_day_start, 1), (three_day_start, 3)]
         mock_model = create_mock_pwv_model(year=2010, gaps=gaps)
 
-        self.assertRaises(ValueError, pwv_atm._pwv_date,
-                          one_day_start, 1, mock_model)
-        self.assertRaises(ValueError, pwv_atm._pwv_date,
-                          three_day_start, 1, mock_model)
+        self.assertRaises(ValueError,
+                          pwv_atm._pwv_date,
+                          one_day_start,
+                          1,
+                          mock_model)
+
+        self.assertRaises(ValueError,
+                          pwv_atm._pwv_date,
+                          three_day_start,
+                          1,
+                          mock_model)
+
+    def test_airmass_dependance(self):
+        """PWV should be proportional to airmass ^ .6
+
+        This PWV airmass relation is presented in  Horne et al. 2012
+        """
+
+        test_date = datetime.utcfromtimestamp(self.pwv_model['date'][0])
+        test_date = test_date.replace(tzinfo=utc)
+        pwv, pwv_err = pwv_atm._pwv_date(test_date)
+        pwv_los, pwv_err_los = pwv_atm._pwv_date(test_date, airmass=2)
+
+        self.assertEqual(pwv_los, (2 ** .6) * pwv)
+        self.assertEqual(pwv_err_los, (2 ** .6) * pwv_err)
 
 
 class TransmissionErrors(TestCase):
@@ -245,28 +267,6 @@ class TransmissionResults(TestCase):
 
         # Check value outside domain that uses extrapolation
         self.assertIsNotNone(pwv_atm.trans_for_pwv(30.5))
-
-    def test_airmass_dependence(self):
-        """Test that line of sight pwv is directly proportional to airmass"""
-
-        date_35 = self.mock_model['date'][35]
-        date_35 = datetime.utcfromtimestamp(date_35).replace(tzinfo=utc)
-
-        date_40 = self.mock_model['date'][40]
-        date_40 = datetime.utcfromtimestamp(date_40).replace(tzinfo=utc)
-
-        airmass_2_transm = pwv_atm._trans_for_date(date=date_35,
-                                                   airmass=2,
-                                                   test_model=self.mock_model)
-
-        airmass_1_transm = pwv_atm._trans_for_date(date=date_40,
-                                                   airmass=1,
-                                                   test_model=self.mock_model)
-
-        same_transmission = np.equal(airmass_1_transm['transmission'],
-                                     airmass_2_transm['transmission'])
-
-        self.assertTrue(all(same_transmission))
 
     def test_column_units(self):
         """Test columns of the returned transmission table for correct units

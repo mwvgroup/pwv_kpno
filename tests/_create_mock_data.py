@@ -30,16 +30,17 @@ __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
 __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
-__status__ = 'Development'
+__status__ = 'Release'
 
 
 def create_mock_pwv_model(year, gaps=None):
     """Create a mock model for the PWV level at Kitt Peak for airmass 1
 
-    Return a table with the columns "date" and "pwv". Included dates span the
-    given year in 30 minute increments and are represented as UTC timestamps.
+    Return a table with the columns "date" and "pwv" and "pwv_err". Dates span
+    the given year in 30 minute increments and are represented as timestamps.
     PWV values are calculated as the index of its position in the table mod 15.
-    Gaps in the returned data can be included via the gaps argument.
+    Error values are 10% of the PWV values. Gaps in the returned data can be
+    included via the gaps argument.
 
     Args:
         year  (int): The year of the desired model
