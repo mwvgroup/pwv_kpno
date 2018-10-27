@@ -88,10 +88,10 @@ __status__ = 'Release'
 
 simplefilter('always', UserWarning)
 # Sites included with release that cannot be overwritten by the user
-PROTECTED_NAMES = ['kitt_peak']
+_PROTECTED_NAMES = ['kitt_peak']
 
 # List of params that data cuts can be applied for
-CUT_PARAMS = ('PWV', 'PWVerr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH')
+_CUT_PARAMS = ('PWV', 'PWVerr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH')
 
 
 class ModelingConfigError(Exception):
@@ -332,7 +332,7 @@ class Settings(object):
             config_data.meta['site_name'] = str(force_name)
 
         loc_name = config_data.meta['site_name']
-        if loc_name in PROTECTED_NAMES:
+        if loc_name in _PROTECTED_NAMES:
             err_msg = 'Cannot overwrite protected site name {}'
             raise ValueError(err_msg.format(loc_name))
 
@@ -560,7 +560,7 @@ class ConfigBuilder(object):
 
         for dictionary in self._data_cuts.values():
             for key, value in dictionary.items():
-                if key not in CUT_PARAMS:
+                if key not in _CUT_PARAMS:
                     warn(
                         'Provided data cut parameter {} does not correspond'
                         ' to any parameter used by pwv_kpno'.format(key)

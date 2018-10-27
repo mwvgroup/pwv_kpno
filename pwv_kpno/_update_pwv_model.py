@@ -40,8 +40,8 @@ __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Release'
 
-w_msg = 'Empty data detected for ODR instance.'
-warnings.filterwarnings("ignore", message=w_msg)
+warnings.filterwarnings("ignore",
+                        message='Empty data detected for ODR instance.')
 
 
 def _linear_regression(x, y, sx, sy):
