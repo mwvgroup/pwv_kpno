@@ -3,7 +3,7 @@ Correcting Spectrographic Observations
 **************************************
 
 Although **pwv_kpno** is primarily designed for correcting photometric
-observations, it can also be used to correct spectra. However, it
+observations, it can also be used to correct spectra. However, it is
 strongly recommended to read the
 `Validation section <../../validation/html/transmission_function.html#comparison-to-observations>`_
 first.
