@@ -74,7 +74,7 @@ accomplished by running
     >>> for site in sites_to_backup:
     >>>     settings.set_site(site)
     >>>     out_path = general_path.format(site)
-    >>>     settings.settings.export_site_config(out_path)
+    >>>     settings.export_site_config(out_path)
     >>>
     >>> quit()
     
