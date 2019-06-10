@@ -143,7 +143,9 @@ def _create_new_pwv_model(debug=False):
 
     pwv_data = Table.read(settings._pwv_measured_path)
     if not settings.supplement_rec:
-        return pwv_data
+        pwv_data.rename_column(settings.primary_rec, 'pwv')
+        pwv_data.rename_column(settings.primary_rec + '_err', 'pwv_err')
+        return pwv_data.write(settings._pwv_modeled_path, overwrite=True)
 
     primary_rec = settings.primary_rec
     avg_pwv, avg_pwv_err = _calc_avg_pwv_model(pwv_data, primary_rec)

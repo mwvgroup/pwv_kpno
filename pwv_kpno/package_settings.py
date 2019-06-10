@@ -475,7 +475,7 @@ class ConfigBuilder(object):
         settings_obj = Settings()
         settings_obj.set_site('kitt_peak')
         atm_cross_section = np.genfromtxt(settings_obj._h2o_cs_path).transpose()
-        self.wavelength = atm_cross_section[0]
+        self.wavelength = atm_cross_section[0] * 10000
         self.cross_section = atm_cross_section[1]
 
         # Assign any passed arguments to attributes
