@@ -44,8 +44,8 @@ def calc_conv_factor(cross_section):
     """
 
     mock_model = create_pwv_atm_model(
-        mod_lambda=[0],  # Dummy value
-        mod_cs=[cross_section],
+        model_lambda=[0],  # Dummy value
+        model_cs=[cross_section],
         out_lambda=[0]  # Dummy value
     )
 
@@ -81,8 +81,8 @@ class CreatePWVModel(TestCase):
         mock_lambda_out = np.array([0, 2.5, 5, 7.5, 10])
 
         mock_model = create_pwv_atm_model(
-            mod_lambda=mock_lambda_in,
-            mod_cs=mock_cross_sections,
+            model_lambda=mock_lambda_in,
+            model_cs=mock_cross_sections,
             out_lambda=mock_lambda_out
         )
 

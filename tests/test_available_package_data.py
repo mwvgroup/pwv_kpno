@@ -41,7 +41,7 @@ __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Release'
 
-EXPECTED_YEARS = set(range(2010, datetime.now().year))
+EXPECTED_YEARS = list(range(2010, datetime.now().year))
 EXPECTED_IDS = {'KITT', 'P014', 'SA46', 'SA48', 'AZAM'}
 
 
@@ -59,6 +59,8 @@ class CorrectDataFiles(TestCase):
         for fname in glob(glob_pattern):
             cls.data_file_years.add(int(fname[-8: -4]))
             cls.data_file_GPS_ids.add(fname[-15: -11])
+
+        cls.data_file_years = sorted(cls.data_file_years)
 
     def test_data_file_years(self):
         """Test SuomiNet data files correspond to appropriate years"""

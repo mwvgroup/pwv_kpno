@@ -64,18 +64,20 @@ __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Release'
 
 
-def sed(temp, wavelengths, pwv, bins=None):
-    # type: (float, np.ndarray, float) -> np.ndarray[float]
+def sed(temp: float,
+        wavelengths: np.array,
+        pwv: float,
+        bins: Union[int, list, np.ndarray] = None):
     """Return the flux of a black body under the influence of pwv absorption
 
      Flux is returned in units of ergs / (angstrom * cm2 * s).
 
      Args:
-         temp        (float): The temperature of the black body in Kelvin
-         wavelengths (array): The SED's wavelengths in Angstroms
-         pwv         (float): The PWV concentration along line of sight in mm
-         bins  (int or list): Integer number of bins or sequence of bin edges
-                               used to smooth atmospheric transmission
+         temp: The temperature of the black body in Kelvin
+         wavelengths: The SED's wavelengths in Angstroms
+         pwv: The PWV concentration along line of sight in mm
+         bins: Integer number of bins or sequence of bin edges used to
+               smooth atmospheric transmission
 
      Returns:
          An array of flux values in units of ergs / (angstrom * cm2 * s * sr)
@@ -95,8 +97,11 @@ def sed(temp, wavelengths, pwv, bins=None):
     return bb_sed
 
 
-def magnitude(temp, band, pwv):
-    # type: (float, Union[tuple, np.ndarray], float) -> float
+# Todo: Incorrect docstring for band
+def magnitude(
+        temp: float,
+        band: Union[tuple, np.ndarray],
+        pwv: float) -> float:
     """Return the AB magnitude of a black body in a given band
 
     Magnitudes are calculated relative to a zero point of 3631 Jy. If the band
@@ -107,9 +112,9 @@ def magnitude(temp, band, pwv):
     band. All wavelengths values are expected in Angstroms.
 
     Args:
-        temp (float): The temperature of the black body in Kelvin
-        band (tuple): An array specifying a photometric bandpass
-        pwv  (float): The PWV concentration along line of sight in mm
+        temp: The temperature of the black body in Kelvin
+        band: An array specifying a photometric bandpass
+        pwv: The PWV concentration along line of sight in mm
 
     Returns:
         The magnitude of the desired black body as effected by H2O absorption
@@ -137,8 +142,8 @@ def magnitude(temp, band, pwv):
     return mag.value
 
 
-def zp_bias(ref_temp, cal_temp, band, pwv):
-    # type: (float, float, tuple[float, int], float) -> float
+# Todo: Incorrect docstring for band
+def zp_bias(ref_temp: float, cal_temp: float, band: tuple, pwv: float):
     """Calculate the residual error in the photometric zero point due to PWV
 
     Using a black body approximation, calculate the residual error in the zero
@@ -147,11 +152,11 @@ def zp_bias(ref_temp, cal_temp, band, pwv):
     point of 3631 Jy.
 
     Args:
-        ref_temp (float): The temperature of the star used to calibrate the
-                            image in Kelvin
-        cal_temp (float): The temperature of another star in the same image
-        band     (tuple): An array specifying a photometric bandpass
-        pwv      (float): The PWV concentration along line of sight in mm
+        ref_temp: The temperature of the star used to calibrate the
+                  image in Kelvin
+        cal_temp: The temperature of another star in the same image
+        band: An array specifying a photometric bandpass
+        pwv: The PWV concentration along line of sight in mm
 
     Returns:
         The error in magnitudes for the photometric zero point of the given band
