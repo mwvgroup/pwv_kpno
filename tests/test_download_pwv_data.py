@@ -32,7 +32,6 @@ from pwv_kpno._download_pwv_data import _download_data_for_year
 from pwv_kpno._download_pwv_data import _read_file
 from pwv_kpno._download_pwv_data import _suomi_date_to_timestamp
 from pwv_kpno.package_settings import settings
-from pwv_kpno.pwv_atm import _timestamp
 
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
@@ -108,15 +107,15 @@ class DateFormatConversion(TestCase):
 
         error_msg = 'Incorrect _timestamp for {}'
         self.assertEqual(_suomi_date_to_timestamp(2010, '1.05208'),
-                         _timestamp(jan_01_2010_01_15),
+                         jan_01_2010_01_15.timestamp(),
                          error_msg.format(jan_01_2010_01_15))
 
         self.assertEqual(_suomi_date_to_timestamp(2010, '1.11458'),
-                         _timestamp(jan_01_2010_02_45),
+                         jan_01_2010_02_45.timestamp(),
                          error_msg.format(jan_01_2010_02_45))
 
         self.assertEqual(_suomi_date_to_timestamp(2010, '1.17708'),
-                         _timestamp(jan_01_2010_04_15),
+                         jan_01_2010_04_15.timestamp(),
                          error_msg.format(jan_01_2010_04_15))
 
     def test_dates_out_of_data_range(self):
@@ -127,11 +126,11 @@ class DateFormatConversion(TestCase):
 
         error_msg = 'Incorrect _timestamp for {}'
         self.assertEqual(_suomi_date_to_timestamp(2000, '1.01042'),
-                         _timestamp(jan_01_2000_00_15),
+                         jan_01_2000_00_15.timestamp(),
                          error_msg.format(jan_01_2000_00_15))
 
         self.assertEqual(_suomi_date_to_timestamp(2021, '365.96875'),
-                         _timestamp(dec_31_2021_23_15),
+                         dec_31_2021_23_15.timestamp(),
                          error_msg.format(dec_31_2021_23_15))
 
 

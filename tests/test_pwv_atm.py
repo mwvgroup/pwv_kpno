@@ -320,11 +320,4 @@ class TransmissionErrorPropagation(TestCase):
 
         transmission = pwv_atm.trans_for_pwv(pwv=2, pwv_err=1, bins=5000)
         col_names = ['wavelength', 'transmission', 'transmission_err']
-
-        try:
-            # Python 2.7
-            self.assertItemsEqual(transmission.colnames, col_names)
-
-        except AttributeError:
-            # Python 3
-            self.assertCountEqual(transmission.colnames, col_names)
+        self.assertCountEqual(transmission.colnames, col_names)

@@ -267,8 +267,7 @@ class Settings(object):
         # type: () -> list[str]
         """A list of all GPS receivers associated with the current site"""
 
-        # list used instead of .copy for python 2.7 compatibility
-        rec_list = list(self._config_data['supplement_rec'])
+        rec_list = self._config_data['supplement_rec'].copy()
         rec_list.append(self._config_data['primary_rec'])
         return sorted(rec_list)
 

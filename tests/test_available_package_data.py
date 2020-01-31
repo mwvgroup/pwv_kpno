@@ -77,8 +77,7 @@ class CorrectConfigData(TestCase):
     def test_config_years(self):
         """Check config file for correct years"""
 
-        config_years = set(settings._downloaded_years)
-        self.assertEqual(EXPECTED_YEARS, config_years)
+        self.assertListEqual(EXPECTED_YEARS, settings._downloaded_years)
 
     def test_config_ids(self):
         """Check config file for correct SuomiNet ids"""
@@ -131,14 +130,7 @@ class LocalData(TestCase):
         col_names = ['date']
         col_names.extend((rec for rec in settings.receivers))
         col_names.extend((rec + '_err' for rec in settings.receivers))
-
-        try:
-            # Python 2.7
-            self.assertItemsEqual(self.data.colnames, col_names)
-
-        except AttributeError:
-            # Python 3
-            self.assertCountEqual(self.data.colnames, col_names)
+        self.assertCountEqual(self.data.colnames, col_names)
 
     def test_non_empty(self):
         """Check that the returned table is not empty"""

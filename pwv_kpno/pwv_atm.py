@@ -112,24 +112,6 @@ __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Release'
 
 
-def _timestamp(date):
-    """Returns seconds since epoch of a UTC datetime in %Y-%m-%dT%H:%M format
-
-    This function provides comparability for Python 2.7, for which the
-    datetime.timestamp method was not yet available.
-
-    Args:
-        date (datetime): A datetime to find the _timestamp for
-
-    Returns:
-        The timestamp of the provided datetime as a float
-    """
-
-    unix_epoch = datetime(1970, 1, 1, tzinfo=utc)
-    utc_date = date.astimezone(utc)
-    return (utc_date - unix_epoch).total_seconds()
-
-
 def _raise_available_data(date, pwv_model):
     """Check if a date falls within the range of data in an astropy table
 
@@ -143,7 +125,7 @@ def _raise_available_data(date, pwv_model):
         raise RuntimeError(err_msg)
 
     # Check date falls within the range of available PWV data
-    time_stamp = _timestamp(date)
+    time_stamp = date.timestamp()
     w_data_less_than = np.where(pwv_model['date'] <= time_stamp)[0]
     if len(w_data_less_than) < 1:
         min_date = datetime.utcfromtimestamp(min(pwv_model['date']))
@@ -191,7 +173,7 @@ def _pwv_date(date, airmass=1., test_model=None):
         pwv_model = test_model
 
     _raise_available_data(date, pwv_model)
-    time_stamp = _timestamp(date)
+    time_stamp = date.timestamp()
     pwv = np.interp(time_stamp, pwv_model['date'], pwv_model['pwv'])
     pwv_err = np.interp(time_stamp, pwv_model['date'], pwv_model['pwv_err'])
 

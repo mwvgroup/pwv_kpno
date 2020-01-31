@@ -48,8 +48,7 @@ setup(name='pwv_kpno',
           'Natural Language :: English',
           'Operating System :: OS Independent',
           'Programming Language :: Python',
-          'Programming Language :: Python :: 2.7',
-          'Programming Language :: Python :: 3.6',
+          'Programming Language :: Python :: 3',
           'Topic :: Scientific/Engineering :: Astronomy',
           'Topic :: Scientific/Engineering :: Atmospheric Science',
           'Topic :: Scientific/Engineering :: Physics'
@@ -60,7 +59,7 @@ setup(name='pwv_kpno',
       url='https://mwvgroup.github.io/pwv_kpno/',
       license='GPL v3',
 
-      python_requires='>=2.7',
+      python_requires='>=3.5',
       install_requires=requirements,
 
       setup_requires=['pytest-runner'],
