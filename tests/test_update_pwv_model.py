@@ -117,24 +117,11 @@ class UpdateModelsArgs(TestCase):
         expected_return_1 = [current_year - 1, current_year]
         expected_return_2 = [current_year]
 
-        try:
-            # Python 2.7
-            self.assertItemsEqual(self.call_1_years, expected_return_1)
-            self.assertItemsEqual(self.call_2_years, expected_return_2)
-
-        except AttributeError:
-            # Python 3
-            self.assertCountEqual(self.call_1_years, expected_return_1)
-            self.assertCountEqual(self.call_2_years, expected_return_2)
+        self.assertCountEqual(self.call_1_years, expected_return_1)
+        self.assertCountEqual(self.call_2_years, expected_return_2)
 
     def test_empy_years_arg(self):
         """When passed an empty list update_models should return []"""
 
         years_list = update_models([])
-        try:
-            # Python 2.7
-            self.assertItemsEqual(years_list, [])
-
-        except AttributeError:
-            # Python 3
-            self.assertCountEqual(years_list, [])
+        self.assertCountEqual(years_list, [])
