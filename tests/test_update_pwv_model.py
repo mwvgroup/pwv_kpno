@@ -94,11 +94,6 @@ class CalcAvgPwvModel(TestCase):
 class UpdateModelsArgs(TestCase):
     """Test update_models function for raised errors due to bad arguments"""
 
-    @classmethod
-    def setUpClass(cls):
-        cls.call_1_years = update_models()
-        cls.call_2_years = update_models()
-
     def test_future_year(self):
         """
         An error should be raised if the user tries to update data
@@ -106,19 +101,6 @@ class UpdateModelsArgs(TestCase):
         """
 
         self.assertRaises(ValueError, update_models, [datetime.now().year + 1])
-
-    def test_successive_calls(self):
-        """
-        First call should return [current year - 1, current year]
-        second call should return [current year]
-        """
-
-        current_year = datetime.now().year
-        expected_return_1 = [current_year - 1, current_year]
-        expected_return_2 = [current_year]
-
-        self.assertCountEqual(self.call_1_years, expected_return_1)
-        self.assertCountEqual(self.call_2_years, expected_return_2)
 
     def test_empty_years_arg(self):
         """When passed an empty list update_models should return []"""

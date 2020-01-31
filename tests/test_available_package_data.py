@@ -41,7 +41,7 @@ __license__ = 'GPL V3'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Release'
 
-EXPECTED_YEARS = list(range(2010, datetime.now().year))
+EXPECTED_YEARS = list(range(2010, 2020))
 EXPECTED_IDS = {'KITT', 'P014', 'SA46', 'SA48', 'AZAM'}
 
 

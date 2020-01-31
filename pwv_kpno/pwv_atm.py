@@ -93,7 +93,7 @@ An incomplete guide to getting started:
 import os
 from datetime import datetime, timedelta
 from glob import glob
-from typing import Tuple, Union
+from typing import List, Tuple, Union
 
 import numpy as np
 from astropy.table import Table, unique, vstack
@@ -112,12 +112,12 @@ __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Release'
 
 
-def _raise_available_data(date, pwv_model):
+def _raise_available_data(date: datetime, pwv_model: Table):
     """Check if a date falls within the range of data in an astropy table
 
     Args:
-        date   (datetime): A timezone aware datetime
-        pwv_model (Table): An astropy table containing column 'date'
+        date: A timezone aware datetime
+        pwv_model: An astropy table containing column 'date'
     """
 
     if not pwv_model:
@@ -149,7 +149,7 @@ def _raise_available_data(date, pwv_model):
         raise ValueError(msg.format(timedelta(seconds=interval)))
 
 
-def _pwv_date(date, airmass=1., test_model=None):
+def _pwv_date(date: datetime, airmass: float = 1., test_model: Table = None):
     """Returns the modeled PWV column density at the current site
 
     Interpolate from the modeled PWV column density at at the current site
@@ -157,9 +157,9 @@ def _pwv_date(date, airmass=1., test_model=None):
     airmass.
 
     Args:
-        date    (datetime): The date of the desired PWV column density
-        airmass    (float): The airmass along line of sight
-        test_model (Table): A mock PWV model used by the test suite
+        date: The date of the desired PWV column density
+        airmass: The airmass along line of sight
+        test_model: A mock PWV model used by the test suite
 
     Returns:
         The modeled PWV column density at the current site
@@ -184,8 +184,7 @@ def _pwv_date(date, airmass=1., test_model=None):
     return pwv_los, pwv_err_los
 
 
-def pwv_date(date, airmass=1.):
-    # type: (datetime, float) -> Tuple[float, float]
+def pwv_date(date: datetime, airmass: float = 1.) -> Tuple[float, float]:
     """Returns the modeled PWV column density at the current site
 
     Interpolate from the modeled PWV column density at the current site being
@@ -203,8 +202,7 @@ def pwv_date(date, airmass=1.):
     return _pwv_date(date, airmass)
 
 
-def downloaded_years():
-    # type: () -> list[int]
+def downloaded_years() -> List[int]:
     """Return a list of years for which SuomiNet data has been downloaded
 
     Return a list of years for which SuomiNet data has been downloaded to the
@@ -219,17 +217,21 @@ def downloaded_years():
     return sorted(settings._downloaded_years)
 
 
-def _check_date_time_args(year=None, month=None, day=None, hour=None):
+def _check_date_time_args(
+        year: int = None,
+        month: int = None,
+        day: int = None,
+        hour: int = None):
     """Provides type and value checking for date and time arguments
 
     This function provides argument type and value checking for the functions
     `measured_pwv` and `modeled_pwv`.
 
     Args:
-        year  (int): An integer value less than or equal to the current year
-        month (int): An integer value between 1 and 12 (inclusive)
-        day   (int): An integer value between 1 and 31 (inclusive)
-        hour  (int): An integer value between 0 and 23 (inclusive)
+        year: An integer value less than or equal to the current year
+        month: An integer value between 1 and 12 (inclusive)
+        day: An integer value between 1 and 31 (inclusive)
+        hour: An integer value between 0 and 23 (inclusive)
     """
 
     if year is not None and year > datetime.now().year:
@@ -244,7 +246,7 @@ def _check_date_time_args(year=None, month=None, day=None, hour=None):
             raise ValueError('Invalid value for {0}: {1}'.format(arg, value))
 
 
-def _search_data_table(data_tab, **kwargs):
+def _search_data_table(data_tab: Table, **kwargs):
     """Search an astropy table of dates
 
     Given an astropy table with column 'date', return all entries in the table
@@ -255,8 +257,8 @@ def _search_data_table(data_tab, **kwargs):
     https://codereview.stackexchange.com/questions/165811
 
     Args:
-        data_tab (Table): An astropy table to search
-        **kwargs      (): The parameters to search data_tab for
+        data_tab: An astropy table to search
+        **kwargs: The parameters to search data_tab for
 
     Returns:
         Entries from data_tab that match search parameters
@@ -272,17 +274,17 @@ def _search_data_table(data_tab, **kwargs):
     return data_tab[np.where(indexing_func(data_tab['date']))[0]]
 
 
-def _get_pwv_data_table(path, year, month, day, hour):
+def _get_pwv_data_table(path: str, year: int, month: int, day: int, hour: int):
     """Reads a PWV data table from file and formats the table and data
 
     Adds units and converts 'date' column from timestamps to datetimes.
 
     Args:
-        path  (str): The path of the file to read
-        year  (int): An integer value between 2010 and the current year
-        month (int): An integer value between 1 and 12 (inclusive)
-        day   (int): An integer value between 1 and 31 (inclusive)
-        hour  (int): An integer value between 0 and 23 (inclusive)
+        path: The path of the file to read
+        year: An integer value between 2010 and the current year
+        month: An integer value between 1 and 12 (inclusive)
+        day: An integer value between 1 and 31 (inclusive)
+        hour: An integer value between 0 and 23 (inclusive)
 
     Returns:
         An astropy table with PWV data
@@ -310,8 +312,8 @@ def _get_pwv_data_table(path, year, month, day, hour):
     return data
 
 
-def measured_pwv(year=None, month=None, day=None, hour=None):
-    # type: (int, int, int, int) -> Table
+def measured_pwv(year: int = None, month: int = None, day: int = None,
+                 hour: int = None) -> Table:
     """Return an astropy table of PWV measurements taken by SuomiNet
 
     Columns are named using the SuomiNet IDs for different GPS receivers. PWV
@@ -319,10 +321,10 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
     optionally refined by year, month, day, and hour.
 
     Args:
-        year  (int): The year of the desired PWV data
-        month (int): The month of the desired PWV data
-        day   (int): The day of the desired PWV data
-        hour  (int): The hour of the desired PWV data in 24-hour format
+        year: The year of the desired PWV data
+        month: The month of the desired PWV data
+        day: The day of the desired PWV data
+        hour: The hour of the desired PWV data in 24-hour format
 
     Returns:
         An astropy table of measured PWV values in mm
@@ -341,8 +343,8 @@ def measured_pwv(year=None, month=None, day=None, hour=None):
     return data[col_order]
 
 
-def modeled_pwv(year=None, month=None, day=None, hour=None):
-    # type: (int, int, int, int) -> Table
+def modeled_pwv(year: int = None, month: int = None, day: int = None,
+                hour: int = None) -> Table:
     """Return a table of the modeled PWV at the current site being modeled
 
     Return a model for the precipitable water vapor level at the current site
@@ -350,10 +352,10 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
     Results can be optionally refined by year, month, day, and hour.
 
     Args:
-        year  (int): The year of the desired PWV data
-        month (int): The month of the desired PWV data
-        day   (int): The day of the desired PWV data
-        hour  (int): The hour of the desired PWV data in 24-hour format
+        year: The year of the desired PWV data
+        month: The month of the desired PWV data
+        day: The day of the desired PWV data
+        hour: The hour of the desired PWV data in 24-hour format
 
     Returns:
         An astropy table of modeled PWV values in mm
@@ -363,17 +365,21 @@ def modeled_pwv(year=None, month=None, day=None, hour=None):
                                year, month, day, hour)
 
 
-def _calc_transmission(atm_model, pwv, bins=None, ignore_lim=False):
+def _calc_transmission(
+        atm_model: Table,
+        pwv: float,
+        bins: Union[int, list] = None,
+        ignore_lim: bool = False) -> Table:
     """Calculate the PWV transmission from an atmospheric model
 
     atm_model should be a table with columns for wavelength ('wavelength') and
     conversion factor from PWV to cross section ('1/mm').
 
     Args:
-        atm_model  (Table): Atmospheric model
-        pwv        (float): A PWV concentration in mm
-        bins (int or list): Integer number of bins or sequence of bin edges
-        ignore_lim  (bool): Whether to ignore errors for negative PWV values
+        atm_model: Atmospheric model
+        pwv: A PWV concentration in mm
+        bins: Integer number of bins or sequence of bin edges
+        ignore_lim: Whether to ignore errors for negative PWV values
 
     Returns:
         A table with wavelengths, transmission, and optional transmission error
@@ -405,8 +411,10 @@ def _calc_transmission(atm_model, pwv, bins=None, ignore_lim=False):
     return out_table
 
 
-def trans_for_pwv(pwv, pwv_err=None, bins=None):
-    # type: (float, float, Union[int, float, list]) -> Table
+def trans_for_pwv(
+        pwv: float,
+        pwv_err: float = None,
+        bins: Union[int, list] = None) -> Table:
     """Return the atmospheric transmission due a given PWV concentration in mm
 
     For a given precipitable water vapor concentration, return the modeled
@@ -414,9 +422,9 @@ def trans_for_pwv(pwv, pwv_err=None, bins=None):
     be binned by specifying the `bins` argument.
 
     Args:
-        pwv        (float): A PWV concentration in mm
-        pwv_err    (float): The error in pwv
-        bins (int or list): Integer number of bins or sequence of bin edges
+        pwv: A PWV concentration in mm
+        pwv_err: The error in pwv
+        bins: Integer number of bins or sequence of bin edges
 
     Returns:
         The modeled transmission function as an astropy table
@@ -426,30 +434,27 @@ def trans_for_pwv(pwv, pwv_err=None, bins=None):
     transmission = _calc_transmission(atm_model=atm_model, pwv=pwv, bins=bins)
 
     if pwv_err is not None:
-        trans_plus_pwv_err = _calc_transmission(atm_model,
-                                                pwv + pwv_err,
-                                                bins,
-                                                ignore_lim=True)
+        trans_plus_pwv_err = _calc_transmission(
+            atm_model, pwv + pwv_err, bins, ignore_lim=True)
 
-        trans_minus_pwv_err = _calc_transmission(atm_model,
-                                                 pwv - pwv_err,
-                                                 bins,
-                                                 ignore_lim=True)
+        trans_minus_pwv_err = _calc_transmission(
+            atm_model, pwv - pwv_err, bins, ignore_lim=True)
 
-        transmission_err = np.subtract(trans_plus_pwv_err['transmission'],
-                                       trans_minus_pwv_err['transmission'])
+        transmission_err = np.subtract(
+            trans_plus_pwv_err['transmission'],
+            trans_minus_pwv_err['transmission'])
 
         transmission['transmission_err'] = np.abs(transmission_err)
 
     return transmission
 
 
-def _raise_transmission_args(date, airmass):
+def _raise_transmission_args(date: datetime, airmass: float):
     """Raise exception if arguments have wrong type or value
 
     Args:
-        date    (datetime): A datetime value
-        airmass    (float): An airmass value
+        date: A datetime value
+        airmass: An airmass value
     """
 
     if not isinstance(date, datetime):
@@ -471,14 +476,18 @@ def _raise_transmission_args(date, airmass):
         raise TypeError("Argument 'airmass' (pos 2) must be an int or float")
 
 
-def _trans_for_date(date, airmass, bins=None, test_model=None):
+def _trans_for_date(
+        date: datetime,
+        airmass: float,
+        bins: Union[int, list] = None,
+        test_model: Table = None) -> Table:
     """Return a model for the atmospheric transmission function due to PWV
 
     Args:
-        date    (datetime): The datetime of the desired model
-        airmass    (float): The airmass of the desired model
-        bins (int or list): Integer number of bins or sequence of bin edges
-        test_model (Table): A mock PWV model used by the test suite
+        date: The datetime of the desired model
+        airmass: The airmass of the desired model
+        bins: Integer number of bins or sequence of bin edges
+        test_model: A mock PWV model used by the test suite
 
     Returns:
         The modeled transmission function as an astropy table
@@ -488,8 +497,10 @@ def _trans_for_date(date, airmass, bins=None, test_model=None):
     return trans_for_pwv(pwv, pwv_err, bins)
 
 
-def trans_for_date(date, airmass, bins=None):
-    # type: (datetime, float) -> Table
+def trans_for_date(
+        date: datetime,
+        airmass: float,
+        bins: Union[int, list] = None) -> Table:
     """Return a model for the atmospheric transmission function due to PWV
 
     For a given datetime and airmass, return a model for the atmospheric
@@ -498,9 +509,9 @@ def trans_for_date(date, airmass, bins=None):
     specifying the `bins` argument.
 
     Args:
-        date    (datetime): The datetime of the desired model
-        airmass    (float): The airmass of the desired model
-        bins (int or list): Integer number of bins or sequence of bin edges
+        date: The datetime of the desired model
+        airmass: The airmass of the desired model
+        bins: Integer number of bins or sequence of bin edges
 
     Returns:
         The modeled transmission function as an astropy table
@@ -509,15 +520,15 @@ def trans_for_date(date, airmass, bins=None):
     return _trans_for_date(date, airmass, bins)
 
 
-def get_all_receiver_data(receiver_id, apply_cuts=True):
+def get_all_receiver_data(receiver_id: str, apply_cuts: bool = True):
     """Returns a table of all local SuomiNet data for a given receiver id
 
     Data is returned as an astropy table with columns 'date', 'PWV',
     'PWV_err', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', and 'SrfcRH'.
 
     Args:
-        receiver_id (str): A SuomiNet receiver id code (eg. KITT)
-        apply_cuts (bool): Whether to apply data cuts from the package settings
+        receiver_id: A SuomiNet receiver id code (eg. KITT)
+        apply_cuts: Whether to apply data cuts from the package settings
 
     Returns:
         An astropy table with SuomiNet data for the given site
@@ -536,7 +547,8 @@ def get_all_receiver_data(receiver_id, apply_cuts=True):
         # hourly data releases. We are not concerned here with the global
         # data releases, since they do not have two published data sets
         path_list = sorted(glob(path_pattern))
-        table_list = [_read_file(path, apply_cuts, False) for path in path_list]
+        table_list = [_read_file(path, apply_cuts, False) for path in
+                      path_list]
 
         if table_list and any(table_list):
             data_for_year = unique(
