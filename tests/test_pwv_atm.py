@@ -192,7 +192,7 @@ class PwvDate(TestCase):
                           1,
                           mock_model)
 
-    def test_airmass_dependance(self):
+    def test_airmass_dependence(self):
         """PWV should be proportional to airmass ^ .6
 
         This PWV airmass relation is presented in  Horne et al. 2012

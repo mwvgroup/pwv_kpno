@@ -173,13 +173,13 @@ def _download_data_for_site(year: int, site_id: str, timeout: float = None):
     hour_url = 'https://www.suominet.ucar.edu/data/staYrHr/{0}nrt_{1}.plt'
 
     # Global daily releases:
-    globl_day_path = os.path.join(settings._suomi_dir, '{0}gl_{1}.plt')
-    globl_day_url = 'https://www.suominet.ucar.edu/data/staYrDayGlob/{0}_{1}global.plt'
+    global_day_path = os.path.join(settings._suomi_dir, '{0}gl_{1}.plt')
+    global_day_url = 'https://www.suominet.ucar.edu/data/staYrDayGlob/{0}_{1}global.plt'
 
     # Function should guarantee the return order global, day, then hourly
     download_data = zip(
-        (globl_day_path, day_path, hour_path),
-        (globl_day_url, day_url, hour_url)
+        (global_day_path, day_path, hour_path),
+        (global_day_url, day_url, hour_url)
     )
 
     downloaded_paths = []

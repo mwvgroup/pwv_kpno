@@ -33,7 +33,7 @@ __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Release'
 
 
-def calc_conv_factor(cross_section):
+def calc_conversion_factor(cross_section):
     """Return the conversion factor from PWV to optical depth in units of 1/mm
 
     Args:
@@ -56,22 +56,22 @@ class CreatePWVModel(TestCase):
     """Tests for pwv_kpno.atm_model.create_pwv_atm_model"""
 
     def test_cross_section_eq_zero(self):
-        """Check the The conversion factor for a cross section of zero should be zero"""
+        """Check the conversion factor for a cross section of zero is zero"""
 
-        returned_conv_factor = calc_conv_factor(0)
+        returned_conv_factor = calc_conversion_factor(0)
         self.assertEqual(returned_conv_factor, 0)
 
     def test_cross_section_eq_one(self):
         """The conversion factor for a cross section of zero should be zero"""
 
         expected_conv_factor = _calc_num_density_conversion()
-        returned_conv_factor = calc_conv_factor(1)
+        returned_conv_factor = calc_conversion_factor(1)
         self.assertEqual(returned_conv_factor, expected_conv_factor)
 
     def test_cross_section_negative(self):
         """A negative cross section should raise a value error"""
 
-        self.assertRaises(ValueError, calc_conv_factor, -1)
+        self.assertRaises(ValueError, calc_conversion_factor, -1)
 
     def test_returned_wavelengths(self):
         """Returned wavelengths should match the out_lambda argument"""

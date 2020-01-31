@@ -101,13 +101,13 @@ class UpdateModelsArgs(TestCase):
 
     def test_future_year(self):
         """
-        An error should be raised if the user trys to update data
+        An error should be raised if the user tries to update data
         from the future
         """
 
         self.assertRaises(ValueError, update_models, [datetime.now().year + 1])
 
-    def test_succesive_calls(self):
+    def test_successive_calls(self):
         """
         First call should return [current year - 1, current year]
         second call should return [current year]
@@ -120,7 +120,7 @@ class UpdateModelsArgs(TestCase):
         self.assertCountEqual(self.call_1_years, expected_return_1)
         self.assertCountEqual(self.call_2_years, expected_return_2)
 
-    def test_empy_years_arg(self):
+    def test_empty_years_arg(self):
         """When passed an empty list update_models should return []"""
 
         years_list = update_models([])
