@@ -37,7 +37,7 @@ def long_description():
 
 
 # Get package version
-init_path = Path(__file__).resolve().parent / 'sndata/__init__.py'
+init_path = Path(__file__).resolve().parent / 'pwv_kpno/__init__.py'
 with open(init_path, 'r') as f:
     s = f.read()
 
