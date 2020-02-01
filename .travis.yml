@@ -5,22 +5,17 @@ os:
 
 matrix:
   include:
-    - python: 2.7
-    - python: 3.5
     - python: 3.6
-    - python: 3.7
-      dist: xenial
-      sudo: true
-
-before_install:
-  - "pip install coveralls"
-  - "pip install pytest-cov"
+    - python: 3.8
 
 install:
-  - "python setup.py install"
+  - python setup.py install
+  - pip install coveralls
+  - pip install pytest-cov
+  - pip freeze
 
 script:
-  - "pytest --cov=pwv_kpno/"
+  - pytest --cov=pwv_kpno/
 
 after_success:
   - "coveralls"

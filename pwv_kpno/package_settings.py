@@ -91,7 +91,8 @@ simplefilter('always', UserWarning)
 _PROTECTED_NAMES = ['kitt_peak']
 
 # List of params that data cuts can be applied for
-_CUT_PARAMS = ('PWV', 'PWVerr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH')
+_CUT_PARAMS = (
+    'PWV', 'PWVerr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH')
 
 
 class ModelingConfigError(Exception):
@@ -144,8 +145,7 @@ class Settings(object):
         # self._o3_cs_path = os.path.join(atm_dir, 'o3cs.txt')
 
     @property
-    def site_name(self):
-        # type: () -> str
+    def site_name(self) -> str:
         """The name of the current site being modeled"""
 
         return self._site_name
@@ -158,8 +158,7 @@ class Settings(object):
         )
 
     @site_property
-    def primary_rec(self):
-        # type: () -> str
+    def primary_rec(self) -> str:
         """The SuomiNet ID code for the primary receiver of the current site"""
 
         return self._config_data['primary_rec']
@@ -172,34 +171,32 @@ class Settings(object):
         )
 
     @site_property
-    def _loc_dir(self):
+    def _loc_dir(self) -> str:
         return self._loc_dir_unf.format(self.site_name)
 
     @property
-    def _atm_model_path(self):
+    def _atm_model_path(self) -> str:
         return os.path.join(self._loc_dir, 'atm_model.csv')
 
     @site_property
-    def _config_path(self):
+    def _config_path(self) -> str:
         return self._config_path_unf.format(self.site_name)
 
     @property
-    def _pwv_modeled_path(self):
+    def _pwv_modeled_path(self) -> str:
         return os.path.join(self._loc_dir, 'modeled_pwv.csv')
 
     @property
-    def _pwv_measured_path(self):
+    def _pwv_measured_path(self) -> str:
         return os.path.join(self._loc_dir, 'measured_pwv.csv')
 
     @property
-    def available_sites(self):
-        # type: () -> list[str]
+    def available_sites(self) -> list:
         """A list of sites for which pwv_kpno has stored settings"""
 
         return next(os.walk(self._loc_dir_unf.format('')))[1]
 
-    def set_site(self, loc):
-        # type: (str) -> None
+    def set_site(self, loc: str):
         """Configure pwv_kpno to model the default_atmosphere at a given site
 
         See the available_sites attribute for a list of available site names
@@ -221,7 +218,7 @@ class Settings(object):
         self._site_name = self._config_data['site_name']
 
     @site_property
-    def _downloaded_years(self):
+    def _downloaded_years(self) -> list:
         """A list of years for which SuomiNet data has been downloaded
 
         If a user has attempted to download data for a given year, and no data
@@ -234,7 +231,7 @@ class Settings(object):
             return sorted(json.load(ofile)['years'])
 
     @site_property
-    def _years_with_data(self):
+    def _years_with_data(self) -> np.array:
         """Return years with locally available data
 
         For a list of all years that have been downloaded from SuomiNet,
@@ -251,7 +248,7 @@ class Settings(object):
         except FileNotFoundError:
             return np.array([])
 
-    def _replace_years(self, yr_list):
+    def _replace_years(self, yr_list: list):
         # Replaces the list of downloaded years in the site's config file
 
         # Note: self._config_path calls @site_property decorator
@@ -263,25 +260,21 @@ class Settings(object):
             ofile.truncate()
 
     @site_property
-    def receivers(self):
-        # type: () -> list[str]
+    def receivers(self) -> list:
         """A list of all GPS receivers associated with the current site"""
 
-        # list used instead of .copy for python 2.7 compatibility
-        rec_list = list(self._config_data['supplement_rec'])
+        rec_list = self._config_data['supplement_rec'].copy()
         rec_list.append(self._config_data['primary_rec'])
         return sorted(rec_list)
 
     @site_property
-    def supplement_rec(self):
-        # type () -> list[str]
+    def supplement_rec(self) -> list:
         """A list of all supplementary GPS receivers for the current site"""
 
         return sorted(self._config_data['supplement_rec'])
 
     @site_property
-    def data_cuts(self):
-        # type () -> dict
+    def data_cuts(self) -> dict:
         """Returns restrictions on what SuomiNet measurements to include"""
 
         return self._config_data['data_cuts']
@@ -294,8 +287,7 @@ class Settings(object):
             json.dump(self._config_data, ofile, indent=4, sort_keys=True)
             ofile.truncate()
 
-    def export_site_config(self, out_path):
-        # type: (str) -> None
+    def export_site_config(self, out_path: str):
         """Save the current site's config file in ecsv format
 
         Args:
@@ -313,8 +305,11 @@ class Settings(object):
         atm_model.meta = self._config_data
         atm_model.write(out_path)
 
-    def import_site_config(self, path, force_name=None, overwrite=False):
-        # type: (str, bool) -> None
+    def import_site_config(
+            self,
+            path: str,
+            force_name: str = None,
+            overwrite: bool = False):
         """Load a custom configuration file and save it to the package
 
         Existing sites are only overwritten if overwrite is set to True.
@@ -363,7 +358,7 @@ class Settings(object):
         rep = '<pwv_kpno.Settings, Current Site Name: {}>'
         return rep.format(self.site_name)
 
-    def _get_status_header(self):
+    def _get_status_header(self) -> str:
         """Return the header for the class string representation"""
 
         status_table = (
@@ -474,7 +469,8 @@ class ConfigBuilder(object):
         # Get the default MODTRAN cross sections used for Kitt Peak
         settings_obj = Settings()
         settings_obj.set_site('kitt_peak')
-        atm_cross_section = np.genfromtxt(settings_obj._h2o_cs_path).transpose()
+        atm_cross_section = np.genfromtxt(
+            settings_obj._h2o_cs_path).transpose()
         self.wavelength = atm_cross_section[0] * 10000
         self.cross_section = atm_cross_section[1]
 
@@ -483,7 +479,7 @@ class ConfigBuilder(object):
             setattr(self, key, value)
 
     @property
-    def site_name(self):
+    def site_name(self) -> str:
         return self._site_name
 
     @site_name.setter
@@ -498,7 +494,7 @@ class ConfigBuilder(object):
 
         self._site_name = value
 
-    def _warn_id_code(self, id_code):
+    def _warn_id_code(self, id_code: str):
         """Raise warnings if SuomiNet ID codes are not the correct format
 
         SuomiNet ID codes should be four characters long and uppercase.
@@ -520,8 +516,7 @@ class ConfigBuilder(object):
             )
 
     @property
-    def primary_rec(self):
-        # type: () -> str
+    def primary_rec(self) -> str:
         return self._primary_rec
 
     @primary_rec.setter
@@ -530,8 +525,7 @@ class ConfigBuilder(object):
         self._primary_rec = value
 
     @property
-    def supplement_rec(self):
-        # type: () -> list
+    def supplement_rec(self) -> list:
         return self._supplement_rec
 
     @supplement_rec.setter
@@ -542,7 +536,7 @@ class ConfigBuilder(object):
         self._supplement_rec = value
 
     @property
-    def data_cuts(self):
+    def data_cuts(self) -> dict:
         return self._data_cuts
 
     @data_cuts.setter
@@ -596,8 +590,7 @@ class ConfigBuilder(object):
         config_data['supplement_rec'] = self.supplement_rec
         return config_data
 
-    def save_to_ecsv(self, out_path, overwrite=False):
-        # type: (str, bool) -> None
+    def save_to_ecsv(self, out_path: str, overwrite: bool = False) -> None:
         """Create a custom config file <out_dir>/<self.site_name>.ecsv
 
         Args:
@@ -606,8 +599,8 @@ class ConfigBuilder(object):
         """
 
         self._raise_unset_attributes()
-        model = create_pwv_atm_model(mod_lambda=np.array(self.wavelength),
-                                     mod_cs=np.array(self.cross_section),
+        model = create_pwv_atm_model(model_lambda=np.array(self.wavelength),
+                                     model_cs=np.array(self.cross_section),
                                      out_lambda=np.array(self.wavelength))
 
         model.meta = self._create_config_dict()

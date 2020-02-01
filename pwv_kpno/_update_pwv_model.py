@@ -44,17 +44,17 @@ warnings.filterwarnings("ignore",
                         message='Empty data detected for ODR instance.')
 
 
-def _linear_regression(x, y, sx, sy):
+def _linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array):
     """Optimize and apply a linear regression using masked arrays
 
     Generates a linear fit f using orthogonal distance regression and returns
     the applied model f(x). If y is completely masked, return y and sy.
 
     Args:
-        x   (MaskedArray): The independent variable of the regression
-        y   (MaskedArray): The dependent variable of the regression
-        sx  (MaskedArray): Standard deviations of x
-        sy  (MaskedArray): Standard deviations of y
+        x: The independent variable of the regression
+        y: The dependent variable of the regression
+        sx: Standard deviations of x
+        sy: Standard deviations of y
 
     Returns:
         The applied linear regression on x as a masked array
@@ -89,11 +89,11 @@ def _linear_regression(x, y, sx, sy):
     return applied_fit, error
 
 
-def _calc_avg_pwv_model(pwv_data, primary_rec):
+def _calc_avg_pwv_model(pwv_data: Table):
     """Determines a PWV model using each off site receiver and averages them
 
     Args:
-        pwv_data (Table): A table of pwv measurements
+        pwv_data: A table of pwv measurements
 
     Returns:
         A masked array of the averaged PWV model
@@ -101,6 +101,7 @@ def _calc_avg_pwv_model(pwv_data, primary_rec):
     """
 
     off_site_receivers = settings.supplement_rec
+    primary_rec = settings.primary_rec
 
     pwv_arrays, err_arrays = [], []
     for receiver in off_site_receivers:
@@ -148,7 +149,7 @@ def _create_new_pwv_model(debug=False):
         return pwv_data.write(settings._pwv_modeled_path, overwrite=True)
 
     primary_rec = settings.primary_rec
-    avg_pwv, avg_pwv_err = _calc_avg_pwv_model(pwv_data, primary_rec)
+    avg_pwv, avg_pwv_err = _calc_avg_pwv_model(pwv_data)
 
     # Supplement primary data with averaged fits
     mask = pwv_data[primary_rec].mask
@@ -212,8 +213,7 @@ def _get_years_to_download(years=None):
     return sorted(download_years)
 
 
-def update_models(years=None, timeout=None):
-    # type: (list, float) -> list[int]
+def update_models(years: list = None, timeout: float = None) -> list:
     """Download data from SuomiNet and update the locally stored PWV model
 
     Update the modeled PWV column density for the current site by downloading
@@ -223,8 +223,8 @@ def update_models(years=None, timeout=None):
     present day.
 
     Args:
-        years    (list): A list of integer years to download
-        timeout (float): Optional seconds to wait while connecting to SuomiNet
+        years: A list of integer years to download
+        timeout: Optional seconds to wait while connecting to SuomiNet
 
     Returns:
         A list of years for which models where updated

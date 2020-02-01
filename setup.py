@@ -19,6 +19,9 @@
 # Because I know I will be looking for this thread later on:
 # https://stackoverflow.com/q/7522250
 
+import re
+from pathlib import Path
+
 from setuptools import setup
 
 with open('requirements.txt') as f:
@@ -27,15 +30,22 @@ with open('requirements.txt') as f:
 
 def long_description():
     with open('README.md') as ofile:
-        readme = ofile.read()
-        description = readme.split('## Overview')[-1]
-        description = '## Overview\n\n' + description
+        readme = ofile.readlines()
 
+    description = ' '.join(readme[13:])
     return description
 
 
+# Get package version
+init_path = Path(__file__).resolve().parent / 'pwv_kpno/__init__.py'
+with open(init_path, 'r') as f:
+    s = f.read()
+
+versionRegExp = re.compile("__version__ = '(.*?)'")
+__version__ = versionRegExp.findall(s)[0]
+
 setup(name='pwv_kpno',
-      version='1.0.1',
+      version=__version__,
       packages=['pwv_kpno'],
       keywords='KPNO atmospheric transmission PWV precipitable water vapor',
       description='Models the atmospheric transmission function for KPNO',
@@ -48,8 +58,7 @@ setup(name='pwv_kpno',
           'Natural Language :: English',
           'Operating System :: OS Independent',
           'Programming Language :: Python',
-          'Programming Language :: Python :: 2.7',
-          'Programming Language :: Python :: 3.6',
+          'Programming Language :: Python :: 3',
           'Topic :: Scientific/Engineering :: Astronomy',
           'Topic :: Scientific/Engineering :: Atmospheric Science',
           'Topic :: Scientific/Engineering :: Physics'
@@ -60,7 +69,7 @@ setup(name='pwv_kpno',
       url='https://mwvgroup.github.io/pwv_kpno/',
       license='GPL v3',
 
-      python_requires='>=2.7',
+      python_requires='>=3.6',
       install_requires=requirements,
 
       setup_requires=['pytest-runner'],

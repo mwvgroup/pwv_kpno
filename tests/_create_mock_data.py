@@ -23,8 +23,6 @@ from datetime import datetime, timedelta
 from astropy.table import Table
 from pytz import utc
 
-from pwv_kpno.pwv_atm import _timestamp
-
 __authors__ = ['Daniel Perrefort']
 __copyright__ = 'Copyright 2017, Daniel Perrefort'
 
@@ -60,7 +58,7 @@ def create_mock_pwv_model(year, gaps=None):
     for i in range(total_time_intervals):
         start_date += timedelta(minutes=30)
         pwv = i % 15
-        out_table.add_row([_timestamp(start_date), pwv, pwv * .1])
+        out_table.add_row([start_date.timestamp(), pwv, pwv * .1])
 
     if gaps is not None:
         intervals = 48  # number of 30 min intervals in a day

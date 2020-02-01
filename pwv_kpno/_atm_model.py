@@ -21,8 +21,6 @@ integrated PWV column density to integrated H2O number density. It is based on
 work done by Azalee Bostroem.
 """
 
-from typing import Union
-
 import numpy as np
 import scipy.interpolate as interpolate
 from astropy.table import Table
@@ -43,10 +41,10 @@ def _calc_num_density_conversion():
         The conversion factor in units of 1 / (mm * cm^2)
     """
 
-    n_a = 6.02214129E23       # 1 / mol (Avogadro's constant)
+    n_a = 6.02214129E23  # 1 / mol (Avogadro's constant)
     h2o_molar_mass = 18.0152  # g / mol
-    h2o_density = 0.99997     # g / cm^3
-    one_mm_in_cm = 10         # mm / cm
+    h2o_density = 0.99997  # g / cm^3
+    one_mm_in_cm = 10  # mm / cm
 
     # Conversion factor 1 / (mm * cm^2)
     mm_to_num_dens = (n_a * h2o_density) / (h2o_molar_mass * one_mm_in_cm)
@@ -54,31 +52,33 @@ def _calc_num_density_conversion():
     return mm_to_num_dens
 
 
-def create_pwv_atm_model(mod_lambda, mod_cs, out_lambda):
-    # type: (Union[list, np.ndarray], Union[list, np.ndarray], Union[list, np.ndarray]) -> Table
+def create_pwv_atm_model(
+        model_lambda: np.ndarray,
+        model_cs: np.ndarray,
+        out_lambda: np.ndarray) -> Table:
     """Creates a table of conversion factors from PWV to optical depth
 
     Expects input and output wavelengths to be in same units. Expects modeled
     cross sections to be in cm^2.
 
     Args:
-        mod_lambda (ndarray): Array of input wavelengths
-        mod_cs     (ndarray): Array of cross sections for each input wavelength
-        out_lambda (ndarray): Array of desired output wavelengths
+        model_lambda (ndarray): Array of input wavelengths
+        model_cs     (ndarray): Array of cross sections for each input wavelength
+        out_lambda   (ndarray): Array of desired output wavelengths
 
     Returns:
         A table with columns 'wavelength' and '1/mm'
     """
 
-    mod_cs = np.array(mod_cs)
-    if (mod_cs < 0).any():
+    model_cs = np.array(model_cs)  # Just in case we are passed a list
+    if (model_cs < 0).any():
         raise ValueError('Cross sections cannot be negative.')
 
-    if np.array_equal(mod_lambda, out_lambda):
-        out_cs = mod_cs  # This function requires ndarray behavior
+    if np.array_equal(model_lambda, out_lambda):
+        out_cs = model_cs  # This function requires ndarray behavior
 
     else:
-        interp_cs = interpolate.interp1d(mod_lambda, mod_cs)
+        interp_cs = interpolate.interp1d(model_lambda, model_cs)
         out_cs = interp_cs(out_lambda)
 
     pwv_num_density = out_cs * _calc_num_density_conversion()

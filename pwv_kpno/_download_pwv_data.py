@@ -39,15 +39,16 @@ __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Release'
 
 
-def _suomi_date_to_timestamp(year, days_str):
+@np.vectorize
+def _suomi_date_to_timestamp(year: int, days_str: str) -> float:
     """Convert the SuomiNet date format into UTC timestamp
 
     SuomiNet dates are stored as decimal days in a given year. For example,
     February 1st, 00:15 would be 36.01042.
 
     Args:
-        year     (int): The year of the desired timestamp
-        days_str (str): The number of days that have passed since january 1st
+        year: The year of the desired timestamp
+        days_str: The number of days that have passed since january 1st
 
     Returns:
         The seconds from UTC epoch to the provided date as a float
@@ -65,12 +66,15 @@ def _suomi_date_to_timestamp(year, days_str):
     return timestamp
 
 
-def _apply_data_cuts(data, site_id):
+def _apply_data_cuts(data: Table, site_id: str) -> Table:
     """Apply data cuts from settings to a table of SuomiNet measurements
 
     Args:
-        data  (Table): Table containing data from a SuomiNet data file
-        site_id (str): The site to apply data cuts for
+        data: A table containing data from a SuomiNet data file
+        site_id: The site to apply data cuts for
+        
+    Returns:
+        A copy of the data with applied data cuts
     """
 
     data = data[data[site_id] > 0]
@@ -97,7 +101,7 @@ def _apply_data_cuts(data, site_id):
     return data
 
 
-def _read_file(path, apply_cuts=True, pwv_only=True):
+def _read_file(path: str, apply_cuts: bool = True, pwv_only: bool = True):
     """Return PWV measurements from a SuomiNet data file as an astropy table
 
     Expects data files from http://www.suominet.ucar.edu/data.html under the
@@ -109,8 +113,9 @@ def _read_file(path, apply_cuts=True, pwv_only=True):
         2. Dates are duplicates with unequal measurements
 
     Args:
-        path        (str): File path to be read
-        apply_cuts (bool): Whether to apply data cuts from the package settings
+        path: File path to be read
+        apply_cuts: Apply data cuts from the package settings (Default: True)
+        pwv_only: Only return the pwv data (Default: True)
 
     Returns:
         An astropy Table with data from path
@@ -130,8 +135,7 @@ def _read_file(path, apply_cuts=True, pwv_only=True):
     if data:
         data = unique(data, keys='date', keep='none')
         year = int(path[-8: -4])
-        to_timestamp_vectorized = np.vectorize(_suomi_date_to_timestamp)
-        data['date'] = to_timestamp_vectorized(year, data['date'])
+        data['date'] = _suomi_date_to_timestamp(year, data['date'])
 
     if apply_cuts:
         # Important: _apply_data_cuts expects column 'date' to have already
@@ -144,17 +148,17 @@ def _read_file(path, apply_cuts=True, pwv_only=True):
     return data
 
 
-def _download_data_for_site(year, site_id, timeout=None):
+def _download_data_for_site(year: int, site_id: str, timeout: float = None):
     """Download SuomiNet data for a given year and SuomiNet id
 
     For a given year and SuomiNet id, download data from the corresponding GPS
-    receiver. Files are downloaded from both the daily and hourly data
+    receiver. Files are downloaded from both global, daily, and hourly data
     releases. Any existing data files are overwritten.
 
     Args:
-        year      (int): A year to download data for
-        site_id   (str): A SuomiNet receiver id code (eg. KITT)
-        timeout (float): Optional seconds to wait while connecting to SuomiNet
+        year: A year to download data for
+        site_id: A SuomiNet receiver id code (eg. KITT)
+        timeout: Optional seconds to wait while connecting to SuomiNet
 
     Returns:
         A list of file paths containing downloaded data
@@ -169,14 +173,13 @@ def _download_data_for_site(year, site_id, timeout=None):
     hour_url = 'https://www.suominet.ucar.edu/data/staYrHr/{0}nrt_{1}.plt'
 
     # Global daily releases:
-    globl_day_path = os.path.join(settings._suomi_dir, '{0}gl_{1}.plt')
-    globl_day_url = 'https://www.suominet.ucar.edu/data/staYrDayGlob/{0}_{1}global.plt'
+    global_day_path = os.path.join(settings._suomi_dir, '{0}gl_{1}.plt')
+    global_day_url = 'https://www.suominet.ucar.edu/data/staYrDayGlob/{0}_{1}global.plt'
 
-    # The preferred data should be first in the iteration
-    download_data = (
-        (globl_day_path, globl_day_url),
-        (day_path, day_url),
-        (hour_path, hour_url)
+    # Function should guarantee the return order global, day, then hourly
+    download_data = zip(
+        (global_day_path, day_path, hour_path),
+        (global_day_url, day_url, hour_url)
     )
 
     downloaded_paths = []
@@ -198,7 +201,7 @@ def _download_data_for_site(year, site_id, timeout=None):
     return downloaded_paths
 
 
-def _download_data_for_year(yr, timeout=None):
+def _download_data_for_year(yr: int, timeout: float = None):
     """Download and return data for a given year from each SuomiNet receiver
 
     Downloaded data for each SuomiNet receiver. Return this data as an
@@ -206,8 +209,8 @@ def _download_data_for_year(yr, timeout=None):
     supplemented by any hourly release data.
 
     Args:
-        yr        (int): The year of the desired data
-        timeout (float): Optional seconds to wait while connecting to SuomiNet
+        yr: The year of the desired data
+        timeout: Optional seconds to wait while connecting to SuomiNet
 
     Returns:
         An astropy Table of the combined downloaded data for the given year.
@@ -253,13 +256,12 @@ def _get_local_data():
         return Table(names=col_names)
 
 
-def update_local_data(year, timeout=None):
-    # type: (int, float) -> bool
+def update_local_data(year: int, timeout: bool = None):
     """Download data from SuomiNet for a given year and update the master table
 
     Args:
-        year      (int): The year to update data for
-        timeout (float): Optional seconds to wait while connecting to SuomiNet
+        year: The year to update data for
+        timeout: Optional seconds to wait while connecting to SuomiNet
 
     Returns:
         A boolean representing whether any data was downloaded

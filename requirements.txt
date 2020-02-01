@@ -1,7 +1,5 @@
-numpy
-astropy < 3.0; python_version < "3.0"
-astropy; python_version >= "3.0"
+numpy>=1.17.0
+astropy>=3.0.0
 requests
 pytz
 scipy
-typing; python_version < "3.5"
