@@ -13,6 +13,7 @@ install:
   - python setup.py install
   - pip install coveralls
   - pip install pytest-cov
+  - pip install numpy>=1.16.0
   - pip freeze
 
 script:
