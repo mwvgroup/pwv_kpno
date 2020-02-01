@@ -9,15 +9,13 @@ matrix:
     - python: 3.7
     - python: 3.8
 
-before_install:
-  - pip install coveralls
-  - pip install pytest-cov
-
 install:
   - python setup.py install
+  - pip install coveralls
+  - pip install pytest-cov
+  - pip freeze
 
 script:
-  - pip freeze
   - pytest --cov=pwv_kpno/
 
 after_success:
