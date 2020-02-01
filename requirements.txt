@@ -3,4 +3,3 @@ astropy
 requests
 pytz
 scipy
-typing; python_version < "3.5"
