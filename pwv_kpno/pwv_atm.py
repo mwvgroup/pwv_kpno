@@ -146,9 +146,6 @@ def _warn_available_data(
     differences = (test_dates.reshape(1, -1) - known_dates.reshape(-1, 1))
     indices = np.abs(differences).argmin(axis=0)
     residual = np.diagonal(differences[indices,])
-    print(residual)
-    print(residual > 24 * 60 * 60)
-    print(test_dates[0], type(test_dates))
 
     one_day_in_seconds = 24 * 60 * 60
     out_of_interp_range = test_dates[residual > one_day_in_seconds]
