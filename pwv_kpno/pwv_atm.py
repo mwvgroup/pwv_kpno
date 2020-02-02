@@ -67,7 +67,7 @@ An incomplete guide to getting started:
     To retrieve the atmospheric model for at the current site being modeled
     at a given datetime and airmass:
 
-      >>> pwv_atm.trans_for_date(date=obsv_date, airmass=1.2)
+      >>> pwv_atm.trans_for_date(date=obsv_date,airmass=1.2,format=)
 
 
     To access the PWV measurements for the current site being modeled as an
@@ -97,6 +97,7 @@ from typing import List, Tuple, Union
 
 import numpy as np
 from astropy.table import Table, unique, vstack
+from astropy.time import Time
 from pytz import utc
 from scipy.stats import binned_statistic
 
@@ -112,44 +113,55 @@ __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Release'
 
 
-def _raise_available_data(date: datetime, pwv_model: Table):
+def _warn_available_data(
+        test_dates: Union[float, np.array], known_dates: np.array):
     """Check if a date falls within the range of data in an astropy table
 
     Args:
-        date: A timezone aware datetime
-        pwv_model: An astropy table containing column 'date'
+        test_dates: A timezone aware datetime
+        known_dates: An astropy table containing column 'date'
     """
 
-    if not pwv_model:
+    test_dates = np.atleast_1d(test_dates)  # In case passed a float
+    if not len(known_dates):
         err_msg = 'No PWV data for primary receiver available on local machine.'
         raise RuntimeError(err_msg)
 
     # Check date falls within the range of available PWV data
-    time_stamp = date.timestamp()
-    w_data_less_than = np.where(pwv_model['date'] <= time_stamp)[0]
-    if len(w_data_less_than) < 1:
-        min_date = datetime.utcfromtimestamp(min(pwv_model['date']))
-        msg = 'No PWV data found for datetimes before {0} on local machine'
-        raise ValueError(msg.format(min_date))
+    min_known_date, max_known_date = min(known_dates), max(known_dates)
+    dates_too_early = test_dates[test_dates < min_known_date]
+    if len(dates_too_early):
+        min_date = datetime.utcfromtimestamp(min_known_date)
+        raise ValueError(
+            f'No PWV data found for dates before {min_date} on local machine'
+        )
 
-    w_data_greater_than = np.where(time_stamp <= pwv_model['date'])[0]
-    if len(w_data_greater_than) < 1:
-        max_date = datetime.utcfromtimestamp(max(pwv_model['date']))
-        msg = 'No PWV data found for datetimes after {0} on local machine'
-        raise ValueError(msg.format(max_date))
+    dates_too_late = test_dates[test_dates > max_known_date]
+    if len(dates_too_late):
+        max_date = datetime.utcfromtimestamp(max_known_date)
+        raise ValueError(
+            f'No PWV data found for dates after {max_date} on local machine'
+        )
 
-    # Check for SuomiNet data available near the given date
-    diff = pwv_model['date'] - time_stamp
-    interval = min(diff[diff >= 0]) - max(diff[diff <= 0])
+    differences = (test_dates.reshape(1, -1) - known_dates.reshape(-1, 1))
+    indices = np.abs(differences).argmin(axis=0)
+    residual = np.diagonal(differences[indices,])
+
     one_day_in_seconds = 24 * 60 * 60
+    out_of_interp_range = test_dates[residual > one_day_in_seconds]
+    if len(out_of_interp_range):
+        raise ValueError(
+            f'Specified datetimes falls within interval of missing SuomiNet' 
+            f' data larger than 1 day: {out_of_interp_range}.'
+        )
 
-    if one_day_in_seconds <= interval:
-        msg = ('Specified datetime falls within interval of missing SuomiNet' +
-               ' data larger than 1 day ({0} interval found).')
-        raise ValueError(msg.format(timedelta(seconds=interval)))
 
-
-def _pwv_date(date: datetime, airmass: float = 1., test_model: Table = None):
+def _pwv_date(
+        date: Union[float, np.array, datetime],
+        airmass: float = 1,
+        format: str = None,
+        test_model: Table = None) \
+        -> Tuple[Union[float, np.array], Union[float, np.array]]:
     """Returns the modeled PWV column density at the current site
 
     Interpolate from the modeled PWV column density at at the current site
@@ -159,6 +171,7 @@ def _pwv_date(date: datetime, airmass: float = 1., test_model: Table = None):
     Args:
         date: The date of the desired PWV column density
         airmass: The airmass along line of sight
+        format: An astropy compatible time format
         test_model: A mock PWV model used by the test suite
 
     Returns:
@@ -172,8 +185,9 @@ def _pwv_date(date: datetime, airmass: float = 1., test_model: Table = None):
     else:
         pwv_model = test_model
 
-    _raise_available_data(date, pwv_model)
-    time_stamp = date.timestamp()
+    time_stamp = Time(date, format=format).to_value('unix')
+    _warn_available_data(time_stamp, pwv_model['date'])
+
     pwv = np.interp(time_stamp, pwv_model['date'], pwv_model['pwv'])
     pwv_err = np.interp(time_stamp, pwv_model['date'], pwv_model['pwv_err'])
 
@@ -184,22 +198,27 @@ def _pwv_date(date: datetime, airmass: float = 1., test_model: Table = None):
     return pwv_los, pwv_err_los
 
 
-def pwv_date(date: datetime, airmass: float = 1.) -> Tuple[float, float]:
+def pwv_date(
+        date: Union[float, np.array, datetime],
+        airmass: float = 1,
+        format: str = None) \
+        -> Tuple[Union[float, np.array], Union[float, np.array]]:
     """Returns the modeled PWV column density at the current site
 
     Interpolate from the modeled PWV column density at the current site being
     modeled and return the PWV column density for a given datetime and airmass.
 
     Args:
-        date (datetime): The date of the desired PWV column density
-        airmass (float): The airmass along line of sight
+        date: The date of the desired PWV column density
+        airmass: The airmass along line of sight
+        format: An astropy compatible time format (e.g., unix, mjd, datetime)
 
     Returns:
         The modeled PWV column density at the current site
         The error in modeled PWV column density
     """
 
-    return _pwv_date(date, airmass)
+    return _pwv_date(date, airmass, format)
 
 
 def downloaded_years() -> List[int]:
@@ -477,8 +496,9 @@ def _raise_transmission_args(date: datetime, airmass: float):
 
 
 def _trans_for_date(
-        date: datetime,
-        airmass: float,
+        date: Union[float, np.array, datetime],
+        airmass: float = 1,
+        format: str = None,
         bins: Union[int, list] = None,
         test_model: Table = None) -> Table:
     """Return a model for the atmospheric transmission function due to PWV
@@ -486,6 +506,7 @@ def _trans_for_date(
     Args:
         date: The datetime of the desired model
         airmass: The airmass of the desired model
+        format: An astropy compatible time format
         bins: Integer number of bins or sequence of bin edges
         test_model: A mock PWV model used by the test suite
 
@@ -493,13 +514,16 @@ def _trans_for_date(
         The modeled transmission function as an astropy table
     """
 
-    pwv, pwv_err = _pwv_date(date, airmass, test_model)
+    pwv, pwv_err = _pwv_date(date, airmass=airmass, format=format,
+                             test_model=test_model)
+
     return trans_for_pwv(pwv, pwv_err, bins)
 
 
 def trans_for_date(
-        date: datetime,
-        airmass: float,
+        date: Union[float, np.array, datetime],
+        airmass: float = 1, 
+        format: str = None,
         bins: Union[int, list] = None) -> Table:
     """Return a model for the atmospheric transmission function due to PWV
 
@@ -509,15 +533,16 @@ def trans_for_date(
     specifying the `bins` argument.
 
     Args:
-        date: The datetime of the desired model
+        date: The date of the desired model in the given format
         airmass: The airmass of the desired model
+        format: An astropy compatible time format (e.g., unix, mjd, datetime)
         bins: Integer number of bins or sequence of bin edges
 
     Returns:
         The modeled transmission function as an astropy table
     """
 
-    return _trans_for_date(date, airmass, bins)
+    return _trans_for_date(date, airmass, format, bins)
 
 
 def get_all_receiver_data(receiver_id: str, apply_cuts: bool = True):

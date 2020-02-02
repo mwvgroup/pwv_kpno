@@ -62,9 +62,9 @@ def create_pwv_atm_model(
     cross sections to be in cm^2.
 
     Args:
-        model_lambda (ndarray): Array of input wavelengths
-        model_cs     (ndarray): Array of cross sections for each input wavelength
-        out_lambda   (ndarray): Array of desired output wavelengths
+        model_lambda: Array of input wavelengths
+        model_cs: Array of cross sections for each input wavelength
+        out_lambda: Array of desired output wavelengths
 
     Returns:
         A table with columns 'wavelength' and '1/mm'
