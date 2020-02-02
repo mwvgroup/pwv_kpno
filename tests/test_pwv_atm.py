@@ -276,7 +276,7 @@ class TransmissionResults(TestCase):
         """
 
         sample_transm = pwv_atm.trans_for_date(
-            datetime(2011, 1, 1, tzinfo=utc), 1)
+            datetime(2011, 1, 1, tzinfo=utc), 1, format='datetime')
         w_units = sample_transm['wavelength'].unit
         t_units = sample_transm['transmission'].unit
 
