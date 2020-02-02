@@ -152,8 +152,8 @@ def _raise_available_data(date: datetime, pwv_model: Table):
 
 def _pwv_date(
         date: Union[float, np.array, datetime],
-        airmass: float,
-        format: str,
+        airmass: float = 1,
+        format: str = None,
         test_model: Table = None) \
         -> Tuple[Union[float, np.array], Union[float, np.array]]:
     """Returns the modeled PWV column density at the current site
@@ -193,7 +193,7 @@ def _pwv_date(
 def pwv_date(
         date: Union[float, np.array, datetime],
         airmass: float = 1,
-        format: str = 'unix') \
+        format: str = None) \
         -> Tuple[Union[float, np.array], Union[float, np.array]]:
     """Returns the modeled PWV column density at the current site
 
@@ -203,7 +203,7 @@ def pwv_date(
     Args:
         date: The date of the desired PWV column density
         airmass: The airmass along line of sight
-        format: An astropy compatible time format (Default: 'unix')
+        format: An astropy compatible time format (e.g., unix, mjd, datetime)
 
     Returns:
         The modeled PWV column density at the current site
@@ -489,8 +489,8 @@ def _raise_transmission_args(date: datetime, airmass: float):
 
 def _trans_for_date(
         date: Union[float, np.array, datetime],
-        airmass: float,
-        format: str,
+        airmass: float = 1,
+        format: str = None,
         bins: Union[int, list] = None,
         test_model: Table = None) -> Table:
     """Return a model for the atmospheric transmission function due to PWV
@@ -515,7 +515,7 @@ def _trans_for_date(
 def trans_for_date(
         date: Union[float, np.array, datetime],
         airmass: float = 1, 
-        format: str = 'unix',
+        format: str = None,
         bins: Union[int, list] = None) -> Table:
     """Return a model for the atmospheric transmission function due to PWV
 
@@ -527,7 +527,7 @@ def trans_for_date(
     Args:
         date: The date of the desired model in the given format
         airmass: The airmass of the desired model
-        format: An astropy compatible time format (Default: 'unix')
+        format: An astropy compatible time format (e.g., unix, mjd, datetime)
         bins: Integer number of bins or sequence of bin edges
 
     Returns:
