@@ -202,7 +202,7 @@ class Settings(object):
         See the available_sites attribute for a list of available site names
 
         Args:
-            loc (str): The name of a site to model
+            loc: The name of a site to model
         """
 
         if loc in self.available_sites:
@@ -291,7 +291,7 @@ class Settings(object):
         """Save the current site's config file in ecsv format
 
         Args:
-            out_path (str): The desired output file path
+            out_path: The desired output file path
         """
 
         if not out_path.endswith('.ecsv'):
@@ -317,9 +317,9 @@ class Settings(object):
         forced_name argument.
 
         Args:
-            path       (str): The path of a pwv_kpno config file
-            force_name (str): Optional site name to overwrite config file
-            overwrite (bool): Whether to overwrite an existing site
+            path: The path of a pwv_kpno config file
+            force_name: Optional site name to overwrite config file
+            overwrite: Whether to overwrite an existing site
         """
 
         config_data = Table.read(path, format='ascii.ecsv')
@@ -594,8 +594,8 @@ class ConfigBuilder(object):
         """Create a custom config file <out_dir>/<self.site_name>.ecsv
 
         Args:
-            out_path   (str): The desired output file path ending with .ecsv
-            overwrite (bool): Whether to overwrite an existing file
+            out_path: The desired output file path ending with .ecsv
+            overwrite: Whether to overwrite an existing file
         """
 
         self._raise_unset_attributes()

@@ -170,7 +170,7 @@ def _create_new_pwv_model(debug=False):
     out.write(settings._pwv_modeled_path, overwrite=True)
 
 
-def _get_years_to_download(years=None):
+def _get_years_to_download(years: list = None):
     """Return a list of years to download data for
 
     If the years argument is not provided, include all years from the earliest
@@ -181,7 +181,7 @@ def _get_years_to_download(years=None):
     list.
 
     Args:
-        years (list): A list of years that a user is requesting to download
+        years: A list of years that a user is requesting to download
 
     Returns:
         A list of years without data already on the current machine
