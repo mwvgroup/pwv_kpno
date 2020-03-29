@@ -106,9 +106,10 @@ from ._update_pwv_model import update_models
 from .package_settings import settings
 
 
-def _warn_available_data(
-        test_dates: Union[float, np.array], dates_with_data: np.array):
-    """Check if a date falls within the range of data in an astropy table
+def _warn_available_data_new(
+        test_dates: Union[float, np.array],
+        dates_with_data: np.array) -> None:
+    """Warn if given dates don't falls within a range dates with measurements
 
     Args:
         test_dates: Dates to check for available data
@@ -121,32 +122,34 @@ def _warn_available_data(
         raise RuntimeError(err_msg)
 
     # Check date falls within the range of available PWV data
-    min_known_date, max_known_date = min(dates_with_data), max(dates_with_data)
-    dates_too_early = test_dates < min_known_date
-    if dates_too_early.any():
+    min_known_date = dates_with_data.min(),
+    if (test_dates < min_known_date).any():
         min_date = datetime.utcfromtimestamp(min_known_date)
         raise ValueError(
             f'No PWV data found for dates before {min_date} on local machine'
         )
 
-    dates_too_late = test_dates > max_known_date
-    if dates_too_late.any():
+    max_known_date = dates_with_data.max()
+    if (test_dates > max_known_date).any():
         max_date = datetime.utcfromtimestamp(max_known_date)
         raise ValueError(
             f'No PWV data found for dates after {max_date} on local machine'
         )
 
-    differences = (test_dates.reshape(1, -1) - dates_with_data.reshape(-1, 1))
-    indices = np.abs(differences).argmin(axis=0)
-    residual = np.diagonal(differences[indices,])
-
-    one_day_in_seconds = 24 * 60 * 60
-    out_of_interp_range = test_dates[residual > one_day_in_seconds]
-    if len(out_of_interp_range):
-        raise ValueError(
-            f'Specified datetimes falls within interval of missing SuomiNet'
-            f' data larger than 1 day: {out_of_interp_range}.'
-        )
+    # Todo: Warn if dat falls in interval > 1 day
+    # The code below is extremely slow
+    # one_day_in_seconds = 24 * 60 * 60
+    # interval_in_seconds = interval * one_day_in_seconds
+    # out_of_interp_range = []
+    # for date in test_dates:
+    #     if (np.abs(dates_with_data - date) > interval_in_seconds).any():
+    #         out_of_interp_range.append(date)
+    #
+    # if out_of_interp_range:
+    #     raise ValueError(
+    #         f'Specified datetimes falls within interval of missing SuomiNet'
+    #         f' data larger than 1 day: {out_of_interp_range}.'
+    #     )
 
 
 def _pwv_date(
