@@ -185,39 +185,9 @@ class PwvDate(TestCase):
                           1,
                           mock_model)
 
-    def test_airmass_dependence(self):
-        """PWV should be proportional to airmass ^ .6
-
-        This PWV airmass relation is presented in  Horne et al. 2012
-        """
-
-        test_date = datetime.utcfromtimestamp(self.pwv_model['date'][0])
-        test_date = test_date.replace(tzinfo=utc)
-        pwv, pwv_err = pwv_atm._pwv_date(test_date)
-        pwv_los, pwv_err_los = pwv_atm._pwv_date(test_date, airmass=2)
-
-        self.assertEqual(pwv_los, (2 ** .6) * pwv)
-        self.assertEqual(pwv_err_los, (2 ** .6) * pwv_err)
-
 
 class TransmissionErrors(TestCase):
     """Test pwv_kpno.transmission for raised errors due to bad arguments"""
-
-    def test_argument_types(self):
-        """Test errors raised from function call with wrong argument types"""
-
-        test_date = datetime(2011, 1, 5, 12, 47, tzinfo=utc)
-
-        # TypeError for date argument (should be datetime)
-        self.assertRaises(TypeError, pwv_atm._raise_transmission_args, "1", 1)
-
-        # TypeError for airmass argument (should be float or int)
-        self.assertRaises(TypeError, pwv_atm._raise_transmission_args,
-                          test_date, "1")
-
-        # ValueError due to naive datetime with no time zone info
-        self.assertRaises(ValueError, pwv_atm._raise_transmission_args,
-                          datetime.now(), 1)
 
     def test_argument_values(self):
         """Test errors raise from function call with date out of data range
@@ -228,17 +198,14 @@ class TransmissionErrors(TestCase):
         """
 
         early_day = datetime(year=2009, month=12, day=31, tzinfo=utc)
-        self.assertRaises(ValueError, pwv_atm._raise_transmission_args,
-                          early_day, 1)
+        self.assertRaises(ValueError, pwv_atm._raise_transmission_args, early_day)
 
         now = datetime.now()
         late_day = now + timedelta(days=1)
-        self.assertRaises(ValueError, pwv_atm._raise_transmission_args,
-                          late_day, 1)
+        self.assertRaises(ValueError, pwv_atm._raise_transmission_args, late_day)
 
         late_year = datetime(year=now.year + 1, month=1, day=1, tzinfo=utc)
-        self.assertRaises(ValueError, pwv_atm._raise_transmission_args,
-                          late_year, 1)
+        self.assertRaises(ValueError, pwv_atm._raise_transmission_args, late_year)
 
 
 class TransmissionResults(TestCase):
@@ -269,7 +236,7 @@ class TransmissionResults(TestCase):
         """
 
         sample_transm = pwv_atm.trans_for_date(
-            datetime(2011, 1, 1, tzinfo=utc), 1, format='datetime')
+            datetime(2011, 1, 1, tzinfo=utc), format='datetime')
         w_units = sample_transm['wavelength'].unit
         t_units = sample_transm['transmission'].unit
 
