@@ -19,8 +19,8 @@
 """pwv_kpno provides models for the atmospheric transmission function due to
 precipitable water vapor (PWV). Using PWV measurements published
 by the SuomiNet project (https://www.suominet.ucar.edu), this package is
-capable of returning the modeled PWV transmission for a given date, time, and
-airmass at customizable geographic locations. By default, this functionality
+capable of returning the modeled PWV transmission for a given date and time
+at customizable geographic locations. By default, this functionality
 is set to model Kitt Peak National Observatory. Default models cover
 wavelengths from 3,000 to 12,000 Angstroms at a resolution of 0.05 Angstroms.
 

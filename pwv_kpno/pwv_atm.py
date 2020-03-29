@@ -64,12 +64,6 @@ An incomplete guide to getting started:
       >>> pwv_atm.trans_for_pwv(pwv, pwv_err)
 
 
-    To retrieve the atmospheric model for at the current site being modeled
-    at a given datetime and airmass:
-
-      >>> pwv_atm.trans_for_date(date=obsv_date,airmass=1.2,format=)
-
-
     To access the PWV measurements for the current site being modeled as an
     astropy table:
 
@@ -154,19 +148,16 @@ def _warn_available_data(
 
 def _pwv_date(
         date: Union[float, np.array, datetime],
-        airmass: float = 1,
         format: str = None,
         test_model: Table = None) \
         -> Tuple[Union[float, np.array], Union[float, np.array]]:
     """Returns the modeled PWV column density at the current site
 
     Interpolate from the modeled PWV column density at at the current site
-    being modeled and return the PWV column density for a given datetime and
-    airmass.
+    being modeled and return the PWV column density for a given datetime.
 
     Args:
         date: The date of the desired PWV column density
-        airmass: The airmass along line of sight
         format: An astropy compatible time format
         test_model: A mock PWV model used by the test suite
 
@@ -187,26 +178,19 @@ def _pwv_date(
     pwv = np.interp(time_stamp, pwv_model['date'], pwv_model['pwv'])
     pwv_err = np.interp(time_stamp, pwv_model['date'], pwv_model['pwv_err'])
 
-    # Determine the PWV level along line of sight as outlined in
-    # Horne et al. 2012
-    pwv_los = pwv * (airmass ** .6)
-    pwv_err_los = pwv_err * (airmass ** .6)
-    return pwv_los, pwv_err_los
+    return pwv, pwv_err
 
 
 def pwv_date(
-        date: Union[float, np.array, datetime],
-        airmass: float = 1,
-        format: str = None) \
+        date: Union[float, np.array, datetime], format: str = None) \
         -> Tuple[Union[float, np.array], Union[float, np.array]]:
     """Returns the modeled PWV column density at the current site
 
     Interpolate from the modeled PWV column density at the current site being
-    modeled and return the PWV column density for a given datetime and airmass.
+    modeled and return the PWV column density for a given datetime.
 
     Args:
         date: The date of the desired PWV column density
-        airmass: The airmass along line of sight
         format: An astropy compatible time format (e.g., unix, mjd, datetime)
 
     Returns:
@@ -214,7 +198,7 @@ def pwv_date(
         The error in modeled PWV column density
     """
 
-    return _pwv_date(date, airmass, format)
+    return _pwv_date(date, format)
 
 
 def downloaded_years() -> List[int]:
@@ -464,12 +448,11 @@ def trans_for_pwv(
     return transmission
 
 
-def _raise_transmission_args(date: datetime, airmass: float):
+def _raise_transmission_args(date: datetime):
     """Raise exception if arguments have wrong type or value
 
     Args:
         date: A datetime value
-        airmass: An airmass value
     """
 
     if not isinstance(date, datetime):
@@ -487,13 +470,9 @@ def _raise_transmission_args(date: datetime, airmass: float):
         err_msg = "Cannot model dates in the future (passed {})"
         raise ValueError(err_msg.format(date))
 
-    if not isinstance(airmass, (float, int)):
-        raise TypeError("Argument 'airmass' (pos 2) must be an int or float")
-
 
 def _trans_for_date(
         date: Union[float, np.array, datetime],
-        airmass: float = 1,
         format: str = None,
         bins: Union[int, list] = None,
         test_model: Table = None) -> Table:
@@ -501,7 +480,6 @@ def _trans_for_date(
 
     Args:
         date: The datetime of the desired model
-        airmass: The airmass of the desired model
         format: An astropy compatible time format
         bins: Integer number of bins or sequence of bin edges
         test_model: A mock PWV model used by the test suite
@@ -510,27 +488,24 @@ def _trans_for_date(
         The modeled transmission function as an astropy table
     """
 
-    pwv, pwv_err = _pwv_date(date, airmass=airmass, format=format,
-                             test_model=test_model)
+    pwv, pwv_err = _pwv_date(date, format=format, test_model=test_model)
 
     return trans_for_pwv(pwv, pwv_err, bins)
 
 
 def trans_for_date(
         date: Union[float, np.array, datetime],
-        airmass: float = 1,
         format: str = None,
         bins: Union[int, list] = None) -> Table:
     """Return a model for the atmospheric transmission function due to PWV
 
-    For a given datetime and airmass, return a model for the atmospheric
+    For a given datetime, return a model for the atmospheric
     transmission function due to precipitable water vapor at the current site
     being modeled. The transmission function can optionally be binned by
     specifying the `bins` argument.
 
     Args:
         date: The date of the desired model in the given format
-        airmass: The airmass of the desired model
         format: An astropy compatible time format (e.g., unix, mjd, datetime)
         bins: Integer number of bins or sequence of bin edges
 
@@ -538,7 +513,7 @@ def trans_for_date(
         The modeled transmission function as an astropy table
     """
 
-    return _trans_for_date(date, airmass, format, bins)
+    return _trans_for_date(date, format, bins)
 
 
 def get_all_receiver_data(receiver_id: str, apply_cuts: bool = True):
