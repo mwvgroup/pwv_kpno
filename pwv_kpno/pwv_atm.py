@@ -106,7 +106,7 @@ from ._update_pwv_model import update_models
 from .package_settings import settings
 
 
-def _warn_available_data_new(
+def _warn_available_data(
         test_dates: Union[float, np.array],
         dates_with_data: np.array) -> None:
     """Warn if given dates don't falls within a range dates with measurements
