@@ -34,13 +34,6 @@ from pwv_kpno import _download_pwv_data
 from pwv_kpno import pwv_atm
 from pwv_kpno.package_settings import settings
 
-__authors__ = ['Daniel Perrefort']
-__copyright__ = 'Copyright 2017, Daniel Perrefort'
-
-__license__ = 'GPL V3'
-__email__ = 'djperrefort@pitt.edu'
-__status__ = 'Release'
-
 EXPECTED_YEARS = list(range(2010, 2020))
 EXPECTED_IDS = {'KITT', 'P014', 'SA46', 'SA48', 'AZAM'}
 
