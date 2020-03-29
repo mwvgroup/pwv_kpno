@@ -56,13 +56,6 @@ from astropy.modeling.blackbody import blackbody_lambda
 
 from pwv_kpno.pwv_atm import trans_for_pwv
 
-__authors__ = ['Daniel Perrefort']
-__copyright__ = 'Copyright 2017, Daniel Perrefort'
-
-__license__ = 'GPL V3'
-__email__ = 'djperrefort@pitt.edu'
-__status__ = 'Release'
-
 
 def sed(temp: float,
         wavelengths: np.array,

@@ -25,14 +25,6 @@ import numpy as np
 import scipy.interpolate as interpolate
 from astropy.table import Table
 
-__authors__ = ['Daniel Perrefort']
-__copyright__ = 'Copyright 2016, Daniel Perrefort'
-__credits__ = ['Azalee Bostroem']
-
-__license__ = 'GPL V3'
-__email__ = 'djperrefort@pitt.com'
-__status__ = 'Release'
-
 
 def _calc_num_density_conversion():
     """Calculate conversion factor from PWV * cross section to optical depth

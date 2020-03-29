@@ -72,19 +72,12 @@ import json
 import os
 import shutil
 from datetime import datetime
-from warnings import warn, simplefilter
+from warnings import simplefilter, warn
 
 import numpy as np
 from astropy.table import Table
 
 from ._atm_model import create_pwv_atm_model
-
-__authors__ = ['Daniel Perrefort']
-__copyright__ = 'Copyright 2017, Daniel Perrefort'
-
-__license__ = 'GPL V3'
-__email__ = 'djperrefort@pitt.edu'
-__status__ = 'Release'
 
 simplefilter('always', UserWarning)
 # Sites included with release that cannot be overwritten by the user

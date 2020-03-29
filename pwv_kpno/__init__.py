@@ -53,14 +53,14 @@ from . import blackbody_with_atm
 from . import package_settings
 from . import pwv_atm
 
-__authors__ = ['Daniel Perrefort']
-__copyright__ = 'Copyright 2017, Daniel Perrefort'
+__authors__ = ['MWV Research Group']
+__copyright__ = 'Copyright 2017, MWV Research Group'
 __credits__ = [
+    'Daniel Perrefort'
     'W. M. Wood-Vasey',
-    'K.Azalee Bostroem',
+    'K. Azalee Bostroem',
     'Jessica Kroboth',
     'Tom Matheson',
-    'Alexander Afanasyev',
 ]
 
 __license__ = 'GPL V3'

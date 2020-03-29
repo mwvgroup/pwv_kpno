@@ -33,15 +33,7 @@ from scipy.odr import ODR, RealData, polynomial
 from ._download_pwv_data import update_local_data
 from .package_settings import settings
 
-__authors__ = ['Daniel Perrefort']
-__copyright__ = 'Copyright 2017, Daniel Perrefort'
-
-__license__ = 'GPL V3'
-__email__ = 'djperrefort@pitt.edu'
-__status__ = 'Release'
-
-warnings.filterwarnings("ignore",
-                        message='Empty data detected for ODR instance.')
+warnings.filterwarnings("ignore", message='Empty data detected for ODR instance.')
 
 
 def _linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array):
