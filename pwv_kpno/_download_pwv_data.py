@@ -30,14 +30,6 @@ from astropy.table import Table, join, unique, vstack
 
 from .package_settings import settings
 
-__authors__ = ['Daniel Perrefort']
-__copyright__ = 'Copyright 2016, Daniel Perrefort'
-__credits__ = ['Jessica Kroboth']
-
-__license__ = 'GPL V3'
-__email__ = 'djperrefort@pitt.edu'
-__status__ = 'Release'
-
 
 @np.vectorize
 def _suomi_date_to_timestamp(year: int, days_str: str) -> float:

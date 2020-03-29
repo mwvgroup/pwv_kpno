@@ -91,7 +91,7 @@ An incomplete guide to getting started:
 """
 
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 from glob import glob
 from typing import List, Tuple, Union
 
@@ -105,55 +105,51 @@ from ._download_pwv_data import _read_file
 from ._update_pwv_model import update_models
 from .package_settings import settings
 
-__authors__ = ['Daniel Perrefort', 'Michael Wood-Vasey']
-__copyright__ = 'Copyright 2017, Daniel Perrefort'
-
-__license__ = 'GPL V3'
-__email__ = 'djperrefort@pitt.edu'
-__status__ = 'Release'
-
 
 def _warn_available_data(
-        test_dates: Union[float, np.array], known_dates: np.array):
-    """Check if a date falls within the range of data in an astropy table
+        test_dates: Union[float, np.array],
+        dates_with_data: np.array) -> None:
+    """Warn if given dates don't falls within a range dates with measurements
 
     Args:
-        test_dates: A timezone aware datetime
-        known_dates: An astropy table containing column 'date'
+        test_dates: Dates to check for available data
+        dates_with_data: Dates with data available
     """
 
     test_dates = np.atleast_1d(test_dates)  # In case passed a float
-    if not len(known_dates):
+    if not len(dates_with_data):
         err_msg = 'No PWV data for primary receiver available on local machine.'
         raise RuntimeError(err_msg)
 
     # Check date falls within the range of available PWV data
-    min_known_date, max_known_date = min(known_dates), max(known_dates)
-    dates_too_early = test_dates[test_dates < min_known_date]
-    if len(dates_too_early):
+    min_known_date = dates_with_data.min(),
+    if (test_dates < min_known_date).any():
         min_date = datetime.utcfromtimestamp(min_known_date)
         raise ValueError(
             f'No PWV data found for dates before {min_date} on local machine'
         )
 
-    dates_too_late = test_dates[test_dates > max_known_date]
-    if len(dates_too_late):
+    max_known_date = dates_with_data.max()
+    if (test_dates > max_known_date).any():
         max_date = datetime.utcfromtimestamp(max_known_date)
         raise ValueError(
             f'No PWV data found for dates after {max_date} on local machine'
         )
 
-    differences = (test_dates.reshape(1, -1) - known_dates.reshape(-1, 1))
-    indices = np.abs(differences).argmin(axis=0)
-    residual = np.diagonal(differences[indices,])
-
-    one_day_in_seconds = 24 * 60 * 60
-    out_of_interp_range = test_dates[residual > one_day_in_seconds]
-    if len(out_of_interp_range):
-        raise ValueError(
-            f'Specified datetimes falls within interval of missing SuomiNet' 
-            f' data larger than 1 day: {out_of_interp_range}.'
-        )
+    # Todo: Warn if dat falls in interval > 1 day
+    # The code below is extremely slow
+    # one_day_in_seconds = 24 * 60 * 60
+    # interval_in_seconds = interval * one_day_in_seconds
+    # out_of_interp_range = []
+    # for date in test_dates:
+    #     if (np.abs(dates_with_data - date) > interval_in_seconds).any():
+    #         out_of_interp_range.append(date)
+    #
+    # if out_of_interp_range:
+    #     raise ValueError(
+    #         f'Specified datetimes falls within interval of missing SuomiNet'
+    #         f' data larger than 1 day: {out_of_interp_range}.'
+    #     )
 
 
 def _pwv_date(
@@ -522,7 +518,7 @@ def _trans_for_date(
 
 def trans_for_date(
         date: Union[float, np.array, datetime],
-        airmass: float = 1, 
+        airmass: float = 1,
         format: str = None,
         bins: Union[int, list] = None) -> Table:
     """Return a model for the atmospheric transmission function due to PWV

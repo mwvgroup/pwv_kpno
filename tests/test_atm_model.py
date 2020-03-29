@@ -22,15 +22,8 @@ from unittest import TestCase
 
 import numpy as np
 
-from pwv_kpno._atm_model import _calc_num_density_conversion
-from pwv_kpno._atm_model import create_pwv_atm_model
-
-__authors__ = ['Daniel Perrefort']
-__copyright__ = 'Copyright 2017, Daniel Perrefort'
-
-__license__ = 'GPL V3'
-__email__ = 'djperrefort@pitt.edu'
-__status__ = 'Release'
+from pwv_kpno.package_settings import _calc_num_density_conversion
+from pwv_kpno.package_settings import create_pwv_atm_model
 
 
 def calc_conversion_factor(cross_section):

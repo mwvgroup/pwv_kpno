@@ -22,13 +22,6 @@ from unittest import TestCase
 
 from pwv_kpno.package_settings import Settings
 
-__authors__ = ['Daniel Perrefort']
-__copyright__ = 'Copyright 2017, Daniel Perrefort'
-
-__license__ = 'GPL V3'
-__email__ = 'djperrefort@pitt.edu'
-__status__ = 'Release'
-
 
 class SettingErrors(TestCase):
     """Test that the Settings class raises errors when appropriate"""

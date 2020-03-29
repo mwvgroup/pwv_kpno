@@ -28,13 +28,6 @@ from pytz import utc
 from pwv_kpno import pwv_atm
 from ._create_mock_data import create_mock_pwv_model
 
-__authors__ = ['Daniel Perrefort']
-__copyright__ = 'Copyright 2017, Daniel Perrefort'
-
-__license__ = 'GPL V3'
-__email__ = 'djperrefort@pitt.edu'
-__status__ = 'Release'
-
 
 def _check_attrs(iterable, **kwargs):
     """Check the attribute values of objects in an iterable

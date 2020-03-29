@@ -23,13 +23,6 @@ from datetime import datetime, timedelta
 from astropy.table import Table
 from pytz import utc
 
-__authors__ = ['Daniel Perrefort']
-__copyright__ = 'Copyright 2017, Daniel Perrefort'
-
-__license__ = 'GPL V3'
-__email__ = 'djperrefort@pitt.edu'
-__status__ = 'Release'
-
 
 def create_mock_pwv_model(year, gaps=None):
     """Create a mock model for the PWV level at Kitt Peak for airmass 1
