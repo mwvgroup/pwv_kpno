@@ -5,17 +5,17 @@ os:
 
 matrix:
   include:
+    - python: 3.5
     - python: 3.6
+    - python: 3.7
     - python: 3.8
 
 install:
-  - python setup.py install
-  - pip install coveralls
-  - pip install pytest-cov
-  - pip freeze
+  - pip install -r requirements.txt
+
+  # Extra dependencies for running tests
+  - pip install coverage
+  - pip install unittest
 
 script:
-  - pytest --cov=pwv_kpno/
-
-after_success:
-  - "coveralls"
+  - coverage run -m unittest

@@ -1,7 +1,0 @@
-include README.md
-include LICENSE.txt
-include pwv_kpno/CONFIG.txt
-graft pwv_kpno/site_data
-graft pwv_kpno/default_atmosphere
-graft pwv_kpno/suomi_data
-graft tests

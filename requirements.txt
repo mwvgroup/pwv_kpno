@@ -1,5 +1,3 @@
-numpy>=1.17.0
-astropy>=3.0.0
+astropy
+numpy
 requests
-pytz
-scipy

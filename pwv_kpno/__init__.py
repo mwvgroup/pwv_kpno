@@ -27,31 +27,7 @@ wavelengths from 3,000 to 12,000 Angstroms at a resolution of 0.05 Angstroms.
 For more information on using this package, documentation is available online
 at https://mwvgroup.github.io/pwv_kpno/ or through the standard python help
 function.
-
-An incomplete guide to getting started:
-
-    To model the effects of PWV absorption on a black body, see the
-    documentation for the `blackbody_with_atm` module:
-
-      >>> from pwv_kpno import blackbody_with_atm as bb_atm
-
-
-    To model the atmospheric transmission function, either for a known PWV
-    concentration or for a datetime at a particular location, see the `pw_atm`
-    module:
-
-      >>> from pwv_kpno import pwv_atm
-
-
-    To configure this package to model a custom geographical site, and to
-    modify other package settings, see the `package_settings` module:
-
-      >>> from pwv_kpno import package_settings
 """
-
-from . import blackbody_with_atm
-from . import package_settings
-from . import pwv_atm
 
 __authors__ = ['MWV Research Group']
 __copyright__ = 'Copyright 2017, MWV Research Group'
@@ -64,12 +40,6 @@ __credits__ = [
 ]
 
 __license__ = 'GPL V3'
-__version__ = '1.2.2'
+__version__ = '2.0.0'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Release'
-
-from .package_settings import settings as _settings
-
-from .package_settings import settings as _settings
-
-_settings.set_site('kitt_peak')
