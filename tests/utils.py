@@ -5,7 +5,12 @@
 
 import functools
 import os
+from datetime import datetime, timedelta
 from tempfile import TemporaryDirectory
+from typing import List, Tuple
+
+from astropy.table import Table
+from pytz import utc
 
 
 class TestWithCleanEnv:
@@ -84,3 +89,47 @@ class TestWithCleanEnv:
             setattr(wrap_class, attr_name, self._decorate_callable(attr))
 
         return wrap_class
+
+
+def create_mock_pwv_model(year: int, gaps: List[Tuple[datetime, datetime]] = None):
+    """Create a mock model for the PWV level at Kitt Peak for airmass 1
+
+    Return a table with the columns "date" and "pwv" and "pwv_err". Dates span
+    the given year in 30 minute increments and are represented in UTC. PWV
+    values are calculated as the index of its position in the table modulo
+    15 mm. Error values are 10% of the PWV values. Gaps in the returned data
+    can be included via the gaps argument.
+
+    Args:
+        year  (int): The year of the desired model
+        gaps (list): [(start day as datetime, gap length in days as int), ]
+
+    Returns:
+        The modeled data set as an astropy table
+    """
+
+    start_date = datetime(year - 1, 12, 31, 23, 45, tzinfo=utc)
+    end_date = datetime(year + 1, 1, 1, tzinfo=utc)
+    total_time_intervals = (end_date - start_date).days * 24 * 60 // 30
+
+    out_table = Table(names=['date', 'pwv', 'pwv_err'],
+                      dtype=[float, float, float])
+
+    for i in range(total_time_intervals):
+        start_date += timedelta(minutes=30)
+        pwv = i % 15
+        out_table.add_row([start_date.timestamp(), pwv, pwv * .1])
+
+    if gaps is not None:
+        intervals = 48  # number of 30 min intervals in a day
+        gap_indices = []
+
+        for date, length in gaps:
+            gap_start = (date - start_date).days
+            gap_end = gap_start + length
+            gap_range = range(gap_start * intervals, gap_end * intervals)
+            gap_indices.extend(gap_range)
+
+        out_table.remove_rows(gap_indices)
+
+    return out_table
