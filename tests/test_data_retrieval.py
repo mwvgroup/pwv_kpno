@@ -16,7 +16,7 @@ import requests_mock
 
 import pwv_kpno
 from pwv_kpno import data_management, gps_pwv
-from .utils import TestWithCleanEnv
+from tests.utils import TestWithCleanEnv
 
 
 @TestWithCleanEnv()

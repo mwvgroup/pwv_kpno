@@ -146,8 +146,9 @@ class SuomiDownloader:
 class SuomiFileParser:
     """Callable parser for reading SuomiNet data files"""
 
+    @staticmethod
     @np.vectorize
-    def _suomi_date_to_timestamp(self, year: int, days: Union[str, float]) -> float:
+    def _suomi_date_to_timestamp(year: int, days: Union[str, float]) -> float:
         """Convert the SuomiNet date format into UTC timestamp
 
         SuomiNet dates are stored as decimal days in a given year. For example,
@@ -197,7 +198,7 @@ class SuomiFileParser:
 
         return data
 
-    def __call__(self, path: str, data_cuts: dict = None) -> Table:
+    def __call__(self, path: PathLike, data_cuts: dict = None) -> Table:
         """Return PWV measurements from a SuomiNet data file as an astropy table
 
         Datetimes are expressed as UNIX timestamps and PWV is measured
@@ -215,6 +216,7 @@ class SuomiFileParser:
             An astropy Table with data from path
         """
 
+        path = str(path)
         receiver_id = path[-15:-11]
         names = ['date', receiver_id, receiver_id + '_err', 'ZenithDelay',
                  'SrfcPress', 'SrfcTemp', 'SrfcRH']
