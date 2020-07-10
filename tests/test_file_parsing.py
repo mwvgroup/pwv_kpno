@@ -28,7 +28,7 @@ from pytz import utc
 
 from pwv_kpno import file_parsing
 
-TEST_DATA_DIR = Path(__file__).parent / 'test_data'
+TEST_DATA_DIR = Path(__file__).parent / 'testing_data'
 
 
 class DateFormatConversion(TestCase):
