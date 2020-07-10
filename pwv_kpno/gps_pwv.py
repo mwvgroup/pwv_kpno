@@ -21,55 +21,51 @@ given location. This includes location specific weather data (e.g., temperature
 and pressure measurements) and PWV concentrations (both measured and modeled).
 """
 
+from datetime import datetime
+
 from astropy.table import Table
 
 from .types import NumpyReturn
 
 
+def search_data_table(data, year: int = None, month: int = None, day=None, hour=None):
+    # Raise exception for bad datetime args
+    datetime(year, month, day, hour)
+    raise NotImplementedError
+
+
 class GPSReceiver:
     """Represents data taken by a SuomiNet GPS receiver"""
 
-    # Used to signal that new data has been downloaded and PWV values to
+    # Used to signal that new data has been downloaded and PWV values need to
     # be re-loaded into into memory by class instances
     _reload_from_download = [False]
 
-    def __init__(self, primary, secondary=None, data_cuts=None, model=None):
+    def __init__(self, primary, secondaries=None, data_cuts=None):
         self._primary = primary
-        self._secondary = secondary
+        self._secondaries = tuple(secondaries)
         self.data_cuts = data_cuts
-        self._model = model
 
     @property
     def primary(self):
-        raise NotImplementedError
+        return self._primary
 
     @primary.setter
     def primary(self, value):
         raise NotImplementedError
 
     @property
-    def secondary(self):
+    def secondaries(self):
+        return self._secondaries
+
+    @secondaries.setter
+    def secondaries(self, value):
         raise NotImplementedError
 
-    @secondary.setter
-    def secondary(self, value):
+    def modeled_pwv(self, year: int = None, month: int = None, day=None, hour=None) -> Table:
         raise NotImplementedError
 
-    @property
-    def model(self):
-        raise NotImplementedError
-
-    @model.setter
-    def model(self, value):
-        raise NotImplementedError
-
-    def modeled_pwv(self) -> Table:
-        raise NotImplementedError
-
-    def measured_pwv(self) -> Table:
-        raise NotImplementedError
-
-    def weather_data(self) -> Table:
+    def weather_data(self, year: int = None, month: int = None, day=None, hour=None) -> Table:
         raise NotImplementedError
 
     def interp_pwv_date(self) -> NumpyReturn:
