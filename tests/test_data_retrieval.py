@@ -15,7 +15,7 @@ import requests
 import requests_mock
 
 import pwv_kpno
-from pwv_kpno.data_management import find_data_dir, SuomiDownloader
+from pwv_kpno import data_management, gps_pwv
 from .utils import TestWithCleanEnv
 
 
@@ -28,26 +28,26 @@ class FindDataDir(TestCase):
 
         del os.environ['SUOMINET_DIR']
         default_data_dir = Path(pwv_kpno.__file__).resolve().parent / 'suomi_data'
-        self.assertEqual(default_data_dir, find_data_dir())
+        self.assertEqual(default_data_dir, data_management.find_data_dir())
 
     def test_directory_with_env_variable(self):
         """Test return directory defaults to environmental definition"""
 
         expected_dir = os.environ['SUOMINET_DIR']
         self.assertEqual(
-            Path(expected_dir), find_data_dir(),
+            Path(expected_dir), data_management.find_data_dir(),
             f'Returned path did not equal environmental variable: {expected_dir}')
 
     def test_directory_is_resolves(self):
         """Test returned path object is resolved"""
 
-        data_dir = find_data_dir()
+        data_dir = data_management.find_data_dir()
         self.assertEqual(data_dir.resolve(), data_dir)
 
 
 @requests_mock.Mocker()
 @TestWithCleanEnv()
-class TestSuomiDownloaderURLS(TestCase):
+class SuomiDownloaderURLS(TestCase):
     """Test ``SuomiDownloader`` retrieves data from the correct URLs"""
 
     # Expected URLs for each kind of data release. Supports regex.
@@ -57,7 +57,7 @@ class TestSuomiDownloaderURLS(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.downloader = SuomiDownloader()
+        cls.downloader = data_management.SuomiDownloader()
 
     def test_connection_errors_are_raised(self, mocker):
         """Test connection errors are not caught silently by the downloader"""
@@ -92,11 +92,11 @@ class TestSuomiDownloaderURLS(TestCase):
 
 
 @TestWithCleanEnv()
-class TestSuomiDownloaderPaths(TestCase):
+class SuomiDownloaderPaths(TestCase):
     """Test ``SuomiDownloader`` saves files with the correct naming scheme"""
 
     def setUp(self):
-        self.downloader = SuomiDownloader()
+        self.downloader = data_management.SuomiDownloader()
         self.dummy_rec_name = 'dummy_rec'
         self.dummy_year = 2020
 
@@ -135,3 +135,30 @@ class TestSuomiDownloaderPaths(TestCase):
         self.assertCorrectFilePath(
             self.downloader.download_global_daily,
             f'{self.dummy_rec_name}gl_{self.dummy_year}.plt')
+
+
+class DataParsingReset(TestCase):
+    """Test the ``data_management`` signals the ``GPSReceiver`` class when
+    new data is downloaded."""
+
+    def tearDown(self):
+        """Reset the ``GPSReceiver`` reload attribute"""
+
+        gps_pwv.GPSReceiver._reload_from_download[0] = False
+
+    @staticmethod
+    def call_arbitrary_download():
+        """Call a download from a dummy URL"""
+
+        dummy_url = 'https://some.url.com'
+        dummy_path = Path(os.environ['SUOMINET_DIR']) / 'dummy_path'
+        with requests_mock.Mocker() as mocker:
+            mocker.register_uri('GET', re.compile('https://*'), )
+            data_management.SuomiDownloader._download_suomi_data(
+                dummy_url, dummy_path)
+
+    def runTest(self):
+        """Test ``GPSReceiver._reload_from_download`` is updated after a download"""
+
+        self.call_arbitrary_download()
+        self.assertTrue(gps_pwv.GPSReceiver._reload_from_download[0])

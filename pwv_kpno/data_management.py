@@ -30,7 +30,8 @@ import numpy as np
 import requests
 from astropy.table import Table, unique
 
-PathLike = Union[str, Path]
+from .gps_pwv import GPSReceiver
+from .types import PathLike
 
 
 def find_data_dir() -> Path:
@@ -71,6 +72,8 @@ class SuomiDownloader:
             response.raise_for_status()
             with open(path, 'wb') as ofile:
                 ofile.write(response.content)
+
+        GPSReceiver._reload_from_download[0] = True
 
     def download_conus_daily(self, receiver_id: str, year: int, timeout=None):
         """Download CONUS data from the SuomiNet daily data releases

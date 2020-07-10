@@ -17,9 +17,8 @@
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
 """The ``gps_pwv`` module is responsible for serving SuomiNet GPS data at a
-given location. This includes location specific weather  data (e.g.,
-temperature and pressure measurements) and PWV concentrations (both measured and
-modeled).
+given location. This includes location specific weather data (e.g., temperature
+and pressure measurements) and PWV concentrations (both measured and modeled).
 """
 
 from astropy.table import Table
