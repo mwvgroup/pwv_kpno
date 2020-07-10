@@ -43,20 +43,11 @@ def find_data_dir() -> Path:
     if 'SUOMINET_DIR' in os.environ:
         return Path(os.environ['SUOMINET_DIR']).resolve()
 
-    return Path(__file__).resolve().parent / 'data'
+    return Path(__file__).resolve().parent / 'suomi_data'
 
 
 class SuomiDownloader:
     """Handles data downloading from SuomiNet servers to a local directory"""
-
-    def __init__(self, data_dir: Path = None):
-        """Handles data downloading from SuomiNet servers to a local directory
-
-        Args:
-            data_dir: Optional directory to use instead of package default directory
-        """
-
-        self.data_dir = Path(data_dir) if data_dir else find_data_dir()
 
     @staticmethod
     def _download_suomi_data(url: str, path: PathLike, timeout: float = None):
@@ -68,7 +59,7 @@ class SuomiDownloader:
             timeout: How long to wait before the request times out
 
         Raises:
-            HTTPError
+            HTTPError, TimeoutError, ConnectionError
         """
 
         with catch_warnings():
@@ -90,10 +81,10 @@ class SuomiDownloader:
             timeout: How long to wait before the request times out
 
         Raises:
-            HTTPError
+            HTTPError, TimeoutError, ConnectionError
         """
 
-        path = self.data_dir / '{}dy_{}.plt'.format(receiver_id, year)
+        path = find_data_dir() / '{}dy_{}.plt'.format(receiver_id, year)
         url = 'https://www.suominet.ucar.edu/data/staYrDay/{}pp_{}.plt'.format(receiver_id, year)
         self._download_suomi_data(url, path, timeout)
 
@@ -106,10 +97,10 @@ class SuomiDownloader:
             timeout: How long to wait before the request times out
 
         Raises:
-            HTTPError
+            HTTPError, TimeoutError, ConnectionError
         """
 
-        path = self.data_dir / '{}hr_{}.plt'.format(receiver_id, year)
+        path = find_data_dir() / '{}hr_{}.plt'.format(receiver_id, year)
         url = 'https://www.suominet.ucar.edu/data/staYrHr/{}nrt_{}.plt'.format(receiver_id, year)
         self._download_suomi_data(url, path, timeout)
 
@@ -122,15 +113,15 @@ class SuomiDownloader:
             timeout: How long to wait before the request times out
 
         Raises:
-            HTTPError
+            HTTPError, TimeoutError, ConnectionError
         """
 
-        path = self.data_dir / '{}gl_{}.plt'.format(receiver_id, year)
+        path = find_data_dir() / '{}gl_{}.plt'.format(receiver_id, year)
         url = 'https://www.suominet.ucar.edu/data/staYrDayGlob/{}nrt_{}.plt'.format(receiver_id, year)
         self._download_suomi_data(url, path, timeout)
 
     def download_combined_data(self, receiver_id: str, year: int, timeout: float = None):
-        """Download SuomiNet data for a given year and SuomiNet id
+        """Download all available SuomiNet data for a given year and SuomiNet id
 
         Convenience function for downloading any available data from the CONUS
         daily, CONUS hourly, and global daily data releases.
@@ -141,7 +132,7 @@ class SuomiDownloader:
             timeout: How long to wait before the request times out
 
         Raises:
-            HTTPError
+            HTTPError, TimeoutError, ConnectionError
         """
 
         self.download_conus_daily(receiver_id, year, timeout)
