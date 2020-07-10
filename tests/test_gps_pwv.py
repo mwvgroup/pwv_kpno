@@ -23,7 +23,8 @@ from datetime import datetime
 from pathlib import Path
 from unittest import TestCase
 
-from pwv_kpno.gps_pwv import search_data_table
+from pwv_kpno.gps_pwv import search_data_table, GPSReceiver
+from tests.utils import TestWithCleanEnv
 
 TEST_DATA_DIR = Path(__file__).parent / 'testing_data'
 
@@ -66,3 +67,108 @@ class TableSearchingErrors(TestCase):
             self.assertRaises(
                 ValueError, search_data_table, hour=bad_hour,
                 msg=err_msg.format(bad_hour))
+
+
+class AttributesAreAccessible(TestCase):
+    """Test receiver values for the ``GPSReceiver`` are get/settable"""
+
+    def setUp(self):
+        self.primary = 'REC1'
+        self.secondaries = ('REC2', 'REC3')
+        self.receiver = GPSReceiver(primary=self.primary, secondaries=self.secondaries)
+
+    def test_primary_rec_accessible(self):
+        """Test the primary receiver is accessible through the
+        ``primary`` attribute
+        """
+
+        self.assertEqual(self.primary, self.receiver.primary)
+
+    def test_primary_rec_is_settable(self):
+        """Test the ``primary`` attribute has a setter"""
+
+        new_primary = 'new_primary'
+        self.receiver.primary = new_primary
+        self.assertEqual(new_primary, self.receiver.primary)
+
+    def test_secondary_recs_accessible(self):
+        """Test the secondary receivers are accessible through the
+        ``secondaries`` attribute
+        """
+
+        self.assertEqual(self.secondaries, self.receiver.secondaries)
+
+    def test_secondary_recs_are_settable(self):
+        """Test the ``secondaries`` attribute has a setter"""
+
+        self.assertEqual(self.primary, self.receiver.secondaries)
+
+
+@TestWithCleanEnv(TEST_DATA_DIR)
+class ModeledPWV(TestCase):
+    """Tests for the 'GPSReceiver.modeled_pwv' function"""
+
+    def setUp(self):
+        self.receiver = GPSReceiver('KITT')
+
+    def test_returned_column_names(self):
+        """Test returned table has two columns named ``date`` and the
+        primary receiver Id
+        """
+
+        returned_column_order = self.receiver.modeled_pwv().colnames
+        expected_col_order = ['date', self.receiver.primary]
+        self.assertListEqual(expected_col_order, returned_column_order)
+
+    def test_filtering_by_args(self):
+        """Test returned dates are filtered by kwarg arguments"""
+
+        search_kwargs = {'year': 2010, 'month': 7, 'day': 21, 'hour': 5}
+        full_table = self.receiver.modeled_pwv()
+        searched_table = search_data_table(full_table, **search_kwargs)
+        returned_table = self.receiver.modeled_pwv(**search_kwargs)
+        self.assertEqual(searched_table, returned_table)
+
+    def test_units(self):
+        """Test columns for appropriate units"""
+
+        expected_units = {'date': 'UTC', self.receiver.primary: 'mm'}
+        data_table = self.receiver.modeled_pwv()
+        for column, unit in expected_units.items():
+            self.assertEqual(unit, data_table[column].unit)
+
+
+@TestWithCleanEnv(TEST_DATA_DIR)
+class WeatherData(TestCase):
+    """Tests for the ``GPSReceiver.weather_data`` function"""
+
+    def setUp(self):
+        self.receiver = GPSReceiver('KITT')
+
+    def test_returned_column_names(self):
+        """Test returned table has two columns named ``date`` and the
+        primary receiver Id
+        """
+
+        returned_column_order = self.receiver.modeled_pwv().colnames
+        expected_col_order = ['date', 'pwv', 'temperature', 'pressure', 'humidity']
+        self.assertListEqual(expected_col_order, returned_column_order)
+
+    def test_filtering_by_args(self):
+        """Test returned dates are filtered by kwarg arguments"""
+
+        search_kwargs = {'year': 2010, 'month': 7, 'day': 21, 'hour': 5}
+        full_table = self.receiver.modeled_pwv()
+        searched_table = search_data_table(full_table, **search_kwargs)
+        returned_table = self.receiver.modeled_pwv(**search_kwargs)
+        self.assertEqual(searched_table, returned_table)
+
+    def test_units(self):
+        """Test columns for appropriate units"""
+
+        expected_units = {'date': 'UTC', 'pwv': 'mm', 'temperature': 'k',
+                          'pressure': 'bar', 'humidity': '%'}
+
+        data_table = self.receiver.modeled_pwv()
+        for column, unit in expected_units.items():
+            self.assertEqual(unit, data_table[column].unit)
