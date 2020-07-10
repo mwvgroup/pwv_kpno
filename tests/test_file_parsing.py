@@ -26,7 +26,7 @@ from unittest import TestCase
 
 from pytz import utc
 
-from pwv_kpno.data_management import SuomiFileParser
+from pwv_kpno import file_parsing
 
 TEST_DATA_DIR = Path(__file__).parent / 'test_data'
 
@@ -40,7 +40,7 @@ class DateFormatConversion(TestCase):
         # Date with known round off error before bug fix in 0.9.13
         jan_01_2010_01_15 = datetime(2010, 1, 1, 1, 15, tzinfo=utc)
         self.assertEqual(
-            SuomiFileParser._suomi_date_to_timestamp(2010, '1.05208'),
+            file_parsing._suomi_date_to_timestamp(2010, '1.05208'),
             jan_01_2010_01_15.timestamp())
 
     def test_correct_conversion_for_known_dates(self):
@@ -49,13 +49,13 @@ class DateFormatConversion(TestCase):
         error_msg = 'Incorrect _timestamp for {}'
         jan_01_2000_00_15 = datetime(2000, 1, 1, 0, 15, tzinfo=utc)
         self.assertEqual(
-            SuomiFileParser._suomi_date_to_timestamp(2000, '1.01042'),
+            file_parsing._suomi_date_to_timestamp(2000, '1.01042'),
             jan_01_2000_00_15.timestamp(),
             error_msg.format(jan_01_2000_00_15))
 
         dec_31_2021_23_15 = datetime(2021, 12, 31, 23, 15, tzinfo=utc)
         self.assertEqual(
-            SuomiFileParser._suomi_date_to_timestamp(2021, '365.96875'),
+            file_parsing._suomi_date_to_timestamp(2021, '365.96875'),
             dec_31_2021_23_15.timestamp(),
             error_msg.format(dec_31_2021_23_15))
 
@@ -67,7 +67,7 @@ class SuomiNetFileParsing(TestCase):
         """Test returned data has correct columns"""
 
         # Data file with no known formatting issues
-        parsed_data = SuomiFileParser()(TEST_DATA_DIR / 'KITThr_2016.plt')
+        parsed_data = file_parsing.read_suomi_data(TEST_DATA_DIR / 'KITThr_2016.plt')
         expected_columns = ['date', 'KITT', 'KITT_err', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH']
         self.assertEqual(expected_columns, parsed_data.colnames)
 
@@ -75,7 +75,7 @@ class SuomiNetFileParsing(TestCase):
         """Test for the removal of any duplicate dates"""
 
         # Data file with known duplicate entries
-        parsed_data = SuomiFileParser()(TEST_DATA_DIR / 'AZAMhr_2015.plt')
+        parsed_data = file_parsing.read_suomi_data(TEST_DATA_DIR / 'AZAMhr_2015.plt')
 
         table_entries = len(parsed_data)
         unique_dates = len(set(parsed_data['date']))
@@ -84,12 +84,11 @@ class SuomiNetFileParsing(TestCase):
     def test_removed_negative_values(self):
         """Test for the removal of negative PWV values"""
 
-        parsed_data = SuomiFileParser()(TEST_DATA_DIR / 'KITThr_2016.plt')
+        parsed_data = file_parsing.read_suomi_data(TEST_DATA_DIR / 'KITThr_2016.plt')
         is_negative_pwv = any(parsed_data['KITT'] < 0)
         self.assertFalse(is_negative_pwv)
 
-    @staticmethod
-    def test_parse_2010_data():
+    def test_parse_2010_data(self):
         """Test file parsing of SuomiNet data published in 2010
 
         In 2010 SuomiNet changed the number of columns in their automatically
@@ -97,4 +96,4 @@ class SuomiNetFileParsing(TestCase):
         to have a different number of columns from the second half of the year.
         """
 
-        SuomiFileParser()(TEST_DATA_DIR / 'SA48dy_2010.plt')
+        file_parsing.read_suomi_data(TEST_DATA_DIR / 'SA48dy_2010.plt')

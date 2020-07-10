@@ -9,13 +9,14 @@ No external HTTP requests are made by these tests.
 import os
 import re
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from unittest import TestCase
 
 import requests
 import requests_mock
 
 import pwv_kpno
-from pwv_kpno import data_management, gps_pwv
+from pwv_kpno import downloads, gps_pwv
 from tests.utils import TestWithCleanEnv
 
 
@@ -28,20 +29,20 @@ class FindDataDir(TestCase):
 
         del os.environ['SUOMINET_DIR']
         default_data_dir = Path(pwv_kpno.__file__).resolve().parent / 'suomi_data'
-        self.assertEqual(default_data_dir, data_management.find_data_dir())
+        self.assertEqual(default_data_dir, downloads.find_data_dir())
 
     def test_directory_with_env_variable(self):
         """Test return directory defaults to environmental definition"""
 
         expected_dir = os.environ['SUOMINET_DIR']
         self.assertEqual(
-            Path(expected_dir), data_management.find_data_dir(),
+            Path(expected_dir), downloads.find_data_dir(),
             f'Returned path did not equal environmental variable: {expected_dir}')
 
     def test_directory_is_resolves(self):
         """Test returned path object is resolved"""
 
-        data_dir = data_management.find_data_dir()
+        data_dir = downloads.find_data_dir()
         self.assertEqual(data_dir.resolve(), data_dir)
 
 
@@ -55,10 +56,6 @@ class SuomiDownloaderURLS(TestCase):
     conus_hourly_url = 'https://www.suominet.ucar.edu/data/staYrHr/*'
     global_daily_url = 'https://www.suominet.ucar.edu/data/staYrDayGlob/*'
 
-    @classmethod
-    def setUpClass(cls):
-        cls.downloader = data_management.SuomiDownloader()
-
     def test_connection_errors_are_raised(self, mocker):
         """Test connection errors are not caught silently by the downloader"""
 
@@ -68,7 +65,7 @@ class SuomiDownloaderURLS(TestCase):
         func_args = dict(url=url, path=Path('./test'), timeout=1)
         self.assertRaises(
             requests.exceptions.ConnectTimeout,
-            self.downloader._download_suomi_data,
+            downloads._download_suomi_data,
             **func_args
         )
 
@@ -76,19 +73,19 @@ class SuomiDownloaderURLS(TestCase):
         """Test ``download_conus_daily`` downloads from the conus daily url"""
 
         mocker.register_uri('GET', re.compile(self.conus_daily_url))
-        self.downloader.download_conus_daily('dummy_rec', 2020)
+        downloads.download_conus_daily('dummy_rec', 2020)
 
     def test_correct_conus_hourly_url(self, mocker):
         """Test ``download_conus_hourly`` downloads from the conus hourly url"""
 
         mocker.register_uri('GET', re.compile(self.conus_hourly_url))
-        self.downloader.download_conus_hourly('dummy_rec', 2020)
+        downloads.download_conus_hourly('dummy_rec', 2020)
 
     def test_correct_conus_global_daily_url(self, mocker):
         """Test ``download_global_daily`` downloads from the global daily url"""
 
         mocker.register_uri('GET', re.compile(self.global_daily_url))
-        self.downloader.download_global_daily('dummy_rec', 2020)
+        downloads.download_global_daily('dummy_rec', 2020)
 
 
 @TestWithCleanEnv()
@@ -96,7 +93,6 @@ class SuomiDownloaderPaths(TestCase):
     """Test ``SuomiDownloader`` saves files with the correct naming scheme"""
 
     def setUp(self):
-        self.downloader = data_management.SuomiDownloader()
         self.dummy_rec_name = 'dummy_rec'
         self.dummy_year = 2020
 
@@ -119,21 +115,21 @@ class SuomiDownloaderPaths(TestCase):
         """Test ``download_conus_daily`` uses the correct file pattern"""
 
         self.assertCorrectFilePath(
-            self.downloader.download_conus_daily,
+            downloads.download_conus_daily,
             f'{self.dummy_rec_name}dy_{self.dummy_year}.plt')
 
     def test_correct_conus_hourly_path_format(self):
         """Test ``download_conus_hourly`` uses the correct file pattern"""
 
         self.assertCorrectFilePath(
-            self.downloader.download_conus_hourly,
+            downloads.download_conus_hourly,
             f'{self.dummy_rec_name}hr_{self.dummy_year}.plt')
 
     def test_correct_conus_global_daily_path_format(self):
         """Test ``download_global_daily`` uses the correct file pattern"""
 
         self.assertCorrectFilePath(
-            self.downloader.download_global_daily,
+            downloads.download_global_daily,
             f'{self.dummy_rec_name}gl_{self.dummy_year}.plt')
 
 
@@ -151,11 +147,13 @@ class DataParsingReset(TestCase):
         """Call a download from a dummy URL"""
 
         dummy_url = 'https://some.url.com'
-        dummy_path = Path(os.environ['SUOMINET_DIR']) / 'dummy_path'
-        with requests_mock.Mocker() as mocker:
-            mocker.register_uri('GET', re.compile('https://*'), )
-            data_management.SuomiDownloader._download_suomi_data(
-                dummy_url, dummy_path)
+        with TemporaryDirectory() as tempdir:
+            dummy_path = Path(tempdir) / 'dummy_path'
+
+            with requests_mock.Mocker() as mocker:
+                mocker.register_uri('GET', re.compile('https://*'), )
+                downloads._download_suomi_data(
+                    dummy_url, dummy_path)
 
     def runTest(self):
         """Test ``GPSReceiver._reload_from_download`` is updated after a download"""
