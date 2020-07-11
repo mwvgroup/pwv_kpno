@@ -29,11 +29,12 @@ class Transmission:
     """Represents an PWV atmospheric transmission model"""
 
     def __init__(self, wave: ArrayLike, transmission: ArrayLike, name: str = None):
+        self.pwv = 0
         self.name = name
         self.wave = wave
         self.transmission = transmission
 
-    def __call__(self, wave: ArrayLike, resolution: float=None) -> np.array:
+    def __call__(self, wave: ArrayLike, resolution: float = None) -> np.array:
         """Evaluate transmission model at given wavelengths
 
         Args:
@@ -61,5 +62,6 @@ class Transmission:
     def __repr__(self):
         return '<Transmission(name ={})>'.format(self.name)
 
+
 # Todo: Define the default transmission model
-# default_model = Transmission()
+default_model = Transmission([], [])
