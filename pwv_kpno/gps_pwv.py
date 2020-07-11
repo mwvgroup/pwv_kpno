@@ -21,12 +21,62 @@ given location. This includes location specific weather data (e.g., temperature
 and pressure measurements) and PWV concentrations (both measured and modeled).
 """
 
+import warnings
 from datetime import datetime
 from typing import Tuple
 
+import numpy as np
 from astropy.table import Table
+from scipy.odr import ODR, RealData, polynomial
 
 from .types import NumpyReturn, NumpyArgument
+
+warnings.filterwarnings("ignore", message='Empty data detected for ODR instance.')
+
+
+def _linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> Tuple[np.array, np.array]:
+    """Optimize and apply a linear regression using masked arrays
+
+    Generates a linear fit f using orthogonal distance regression and returns
+    the applied model f(x). If y is completely masked, return y and sy.
+
+    Args:
+        x: The independent variable of the regression
+        y: The dependent variable of the regression
+        sx: Standard deviations of x
+        sy: Standard deviations of y
+
+    Returns:
+        The applied linear regression on x as a masked array
+        The uncertainty in the applied linear regression as a masked array
+    """
+
+    x = np.ma.array(x)  # This type cast will propagate into returns
+    y = np.ma.array(y)  # It also ensures that x, y have a .mask attribute
+
+    if y.mask.all():
+        return y, sy
+
+    # Fit data with orthogonal distance regression (ODR)
+    indices = ~np.logical_or(x.mask, y.mask)
+    data = RealData(x=x[indices], y=y[indices], sx=sx[indices], sy=sy[indices])
+    odr = ODR(data, polynomial(1), beta0=[0., 1.])
+    fit_results = odr.run()
+
+    fit_fail = 'Numerical error detected' in fit_results.stopreason
+    if fit_fail:
+        raise RuntimeError(fit_results.stopreason)
+
+    # Apply the linear regression
+    b, m = fit_results.beta
+    applied_fit = m * x + b
+    applied_fit.mask = np.logical_or(x.mask, applied_fit <= 0)
+
+    std = np.ma.std(y[indices] - m * x[indices] - b)
+    error = np.ma.zeros(applied_fit.shape) + std
+    error.mask = applied_fit.mask
+
+    return applied_fit, error
 
 
 def search_data_table(

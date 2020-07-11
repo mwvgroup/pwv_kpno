@@ -22,6 +22,7 @@ water vapor measurements from SuomiNet onto the local machine.
 
 import os
 from pathlib import Path
+from typing import Union, List
 from warnings import catch_warnings, simplefilter
 
 import requests
@@ -119,11 +120,12 @@ def download_global_daily(receiver_id: str, year: int, timeout=None):
     _download_suomi_data(url, path, timeout)
 
 
-def download_combined_data(receiver_id: str, year: int, timeout: float = None):
+def download_combined_data(receiver_id: str, year: Union[int, List] = None, timeout: float = None) -> List:
     """Download all available SuomiNet data for a given year and SuomiNet id
 
     Convenience function for downloading any available data from the CONUS
-    daily, CONUS hourly, and global daily data releases.
+    daily, CONUS hourly, and global daily data releases. If no year is
+    specified, all available data is downloaded for years 2010 onward.
 
     Args:
         receiver_id: Id of the SuomiNet GPS receiver to download data for
@@ -137,3 +139,4 @@ def download_combined_data(receiver_id: str, year: int, timeout: float = None):
     download_conus_daily(receiver_id, year, timeout)
     download_conus_hourly(receiver_id, year, timeout)
     download_global_daily(receiver_id, year, timeout)
+    return []  # Todo
