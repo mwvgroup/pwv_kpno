@@ -23,6 +23,8 @@ from datetime import datetime
 from pathlib import Path
 from unittest import TestCase
 
+import numpy as np
+
 from pwv_kpno.gps_pwv import search_data_table, GPSReceiver
 from tests.utils import TestWithCleanEnv
 
@@ -101,7 +103,9 @@ class AttributesAreAccessible(TestCase):
     def test_secondary_recs_are_settable(self):
         """Test the ``secondaries`` attribute has a setter"""
 
-        self.assertEqual(self.primary, self.receiver.secondaries)
+        new_secondaries = ('dummy1', 'dummy2')
+        self.receiver.secondaries = new_secondaries
+        self.assertEqual(new_secondaries, self.receiver.secondaries)
 
 
 @TestWithCleanEnv(TEST_DATA_DIR)
@@ -172,3 +176,42 @@ class WeatherData(TestCase):
         data_table = self.receiver.modeled_pwv()
         for column, unit in expected_units.items():
             self.assertEqual(unit, data_table[column].unit)
+
+
+class PWVDateInterpolation(TestCase):
+    """Tests for the ``GPSReceiver.interp_pwv_date`` function"""
+
+    def setUp(self):
+        self.receiver = GPSReceiver('KITT')
+
+    def test_error_for_out_of_bounds(self):
+        """Test a value error is raised when interpolating for an out of bounds date"""
+
+        max_date = max(self.receiver.modeled_pwv()['date'])
+        out_of_bounds_date = max_date + 1
+        self.assertRaises(ValueError, self.receiver.interp_pwv_date, out_of_bounds_date)
+
+    def test_error_for_no_nearby_data(self):
+        """Test an error is raised if no modeled PWV values are available
+        within a given range of the requested datetime
+        """
+
+        self.fail()
+
+    def test_recovers_model_at_grid_points(self):
+        """Test interpolation recovers grid points of the modeled PWV"""
+
+        modeled_pwv = self.receiver.modeled_pwv()
+        target_date = modeled_pwv['date'][0]
+        target_pwv = modeled_pwv['pwv'][0]
+        interpolated_pwv = self.receiver.interp_pwv_date(target_date)
+        self.assertEqual(target_pwv, interpolated_pwv)
+
+    def test_return_matches_linear_interpolation(self):
+        """Test the returned PWV is consistent with a linear interpolation"""
+
+        modeled_pwv = self.receiver.modeled_pwv()
+        test_date = 1594467199  # July 11th, 2020
+        expected_pwv = np.interp(test_date, modeled_pwv['date'], modeled_pwv['pwv'])
+        returned_pwv = self.receiver.interp_pwv_date(test_date)
+        self.assertEqual(expected_pwv, returned_pwv)
