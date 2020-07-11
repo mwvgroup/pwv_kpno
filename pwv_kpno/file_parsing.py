@@ -17,11 +17,12 @@
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
 """The ``file_parsing`` module is responsible for parsing files written
-in the SuomiNet file format and applying data cuts to corresponding data.
+in the SuomiNet file format.
 """
 
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import Tuple
 from typing import Union
 
 import numpy as np
@@ -63,6 +64,8 @@ def apply_data_cuts(data: Table, data_cuts: dict, exclusive: bool) -> Table:
     Args:
         data: A table containing data from a SuomiNet data file
         data_cuts: Dict of tuples with (upper, lower) bounds for each column
+        exclusive: Whether ``data_cuts`` exclude the given regions as opposed
+            to including them.
 
     Returns:
         A copy of the data with applied data cuts
@@ -80,14 +83,23 @@ def apply_data_cuts(data: Table, data_cuts: dict, exclusive: bool) -> Table:
     return data
 
 
-def _parse_path_stem(path):
-    """"""
+def _parse_path_stem(path: Path) -> Tuple[str, int]:
+    """Return the receiver Id and year from a SuomiNet file name
+
+    Args:
+        path: Path of the file
+
+    Returns:
+        - The receiver Id
+        - The year
+    """
 
     receiver_id = path.stem[:4]
     year = int(path.stem[-4:])
     return receiver_id, year
 
 
+# Todo: allow for seperate data cuts for including and excluding data
 def read_suomi_data(path: PathLike, data_cuts: dict = None) -> Table:
     """Return PWV measurements from a SuomiNet data file as an astropy table
 

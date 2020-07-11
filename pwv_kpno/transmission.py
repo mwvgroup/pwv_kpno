@@ -20,18 +20,46 @@
 absorption due to PWV.
 """
 
-from .types import NumpyReturn
+import numpy as np
+
+from .types import ArrayLike
 
 
 class Transmission:
     """Represents an PWV atmospheric transmission model"""
 
-    def __init__(self, wave, transmission):
+    def __init__(self, wave: ArrayLike, transmission: ArrayLike, name: str = None):
+        self.name = name
         self.wave = wave
         self.transmission = transmission
 
-    def trans_at_wave(self, wave) -> NumpyReturn:
+    def __call__(self, wave: ArrayLike, resolution: float=None) -> np.array:
+        """Evaluate transmission model at given wavelengths
+
+        Args:
+            wave: Wavelengths to evaluate transmission for in angstroms
+            resolution: Reduce model to the given resolution
+
+        Returned:
+            The interpolated transmission at the given wavelengths / resolution
+        """
+
         raise NotImplementedError
+
+    def at_resolution(self, res: float) -> ArrayLike:
+        """Bin the transmission model to a given resolution
+
+        Args:
+            res: New resolution in angstroms
+
+        Returned:
+            The binned transmission values of the model
+        """
+
+        raise NotImplementedError
+
+    def __repr__(self):
+        return '<Transmission(name ={})>'.format(self.name)
 
 # Todo: Define the default transmission model
 # default_model = Transmission()

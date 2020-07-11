@@ -16,8 +16,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
-"""The ``data_management`` module is responsible for downloading precipitable
-water vapor measurements from SuomiNet data servers onto the local machine.
+"""The ``download`` module is responsible for downloading precipitable
+water vapor measurements from SuomiNet onto the local machine.
 """
 
 import os
