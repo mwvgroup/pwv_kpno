@@ -116,7 +116,7 @@ class GPSReceiver:
         """
 
         self._primary = primary
-        self._secondaries = tuple(secondaries)
+        self._secondaries = tuple(secondaries) if secondaries else tuple()
         self.data_cuts = data_cuts
 
     @property

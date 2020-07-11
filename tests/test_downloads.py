@@ -18,8 +18,7 @@
 
 
 """Tests for the downloading of data from remote SuomiNet servers.
-
-No external HTTP requests are made by these tests.
+No external HTTP requests are made by this module.
 """
 
 import os
@@ -64,8 +63,8 @@ class FindDataDir(TestCase):
 
 @requests_mock.Mocker()
 @TestWithCleanEnv()
-class SuomiDownloaderURLS(TestCase):
-    """Test ``SuomiDownloader`` retrieves data from the correct URLs"""
+class DownloadURLS(TestCase):
+    """Test download_functions retrieve data from the correct URLs"""
 
     # Expected URLs for each kind of data release. Supports regex.
     conus_daily_url = 'https://www.suominet.ucar.edu/data/staYrDay/*'
@@ -73,7 +72,7 @@ class SuomiDownloaderURLS(TestCase):
     global_daily_url = 'https://www.suominet.ucar.edu/data/staYrDayGlob/*'
 
     def test_connection_errors_are_raised(self, mocker):
-        """Test connection errors are not caught silently by the downloader"""
+        """Test connection errors are not caught silently"""
 
         url = 'http://test.com'
         mocker.register_uri('GET', url, exc=requests.exceptions.ConnectTimeout)
@@ -105,8 +104,8 @@ class SuomiDownloaderURLS(TestCase):
 
 
 @TestWithCleanEnv()
-class SuomiDownloaderPaths(TestCase):
-    """Test ``SuomiDownloader`` saves files with the correct naming scheme"""
+class DownloadedPathNames(TestCase):
+    """Test downloaded files are saved with the correct naming scheme"""
 
     def setUp(self):
         self.dummy_rec_name = 'dummy_rec'

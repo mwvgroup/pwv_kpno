@@ -132,6 +132,9 @@ def download_combined_data(receiver_id: str, year: Union[int, List] = None, time
         year: Year to download data for
         timeout: How long to wait before the request times out
 
+    Returns:
+        List of downloaded years
+
     Raises:
         HTTPError, TimeoutError, ConnectionError
     """
