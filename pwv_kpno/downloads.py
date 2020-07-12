@@ -21,11 +21,14 @@ water vapor measurements from SuomiNet onto the local machine.
 """
 
 import os
+from datetime import datetime
 from pathlib import Path
 from typing import Union, List
 from warnings import catch_warnings, simplefilter
 
+import numpy as np
 import requests
+from requests.exceptions import HTTPError, ConnectionError
 
 from .gps_pwv import GPSReceiver
 from .types import PathLike
@@ -120,7 +123,7 @@ def download_global_daily(receiver_id: str, year: int, timeout=None):
     _download_suomi_data(url, path, timeout)
 
 
-def download_combined_data(receiver_id: str, year: Union[int, List] = None, timeout: float = None) -> List:
+def download_available_data(receiver_id: str, year: Union[int, List] = None, timeout: float = None) -> List:
     """Download all available SuomiNet data for a given year and SuomiNet id
 
     Convenience function for downloading any available data from the CONUS
@@ -139,7 +142,24 @@ def download_combined_data(receiver_id: str, year: Union[int, List] = None, time
         HTTPError, TimeoutError, ConnectionError
     """
 
-    download_conus_daily(receiver_id, year, timeout)
-    download_conus_hourly(receiver_id, year, timeout)
-    download_global_daily(receiver_id, year, timeout)
-    return []  # Todo
+    download_operations = (
+        download_conus_hourly,
+        download_conus_daily,
+        download_global_daily
+    )
+
+    if year is None:
+        year = np.arange(2010, datetime.now().year + 1)
+
+    successful_years = set()
+    for yr in np.array(year):  # Typecasting to array ensures argument is iterable
+        for download_func in download_operations:
+            try:
+                download_func(receiver_id, yr, timeout)
+
+            except (TimeoutError, HTTPError, ConnectionError):
+                continue
+
+            successful_years.add(yr)
+
+    return sorted(successful_years)
