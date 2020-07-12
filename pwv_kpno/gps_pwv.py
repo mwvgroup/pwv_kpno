@@ -101,6 +101,31 @@ def _search_data_table(
     raise NotImplementedError
 
 
+def _apply_data_cuts(data: Table, data_cuts: dict, exclusive: bool) -> Table:
+    """Apply data cuts from settings to a table of SuomiNet measurements
+
+    Args:
+        data: A table containing data from a SuomiNet data file
+        data_cuts: Dict of tuples with (upper, lower) bounds for each column
+        exclusive: Whether ``data_cuts`` exclude the given regions as opposed
+            to including them.
+
+    Returns:
+        A copy of the data with applied data cuts
+    """
+
+    for param_name, cut_list in data_cuts.items():
+        for start, end in cut_list:
+            indices = (start < data[param_name]) & (data[param_name] < end)
+
+            if exclusive:
+                indices = ~indices
+
+            data = data[indices]
+
+    return data
+
+
 class GPSReceiver:
     """Represents data taken by a SuomiNet GPS receiver"""
 

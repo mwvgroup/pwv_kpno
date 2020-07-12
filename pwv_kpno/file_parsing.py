@@ -58,31 +58,6 @@ def _suomi_date_to_timestamp(year: int, days: Union[str, float]) -> float:
     return timestamp
 
 
-def apply_data_cuts(data: Table, data_cuts: dict, exclusive: bool) -> Table:
-    """Apply data cuts from settings to a table of SuomiNet measurements
-
-    Args:
-        data: A table containing data from a SuomiNet data file
-        data_cuts: Dict of tuples with (upper, lower) bounds for each column
-        exclusive: Whether ``data_cuts`` exclude the given regions as opposed
-            to including them.
-
-    Returns:
-        A copy of the data with applied data cuts
-    """
-
-    for param_name, cut_list in data_cuts.items():
-        for start, end in cut_list:
-            indices = (start < data[param_name]) & (data[param_name] < end)
-
-            if exclusive:
-                indices = ~indices
-
-            data = data[indices]
-
-    return data
-
-
 def _parse_path_stem(path: Path) -> Tuple[str, int]:
     """Return the receiver Id and year from a SuomiNet file name
 
@@ -100,7 +75,7 @@ def _parse_path_stem(path: Path) -> Tuple[str, int]:
 
 
 # Todo: allow for seperate data cuts for including and excluding data
-def read_suomi_data(path: PathLike, data_cuts: dict = None) -> Table:
+def read_suomi_data(path: PathLike) -> Table:
     """Return PWV measurements from a SuomiNet data file as an astropy table
 
     Datetimes are expressed as UNIX timestamps and PWV is measured
@@ -112,7 +87,6 @@ def read_suomi_data(path: PathLike, data_cuts: dict = None) -> Table:
 
     Args:
         path: File path to be read
-        data_cuts: Dict of tuples with (upper, lower) bounds for each column
 
     Returns:
         An astropy Table with data from path
@@ -140,10 +114,5 @@ def read_suomi_data(path: PathLike, data_cuts: dict = None) -> Table:
     if data:
         data = unique(data, keys='date', keep='none')
         data['date'] = _suomi_date_to_timestamp(year, data['date'])
-
-    if data_cuts:
-        # _apply_data_cuts expects column 'date' to have already
-        # been converted from the suominet format to timestamps
-        data = apply_data_cuts(data, data_cuts)
 
     return data
