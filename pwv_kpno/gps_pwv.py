@@ -22,13 +22,16 @@ and pressure measurements) and PWV concentrations (both measured and modeled).
 """
 
 import warnings
+from copy import deepcopy
 from datetime import datetime
+from typing import Dict
 from typing import Tuple
 
 import numpy as np
 from astropy.table import Table
 from scipy.odr import ODR, RealData, polynomial
 
+from .downloads import check_downloaded_data
 from .types import NumpyReturn, NumpyArgument
 
 warnings.filterwarnings("ignore", message='Empty data detected for ODR instance.')
@@ -79,7 +82,7 @@ def _linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> 
     return applied_fit, error
 
 
-def search_data_table(
+def _search_data_table(
         data: Table, year: int = None, month: int = None, day=None, hour=None,
         colname: str = 'date') -> Table:
     """Return a subset of a table with dates corresponding to a given timespan
@@ -101,23 +104,25 @@ def search_data_table(
 class GPSReceiver:
     """Represents data taken by a SuomiNet GPS receiver"""
 
-    # Used to signal that new data has been downloaded and PWV values need to
-    # be re-loaded into into memory by class instances
-    _reload_from_download = [False]
-
-    def __init__(self, primary: str, secondaries: Tuple[str] = None, data_cuts: dict = None):
+    def __init__(self, primary: str, secondaries: Tuple[str] = None,
+                 exclude_cut: dict = None, include_cut: dict = None):
         """Provides data access to weather and PWV data for a GPS receiver
 
         Args:
             primary: SuomiNet Id of the receiver to access
-            secondaries: Tuple of secondary receivers to use for supplementing
-                time ranges with missing data
-            data_cuts: Ignore data in the given ranges
+            secondaries: Secondary receivers used to supplement periods with
+                missing primary data
+            exclude_cut: Ignore data in the given ranges
+            include_cut: Only include data in the given ranges
         """
 
         self._primary = primary
         self._secondaries = tuple(secondaries) if secondaries else tuple()
-        self.data_cuts = data_cuts
+        self.exclude_cut = exclude_cut
+        self.include_cut = include_cut
+
+        self._instance_data = {rec: check_downloaded_data(rec) for rec in self.secondaries}
+        self._instance_data[self.primary] = check_downloaded_data(self.primary)
 
     @property
     def primary(self) -> str:
@@ -134,6 +139,11 @@ class GPSReceiver:
     @secondaries.setter
     def secondaries(self, value):
         raise NotImplementedError
+
+    @property
+    def instance_data(self) -> Dict[str, Tuple[int]]:
+        # Dictionary with years of available data at instantiation
+        return deepcopy(self._instance_data)
 
     def modeled_pwv(self, year: int = None, month: int = None, day=None, hour=None) -> Table:
         """Return a table of the modeled PWV at the primary GPS site

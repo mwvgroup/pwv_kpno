@@ -23,14 +23,13 @@ water vapor measurements from SuomiNet onto the local machine.
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import Union, List
+from typing import Union, List, Tuple
 from warnings import catch_warnings, simplefilter
 
 import numpy as np
 import requests
 from requests.exceptions import HTTPError, ConnectionError
 
-from .gps_pwv import GPSReceiver
 from .types import PathLike
 
 
@@ -68,8 +67,6 @@ def _download_suomi_data(url: str, path: PathLike, timeout: float = None):
         response.raise_for_status()
         with open(path, 'wb') as ofile:
             ofile.write(response.content)
-
-    GPSReceiver._reload_from_download[0] = True
 
 
 def download_conus_daily(receiver_id: str, year: int, timeout=None):
@@ -163,3 +160,16 @@ def download_available_data(receiver_id: str, year: Union[int, List] = None, tim
             successful_years.add(yr)
 
     return sorted(successful_years)
+
+
+def check_downloaded_data(receiver_id: str) -> Tuple[int]:
+    """Return a list of years for which data has been downloaded
+
+    Args:
+        receiver_id: Id of the SuomiNet GPS receiver to check for downloaded data
+
+    Returns:
+        A list of years
+    """
+
+    raise NotImplementedError

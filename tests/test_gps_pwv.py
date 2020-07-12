@@ -25,7 +25,7 @@ from unittest import TestCase
 
 import numpy as np
 
-from pwv_kpno.gps_pwv import search_data_table, GPSReceiver
+from pwv_kpno.gps_pwv import _search_data_table, GPSReceiver
 from tests.utils import TestWithCleanEnv
 
 TEST_DATA_DIR = Path(__file__).parent / 'testing_data'
@@ -41,7 +41,7 @@ class TableSearchingErrors(TestCase):
         """Test for correct errors due to bad year argument"""
 
         next_year = datetime.now().year + 1
-        self.assertRaises(ValueError, search_data_table, year=next_year)
+        self.assertRaises(ValueError, _search_data_table, year=next_year)
 
     def test_raises_for_invalid_month(self):
         """Test for ValueError is raised for bad ``month`` argument"""
@@ -49,7 +49,7 @@ class TableSearchingErrors(TestCase):
         err_msg = 'No error raised for month {}'
         for bad_month in [-3, 0, 13]:
             self.assertRaises(
-                ValueError, search_data_table, month=bad_month,
+                ValueError, _search_data_table, month=bad_month,
                 msg=err_msg.format(bad_month))
 
     def test_raises_for_invalid_day(self):
@@ -58,7 +58,7 @@ class TableSearchingErrors(TestCase):
         err_msg = 'No error raised for day {}'
         for bad_day in [-3, 0, 32]:
             self.assertRaises(
-                ValueError, search_data_table, day=bad_day,
+                ValueError, _search_data_table, day=bad_day,
                 msg=err_msg.format(bad_day))
 
     def test_raises_for_invalid_hour(self):
@@ -67,7 +67,7 @@ class TableSearchingErrors(TestCase):
         err_msg = 'No error raised for hour {}'
         for bad_hour in [-3, 24, 30]:
             self.assertRaises(
-                ValueError, search_data_table, hour=bad_hour,
+                ValueError, _search_data_table, hour=bad_hour,
                 msg=err_msg.format(bad_hour))
 
 
@@ -129,7 +129,7 @@ class ModeledPWV(TestCase):
 
         search_kwargs = {'year': 2010, 'month': 7, 'day': 21, 'hour': 5}
         full_table = self.receiver.modeled_pwv()
-        searched_table = search_data_table(full_table, **search_kwargs)
+        searched_table = _search_data_table(full_table, **search_kwargs)
         returned_table = self.receiver.modeled_pwv(**search_kwargs)
         self.assertEqual(searched_table, returned_table)
 
@@ -154,7 +154,7 @@ class WeatherData(TestCase):
         primary receiver Id
         """
 
-        returned_column_order = self.receiver.modeled_pwv().colnames
+        returned_column_order = self.receiver.weather_data().colnames
         expected_col_order = ['date', 'pwv', 'temperature', 'pressure', 'humidity']
         self.assertListEqual(expected_col_order, returned_column_order)
 
@@ -162,9 +162,9 @@ class WeatherData(TestCase):
         """Test returned dates are filtered by kwarg arguments"""
 
         search_kwargs = {'year': 2010, 'month': 7, 'day': 21, 'hour': 5}
-        full_table = self.receiver.modeled_pwv()
-        searched_table = search_data_table(full_table, **search_kwargs)
-        returned_table = self.receiver.modeled_pwv(**search_kwargs)
+        full_table = self.receiver.weather_data()
+        searched_table = _search_data_table(full_table, **search_kwargs)
+        returned_table = self.receiver.weather_data(**search_kwargs)
         self.assertEqual(searched_table, returned_table)
 
     def test_units(self):
@@ -173,7 +173,7 @@ class WeatherData(TestCase):
         expected_units = {'date': 'UTC', 'pwv': 'mm', 'temperature': 'k',
                           'pressure': 'bar', 'humidity': '%'}
 
-        data_table = self.receiver.modeled_pwv()
+        data_table = self.receiver.weather_data()
         for column, unit in expected_units.items():
             self.assertEqual(unit, data_table[column].unit)
 

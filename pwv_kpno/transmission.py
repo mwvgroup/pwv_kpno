@@ -25,6 +25,11 @@ import numpy as np
 from .types import ArrayLike
 
 
+# Todo: how do we want to scale transmission values?
+# Via cross section?
+# Via [T_fiducial ^ (1 / pwv_fid)] ^ pwv ?
+# Via interpolation?
+
 class Transmission:
     """Represents an PWV atmospheric transmission model"""
 
@@ -60,7 +65,7 @@ class Transmission:
         raise NotImplementedError
 
     def __repr__(self):
-        return '<Transmission(name ={})>'.format(self.name)
+        return '<Transmission(name={})>'.format(self.name)
 
 
 # Todo: Define the default transmission model

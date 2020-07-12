@@ -25,7 +25,6 @@ import os
 import re
 from datetime import datetime
 from pathlib import Path
-from tempfile import TemporaryDirectory
 from unittest import TestCase
 
 import numpy as np
@@ -33,7 +32,7 @@ import requests
 import requests_mock
 
 import pwv_kpno
-from pwv_kpno import downloads, gps_pwv
+from pwv_kpno import downloads
 from tests.utils import TestWithCleanEnv
 
 
@@ -148,35 +147,6 @@ class DownloadedPathNames(TestCase):
         self.assertCorrectFilePath(
             downloads.download_global_daily,
             f'{self.dummy_rec_name}gl_{self.dummy_year}.plt')
-
-
-class DataParsingReset(TestCase):
-    """Test the ``data_management`` signals the ``GPSReceiver`` class when
-    new data is downloaded."""
-
-    def tearDown(self):
-        """Reset the ``GPSReceiver`` reload attribute"""
-
-        gps_pwv.GPSReceiver._reload_from_download[0] = False
-
-    @staticmethod
-    def call_arbitrary_download():
-        """Call a download from a dummy URL"""
-
-        dummy_url = 'https://some.url.com'
-        with TemporaryDirectory() as tempdir:
-            dummy_path = Path(tempdir) / 'dummy_path'
-
-            with requests_mock.Mocker() as mocker:
-                mocker.register_uri('GET', re.compile('https://*'))
-                downloads._download_suomi_data(
-                    dummy_url, dummy_path)
-
-    def runTest(self):
-        """Test ``GPSReceiver._reload_from_download`` is updated after a download"""
-
-        self.call_arbitrary_download()
-        self.assertTrue(gps_pwv.GPSReceiver._reload_from_download[0])
 
 
 @requests_mock.Mocker()
