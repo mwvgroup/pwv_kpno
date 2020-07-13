@@ -25,11 +25,6 @@ import numpy as np
 from .types import ArrayLike
 
 
-# Todo: how do we want to scale transmission values?
-# Via cross section?
-# Via [T_fiducial ^ (1 / pwv_fid)] ^ pwv ?
-# Via interpolation?
-
 class Transmission:
     """Represents an PWV atmospheric transmission model"""
 
@@ -50,6 +45,7 @@ class Transmission:
             The interpolated transmission at the given wavelengths / resolution
         """
 
+        # Note: Interpolate transmission in using PWV effective and not PWV line of sight
         raise NotImplementedError
 
     def at_resolution(self, res: float) -> ArrayLike:
