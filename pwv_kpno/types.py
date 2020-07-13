@@ -18,7 +18,7 @@
 
 """The ``types`` module defines object types used by the parent package to
 inform type hints. For more information on Python type hinting, see Python
-Enhancement Protocol number 484: https://www.python.org/dev/peps/pep-0484/ .
+Enhancement Protocol 484: https://www.python.org/dev/peps/pep-0484/ .
 """
 
 from pathlib import Path as Path

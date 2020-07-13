@@ -1,3 +1,6 @@
 astropy
 numpy
+pytz
 requests
+requests_mock
+scipy
