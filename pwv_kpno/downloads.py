@@ -41,9 +41,13 @@ def find_data_dir() -> Path:
     """
 
     if 'SUOMINET_DIR' in os.environ:
-        return Path(os.environ['SUOMINET_DIR']).resolve()
+        directory = Path(os.environ['SUOMINET_DIR']).resolve()
 
-    return Path(__file__).resolve().parent / 'suomi_data'
+    else:
+        directory = Path(__file__).resolve().parent / 'suomi_data'
+
+    directory.mkdir(exist_ok=True, parents=True)
+    return directory
 
 
 def _download_suomi_data(url: str, path: PathLike, timeout: float = None):
