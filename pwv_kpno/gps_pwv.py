@@ -24,17 +24,14 @@ and pressure measurements) and PWV concentrations (both measured and modeled).
 import warnings
 from copy import deepcopy
 from datetime import datetime
-from typing import Dict
 from typing import Tuple
 
 import numpy as np
-from astropy.table import Table
+import pandas as pd
 from scipy.odr import ODR, RealData, polynomial
 
-from .downloads import check_downloaded_data
+from .file_parsing import load_rec_directory
 from .types import NumpyReturn, NumpyArgument
-
-warnings.filterwarnings("ignore", message='Empty data detected for ODR instance.')
 
 
 def _linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> Tuple[np.array, np.array]:
@@ -64,7 +61,10 @@ def _linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> 
     indices = ~np.logical_or(x.mask, y.mask)
     data = RealData(x=x[indices], y=y[indices], sx=sx[indices], sy=sy[indices])
     odr = ODR(data, polynomial(1), beta0=[0., 1.])
-    fit_results = odr.run()
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", message='Empty data detected for ODR instance.')
+        fit_results = odr.run()
 
     fit_fail = 'Numerical error detected' in fit_results.stopreason
     if fit_fail:
@@ -83,8 +83,8 @@ def _linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> 
 
 
 def _search_data_table(
-        data: Table, year: int = None, month: int = None, day=None, hour=None,
-        colname: str = 'date') -> Table:
+        data: pd.DataFrame, year: int = None, month: int = None, day=None, hour=None,
+        colname: str = 'date') -> pd.DataFrame:
     """Return a subset of a table with dates corresponding to a given timespan
 
     Args:
@@ -101,7 +101,7 @@ def _search_data_table(
     raise NotImplementedError
 
 
-def _apply_data_cuts(data: Table, data_cuts: dict, exclusive: bool) -> Table:
+def _apply_data_cuts(data: pd.DataFrame, data_cuts: dict, exclusive: bool) -> pd.DataFrame:
     """Apply data cuts from settings to a table of SuomiNet measurements
 
     Args:
@@ -143,11 +143,12 @@ class GPSReceiver:
 
         self._primary = primary
         self._secondaries = tuple(secondaries) if secondaries else tuple()
-        self.exclude_cut = exclude_cut
-        self.include_cut = include_cut
+        self._exclude_cut = exclude_cut
+        self._include_cut = include_cut
 
-        self._instance_data = {rec: check_downloaded_data(rec) for rec in self.secondaries}
-        self._instance_data[self.primary] = check_downloaded_data(self.primary)
+        # Lazy load this data to account for call of attribute setters
+        self._instance_data = None
+        self._pwv_model = None
 
     @property
     def primary(self) -> str:
@@ -155,7 +156,9 @@ class GPSReceiver:
 
     @primary.setter
     def primary(self, value):
-        raise NotImplementedError
+        self._primary = value
+        self._instance_data = None
+        self._pwv_model = None
 
     @property
     def secondaries(self) -> Tuple[str]:
@@ -163,14 +166,19 @@ class GPSReceiver:
 
     @secondaries.setter
     def secondaries(self, value):
-        raise NotImplementedError
+        self._secondaries = tuple(value)
+        self._instance_data = None
+        self._pwv_model = None
 
     @property
-    def instance_data(self) -> Dict[str, Tuple[int]]:
-        # Dictionary with years of available data at instantiation
-        return deepcopy(self._instance_data)
+    def exclude_cut(self):
+        return deepcopy(self._exclude_cut)
 
-    def modeled_pwv(self, year: int = None, month: int = None, day=None, hour=None) -> Table:
+    @property
+    def include_cut(self):
+        return deepcopy(self._include_cut)
+
+    def modeled_pwv(self, year: int = None, month: int = None, day=None, hour=None) -> pd.DataFrame:
         """Return a table of the modeled PWV at the primary GPS site
 
         Return the modeled precipitable water vapor level at the primary
@@ -184,32 +192,12 @@ class GPSReceiver:
             hour: The hour of the desired PWV data in 24-hour format
 
         Returns:
-            An astropy table of modeled PWV values in mm
+            A pandas dataframe of modeled PWV values in mm
         """
 
         raise NotImplementedError
 
-    def measured_pwv(self, year: int = None, month: int = None, day=None, hour=None) -> Table:
-        """Return an astropy table of PWV measurements taken by SuomiNet
-
-        Values are returned for all primary and secondary receivers.
-        Columns are named using the SuomiNet IDs for different GPS receivers.
-        PWV measurements for each receiver are recorded in millimeters.
-        Results can be optionally refined by year, month, day, and hour.
-
-        Args:
-            year: The year of the desired PWV data
-            month: The month of the desired PWV data
-            day: The day of the desired PWV data
-            hour: The hour of the desired PWV data in 24-hour format
-
-        Returns:
-            An astropy table of measured PWV values in mm
-        """
-
-        raise NotImplementedError
-
-    def weather_data(self, year: int = None, month: int = None, day=None, hour=None) -> Table:
+    def weather_data(self, year: int = None, month: int = None, day=None, hour=None) -> pd.DataFrame:
         """Returns a table of all weather_Data data for the primary receiver
 
         Data is returned as an astropy table with columns 'date', 'PWV',
@@ -223,10 +211,16 @@ class GPSReceiver:
             hour: The hour of the desired PWV data in 24-hour format
 
         Returns:
-            An astropy Table
+            A pandas DataFrame
         """
 
-        raise NotImplementedError
+        # Todo: Decide how to handle data cuts
+        if self._instance_data is None:
+            receivers = set(self.secondaries)
+            receivers.add(self.primary)
+            self._instance_data = pd.concat({rec: load_rec_directory(rec) for rec in receivers}, axis=1)
+
+        return _search_data_table(self._instance_data, year, month, day, hour)
 
     def interp_pwv_date(self, date: NumpyArgument) -> NumpyReturn:
         """Evaluate the PWV model for a given datetime
