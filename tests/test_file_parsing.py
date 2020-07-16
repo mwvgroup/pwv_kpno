@@ -27,7 +27,7 @@ from unittest import TestCase
 from pytz import utc
 
 from pwv_kpno import file_parsing
-
+import numpy as np
 TEST_DATA_DIR = Path(__file__).parent / 'testing_data'
 
 
@@ -67,15 +67,15 @@ class SuomiNetFileParsing(TestCase):
         """Test returned data has correct columns"""
 
         # Data file with no known formatting issues
-        parsed_data = file_parsing.read_suomi_data(TEST_DATA_DIR / 'KITThr_2016.plt')
+        parsed_data = file_parsing.read_suomi_file(TEST_DATA_DIR / 'KITThr_2016.plt')
         expected_columns = ['date', 'KITT', 'KITT_err', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH']
-        self.assertEqual(expected_columns, parsed_data.colnames)
+        np.testing.assert_array_equal(expected_columns, parsed_data.columns)
 
     def test_dates_are_unique(self):
         """Test for the removal of any duplicate dates"""
 
         # Data file with known duplicate entries
-        parsed_data = file_parsing.read_suomi_data(TEST_DATA_DIR / 'AZAMhr_2015.plt')
+        parsed_data = file_parsing.read_suomi_file(TEST_DATA_DIR / 'AZAMhr_2015.plt')
 
         table_entries = len(parsed_data)
         unique_dates = len(set(parsed_data['date']))
@@ -84,7 +84,7 @@ class SuomiNetFileParsing(TestCase):
     def test_removed_negative_values(self):
         """Test for the removal of negative PWV values"""
 
-        parsed_data = file_parsing.read_suomi_data(TEST_DATA_DIR / 'KITThr_2016.plt')
+        parsed_data = file_parsing.read_suomi_file(TEST_DATA_DIR / 'KITThr_2016.plt')
         is_negative_pwv = any(parsed_data['KITT'] < 0)
         self.assertFalse(is_negative_pwv)
 
@@ -96,4 +96,4 @@ class SuomiNetFileParsing(TestCase):
         to have a different number of columns from the second half of the year.
         """
 
-        file_parsing.read_suomi_data(TEST_DATA_DIR / 'SA48dy_2010.plt')
+        file_parsing.read_suomi_file(TEST_DATA_DIR / 'SA48dy_2010.plt')

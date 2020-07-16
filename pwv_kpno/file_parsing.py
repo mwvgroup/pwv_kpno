@@ -25,8 +25,7 @@ from pathlib import Path
 from typing import Tuple, Union
 
 import numpy as np
-from astropy.table import Table, unique
-from astropy.table import vstack
+import pandas as pd
 
 from .downloads import find_data_dir
 from .types import PathLike
@@ -75,7 +74,7 @@ def _parse_path_stem(path: Path) -> Tuple[str, int]:
     return receiver_id, year
 
 
-def read_suomi_file(path: PathLike) -> Table:
+def read_suomi_file(path: PathLike) -> pd.DataFrame:
     """Return PWV measurements from a SuomiNet data file as an astropy table
 
     Datetimes are expressed as UNIX timestamps and PWV is measured
@@ -98,27 +97,21 @@ def read_suomi_file(path: PathLike) -> Table:
     names = ['date', receiver_id, receiver_id + '_err', 'ZenithDelay',
              'SrfcPress', 'SrfcTemp', 'SrfcRH']
 
-    data = np.genfromtxt(
+    data = pd.read_csv(
         path,
         names=names,
-        usecols=range(0, len(names)),
-        dtype=[float for _ in names])
+        delim_whitespace=True)
 
-    data = Table(data)
     data = data[data[receiver_id] > 0]
 
     # SuomiNet rounds their error and can report an error of zero
     # We compensate by adding an error of 0.025
     data[receiver_id + '_err'] = np.round(data[receiver_id + '_err'] + 0.025, 3)
-
-    if data:
-        data = unique(data, keys='date', keep='none')
-        data['date'] = _suomi_date_to_timestamp(year, data['date'])
-
-    return data
+    data['date'] = _suomi_date_to_timestamp(year, data['date'])
+    return data.drop_duplicates(subset='date', keep=False)
 
 
-def load_rec_directory(receiver_id: str, directory: PathLike = None) -> Table:
+def load_rec_directory(receiver_id: str, directory: PathLike = None) -> pd.DataFrame:
     """Load all data for a given GPS receiver from a directory
 
     Data from daily data releases is prioritized over hourly data releases
@@ -141,12 +134,12 @@ def load_rec_directory(receiver_id: str, directory: PathLike = None) -> Table:
     for dtype in data_types:
         global_files = list(directory.glob(f'{receiver_id}{dtype}_*.plt'))
         if global_files:
-            data.append(vstack([read_suomi_file(f) for f in global_files]))
+            data.append(pd.concat([read_suomi_file(f) for f in global_files]))
 
     if data:
-        return unique(vstack(data), keep='first')
+        return pd.concat(data).drop_duplicates(subset='date', keep='first')
 
-    return Table(names=[
+    return pd.DataFrame(columns=[
         'date', receiver_id, receiver_id + '_err',
         'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH'
     ])
