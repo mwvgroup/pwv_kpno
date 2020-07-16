@@ -23,7 +23,7 @@ water vapor measurements from SuomiNet onto the local machine.
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import Union, List, Tuple
+from typing import Union, List
 from warnings import catch_warnings, simplefilter
 
 import numpy as np
@@ -162,8 +162,8 @@ def download_available_data(receiver_id: str, year: Union[int, List] = None, tim
     return sorted(successful_years)
 
 
-def check_downloaded_data(receiver_id: str) -> Tuple[int]:
-    """Return a list of years for which data has been downloaded
+def check_downloaded_data(receiver_id: str) -> List[int]:
+    """Return a list of years for which any amount of data has been downloaded
 
     Args:
         receiver_id: Id of the SuomiNet GPS receiver to check for downloaded data
@@ -172,4 +172,6 @@ def check_downloaded_data(receiver_id: str) -> Tuple[int]:
         A list of years
     """
 
-    raise NotImplementedError
+    data_dir = find_data_dir()
+    years = set(int(f.stem[-4:]) for f in data_dir.glob(f'{receiver_id}*.plt'))
+    return sorted(years)
