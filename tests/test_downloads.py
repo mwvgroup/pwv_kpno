@@ -231,22 +231,3 @@ class CheckDownloadedData(TestCase):
         self.assertDictEqual(
             self.test_data_config[test_receiver],
             downloads.check_downloaded_data(test_receiver))
-
-
-@TestWithCleanEnv()
-class DeleteLocalData(TestCase):
-    """Tests for the ``delete_local_data`` function"""
-
-    def setUp(self):
-        """Read the contents of ``test_data.yml``"""
-
-
-
-    def test_return_matches_test_data(self):
-        """Tests returned years matche test data for KITT"""
-
-        test_receiver = 'KITT'
-
-        self.assertDictEqual(
-            self.test_data_config[test_receiver],
-            downloads.check_downloaded_data(test_receiver))
