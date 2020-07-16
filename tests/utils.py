@@ -6,8 +6,9 @@
 import functools
 import os
 from datetime import datetime, timedelta
+from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 from astropy.table import Table
 from pytz import utc
@@ -20,7 +21,7 @@ class TestWithCleanEnv:
     directory.
     """
 
-    def __init__(self, data_path: str = None):
+    def __init__(self, data_path: Union[str, Path] = None):
         """Clears all environmental variables and set ``SUOMINET_DIR``
 
         Value for ``SUOMINET_DIR`` defaults to a temporary directory.
@@ -28,6 +29,9 @@ class TestWithCleanEnv:
         Args:
             data_path: Optional path to set ``SUOMINET_DIR`` to
         """
+
+        if isinstance(data_path, Path):
+            data_path = str(data_path)
 
         self._data_path = data_path
 
@@ -61,13 +65,12 @@ class TestWithCleanEnv:
         if not self._data_path:  # If there is no user defined path
             self._temp_dir.cleanup()
 
-    @staticmethod
-    def _decorate_callable(func: callable) -> callable:
+    def _decorate_callable(self, func: callable) -> callable:
         # Decorates a callable
 
         @functools.wraps(func)
         def inner(*args, **kwargs):
-            with TestWithCleanEnv():
+            with TestWithCleanEnv(self._data_path):
                 return func(*args, **kwargs)
 
         return inner

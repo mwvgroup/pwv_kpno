@@ -184,10 +184,10 @@ def check_downloaded_data(receiver_id: str) -> Dict[str, List[int]]:
 
     data_dir = find_data_dir()
     available_years = {'global': [], 'daily': [], 'hourly': []}
-    release_type = {'gl': 'global', 'daily': 'daily', 'hourly': 'hourly'}
+    release_type = {'gl': 'global', 'dy': 'daily', 'hr': 'hourly'}
     for fpath in data_dir.glob(f'{receiver_id}*.plt'):
         year = int(fpath.stem[-4:])
-        data_type = release_type[fpath.stem[5:7]]
+        data_type = release_type[fpath.stem[4:6]]
         available_years[data_type].append(year)
 
     available_years['global'] = sorted(available_years['global'])
@@ -203,6 +203,7 @@ def delete_local_data(receiver_id: str, years: list = None, release_type: str = 
          receiver_id: Id of a SuomiNet GPS receiver to check for downloaded data
          years: List of years to delete data from (defaults to all available years)
          release_type: Release type to delete data for (defaults to all available types)
+         verbose: Print deleted file paths to system output
      """
 
     # Default to a file pattern that includes all data types and years
