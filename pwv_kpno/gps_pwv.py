@@ -200,9 +200,9 @@ class GPSReceiver:
     def weather_data(self, year: int = None, month: int = None, day=None, hour=None) -> pd.DataFrame:
         """Returns a table of all weather_Data data for the primary receiver
 
-        Data is returned as an astropy table with columns 'date', 'PWV',
-        'PWV_err', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', and 'SrfcRH'.
-        Results can be optionally refined by year, month, day, and hour.
+        Data is returned as an pandas DataFrame indexed by the SuomiNet Id
+        of each GPS receiver. Results can be optionally refined by year,
+        month, day, and hour.
 
         Args:
             year: The year of the desired PWV data
@@ -215,6 +215,7 @@ class GPSReceiver:
         """
 
         # Todo: Decide how to handle data cuts
+        # Todo: This return should not include secondary PWV values
         if self._instance_data is None:
             receivers = set(self.secondaries)
             receivers.add(self.primary)
