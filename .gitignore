@@ -20,3 +20,6 @@ docs/build
 
 # Jupyter Notebook Checkpoints
 *.ipynb_checkpoints/
+
+# Downloaded SUomiNet data files
+pwv_kpno/suomi_data
