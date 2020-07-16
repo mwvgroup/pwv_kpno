@@ -16,14 +16,14 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
-"""The ``download`` module is responsible for downloading precipitable
+"""The ``downloads`` module is responsible for downloading precipitable
 water vapor measurements from SuomiNet onto the local machine.
 """
 
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import Union, List
+from typing import Dict, List, Union
 from warnings import catch_warnings, simplefilter
 
 import numpy as np
@@ -162,16 +162,59 @@ def download_available_data(receiver_id: str, year: Union[int, List] = None, tim
     return sorted(successful_years)
 
 
-def check_downloaded_data(receiver_id: str) -> List[int]:
-    """Return a list of years for which any amount of data has been downloaded
-
-    Args:
-        receiver_id: Id of the SuomiNet GPS receiver to check for downloaded data
+def check_downloaded_receivers() -> List[str]:
+    """Return a list of receiver Id's that have data downloaded to the current environment
 
     Returns:
-        A list of years
+        A list of Id's for SuomiNet GPS receivers
+    """
+
+    return sorted(set(fpath.stem[:4] for fpath in find_data_dir().glob(f'*.plt')))
+
+
+def check_downloaded_data(receiver_id: str) -> Dict[str, List[int]]:
+    """Determine which data files have been downloaded for a given receiver Id
+
+    Args:
+        receiver_id: Id of a SuomiNet GPS receiver to check for downloaded data
+
+    Returns:
+        A dictionary of the form {<release type>: <list of years>}
     """
 
     data_dir = find_data_dir()
-    years = set(int(f.stem[-4:]) for f in data_dir.glob(f'{receiver_id}*.plt'))
-    return sorted(years)
+    available_years = {'global': [], 'daily': [], 'hourly': []}
+    release_type = {'gl': 'global', 'daily': 'daily', 'hourly': 'hourly'}
+    for fpath in data_dir.glob(f'{receiver_id}*.plt'):
+        year = int(fpath.stem[-4:])
+        data_type = release_type[fpath.stem[5:7]]
+        available_years[data_type].append(year)
+
+    available_years['global'] = sorted(available_years['global'])
+    available_years['daily'] = sorted(available_years['daily'])
+    available_years['hourly'] = sorted(available_years['hourly'])
+    return available_years
+
+
+def delete_local_data(receiver_id: str, years: list = None, release_type: str = None, verbose=False):
+    """Delete downloaded SuomiNet data from the current environment
+
+     Args:
+         receiver_id: Id of a SuomiNet GPS receiver to check for downloaded data
+         years: List of years to delete data from (defaults to all available years)
+         release_type: Release type to delete data for (defaults to all available types)
+     """
+
+    # Default to a file pattern that includes all data types and years
+    years = years if years else ['*']
+    release_type = release_type if release_type else '*'
+    path_pattern = f'{receiver_id}{release_type}_{{}}.plt'
+
+    # Delete all data matching the file pattern
+    data_dir = find_data_dir()
+    for year in years:
+        for file in data_dir.glob(path_pattern.format(year)):
+            if verbose:
+                print(f'Deleting {file.resolve()}')
+
+            file.unlink()
