@@ -22,12 +22,13 @@ in the SuomiNet file format.
 
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Tuple
-from typing import Union
+from typing import Tuple, Union
 
 import numpy as np
 from astropy.table import Table, unique
+from astropy.table import vstack
 
+from .downloads import find_data_dir
 from .types import PathLike
 
 
@@ -74,8 +75,7 @@ def _parse_path_stem(path: Path) -> Tuple[str, int]:
     return receiver_id, year
 
 
-# Todo: allow for seperate data cuts for including and excluding data
-def read_suomi_data(path: PathLike) -> Table:
+def read_suomi_file(path: PathLike) -> Table:
     """Return PWV measurements from a SuomiNet data file as an astropy table
 
     Datetimes are expressed as UNIX timestamps and PWV is measured
@@ -116,3 +116,37 @@ def read_suomi_data(path: PathLike) -> Table:
         data['date'] = _suomi_date_to_timestamp(year, data['date'])
 
     return data
+
+
+def load_rec_directory(receiver_id: str, directory: PathLike = None) -> Table:
+    """Load all data for a given GPS receiver from a directory
+
+    Data from daily data releases is prioritized over hourly data releases
+
+    Args:
+        receiver_id: Id of the SuomiNet GPS receiver to load data for
+        directory: Directory to load data from (Defaults to package default)
+
+    Returns:
+        An astropy table of SuomiNet weather data
+    """
+
+    directory = find_data_dir() if directory is None else directory
+
+    # Data release types ordered in terms of priority
+    # Prefer global data over daily data over hourly data
+    data_types = ('gl', 'dy', 'hr')
+
+    data = []  # Collector for astropy tables with data from each data type
+    for dtype in data_types:
+        global_files = list(directory.glob(f'{receiver_id}{dtype}_*.plt'))
+        if global_files:
+            data.append(vstack([read_suomi_file(f) for f in global_files]))
+
+    if data:
+        return unique(vstack(data), keep='first')
+
+    return Table(names=[
+        'date', receiver_id, receiver_id + '_err',
+        'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH'
+    ])
