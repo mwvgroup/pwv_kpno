@@ -81,6 +81,46 @@ def _linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> 
     return applied_fit, error
 
 
+def _calc_avg_pwv_model(self, pwv_data: pd.DataFrame):
+    """Determines a PWV model using each off site receiver and averages them
+
+    Args:
+        pwv_data: A table of pwv measurements
+
+    Returns:
+        A masked array of the averaged PWV model
+        A masked array of the error in the averaged model
+    """
+
+    pwv_arrays, err_arrays = [], []
+    for receiver in self.secondaries:
+        mod_pwv, mod_err = _linear_regression(
+            x=pwv_data[receiver],
+            y=pwv_data[self.primary],
+            sx=pwv_data[receiver + '_err'],
+            sy=pwv_data[self.primary + '_err']
+        )
+        pwv_arrays.append(mod_pwv)
+        err_arrays.append(mod_err)
+
+    modeled_pwv = np.ma.vstack(pwv_arrays)
+    modeled_err = np.ma.vstack(err_arrays)
+
+    if np.all(modeled_pwv.mask):
+        warnings.warn('No overlapping PWV data between primary and secondary '
+                      'receivers. Cannot model PWV for times when primary '
+                      'receiver is offline')
+
+    # Average PWV models from different sites
+    avg_pwv = np.ma.average(modeled_pwv, axis=0)
+    sum_quad = np.ma.sum(modeled_err ** 2, axis=0)
+    n = len(self.secondaries) - np.sum(modeled_pwv.mask, axis=0)
+    avg_pwv_err = np.ma.divide(np.ma.sqrt(sum_quad), n)
+    avg_pwv_err.mask = avg_pwv.mask  # np.ma.divide throws off the mask
+
+    return avg_pwv, avg_pwv_err
+
+
 def _search_data_table(
         data: pd.DataFrame, year: int = None, month: int = None, day=None,
         hour=None, colname: str = 'date') -> pd.DataFrame:
@@ -96,7 +136,12 @@ def _search_data_table(
     """
 
     # Raise exception for bad datetime args
-    datetime(year if year else datetime.now().year, month, day, hour)
+    datetime(
+        year if year else 1,
+        month if month else 1,
+        day if day else 1,
+        hour if hour else 1)
+
     if any((year, month, day, hour)):
         raise NotImplementedError
 
@@ -119,7 +164,7 @@ class GPSReceiver:
 
         self._primary = primary
         self._secondaries = tuple(secondaries) if secondaries else tuple()
-        self.data_cuts = data_cuts
+        self.data_cuts = data_cuts if data_cuts else dict()
 
         self._data = {}
         self._pwv_model = None

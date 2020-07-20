@@ -92,17 +92,18 @@ def read_suomi_file(path: PathLike) -> pd.DataFrame:
     """
 
     path = Path(path)
-    receiver_id, year = _parse_path_stem(path)
     data = pd.read_csv(
         path,
-        names=['date', 'PWV, PWVErr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH'],
+        names=['date', 'PWV', 'PWVErr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH'],
         delim_whitespace=True)
 
-    data = data[data[receiver_id] > 0]
+    data = data[data['PWV'] > 0]
 
     # SuomiNet rounds their error and can report an error of zero
     # We compensate by adding an error of 0.025
-    data[receiver_id + '_err'] = np.round(data[receiver_id + '_err'] + 0.025, 3)
+    data['PWVErr'] = np.round(data['PWVErr'] + 0.025, 3)
+
+    receiver_id, year = _parse_path_stem(path)
     data['date'] = _suomi_date_to_timestamp(year, data['date'])
     return data.drop_duplicates(subset='date', keep=False)
 
