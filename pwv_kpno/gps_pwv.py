@@ -126,10 +126,13 @@ class GPSReceiver:
 
     @property
     def primary(self) -> str:
+        """The primary GPS receiver to retrieve PWV data for"""
+
         return self._primary
 
     @primary.setter
     def primary(self, value: str):
+        """Change the instance's primary receiver and clear cached data"""
 
         # No action necessary if new value == old value
         if value == self._primary:
@@ -141,10 +144,16 @@ class GPSReceiver:
 
     @property
     def secondaries(self) -> Tuple[str]:
+        """Secondary GPS receivers used to model the PWV concentration at
+         the primary GPS location when primary data is not available.
+         """
+
         return self._secondaries
 
     @secondaries.setter
     def secondaries(self, value: Tuple[str]):
+        """Change the instance's secondary receivers and clear cached data"""
+
         # No action necessary if new value == old value
         if value == self._secondaries:
             return
@@ -166,9 +175,12 @@ class GPSReceiver:
             A Pandas DataFrame
         """
 
+        # Use cached data if available to avoid slow I/O operations
         if receiver_id not in self._data:
             self._data[receiver_id] = load_rec_directory(receiver_id)
 
+        # Applying data cuts every time the function is called means we
+        # don't have to write a setter for self.data_cuts
         data = self._data[receiver_id]
         for param_name, cut_list in self.data_cuts.get(receiver_id, {}).items():
             for start, end in cut_list:
@@ -213,6 +225,7 @@ class GPSReceiver:
             A pandas dataframe of modeled PWV values in mm
         """
 
+        # Todo: how to handle changing data-cuts and the PWV model?
         raise NotImplementedError
 
     def interp_pwv_date(self, date: NumpyArgument) -> NumpyReturn:

@@ -93,13 +93,9 @@ def read_suomi_file(path: PathLike) -> pd.DataFrame:
 
     path = Path(path)
     receiver_id, year = _parse_path_stem(path)
-
-    names = ['date', receiver_id, receiver_id + '_err', 'ZenithDelay',
-             'SrfcPress', 'SrfcTemp', 'SrfcRH']
-
     data = pd.read_csv(
         path,
-        names=names,
+        names=['date', 'PWV, PWVErr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH'],
         delim_whitespace=True)
 
     data = data[data[receiver_id] > 0]
