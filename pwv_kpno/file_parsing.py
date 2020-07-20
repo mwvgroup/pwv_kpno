@@ -121,7 +121,7 @@ def load_rec_directory(receiver_id: str, directory: PathLike = None) -> pd.DataF
         directory: Directory to load data from (Defaults to package default)
 
     Returns:
-        An astropy table of SuomiNet weather data
+        A pandas DataFrame of SuomiNet weather data
     """
 
     directory = find_data_dir() if directory is None else directory
@@ -140,6 +140,6 @@ def load_rec_directory(receiver_id: str, directory: PathLike = None) -> pd.DataF
         return pd.concat(data).drop_duplicates(subset='date', keep='first')
 
     return pd.DataFrame(columns=[
-        'date', receiver_id, receiver_id + '_err',
+        'date', 'PWV, PWVErr',
         'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH'
     ])

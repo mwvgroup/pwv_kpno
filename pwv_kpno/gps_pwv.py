@@ -22,7 +22,6 @@ and pressure measurements) and PWV concentrations (both measured and modeled).
 """
 
 import warnings
-from copy import deepcopy
 from datetime import datetime
 from typing import Tuple
 
@@ -83,8 +82,8 @@ def _linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> 
 
 
 def _search_data_table(
-        data: pd.DataFrame, year: int = None, month: int = None, day=None, hour=None,
-        colname: str = 'date') -> pd.DataFrame:
+        data: pd.DataFrame, year: int = None, month: int = None, day=None,
+        hour=None, colname: str = 'date') -> pd.DataFrame:
     """Return a subset of a table with dates corresponding to a given timespan
 
     Args:
@@ -97,31 +96,9 @@ def _search_data_table(
     """
 
     # Raise exception for bad datetime args
-    datetime(year, month, day, hour)
-    raise NotImplementedError
-
-
-def _apply_data_cuts(data: pd.DataFrame, data_cuts: dict, exclusive: bool) -> pd.DataFrame:
-    """Apply data cuts from settings to a table of SuomiNet measurements
-
-    Args:
-        data: A table containing data from a SuomiNet data file
-        data_cuts: Dict of tuples with (upper, lower) bounds for each column
-        exclusive: Whether ``data_cuts`` exclude the given regions as opposed
-            to including them.
-
-    Returns:
-        A copy of the data with applied data cuts
-    """
-
-    for param_name, cut_list in data_cuts.items():
-        for start, end in cut_list:
-            indices = (start < data[param_name]) & (data[param_name] < end)
-
-            if exclusive:
-                indices = ~indices
-
-            data = data[indices]
+    datetime(year if year else datetime.now().year, month, day, hour)
+    if any((year, month, day, hour)):
+        raise NotImplementedError
 
     return data
 
@@ -130,24 +107,21 @@ class GPSReceiver:
     """Represents data taken by a SuomiNet GPS receiver"""
 
     def __init__(self, primary: str, secondaries: Tuple[str] = None,
-                 exclude_cut: dict = None, include_cut: dict = None):
+                 data_cuts: dict = None):
         """Provides data access to weather and PWV data for a GPS receiver
 
         Args:
             primary: SuomiNet Id of the receiver to access
             secondaries: Secondary receivers used to supplement periods with
                 missing primary data
-            exclude_cut: Ignore data in the given ranges
-            include_cut: Only include data in the given ranges
+            data_cuts: Only include data in the given ranges
         """
 
         self._primary = primary
         self._secondaries = tuple(secondaries) if secondaries else tuple()
-        self._exclude_cut = exclude_cut
-        self._include_cut = include_cut
+        self.data_cuts = data_cuts
 
-        # Lazy load this data to account for call of attribute setters
-        self._instance_data = None
+        self._data = {}
         self._pwv_model = None
 
     @property
@@ -155,9 +129,14 @@ class GPSReceiver:
         return self._primary
 
     @primary.setter
-    def primary(self, value):
+    def primary(self, value: str):
+
+        # No action necessary if new value == old value
+        if value == self._primary:
+            return
+
+        self._data.pop(self._primary)  # Delete data for old primary receiver
         self._primary = value
-        self._instance_data = None
         self._pwv_model = None
 
     @property
@@ -165,18 +144,57 @@ class GPSReceiver:
         return self._secondaries
 
     @secondaries.setter
-    def secondaries(self, value):
-        self._secondaries = tuple(value)
-        self._instance_data = None
+    def secondaries(self, value: Tuple[str]):
+        # No action necessary if new value == old value
+        if value == self._secondaries:
+            return
+
+        # Delete data for old secondary receivers
+        for key in self._secondaries:
+            self._data.pop(key)
+
+        self._secondaries = value
         self._pwv_model = None
 
-    @property
-    def exclude_cut(self):
-        return deepcopy(self._exclude_cut)
+    def _load_with_data_cuts(self, receiver_id: str) -> pd.DataFrame:
+        """Load data for a given GPS receiver into memory
 
-    @property
-    def include_cut(self):
-        return deepcopy(self._include_cut)
+        Args:
+            receiver_id: Id of the SuomiNet GPS receiver to load data for
+
+        Returns:
+            A Pandas DataFrame
+        """
+
+        if receiver_id not in self._data:
+            self._data[receiver_id] = load_rec_directory(receiver_id)
+
+        data = self._data[receiver_id]
+        for param_name, cut_list in self.data_cuts.get(receiver_id, {}).items():
+            for start, end in cut_list:
+                data = data[(start <= data[param_name]) & (data[param_name] <= end)]
+
+        return data.copy()
+
+    def weather_data(self, year: int = None, month: int = None, day=None, hour=None) -> pd.DataFrame:
+        """Returns a table of all weather data for the primary receiver
+
+        Data is returned as an pandas DataFrame indexed by the SuomiNet Id
+        of each GPS receiver. Results can be optionally refined by year,
+        month, day, and hour.
+
+        Args:
+            year: The year of the desired PWV data
+            month: The month of the desired PWV data
+            day: The day of the desired PWV data
+            hour: The hour of the desired PWV data in 24-hour format
+
+        Returns:
+            A pandas DataFrame
+        """
+
+        primary_data = self._load_with_data_cuts(self.primary)
+        return _search_data_table(primary_data, year, month, day, hour)
 
     def modeled_pwv(self, year: int = None, month: int = None, day=None, hour=None) -> pd.DataFrame:
         """Return a table of the modeled PWV at the primary GPS site
@@ -196,32 +214,6 @@ class GPSReceiver:
         """
 
         raise NotImplementedError
-
-    def weather_data(self, year: int = None, month: int = None, day=None, hour=None) -> pd.DataFrame:
-        """Returns a table of all weather_Data data for the primary receiver
-
-        Data is returned as an pandas DataFrame indexed by the SuomiNet Id
-        of each GPS receiver. Results can be optionally refined by year,
-        month, day, and hour.
-
-        Args:
-            year: The year of the desired PWV data
-            month: The month of the desired PWV data
-            day: The day of the desired PWV data
-            hour: The hour of the desired PWV data in 24-hour format
-
-        Returns:
-            A pandas DataFrame
-        """
-
-        # Todo: Decide how to handle data cuts
-        # Todo: This return should not include secondary PWV values
-        if self._instance_data is None:
-            receivers = set(self.secondaries)
-            receivers.add(self.primary)
-            self._instance_data = pd.concat({rec: load_rec_directory(rec) for rec in receivers}, axis=1)
-
-        return _search_data_table(self._instance_data, year, month, day, hour)
 
     def interp_pwv_date(self, date: NumpyArgument) -> NumpyReturn:
         """Evaluate the PWV model for a given datetime
