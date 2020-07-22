@@ -21,6 +21,7 @@ in the SuomiNet file format.
 """
 
 from datetime import datetime, timedelta
+from functools import partial
 from pathlib import Path
 from typing import Tuple, Union
 
@@ -31,7 +32,6 @@ from .downloads import find_data_dir
 from .types import PathLike
 
 
-@np.vectorize
 def _suomi_date_to_timestamp(year: int, days: Union[str, float]) -> float:
     """Convert the SuomiNet date format into UTC timestamp
 
@@ -92,20 +92,32 @@ def read_suomi_file(path: PathLike) -> pd.DataFrame:
     """
 
     path = Path(path)
+    names = ['date', 'PWV', 'PWVErr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH']
     data = pd.read_csv(
         path,
-        names=['date', 'PWV', 'PWVErr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH'],
-        delim_whitespace=True)
+        names=names,
+        usecols=range(0, len(names)),
+        delim_whitespace=True,
+        index_col=False)
 
-    data = data[data['PWV'] > 0]
+    # Remove masked PWV values, but not other masked data
+    clean_data = data \
+        .replace(-99.9, np.nan) \
+        .replace({'PWV': -9.9, '*': -99.9}, {'PWV': np.nan}) \
+        .dropna(subset=['PWV']) \
+        .drop_duplicates(subset='date', keep=False) \
+        .set_index('date')
+
+    # Convert time values from SuomiNet format to UTC timestamps
+    receiver_id, year = _parse_path_stem(path)
+    date_conversion = partial(_suomi_date_to_timestamp, year)
+    clean_data.index = clean_data.index.map(date_conversion)
 
     # SuomiNet rounds their error and can report an error of zero
     # We compensate by adding an error of 0.025
-    data['PWVErr'] = np.round(data['PWVErr'] + 0.025, 3)
+    clean_data['PWVErr'] = np.round(clean_data['PWVErr'] + 0.025, 3)
 
-    receiver_id, year = _parse_path_stem(path)
-    data['date'] = _suomi_date_to_timestamp(year, data['date'])
-    return data.drop_duplicates(subset='date', keep=False)
+    return clean_data
 
 
 def load_rec_directory(receiver_id: str, directory: PathLike = None) -> pd.DataFrame:
@@ -134,7 +146,9 @@ def load_rec_directory(receiver_id: str, directory: PathLike = None) -> pd.DataF
             data.append(pd.concat([read_suomi_file(f) for f in global_files]))
 
     if data:
-        return pd.concat(data).drop_duplicates(subset='date', keep='first')
+        combined_data = pd.concat(data)
+        unique_indices = combined_data.index.drop_duplicates(keep='first')
+        return combined_data.loc[unique_indices]
 
     return pd.DataFrame(columns=[
         'date', 'PWV, PWVErr',
