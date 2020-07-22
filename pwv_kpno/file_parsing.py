@@ -147,8 +147,7 @@ def load_rec_directory(receiver_id: str, directory: PathLike = None) -> pd.DataF
 
     if data:
         combined_data = pd.concat(data)
-        unique_indices = combined_data.index.drop_duplicates(keep='first')
-        return combined_data.loc[unique_indices]
+        return combined_data.loc[~combined_data.index.duplicated(keep='first')]
 
     return pd.DataFrame(columns=[
         'date', 'PWV, PWVErr',

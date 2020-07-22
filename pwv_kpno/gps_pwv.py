@@ -22,6 +22,7 @@ and pressure measurements) and PWV concentrations (both measured and modeled).
 """
 
 import warnings
+from copy import deepcopy
 from datetime import datetime
 from typing import Tuple
 
@@ -30,10 +31,10 @@ import pandas as pd
 from scipy.odr import ODR, RealData, polynomial
 
 from .file_parsing import load_rec_directory
-from .types import NumpyReturn, NumpyArgument
+from .types import DataCuts, NumpyArgument, NumpyReturn
 
 
-def _linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> Tuple[np.array, np.array]:
+def _linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> Tuple[pd.Series, pd.Series]:
     """Optimize and apply a linear regression using masked arrays
 
     Generates a linear fit f using orthogonal distance regression and returns
@@ -46,19 +47,11 @@ def _linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> 
         sy: Standard deviations of y
 
     Returns:
-        The applied linear regression on x as a masked array
-        The uncertainty in the applied linear regression as a masked array
+        The applied linear regression on x
+        The uncertainty in the applied linear regression
     """
 
-    x = np.ma.array(x)  # This type cast will propagate into returns
-    y = np.ma.array(y)  # It also ensures that x, y have a .mask attribute
-
-    if y.mask.all():
-        return y, sy
-
-    # Fit data with orthogonal distance regression (ODR)
-    indices = ~np.logical_or(x.mask, y.mask)
-    data = RealData(x=x[indices], y=y[indices], sx=sx[indices], sy=sy[indices])
+    data = RealData(x=x, y=y, sx=sx, sy=sy)
     odr = ODR(data, polynomial(1), beta0=[0., 1.])
 
     with warnings.catch_warnings():
@@ -72,53 +65,11 @@ def _linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> 
     # Apply the linear regression
     b, m = fit_results.beta
     applied_fit = m * x + b
-    applied_fit.mask = np.logical_or(x.mask, applied_fit <= 0)
+    std = np.std(y - m * x - b)
 
-    std = np.ma.std(y[indices] - m * x[indices] - b)
-    error = np.ma.zeros(applied_fit.shape) + std
-    error.mask = applied_fit.mask
-
-    return applied_fit, error
-
-
-def _calc_avg_pwv_model(self, pwv_data: pd.DataFrame):
-    """Determines a PWV model using each off site receiver and averages them
-
-    Args:
-        pwv_data: A table of pwv measurements
-
-    Returns:
-        A masked array of the averaged PWV model
-        A masked array of the error in the averaged model
-    """
-
-    pwv_arrays, err_arrays = [], []
-    for receiver in self.secondaries:
-        mod_pwv, mod_err = _linear_regression(
-            x=pwv_data[receiver],
-            y=pwv_data[self.primary],
-            sx=pwv_data[receiver + '_err'],
-            sy=pwv_data[self.primary + '_err']
-        )
-        pwv_arrays.append(mod_pwv)
-        err_arrays.append(mod_err)
-
-    modeled_pwv = np.ma.vstack(pwv_arrays)
-    modeled_err = np.ma.vstack(err_arrays)
-
-    if np.all(modeled_pwv.mask):
-        warnings.warn('No overlapping PWV data between primary and secondary '
-                      'receivers. Cannot model PWV for times when primary '
-                      'receiver is offline')
-
-    # Average PWV models from different sites
-    avg_pwv = np.ma.average(modeled_pwv, axis=0)
-    sum_quad = np.ma.sum(modeled_err ** 2, axis=0)
-    n = len(self.secondaries) - np.sum(modeled_pwv.mask, axis=0)
-    avg_pwv_err = np.ma.divide(np.ma.sqrt(sum_quad), n)
-    avg_pwv_err.mask = avg_pwv.mask  # np.ma.divide throws off the mask
-
-    return avg_pwv, avg_pwv_err
+    applied_fit.name = 'fitted_pwv'
+    errors = pd.Series(std, index=applied_fit.index, name='fitted_err')
+    return applied_fit, errors
 
 
 def _search_data_table(
@@ -126,14 +77,14 @@ def _search_data_table(
         hour=None, colname: str = 'date') -> pd.DataFrame:
     """Return a subset of a table with dates corresponding to a given timespan
 
-    Args:
-        data: Astropy table to return a subset of
-        year: Only return data within the given year
-        month: Only return data within the given month
-        day: Only return data within the given day
-        hour: Only return data within the given hour
-        colname: Name of the column in ``data`` having UTC timestamps
-    """
+        Args:
+            data: Astropy table to return a subset of
+            year: Only return data within the given year
+            month: Only return data within the given month
+            day: Only return data within the given day
+            hour: Only return data within the given hour
+            colname: Use a column in ``data`` instead of the index
+        """
 
     # Raise exception for bad datetime args
     datetime(
@@ -142,10 +93,11 @@ def _search_data_table(
         day if day else 1,
         hour if hour else 1)
 
+    # Todo: search DataFrame index by default
     if any((year, month, day, hour)):
         raise NotImplementedError
 
-    return data
+    return data.copy()
 
 
 class GPSReceiver:
@@ -164,7 +116,7 @@ class GPSReceiver:
 
         self._primary = primary
         self._secondaries = tuple(secondaries) if secondaries else tuple()
-        self.data_cuts = data_cuts if data_cuts else dict()
+        self._data_cuts = data_cuts if data_cuts else dict()
 
         self._data = {}
         self._pwv_model = None
@@ -210,6 +162,19 @@ class GPSReceiver:
         self._secondaries = value
         self._pwv_model = None
 
+    @property
+    def data_cuts(self) -> DataCuts:
+        """Dictionary of data cuts on returned data for each GPS receiver"""
+
+        return deepcopy(self._data_cuts)
+
+    @data_cuts.setter
+    def data_cuts(self, value: DataCuts):
+        """Change the instance's data cuts and clear the cached PWV Model"""
+
+        self._data_cuts = value
+        self._pwv_model = None
+
     def _load_with_data_cuts(self, receiver_id: str) -> pd.DataFrame:
         """Load data for a given GPS receiver into memory
 
@@ -227,7 +192,7 @@ class GPSReceiver:
         # Applying data cuts every time the function is called means we
         # don't have to write a setter for self.data_cuts
         data = self._data[receiver_id]
-        for param_name, cut_list in self.data_cuts.get(receiver_id, {}).items():
+        for param_name, cut_list in self._data_cuts.get(receiver_id, {}).items():
             for start, end in cut_list:
                 data = data[(start <= data[param_name]) & (data[param_name] <= end)]
 
@@ -253,6 +218,52 @@ class GPSReceiver:
         primary_data = self._load_with_data_cuts(self.primary)
         return _search_data_table(primary_data, year, month, day, hour)
 
+    def _calc_avg_pwv_model(self) -> pd.DataFrame:
+        """Determines a PWV model using each off site receiver and averages them
+
+        Returns:
+            A DataFrame with modeled PWV values and the associated errors over time
+        """
+
+        primary_data = self._load_with_data_cuts(self._primary)
+
+        fitted_pwv = pd.DataFrame()
+        fitted_error = pd.DataFrame()
+        for secondary_rec in self._secondaries:
+
+            secondary_data = self._load_with_data_cuts(secondary_rec)
+            joined_data = primary_data \
+                .join(secondary_data, lsuffix='primary', rsuffix='secondary') \
+                .dropna(subset=['PWVprimary', 'PWVsecondary'])
+
+            try:
+                _fitted_pwv, _fitted_error = _linear_regression(
+                    joined_data['PWVsecondary'],
+                    joined_data['PWVErrsecondary'],
+                    joined_data['PWVprimary'],
+                    joined_data['PWVErrprimary'])
+
+            except RuntimeError:
+                continue
+
+            fitted_pwv[secondary_rec] = _fitted_pwv
+            fitted_error[secondary_rec] = _fitted_error
+
+        # Average PWV models from different sites
+        out_data = pd.DataFrame({
+            'PWV': fitted_pwv.mean(axis=1),
+            'PWVErr': np.sqrt((fitted_error ** 2).sum(axis=1)) / len(fitted_error)
+        })
+
+        if out_data.empty:
+            warnings.warn('No overlapping PWV data between primary and secondary '
+                          'receivers. Cannot model PWV for times when primary '
+                          'receiver is offline')
+
+        # Todo: This doesn't include data that is in primary_data but not out_data
+        out_data.update(primary_data[['PWV', 'PWVErr']])
+        return out_data.dropna().sort_index()
+
     def modeled_pwv(self, year: int = None, month: int = None, day=None, hour=None) -> pd.DataFrame:
         """Return a table of the modeled PWV at the primary GPS site
 
@@ -267,20 +278,48 @@ class GPSReceiver:
             hour: The hour of the desired PWV data in 24-hour format
 
         Returns:
-            A pandas dataframe of modeled PWV values in mm
+            A pandas DataFrame of modeled PWV values in mm
         """
 
-        # Todo: how to handle changing data-cuts and the PWV model?
-        raise NotImplementedError
+        if self._pwv_model is None:
+            self._pwv_model = self._calc_avg_pwv_model()
 
-    def interp_pwv_date(self, date: NumpyArgument) -> NumpyReturn:
+        return _search_data_table(self._pwv_model, year, month, day, hour)
+
+    # Todo: Add limit on number of successive values interpolate
+    def interp_pwv_date(self, date: NumpyArgument, method: str = 'linear', order=None) -> NumpyReturn:
         """Evaluate the PWV model for a given datetime
 
         Args:
             date: UTC datetime object or timestamp
+            method: interpolation technique to use. Supported methods include
+                'linear' 'nearest', 'zero', 'slinear', 'quadratic', 'cubic',
+                'spline', 'barycentric', 'polynomial'
+            order: Order of interpolation if using ‘polynomial’ or ‘spline’
 
         Returns:
             Line of sight PWV concentration at the given datetime
         """
 
+        if method == 'linear':
+            method = 'index'
+
+        valid_methods = (
+            'index', 'nearest', 'zero', 'slinear', 'quadratic', 'cubic',
+            'spline', 'barycentric', 'polynomial')
+
+        if method not in valid_methods:
+            raise ValueError(f'Invalid interpolation method: {method}')
+
         raise NotImplementedError
+
+        # pwv_model = self.modeled_pwv().copy()
+        # pwv_model.loc[date] = np.nan
+        # interp_data = pwv_model.interpolate(
+        #     method=method, limit_direction='both', limit_area='inside', order=order
+        # ).loc[date]
+
+        # if interp_data.isna().any():
+        #     warnings.warn('Some values were outside the permitted interpolation range')
+
+        # return interp_data
