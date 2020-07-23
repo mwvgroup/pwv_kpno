@@ -24,6 +24,7 @@ and pressure measurements) and PWV concentrations (both measured and modeled).
 import warnings
 from copy import deepcopy
 from datetime import datetime
+from typing import Any
 from typing import Tuple
 
 import numpy as np
@@ -72,39 +73,78 @@ def _linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> 
     return applied_fit, errors
 
 
-def _search_data_table(
-        data: pd.DataFrame, year: int = None, month: int = None, day=None,
-        hour=None, colname: str = 'date') -> pd.DataFrame:
-    """Return a subset of a table with dates corresponding to a given timespan
+class CachedClassData:
+    """Caches data for use across instances
+
+    Useful for minimizing the result of I/O operations
+    """
+
+    _cached_class_data = dict()  # To store cached data
+    _ref_count = dict()  # To count references to cached data by instances
+
+    def __init__(self):
+        self._instance_keys = []
+
+    @classmethod
+    def _get_cached_data(cls, key: Any) -> Any:
+        """Return data from the class's Cache
 
         Args:
-            data: Astropy table to return a subset of
-            year: Only return data within the given year
-            month: Only return data within the given month
-            day: Only return data within the given day
-            hour: Only return data within the given hour
-            colname: Use a column in ``data`` instead of the index
+            key: Unique identifier for storing / retrieving data
+
+        Returns:
+            The cached object associated with the given key
         """
 
-    # Raise exception for bad datetime args
-    datetime(
-        year if year else 1,
-        month if month else 1,
-        day if day else 1,
-        hour if hour else 1)
+        return cls._cached_class_data[key]
 
-    # Todo: search DataFrame index by default
-    if any((year, month, day, hour)):
-        raise NotImplementedError
+    def _set_cached_data(self, key: Any, val: Any):
+        """Store data in the class's Cache
 
-    return data.copy()
+        Args:
+            key: Unique identifier for storing / retrieving data
+            val: The value to store
+        """
+
+        self._cached_class_data[key] = val
+        self._instance_keys.append(key)
+        self._ref_count.setdefault(key, 0)
+        self._ref_count[key] += 1
+
+    @classmethod
+    def _reduce_reference(cls, key: Any):
+        """Delete data from the cache
+
+        Args:
+            key: Unique identifier for storing / retrieving data
+        """
+
+        cls._ref_count[key] -= 1
+        if cls._ref_count[key] == 0:
+            del cls._cached_class_data[key]
+            del cls._ref_count[key]
+
+    @classmethod
+    def _cached_data_available(cls, key: Any) -> bool:
+        """Check if data is cached for the given key
+
+        Args:
+            key: Unique identifier for storing / retrieving data
+        """
+
+        return key in cls._cached_class_data
+
+    def __del__(self):
+        """Delete data from the cache if no longer referenced by any instances"""
+
+        for key in self._instance_keys:
+            self._reduce_reference(key)
 
 
-class GPSReceiver:
+class PWVData(CachedClassData):
     """Represents data taken by a SuomiNet GPS receiver"""
 
-    def __init__(self, primary: str, secondaries: Tuple[str] = None,
-                 data_cuts: dict = None):
+    def __init__(self, primary: str, secondaries: Tuple[str] = None, data_cuts: dict = None):
         """Provides data access to weather and PWV data for a GPS receiver
 
         Args:
@@ -114,12 +154,93 @@ class GPSReceiver:
             data_cuts: Only include data in the given ranges
         """
 
-        self._primary = primary
-        self._secondaries = tuple(secondaries) if secondaries else tuple()
-        self._data_cuts = data_cuts if data_cuts else dict()
+        super().__init__()
+        self.primary = primary
+        self.secondaries = tuple(secondaries) if secondaries else tuple()
+        self.data_cuts = data_cuts if data_cuts else dict()
 
-        self._data = {}
+        if primary in secondaries:
+            raise ValueError('Primary receiver cannot be listed as a secondary receiver')
+
+    def _load_data_with_cuts(self, receiver_id: str) -> pd.DataFrame:
+        """Load data for a given GPS receiver into memory
+
+        Args:
+            receiver_id: Id of the SuomiNet GPS receiver to load data for
+
+        Returns:
+            A Pandas DataFrame
+        """
+
+        # Use cached data if available to avoid slow I/O operations
+        if not self._cached_data_available(receiver_id):
+            self._set_cached_data(receiver_id, load_rec_directory(receiver_id))
+
+        data = self._get_cached_data(receiver_id)
+        for param_name, cut_list in self.data_cuts.get(receiver_id, {}).items():
+            for start, end in cut_list:
+                data = data[(start <= data[param_name]) & (data[param_name] <= end)]
+
+        return data.copy()
+
+    @staticmethod
+    def _search_data_table(
+            data: pd.DataFrame, year: int = None, month: int = None, day=None,
+            hour=None, colname: str = 'date') -> pd.DataFrame:
+        """Return a subset of a table with dates corresponding to a given timespan
+
+            Args:
+                data: Astropy table to return a subset of
+                year: Only return data within the given year
+                month: Only return data within the given month
+                day: Only return data within the given day
+                hour: Only return data within the given hour
+                colname: Use a column in ``data`` instead of the index
+            """
+
+        # Raise exception for bad datetime args
+        datetime(
+            year if year else 1,
+            month if month else 1,
+            day if day else 1,
+            hour if hour else 1)
+
+        # Todo: search DataFrame index by default
+        if any((year, month, day, hour)):
+            raise NotImplementedError
+
+        return data.copy()
+
+    def weather_data(self, year: int = None, month: int = None, day=None, hour=None) -> pd.DataFrame:
+        """Returns a table of all weather data for the primary receiver
+
+        Data is returned as an pandas DataFrame indexed by the SuomiNet Id
+        of each GPS receiver. Results can be optionally refined by year,
+        month, day, and hour.
+
+        Args:
+            year: The year of the desired PWV data
+            month: The month of the desired PWV data
+            day: The day of the desired PWV data
+            hour: The hour of the desired PWV data in 24-hour format
+
+        Returns:
+            A pandas DataFrame
+        """
+
+        primary_data = self._load_with_data_cuts(self.primary)
+        return self._search_data_table(primary_data, year, month, day, hour)
+
+
+class GPSReceiver(PWVData):
+
+    def __init__(self, primary: str, secondaries: Tuple[str] = None, data_cuts: dict = None):
+        super().__init__(primary, secondaries, data_cuts)
         self._pwv_model = None
+
+    ###########################################################################
+    # Getter / setters are used to reset the cached PWV Model
+    ###########################################################################
 
     @property
     def primary(self) -> str:
@@ -135,7 +256,6 @@ class GPSReceiver:
         if value == self._primary:
             return
 
-        self._data.pop(self._primary)  # Delete data for old primary receiver
         self._primary = value
         self._pwv_model = None
 
@@ -175,49 +295,6 @@ class GPSReceiver:
         self._data_cuts = value
         self._pwv_model = None
 
-    def _load_with_data_cuts(self, receiver_id: str) -> pd.DataFrame:
-        """Load data for a given GPS receiver into memory
-
-        Args:
-            receiver_id: Id of the SuomiNet GPS receiver to load data for
-
-        Returns:
-            A Pandas DataFrame
-        """
-
-        # Use cached data if available to avoid slow I/O operations
-        if receiver_id not in self._data:
-            self._data[receiver_id] = load_rec_directory(receiver_id)
-
-        # Applying data cuts every time the function is called means we
-        # don't have to write a setter for self.data_cuts
-        data = self._data[receiver_id]
-        for param_name, cut_list in self._data_cuts.get(receiver_id, {}).items():
-            for start, end in cut_list:
-                data = data[(start <= data[param_name]) & (data[param_name] <= end)]
-
-        return data.copy()
-
-    def weather_data(self, year: int = None, month: int = None, day=None, hour=None) -> pd.DataFrame:
-        """Returns a table of all weather data for the primary receiver
-
-        Data is returned as an pandas DataFrame indexed by the SuomiNet Id
-        of each GPS receiver. Results can be optionally refined by year,
-        month, day, and hour.
-
-        Args:
-            year: The year of the desired PWV data
-            month: The month of the desired PWV data
-            day: The day of the desired PWV data
-            hour: The hour of the desired PWV data in 24-hour format
-
-        Returns:
-            A pandas DataFrame
-        """
-
-        primary_data = self._load_with_data_cuts(self.primary)
-        return _search_data_table(primary_data, year, month, day, hour)
-
     def _calc_avg_pwv_model(self) -> pd.DataFrame:
         """Determines a PWV model using each off site receiver and averages them
 
@@ -225,13 +302,13 @@ class GPSReceiver:
             A DataFrame with modeled PWV values and the associated errors over time
         """
 
-        primary_data = self._load_with_data_cuts(self._primary)
+        primary_data = self._load_data_with_cuts(self._primary)
 
         fitted_pwv = pd.DataFrame()
         fitted_error = pd.DataFrame()
         for secondary_rec in self._secondaries:
 
-            secondary_data = self._load_with_data_cuts(secondary_rec)
+            secondary_data = self._load_data_with_cuts(secondary_rec)
             joined_data = primary_data \
                 .join(secondary_data, lsuffix='primary', rsuffix='secondary') \
                 .dropna(subset=['PWVprimary', 'PWVsecondary'])
@@ -284,7 +361,7 @@ class GPSReceiver:
         if self._pwv_model is None:
             self._pwv_model = self._calc_avg_pwv_model()
 
-        return _search_data_table(self._pwv_model, year, month, day, hour)
+        return self._search_data_table(self._pwv_model, year, month, day, hour)
 
     # Todo: Add limit on number of successive values interpolate
     def interp_pwv_date(self, date: NumpyArgument, method: str = 'linear', order=None) -> NumpyReturn:

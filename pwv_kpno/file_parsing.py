@@ -28,8 +28,8 @@ from typing import Tuple, Union
 import numpy as np
 import pandas as pd
 
-from .downloads import find_data_dir
 from .types import PathLike
+from .downloads import DownloadManager
 
 
 def _suomi_date_to_timestamp(year: int, days: Union[str, float]) -> float:
@@ -120,6 +120,7 @@ def read_suomi_file(path: PathLike) -> pd.DataFrame:
     return clean_data
 
 
+# Todo: Allow loading of specific data types
 def load_rec_directory(receiver_id: str, directory: PathLike = None) -> pd.DataFrame:
     """Load all data for a given GPS receiver from a directory
 
@@ -133,7 +134,7 @@ def load_rec_directory(receiver_id: str, directory: PathLike = None) -> pd.DataF
         A pandas DataFrame of SuomiNet weather data
     """
 
-    directory = find_data_dir() if directory is None else directory
+    directory = DownloadManager().data_dir if directory is None else directory
 
     # Data release types ordered in terms of priority
     # Prefer global data over daily data over hourly data
