@@ -97,6 +97,9 @@ class URLDownload:
             with open(path, 'wb') as ofile:
                 ofile.write(response.content)
 
+    def __repr__(self) -> str:
+        return 'URLDownload({})'.format(self._data_dir)
+
 
 class ReleaseDownloader(URLDownload):
     """Handles the downloading of specific SuomiNet data releases"""
@@ -156,6 +159,9 @@ class ReleaseDownloader(URLDownload):
         path = self._data_dir / '{}gl_{}.plt'.format(self.receiver_id, year)
         url = 'https://www.suominet.ucar.edu/data/staYrDayGlob/{}nrt_{}.plt'.format(self.receiver_id, year)
         self.download_suomi_url(url, path, timeout)
+
+    def __repr__(self) -> str:
+        return 'ReleaseDownloader({}, {})'.format(self.receiver_id, self._data_dir)
 
 
 class DownloadManager(URLDownload):
@@ -255,3 +261,6 @@ class DownloadManager(URLDownload):
                 successful_years.add(yr)
 
         return sorted(successful_years)
+
+    def __repr__(self) -> str:
+        return 'DownloadManager({})'.format(self._data_dir)
