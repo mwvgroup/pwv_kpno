@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+# !/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
 #    This file is part of the pwv_kpno software package.
@@ -24,7 +24,6 @@ and pressure measurements) and PWV concentrations (both measured and modeled).
 import warnings
 from copy import deepcopy
 from datetime import datetime
-from typing import Any
 from typing import Tuple
 
 import numpy as np
@@ -32,120 +31,66 @@ import pandas as pd
 from scipy.odr import ODR, RealData, polynomial
 
 from .file_parsing import load_rec_directory
-from .types import DataCuts, NumpyArgument, NumpyReturn
+from .types import DataCuts, DataCuts1D, NumpyArgument, NumpyReturn
 
 
-def _linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> Tuple[pd.Series, pd.Series]:
-    """Optimize and apply a linear regression using masked arrays
+def apply_data_cuts(data: pd.DataFrame, cuts: DataCuts1D):
+    """Apply a dictionary of data cuts to a DataFrame
 
-    Generates a linear fit f using orthogonal distance regression and returns
-    the applied model f(x). If y is completely masked, return y and sy.
+    Only return data that is within the specified ranges
 
     Args:
-        x: The independent variable of the regression
-        y: The dependent variable of the regression
-        sx: Standard deviations of x
-        sy: Standard deviations of y
+        data: Data to apply cuts on
+        cuts: Dict with a list of tuples (cut start, cut end)
 
     Returns:
-        The applied linear regression on x
-        The uncertainty in the applied linear regression
+        A subset of the passed DataFrame
     """
 
-    data = RealData(x=x, y=y, sx=sx, sy=sy)
-    odr = ODR(data, polynomial(1), beta0=[0., 1.])
+    for param_name, cut_list in cuts:
+        for start, end in cut_list:
+            data = data[(start <= data[param_name]) & (data[param_name] <= end)]
 
-    with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", message='Empty data detected for ODR instance.')
-        fit_results = odr.run()
-
-    fit_fail = 'Numerical error detected' in fit_results.stopreason
-    if fit_fail:
-        raise RuntimeError(fit_results.stopreason)
-
-    # Apply the linear regression
-    b, m = fit_results.beta
-    applied_fit = m * x + b
-    std = np.std(y - m * x - b)
-
-    applied_fit.name = 'fitted_pwv'
-    errors = pd.Series(std, index=applied_fit.index, name='fitted_err')
-    return applied_fit, errors
+    return data
 
 
-class CachedClassData:
-    """Caches data for use across instances
+def search_data_table(
+        data: pd.DataFrame, year: int = None, month: int = None, day=None,
+        hour=None, colname: str = 'date') -> pd.DataFrame:
+    """Return a subset of a table with dates corresponding to a given timespan
 
-    Useful for minimizing the result of I/O operations
-    """
+        Args:
+            data: Astropy table to return a subset of
+            year: Only return data within the given year
+            month: Only return data within the given month
+            day: Only return data within the given day
+            hour: Only return data within the given hour
+            colname: Use a column in ``data`` instead of the index
+        """
+
+    # Raise exception for bad datetime args
+    datetime(
+        year if year else 1,
+        month if month else 1,
+        day if day else 1,
+        hour if hour else 1)
+
+    # Todo: search DataFrame index by default
+    if any((year, month, day, hour)):
+        raise NotImplementedError
+
+    return data
+
+
+# Todo: Cache I/O results
+class PWVData:
+    """Caches I/O results for faster access to GPS data"""
 
     _cached_class_data = dict()  # To store cached data
     _ref_count = dict()  # To count references to cached data by instances
 
-    def __init__(self):
-        self._instance_keys = []
-
-    @classmethod
-    def _get_cached_data(cls, key: Any) -> Any:
-        """Return data from the class's Cache
-
-        Args:
-            key: Unique identifier for storing / retrieving data
-
-        Returns:
-            The cached object associated with the given key
-        """
-
-        return cls._cached_class_data[key]
-
-    def _set_cached_data(self, key: Any, val: Any):
-        """Store data in the class's Cache
-
-        Args:
-            key: Unique identifier for storing / retrieving data
-            val: The value to store
-        """
-
-        self._cached_class_data[key] = val
-        self._instance_keys.append(key)
-        self._ref_count.setdefault(key, 0)
-        self._ref_count[key] += 1
-
-    @classmethod
-    def _reduce_reference(cls, key: Any):
-        """Delete data from the cache
-
-        Args:
-            key: Unique identifier for storing / retrieving data
-        """
-
-        cls._ref_count[key] -= 1
-        if cls._ref_count[key] == 0:
-            del cls._cached_class_data[key]
-            del cls._ref_count[key]
-
-    @classmethod
-    def _cached_data_available(cls, key: Any) -> bool:
-        """Check if data is cached for the given key
-
-        Args:
-            key: Unique identifier for storing / retrieving data
-        """
-
-        return key in cls._cached_class_data
-
-    def __del__(self):
-        """Delete data from the cache if no longer referenced by any instances"""
-
-        for key in self._instance_keys:
-            self._reduce_reference(key)
-
-
-class PWVData(CachedClassData):
-    """Represents data taken by a SuomiNet GPS receiver"""
-
-    def __init__(self, primary: str, secondaries: Tuple[str] = None, data_cuts: dict = None):
-        """Provides data access to weather and PWV data for a GPS receiver
+    def __init__(self, primary: str, secondaries: Set[str] = None, data_cuts: dict = None):
+        """Provides data access to weather and PWV data
 
         Args:
             primary: SuomiNet Id of the receiver to access
@@ -154,13 +99,9 @@ class PWVData(CachedClassData):
             data_cuts: Only include data in the given ranges
         """
 
-        super().__init__()
         self.primary = primary
-        self.secondaries = tuple(secondaries) if secondaries else tuple()
-        self.data_cuts = data_cuts if data_cuts else dict()
-
-        if primary in secondaries:
-            raise ValueError('Primary receiver cannot be listed as a secondary receiver')
+        self.secondaries = secondaries
+        self.data_cuts = data_cuts
 
     def _load_data_with_cuts(self, receiver_id: str) -> pd.DataFrame:
         """Load data for a given GPS receiver into memory
@@ -172,44 +113,9 @@ class PWVData(CachedClassData):
             A Pandas DataFrame
         """
 
-        # Use cached data if available to avoid slow I/O operations
-        if not self._cached_data_available(receiver_id):
-            self._set_cached_data(receiver_id, load_rec_directory(receiver_id))
-
-        data = self._get_cached_data(receiver_id)
-        for param_name, cut_list in self.data_cuts.get(receiver_id, {}).items():
-            for start, end in cut_list:
-                data = data[(start <= data[param_name]) & (data[param_name] <= end)]
-
-        return data.copy()
-
-    @staticmethod
-    def _search_data_table(
-            data: pd.DataFrame, year: int = None, month: int = None, day=None,
-            hour=None, colname: str = 'date') -> pd.DataFrame:
-        """Return a subset of a table with dates corresponding to a given timespan
-
-            Args:
-                data: Astropy table to return a subset of
-                year: Only return data within the given year
-                month: Only return data within the given month
-                day: Only return data within the given day
-                hour: Only return data within the given hour
-                colname: Use a column in ``data`` instead of the index
-            """
-
-        # Raise exception for bad datetime args
-        datetime(
-            year if year else 1,
-            month if month else 1,
-            day if day else 1,
-            hour if hour else 1)
-
-        # Todo: search DataFrame index by default
-        if any((year, month, day, hour)):
-            raise NotImplementedError
-
-        return data.copy()
+        receiver_data = load_rec_directory(receiver_id)
+        receiver_cuts = self.data_cuts.get(receiver_id, {}).items()
+        return apply_data_cuts(receiver_data, receiver_cuts)
 
     def weather_data(self, year: int = None, month: int = None, day=None, hour=None) -> pd.DataFrame:
         """Returns a table of all weather data for the primary receiver
@@ -228,15 +134,29 @@ class PWVData(CachedClassData):
             A pandas DataFrame
         """
 
-        primary_data = self._load_with_data_cuts(self.primary)
-        return self._search_data_table(primary_data, year, month, day, hour)
+        primary_data = self._load_data_with_cuts(self.primary)
+        return search_data_table(primary_data, year, month, day, hour)
 
 
-class GPSReceiver(PWVData):
+class PWVModeling(PWVData):
 
-    def __init__(self, primary: str, secondaries: Tuple[str] = None, data_cuts: dict = None):
-        super().__init__(primary, secondaries, data_cuts)
+    def __init__(self, primary: str, secondaries: Set[str] = None, data_cuts: dict = None):
+        """Handles getter / setter logic for class attributes
+
+        Args:
+            primary: SuomiNet Id of the receiver to access
+            secondaries: Secondary receivers used to supplement periods with
+                missing primary data
+            data_cuts: Only include data in the given ranges
+        """
+
+        self._primary = primary
+        self._secondaries = set(secondaries) if secondaries else set()
+        self._data_cuts = data_cuts if data_cuts else dict()
         self._pwv_model = None
+
+        if primary in secondaries:
+            raise ValueError('Primary receiver cannot be listed as a secondary receiver')
 
     ###########################################################################
     # Getter / setters are used to reset the cached PWV Model
@@ -260,7 +180,7 @@ class GPSReceiver(PWVData):
         self._pwv_model = None
 
     @property
-    def secondaries(self) -> Tuple[str]:
+    def secondaries(self) -> Set[str]:
         """Secondary GPS receivers used to model the PWV concentration at
          the primary GPS location when primary data is not available.
          """
@@ -274,10 +194,6 @@ class GPSReceiver(PWVData):
         # No action necessary if new value == old value
         if value == self._secondaries:
             return
-
-        # Delete data for old secondary receivers
-        for key in self._secondaries:
-            self._data.pop(key)
 
         self._secondaries = value
         self._pwv_model = None
@@ -295,6 +211,68 @@ class GPSReceiver(PWVData):
         self._data_cuts = value
         self._pwv_model = None
 
+    ###########################################################################
+    # PWV is modeled by separately fitting the primary PWV as a function of
+    # the PWV measured by each secondary receiver and then averaging the result
+    ###########################################################################
+
+    @staticmethod
+    def _linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> Tuple[pd.Series, pd.Series]:
+        """Optimize and apply a linear regression using masked arrays
+
+        Generates a linear fit f using orthogonal distance regression and returns
+        the applied model f(x). If y is completely masked, return y and sy.
+
+        Args:
+            x: The independent variable of the regression
+            y: The dependent variable of the regression
+            sx: Standard deviations of x
+            sy: Standard deviations of y
+
+        Returns:
+            The applied linear regression on x
+            The uncertainty in the applied linear regression
+        """
+
+        data = RealData(x=x, y=y, sx=sx, sy=sy)
+        odr = ODR(data, polynomial(1), beta0=[0., 1.])
+
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", message='Empty data detected for ODR instance.')
+            fit_results = odr.run()
+
+        fit_fail = 'Numerical error detected' in fit_results.stopreason
+        if fit_fail:
+            raise RuntimeError(fit_results.stopreason)
+
+        return fit_results
+
+    def _fit_to_secondary(self, secondary_receiver):
+
+        # Get subset of primary / secondary data with datetimes that overlap
+        primary_data = self._load_data_with_cuts(self._primary)
+        secondary_data = self._load_data_with_cuts(secondary_receiver)
+        joined_data = primary_data \
+            .join(secondary_data, lsuffix='primary', rsuffix='secondary') \
+            .dropna(subset=['PWVprimary', 'PWVErrprimary', 'PWVsecondary', 'PWVErrsecondary'])
+
+        # Evaluate the fit
+        fit_results = self._linear_regression(
+            joined_data['PWVsecondary'],
+            joined_data['PWVErrsecondary'],
+            joined_data['PWVprimary'],
+            joined_data['PWVErrprimary'])
+
+        # Apply the linear regression
+        b, m = fit_results.beta
+        applied_fit = m * joined_data['PWVsecondary'] + b
+        residuals = joined_data['PWVprimary'] - applied_fit
+        errors = residuals.std()
+
+        applied_fit.name = 'fitted_pwv'
+        errors.name = 'fitted_err'
+        return applied_fit, errors
+
     def _calc_avg_pwv_model(self) -> pd.DataFrame:
         """Determines a PWV model using each off site receiver and averages them
 
@@ -302,23 +280,11 @@ class GPSReceiver(PWVData):
             A DataFrame with modeled PWV values and the associated errors over time
         """
 
-        primary_data = self._load_data_with_cuts(self._primary)
-
         fitted_pwv = pd.DataFrame()
         fitted_error = pd.DataFrame()
         for secondary_rec in self._secondaries:
-
-            secondary_data = self._load_data_with_cuts(secondary_rec)
-            joined_data = primary_data \
-                .join(secondary_data, lsuffix='primary', rsuffix='secondary') \
-                .dropna(subset=['PWVprimary', 'PWVsecondary'])
-
             try:
-                _fitted_pwv, _fitted_error = _linear_regression(
-                    joined_data['PWVsecondary'],
-                    joined_data['PWVErrsecondary'],
-                    joined_data['PWVprimary'],
-                    joined_data['PWVErrprimary'])
+                _fitted_pwv, _fitted_error = self._fit_to_secondary(secondary_rec)
 
             except RuntimeError:
                 continue
@@ -337,8 +303,8 @@ class GPSReceiver(PWVData):
                           'receivers. Cannot model PWV for times when primary '
                           'receiver is offline')
 
-        # Todo: This doesn't include data that is in primary_data but not out_data
-        out_data.update(primary_data[['PWV', 'PWVErr']])
+        primary_data = self._load_data_with_cuts(self._primary)
+        out_data.loc[primary_data.index] = primary_data
         return out_data.dropna().sort_index()
 
     def modeled_pwv(self, year: int = None, month: int = None, day=None, hour=None) -> pd.DataFrame:
@@ -361,7 +327,10 @@ class GPSReceiver(PWVData):
         if self._pwv_model is None:
             self._pwv_model = self._calc_avg_pwv_model()
 
-        return self._search_data_table(self._pwv_model, year, month, day, hour)
+        return search_data_table(self._pwv_model, year, month, day, hour)
+
+
+class GPSReceiver(PWVModeling):
 
     # Todo: Add limit on number of successive values interpolate
     def interp_pwv_date(self, date: NumpyArgument, method: str = 'linear', order=None) -> NumpyReturn:

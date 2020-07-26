@@ -22,7 +22,7 @@ Enhancement Protocol 484: https://www.python.org/dev/peps/pep-0484/ .
 """
 
 from pathlib import Path as Path
-from typing import Dict, Tuple, Union
+from typing import Dict, List, Tuple, Union
 
 from numpy import ndarray
 
@@ -30,4 +30,5 @@ PathLike = Union[str, Path]
 ArrayLike = Union[list, ndarray]
 NumpyArgument = Union[float, list, ndarray]
 NumpyReturn = Union[float, ndarray]
-DataCuts = Dict[str, Dict[str, Tuple[float, float]]]
+DataCuts1D = Dict[str, List[Tuple[float, float]]]
+DataCuts = Dict[str, DataCuts1D]
