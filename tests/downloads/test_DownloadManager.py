@@ -89,7 +89,6 @@ class CheckDownloadedReceivers(TestCase):
             test_data_config = yaml.load(infile, yaml.SafeLoader)
             self.test_data_receivers = list(test_data_config.keys())
 
-
     def test_return_matches_test_data(self):
         """Tests returned receiver list matches test data set"""
 

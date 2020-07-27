@@ -24,6 +24,7 @@ and pressure measurements) and PWV concentrations (both measured and modeled).
 import warnings
 from copy import deepcopy
 from datetime import datetime
+from typing import Set
 from typing import Tuple
 
 import numpy as np
@@ -140,6 +141,7 @@ class PWVData:
 
 class PWVModeling(PWVData):
 
+    # noinspection PyMissingConstructor
     def __init__(self, primary: str, secondaries: Set[str] = None, data_cuts: dict = None):
         """Handles getter / setter logic for class attributes
 
@@ -247,26 +249,26 @@ class PWVModeling(PWVData):
 
         return fit_results
 
-    def _fit_to_secondary(self, secondary_receiver):
+    def _fit_to_secondary(self, secondary_receiver: str):
 
         # Get subset of primary / secondary data with datetimes that overlap
         primary_data = self._load_data_with_cuts(self._primary)
         secondary_data = self._load_data_with_cuts(secondary_receiver)
         joined_data = primary_data \
-            .join(secondary_data, lsuffix='primary', rsuffix='secondary') \
-            .dropna(subset=['PWVprimary', 'PWVErrprimary', 'PWVsecondary', 'PWVErrsecondary'])
+            .join(secondary_data, lsuffix='Primary', rsuffix='Secondary') \
+            .dropna(subset=['PWVPrimary', 'PWVErrPrimary', 'PWVSecondary', 'PWVErrSecondary'])
 
         # Evaluate the fit
         fit_results = self._linear_regression(
-            joined_data['PWVsecondary'],
-            joined_data['PWVErrsecondary'],
-            joined_data['PWVprimary'],
-            joined_data['PWVErrprimary'])
+            joined_data['PWVSecondary'],
+            joined_data['PWVErrSecondary'],
+            joined_data['PWVPrimary'],
+            joined_data['PWVErrPrimary'])
 
         # Apply the linear regression
         b, m = fit_results.beta
-        applied_fit = m * joined_data['PWVsecondary'] + b
-        residuals = joined_data['PWVprimary'] - applied_fit
+        applied_fit = m * joined_data['PWVSecondary'] + b
+        residuals = joined_data['PWVPrimary'] - applied_fit
         errors = residuals.std()
 
         applied_fit.name = 'fitted_pwv'
