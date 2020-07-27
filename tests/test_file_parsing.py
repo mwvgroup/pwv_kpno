@@ -24,10 +24,11 @@ from datetime import datetime
 from pathlib import Path
 from unittest import TestCase
 
+import numpy as np
 from pytz import utc
 
 from pwv_kpno import file_parsing
-import numpy as np
+
 TEST_DATA_DIR = Path(__file__).parent / 'testing_data'
 
 
@@ -68,25 +69,27 @@ class SuomiNetFileParsing(TestCase):
 
         # Data file with no known formatting issues
         parsed_data = file_parsing.read_suomi_file(TEST_DATA_DIR / 'KITThr_2016.plt')
-        expected_columns = ['date', 'KITT', 'KITT_err', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH']
+        expected_columns = ['PWV', 'PWVErr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH']
         np.testing.assert_array_equal(expected_columns, parsed_data.columns)
 
-    def test_dates_are_unique(self):
+    def test_indexed_by_date(self):
+        """Test the index is named ``date``"""
+
+        parsed_data = file_parsing.read_suomi_file(TEST_DATA_DIR / 'KITThr_2016.plt')
+        self.assertEqual('date', parsed_data.index.name)
+
+    def test_index_is_unique(self):
         """Test for the removal of any duplicate dates"""
 
         # Data file with known duplicate entries
         parsed_data = file_parsing.read_suomi_file(TEST_DATA_DIR / 'AZAMhr_2015.plt')
-
-        table_entries = len(parsed_data)
-        unique_dates = len(set(parsed_data['date']))
-        self.assertEqual(table_entries, unique_dates)
+        self.assertFalse(parsed_data.index.duplicated().any())
 
     def test_removed_negative_values(self):
         """Test for the removal of negative PWV values"""
 
         parsed_data = file_parsing.read_suomi_file(TEST_DATA_DIR / 'KITThr_2016.plt')
-        is_negative_pwv = any(parsed_data['KITT'] < 0)
-        self.assertFalse(is_negative_pwv)
+        self.assertFalse(any(parsed_data['PWV'] < 0))
 
     def test_parse_2010_data(self):
         """Test file parsing of SuomiNet data published in 2010
