@@ -74,13 +74,12 @@ class URLDownload:
         directory.mkdir(exist_ok=True, parents=True)
         return directory
 
-    @staticmethod
-    def download_suomi_url(url: str, path: PathLike, timeout: float = None):
+    def download_suomi_url(self, url: str, fname: str, timeout: float = None):
         """Download SuomiNet data from a URL
 
         Args:
             url: The url of the data file to download
-            path: The path to download to
+            fname: The name of the file to write to
             timeout: How long to wait before the request times out
 
         Raises:
@@ -94,7 +93,7 @@ class URLDownload:
         # 404 error code means SuomiNet has no data file to download
         if response.status_code != 404:
             response.raise_for_status()
-            with open(path, 'wb') as ofile:
+            with open(self._data_dir / fname, 'wb') as ofile:
                 ofile.write(response.content)
 
     def __repr__(self) -> str:
@@ -126,9 +125,9 @@ class ReleaseDownloader(URLDownload):
             HTTPError, TimeoutError, ConnectionError
         """
 
-        path = self._data_dir / '{}dy_{}.plt'.format(self.receiver_id, year)
+        fname = '{}dy_{}.plt'.format(self.receiver_id, year)
         url = 'https://www.suominet.ucar.edu/data/staYrDay/{}pp_{}.plt'.format(self.receiver_id, year)
-        self.download_suomi_url(url, path, timeout)
+        self.download_suomi_url(url, fname, timeout)
 
     def download_conus_hourly(self, year: int, timeout=None):
         """Download CONUS data from the SuomiNet hourly data releases
@@ -141,9 +140,9 @@ class ReleaseDownloader(URLDownload):
             HTTPError, TimeoutError, ConnectionError
         """
 
-        path = self._data_dir / '{}hr_{}.plt'.format(self.receiver_id, year)
+        fname = '{}hr_{}.plt'.format(self.receiver_id, year)
         url = 'https://www.suominet.ucar.edu/data/staYrHr/{}nrt_{}.plt'.format(self.receiver_id, year)
-        self.download_suomi_url(url, path, timeout)
+        self.download_suomi_url(url, fname, timeout)
 
     def download_global_daily(self, year: int, timeout=None):
         """Download global data from the SuomiNet daily data releases
@@ -156,9 +155,9 @@ class ReleaseDownloader(URLDownload):
             HTTPError, TimeoutError, ConnectionError
         """
 
-        path = self._data_dir / '{}gl_{}.plt'.format(self.receiver_id, year)
+        fname = '{}gl_{}.plt'.format(self.receiver_id, year)
         url = 'https://www.suominet.ucar.edu/data/staYrDayGlob/{}nrt_{}.plt'.format(self.receiver_id, year)
-        self.download_suomi_url(url, path, timeout)
+        self.download_suomi_url(url, fname, timeout)
 
     def __repr__(self) -> str:
         return 'ReleaseDownloader({}, {})'.format(self.receiver_id, self._data_dir)
@@ -253,6 +252,7 @@ class DownloadManager(URLDownload):
         for yr in np.array(year):  # Typecasting to array ensures argument is iterable
             for download_func in download_operations:
                 try:
+                    # noinspection PyArgumentList
                     download_func(yr, timeout)
 
                 except (TimeoutError, HTTPError, ConnectionError):
