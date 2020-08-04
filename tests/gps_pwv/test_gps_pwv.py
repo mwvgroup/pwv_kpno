@@ -76,7 +76,7 @@ class AttributesAreAccessible(TestCase):
 
     def setUp(self):
         self.primary = 'REC1'
-        self.secondaries = ('REC2', 'REC3')
+        self.secondaries = set('REC2', 'REC3')
         self.receiver = GPSReceiver(primary=self.primary, secondaries=self.secondaries)
 
     def test_primary_rec_accessible(self):
@@ -138,44 +138,6 @@ class ModeledPWV(TestCase):
 
         expected_units = {'date': 'UTC', self.receiver.primary: 'mm'}
         data_table = self.receiver.modeled_pwv()
-        for column, unit in expected_units.items():
-            self.assertEqual(unit, data_table[column].unit)
-
-
-@TestWithCleanEnv(TEST_DATA_DIR)
-class WeatherData(TestCase):
-    """Tests for the ``GPSReceiver.weather_data`` function"""
-
-    def setUp(self):
-        self.receiver = GPSReceiver('KITT')
-
-    def test_returned_column_names(self):
-        """Test returned table has two columns named ``date`` and the
-        primary receiver Id
-        """
-
-        returned_column_order = self.receiver.weather_data().colnames
-        expected_col_order = ['date', 'pwv', 'temperature', 'pressure', 'humidity']
-        self.assertListEqual(expected_col_order, returned_column_order)
-
-    def test_filtering_by_args(self):
-        """Test returned dates are filtered by kwarg arguments"""
-
-        search_kwargs = {'year': 2010, 'month': 7, 'day': 21, 'hour': 5}
-        full_table = self.receiver.weather_data()
-        searched_table = search_data_table(full_table, **search_kwargs)
-        returned_table = self.receiver.weather_data(**search_kwargs)
-        self.assertEqual(searched_table, returned_table)
-
-    def test_units(self):
-        """Test columns for appropriate units"""
-
-        expected_units = {
-            'date': 'UTC', 'pwv': 'mm', 'temperature': 'k',
-            'pressure': 'bar', 'humidity': '%'
-        }
-
-        data_table = self.receiver.weather_data()
         for column, unit in expected_units.items():
             self.assertEqual(unit, data_table[column].unit)
 

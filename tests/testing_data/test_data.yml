@@ -1,7 +1,6 @@
 # This file defines what data the test suite should expect to exist in the
 # `testing_data` directory. If the contents of this file do not match the
-# contents of the parent directory, and if the parent directory is used for
-# testing, expect some tests to fail.
+# contents of the parent directory, expect some tests to fail.
 
 AZAM:
   hourly: [2015]
