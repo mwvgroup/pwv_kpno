@@ -21,8 +21,37 @@ absorption due to PWV.
 """
 
 import numpy as np
+import scipy
+from scipy.stats import binned_statistic
 
 from .types import ArrayLike
+
+
+def bin_transmission(wave, transmission, resolution):
+    """Bin a transmission table using a normalized integration
+
+    Args:
+        wave: Array of wavelengths in angstroms
+        transmission: Array with transmission values for each wavelength
+        resolution: Resolution to bin to
+
+    Returns:
+        A binned version of ``atm_model``
+    """
+
+    # Todo: determine bins from resolution
+    bins = ...
+
+    statistic_left, bin_edges_left, _ = binned_statistic(
+        wave, transmission, statistic='mean', bins=bins[:-1])
+
+    statistic_right, bin_edges_right, _ = binned_statistic(
+        wave, transmission, statistic='mean', bins=bins[1:])
+
+    dx = wave[1] - wave[0]
+    statistic = (statistic_right + statistic_left) / 2
+    bin_centers = bin_edges_left[:-1] + dx / 2
+    return bin_centers, statistic
 
 
 class Transmission:
@@ -30,11 +59,34 @@ class Transmission:
     transmission values
     """
 
-    def __init__(self, wave: ArrayLike, transmission: ArrayLike):
+    def __init__(self, pwv: ArrayLike, wave: ArrayLike, transmission: ArrayLike):
+        """PWV transmission model using pre-tabulated transmission values
+
+        Args:
+            pwv: 1D array of PWV values
+            wave: 2D Array with wavelengths in angstroms
+            transmission: 2D array with transmission values for each wavelength
+        """
+
+        self.pwv = pwv
         self.wave = wave
         self.transmission = transmission
 
-    def __call__(self, wave: ArrayLike, resolution: float = None) -> np.array:
+    # Todo: Interpolate transmission using PWV effective
+    def _transmission(self, pwv: float, resolution: float = None) -> ArrayLike:
+        """Return transmission values for a given PWV concentration
+
+        Args:
+            pwv: Line of sight PWV concentration to evaluate transmission for
+            resolution: Reduce model to the given resolution
+
+        Returns:
+            An array of transmission values
+        """
+
+        return bin_transmission(self.wave, self.transmission)
+
+    def __call__(self, pwv: float, wave: ArrayLike = None, resolution: float = None) -> np.ndarray:
         """Evaluate transmission model at given wavelengths
 
         Args:
@@ -45,23 +97,18 @@ class Transmission:
             The interpolated transmission at the given wavelengths / resolution
         """
 
-        # Note: Interpolate transmission in using PWV effective and not PWV line of sight
-        raise NotImplementedError
+        wave = wave or self.wave
+        trans_at_pwv = self._transmission(pwv)
 
-    def at_resolution(self, res: float) -> ArrayLike:
-        """Bin the transmission model to a given resolution
-
-        Args:
-            res: New resolution in angstroms
-
-        Returned:
-            The binned transmission values of the model
-        """
-
-        raise NotImplementedError
+        # noinspection PyUnresolvedReferences
+        return scipy.interpolate.interpn(
+            points=wave,
+            values=trans_at_pwv,
+            xi=[[w] for w in wave]
+        )
 
     def __repr__(self) -> str:
-        return '<Transmission(name={})>'.format(self.name)
+        return 'Transmission(pwv={}, wave={}, transmission={})'.format(self.wave, self.wave, self.transmission)
 
 
 class CrossSectionTransmission(Transmission):
@@ -70,6 +117,16 @@ class CrossSectionTransmission(Transmission):
     """
 
     def __init__(self, wave: ArrayLike, cross_sections: ArrayLike):
+        """PWV transmission model using H20 cross sections
+
+        Transmission values are determined using individual cross sections a
+        long with the Beer-Lambert law.
+
+        Args:
+            wave: 1D Array with wavelengths in angstroms
+            cross_sections: 1D array with cross sections in cm squared
+        """
+
         if (cross_sections < 0).any():
             raise ValueError('Cross sections cannot be negative.')
 
@@ -82,6 +139,22 @@ class CrossSectionTransmission(Transmission):
         self.h2o_density = 0.99997  # g / cm^3
         self.one_mm_in_cm = 10  # mm / cm
 
+    def _transmission(self, pwv: float, resolution: float = None) -> ArrayLike:
+        """Return transmission values for a given PWV concentration
+
+        Args:
+            pwv: Line of sight PWV concentration to evaluate transmission for
+            resolution: Reduce model to the given resolution
+
+        Returns:
+            An array of transmission values
+        """
+
+        # Evaluate Beer-Lambert Law
+        tau = pwv * self.cross_sections * self.num_density_conversion
+        transmission = np.exp(-tau)
+        return bin_transmission(self.wave, transmission)
+
     @property
     def num_density_conversion(self) -> float:
         """Calculate conversion factor from PWV * cross section to optical depth
@@ -93,20 +166,10 @@ class CrossSectionTransmission(Transmission):
         # Conversion factor 1 / (mm * cm^2)
         return (self.n_a * self.h2o_density) / (self.h2o_molar_mass * self.one_mm_in_cm)
 
-    def __call__(self, wave: ArrayLike, resolution: float = None) -> np.array:
-        """Evaluate transmission model at given wavelengths
-
-        Args:
-            wave: Wavelengths to evaluate transmission for in angstroms
-            resolution: Reduce model to the given resolution
-
-        Returns:
-            The interpolated transmission at the given wavelengths / resolution
-        """
-
-        pwv_num_density = self.cross_sections * self.num_density_conversion
-        raise NotImplementedError
+    def __repr__(self) -> str:
+        return 'CrossSectionTransmission(pwv={}, wave={}, transmission={})'.format(
+            self.wave, self.wave, self.transmission)
 
 
 # Todo: Define the default transmission model
-default_model = Transmission([], [])
+default_model = Transmission([], [], [])
