@@ -32,7 +32,7 @@ from pwv_kpno import file_parsing
 TEST_DATA_DIR = Path(__file__).parent / 'testing_data'
 
 
-class DateFormatConversion(TestCase):
+class SuomiDateToTimestamp(TestCase):
     """Test the conversion of SuomiNet datetime format to timestamps"""
 
     def test_round_off_error_correction(self):
@@ -59,6 +59,29 @@ class DateFormatConversion(TestCase):
             file_parsing._suomi_date_to_timestamp(2021, '365.96875'),
             dec_31_2021_23_15.timestamp(),
             error_msg.format(dec_31_2021_23_15))
+
+
+class ParsePathStem(TestCase):
+    """Tests for the ``_parse_path_stem`` function"""
+
+    def setUp(self):
+        """Define a dummy file path"""
+
+        self.receiver_id = 'REC'
+        self.year = 2020
+        self.test_path = Path('{}dy_{}'.format(self.receiver_id, self.year))
+
+    def test_correct_receiver(self):
+        """Test the correct receiver Id is recovered from the file path"""
+
+        receiver_id, year = file_parsing._parse_path_stem(self.test_path)
+        self.assertEqual(self.receiver_id, receiver_id)
+
+    def test_correct_year(self):
+        """Test the correct year is recovered from the file path"""
+
+        receiver_id, year = file_parsing._parse_path_stem(self.test_path)
+        self.assertEqual(self.year, year)
 
 
 class SuomiNetFileParsing(TestCase):
