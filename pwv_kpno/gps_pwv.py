@@ -29,7 +29,7 @@ from typing import Tuple
 
 import numpy as np
 import pandas as pd
-from scipy.odr import ODR, RealData, polynomial
+from scipy.odr import ODR, Output, RealData, polynomial
 
 from .file_parsing import load_rec_directory
 from .types import DataCuts, DataCuts1D, NumpyArgument, NumpyReturn
@@ -61,7 +61,7 @@ def search_data_table(
     """Return a subset of a table with dates corresponding to a given timespan
 
         Args:
-            data: Astropy table to return a subset of
+            data: Pandas DataFrame to return a subset of
             year: Only return data within the given year
             month: Only return data within the given month
             day: Only return data within the given day
@@ -83,9 +83,8 @@ def search_data_table(
     return data
 
 
-# Todo: Cache I/O results
 class PWVData:
-    """Caches I/O results for faster access to GPS data"""
+    """Loads GPS weather data and applies data cuts"""
 
     _cached_class_data = dict()  # To store cached data
     _ref_count = dict()  # To count references to cached data by instances
@@ -101,8 +100,8 @@ class PWVData:
         """
 
         self.primary = primary
-        self.secondaries = secondaries
-        self.data_cuts = data_cuts
+        self.secondaries = secondaries or set()
+        self.data_cuts = data_cuts or dict()
 
     def _load_data_with_cuts(self, receiver_id: str) -> pd.DataFrame:
         """Load data for a given GPS receiver into memory
@@ -140,6 +139,9 @@ class PWVData:
 
 
 class PWVModeling(PWVData):
+    """Handles the modeling of PWV for times when direct measurements are not
+    available at the primary location.
+    """
 
     # noinspection PyMissingConstructor
     def __init__(self, primary: str, secondaries: Set[str] = None, data_cuts: dict = None):
@@ -219,7 +221,7 @@ class PWVModeling(PWVData):
     ###########################################################################
 
     @staticmethod
-    def _linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> Tuple[pd.Series, pd.Series]:
+    def _linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> Output:
         """Optimize and apply a linear regression using masked arrays
 
         Generates a linear fit f using orthogonal distance regression and returns
@@ -249,7 +251,17 @@ class PWVModeling(PWVData):
 
         return fit_results
 
-    def _fit_to_secondary(self, secondary_receiver: str):
+    def _fit_to_secondary(self, secondary_receiver: str) -> Tuple[pd.Series, pd.Series]:
+        """Apply a linear fit to the primary PWV data as a function of the PWV
+        at a secondary location
+
+        Args:
+            secondary_receiver: Receiver Id for the secondary location
+
+        Returns:
+            - The fitted PWV (mm)
+            - Error values for the fitted PWV
+        """
 
         # Get subset of primary / secondary data with datetimes that overlap
         primary_data = self._load_data_with_cuts(self._primary)
@@ -288,8 +300,8 @@ class PWVModeling(PWVData):
             try:
                 _fitted_pwv, _fitted_error = self._fit_to_secondary(secondary_rec)
 
-            except RuntimeError:
-                continue
+            except RuntimeError:  # Failed ODR regression
+                warnings.warn('Linear regression failed for {}'.format(secondary_rec))
 
             fitted_pwv[secondary_rec] = _fitted_pwv
             fitted_error[secondary_rec] = _fitted_error
@@ -333,6 +345,7 @@ class PWVModeling(PWVData):
 
 
 class GPSReceiver(PWVModeling):
+    """Data access for measurements taken by SuomiNet GPS receivers"""
 
     # Todo: Add limit on number of successive values interpolate
     def interp_pwv_date(self, date: NumpyArgument, method: str = 'linear', order=None) -> NumpyReturn:
