@@ -29,6 +29,7 @@ from astropy.table import Table
 from pytz import utc
 
 
+# Todo: Wrap setUp and tearDown methods as well
 class TestWithCleanEnv:
     """Context manager and decorator for running tests in a clean environment
 
@@ -37,12 +38,15 @@ class TestWithCleanEnv:
     """
 
     def __init__(self, data_path: Union[str, Path] = None):
-        """Clears all environmental variables and set ``SUOMINET_DIR``
+        """Clears all environmental variables and set the ``SUOMINET_DIR``
+        variable
 
-        Value for ``SUOMINET_DIR`` defaults to a temporary directory.
+        Value for ``SUOMINET_DIR`` defaults to a temporary directory. Can be
+        used as a context manager, function decorator, or class decorator. If
+        used as a class decorator, only methods named ``test_*`` are wrapped.
 
         Args:
-            data_path: Optional path to set ``SUOMINET_DIR`` to
+            data_path: Optional path to set as ``SUOMINET_DIR``
         """
 
         if isinstance(data_path, Path):
@@ -51,8 +55,9 @@ class TestWithCleanEnv:
         self._data_path = data_path
 
     def __call__(self, obj):
-        # Decide whether we should wrap a callable or a class
+        # Wrap the passed object or callable
 
+        # Decide whether we should wrap ``obj`` as a class or function
         if isinstance(obj, type):
             return self._decorate_class(obj)
 
@@ -91,20 +96,18 @@ class TestWithCleanEnv:
         return inner
 
     def _decorate_class(self, wrap_class: type) -> type:
-        # Decorates methods in a class with request_mock
+        # Decorates class methods
         # Method will be decorated only if it name begins with ``test_``
 
         for attr_name in dir(wrap_class):
             # Skip attributes without correct prefix
-            if not attr_name.startswith('test_'):
+            if not (attr_name.startswith('test_')):
                 continue
 
             # Skip attributes that are not callable
             attr = getattr(wrap_class, attr_name)
-            if not hasattr(attr, '__call__'):
-                continue
-
-            setattr(wrap_class, attr_name, self._decorate_callable(attr))
+            if callable(attr):
+                setattr(wrap_class, attr_name, self._decorate_callable(attr))
 
         return wrap_class
 
