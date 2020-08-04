@@ -67,7 +67,7 @@ class ParsePathStem(TestCase):
     def setUp(self):
         """Define a dummy file path"""
 
-        self.receiver_id = 'REC'
+        self.receiver_id = 'RECI'
         self.year = 2020
         self.test_path = Path('{}dy_{}'.format(self.receiver_id, self.year))
 
