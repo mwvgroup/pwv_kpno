@@ -25,10 +25,11 @@ from pathlib import Path as Path
 from typing import Dict, List, Tuple, Union
 
 from numpy import ndarray
+from pandas import Series
 
 PathLike = Union[str, Path]
-ArrayLike = Union[list, ndarray]
-NumpyArgument = Union[float, list, ndarray]
+ArrayLike = Union[list, ndarray, Series]
+NumpyArgument = Union[float, list, ndarray, Series]
 NumpyReturn = Union[float, ndarray]
 DataCuts1D = Dict[str, List[Tuple[float, float]]]
 DataCuts = Dict[str, DataCuts1D]
