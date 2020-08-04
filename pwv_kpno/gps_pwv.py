@@ -57,7 +57,7 @@ def apply_data_cuts(data: pd.DataFrame, cuts: DataCuts1D):
 
 def search_data_table(
         data: pd.DataFrame, year: int = None, month: int = None, day=None,
-        hour=None, colname: str = 'date') -> pd.DataFrame:
+        hour=None, colname: str = None) -> pd.DataFrame:
     """Return a subset of a table with dates corresponding to a given timespan
 
         Args:
@@ -69,18 +69,27 @@ def search_data_table(
             colname: Use a column in ``data`` instead of the index
         """
 
+    # Get just the datetime args that aren't None
+    test_attr = dict(year=year, month=month, day=day, hour=hour)
+    test_attr = {k: v for k, v in test_attr.items() if v}
+
     # Raise exception for bad datetime args
     datetime(
-        year if year else 1,
-        month if month else 1,
-        day if day else 1,
-        hour if hour else 1)
+        test_attr.get('year', 1),
+        test_attr.get('month', 1),
+        test_attr.get('day', 1),
+        test_attr.get('hour', 1)
+    )
 
-    # Todo: search DataFrame index by default
-    if any((year, month, day, hour)):
-        raise NotImplementedError
+    # Todo: Revisit to see if performance better than n * k is necessary
+    def is_good_date(timestamp: float) -> bool:
+        """Return whether given time stamp is within datetime limits"""
 
-    return data
+        date = datetime.fromtimestamp(timestamp)
+        return all(getattr(date, k) == v for k, v in test_attr.items())
+
+    search_column = data[colname] if colname else data.index
+    return data[search_column.map(is_good_date)]
 
 
 class PWVData:
