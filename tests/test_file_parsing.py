@@ -123,3 +123,20 @@ class SuomiNetFileParsing(TestCase):
         """
 
         file_parsing.read_suomi_file(TEST_DATA_DIR / 'SA48dy_2010.plt')
+
+
+class LoadRecDirectory(TestCase):
+    """Tests for the ``load_rec_directory`` function"""
+
+    def test_empty_dataframe_columns(self):
+        """Test returned DataFrame has correct column names"""
+
+        data = file_parsing.load_rec_directory('dummy_receiver')
+        expected_columns = ['PWV, PWVErr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH']
+        self.assertListEqual(expected_columns, list(data.columns))
+
+    def test_empty_dataframe_index(self):
+        """Test the returned DataFrame is indexed by ``date``"""
+
+        data = file_parsing.load_rec_directory('dummy_receiver')
+        self.assertEqual('date', data.index.name)
