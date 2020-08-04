@@ -20,6 +20,8 @@
 absorption due to PWV.
 """
 
+from typing import Tuple
+
 import numpy as np
 import scipy
 from scipy.stats import binned_statistic
@@ -27,7 +29,7 @@ from scipy.stats import binned_statistic
 from .types import ArrayLike
 
 
-def bin_transmission(wave, transmission, resolution):
+def bin_transmission(wave, transmission, resolution) -> Tuple[np.arry, np.array]:
     """Bin a transmission table using a normalized integration
 
     Args:
@@ -39,8 +41,13 @@ def bin_transmission(wave, transmission, resolution):
         A binned version of ``atm_model``
     """
 
-    # Todo: determine bins from resolution
-    bins = ...
+    # Create bins that uniformly sample the given wavelength range
+    # at the given resolution
+    half_res = resolution / 2
+    bins = np.arange(
+        min(wave) - half_res,
+        max(wave) + half_res + resolution,
+        resolution)
 
     statistic_left, bin_edges_left, _ = binned_statistic(
         wave, transmission, statistic='mean', bins=bins[:-1])
@@ -84,7 +91,8 @@ class Transmission:
             An array of transmission values
         """
 
-        return bin_transmission(self.wave, self.transmission)
+        wave, trans =  bin_transmission(self.wave, self.transmission, resolution)
+        return trans
 
     def __call__(self, pwv: float, wave: ArrayLike = None, resolution: float = None) -> np.ndarray:
         """Evaluate transmission model at given wavelengths
@@ -153,7 +161,8 @@ class CrossSectionTransmission(Transmission):
         # Evaluate Beer-Lambert Law
         tau = pwv * self.cross_sections * self.num_density_conversion
         transmission = np.exp(-tau)
-        return bin_transmission(self.wave, transmission)
+        wave, trans = bin_transmission(self.wave, transmission, resolution)
+        return trans
 
     @property
     def num_density_conversion(self) -> float:
