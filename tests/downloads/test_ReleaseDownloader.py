@@ -17,9 +17,7 @@
 #    along with pwv_kpno. If not, see <http://www.gnu.org/licenses/>.
 
 
-"""Tests for the downloading of data from remote SuomiNet servers.
-No external HTTP requests are made by this module.
-"""
+"""Tests for the ``pwv_kpno.downloads.ReleaseDownloader`` class"""
 
 import re
 from unittest import TestCase
@@ -111,3 +109,16 @@ class DownloadedPathNames(TestCase):
         self.assertCorrectFilePath(
             self.downloader.download_global_daily,
             f'{self.dummy_rec_name}gl_{self.dummy_year}.plt')
+
+
+class Repr(TestCase):
+    """Tests for the string representation of ``URLDownloader``"""
+
+    def test_can_be_evaluated(self):
+        """Test the class representation can be evaluated"""
+
+        test_class = ReleaseDownloader('dummy_receiver')
+        new_class = eval(repr(test_class))
+
+        self.assertEqual(test_class.receiver_id, new_class.receiver_id)
+        self.assertEqual(test_class.data_dir, new_class.data_dir)

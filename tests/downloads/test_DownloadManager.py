@@ -17,9 +17,7 @@
 #    along with pwv_kpno. If not, see <http://www.gnu.org/licenses/>.
 
 
-"""Tests for the downloading of data from remote SuomiNet servers.
-No external HTTP requests are made by this module.
-"""
+"""Tests for the ``pwv_kpno.downloads.DownloadManager`` class"""
 
 import re
 from datetime import datetime
@@ -36,6 +34,45 @@ from tests.utils import TestWithCleanEnv
 
 TEST_DATA_DIR = Path(__file__).parent.parent / 'testing_data'
 TEST_DATA_CONFIG = TEST_DATA_DIR / 'test_data.yml'
+
+
+@TestWithCleanEnv(TEST_DATA_DIR)
+class CheckDownloadedReceivers(TestCase):
+    """Tests for the ``check_downloaded_receivers`` function"""
+
+    def setUp(self):
+        """Read the contents of ``test_data.yml``"""
+
+        with TEST_DATA_CONFIG.open() as infile:
+            test_data_config = yaml.load(infile, yaml.SafeLoader)
+            self.test_data_receivers = list(test_data_config.keys())
+
+    def test_return_matches_test_data(self):
+        """Tests returned receiver list matches test data set"""
+
+        self.assertListEqual(
+            self.test_data_receivers,
+            DownloadManager().check_downloaded_receivers())
+
+
+@TestWithCleanEnv(TEST_DATA_DIR)
+class CheckDownloadedData(TestCase):
+    """Tests for the ``check_downloaded_data`` function"""
+
+    def setUp(self):
+        """Read the contents of ``test_data.yml``"""
+
+        with TEST_DATA_CONFIG.open() as infile:
+            self.test_data_config = yaml.load(infile, yaml.SafeLoader)
+
+    def test_return_matches_test_data(self):
+        """Tests returned years matche test data for KITT"""
+
+        test_receiver = 'KITT'
+
+        self.assertDictEqual(
+            self.test_data_config[test_receiver],
+            DownloadManager().check_downloaded_data(test_receiver))
 
 
 @requests_mock.Mocker()
@@ -78,40 +115,13 @@ class DownloadAvailableData(TestCase):
         self.assertListEqual([2012], returned_years)
 
 
-@TestWithCleanEnv(TEST_DATA_DIR)
-class CheckDownloadedReceivers(TestCase):
-    """Tests for the ``check_downloaded_receivers`` function"""
+class Repr(TestCase):
+    """Tests for the string representation of ``URLDownloader``"""
 
-    def setUp(self):
-        """Read the contents of ``test_data.yml``"""
+    def test_can_be_evaluated(self):
+        """Test the class representation can be evaluated"""
 
-        with TEST_DATA_CONFIG.open() as infile:
-            test_data_config = yaml.load(infile, yaml.SafeLoader)
-            self.test_data_receivers = list(test_data_config.keys())
+        test_class = DownloadManager('dummy_receiver')
+        new_class = eval(repr(test_class))
 
-    def test_return_matches_test_data(self):
-        """Tests returned receiver list matches test data set"""
-
-        self.assertListEqual(
-            self.test_data_receivers,
-            DownloadManager().check_downloaded_receivers())
-
-
-@TestWithCleanEnv(TEST_DATA_DIR)
-class CheckDownloadedData(TestCase):
-    """Tests for the ``check_downloaded_data`` function"""
-
-    def setUp(self):
-        """Read the contents of ``test_data.yml``"""
-
-        with TEST_DATA_CONFIG.open() as infile:
-            self.test_data_config = yaml.load(infile, yaml.SafeLoader)
-
-    def test_return_matches_test_data(self):
-        """Tests returned years matche test data for KITT"""
-
-        test_receiver = 'KITT'
-
-        self.assertDictEqual(
-            self.test_data_config[test_receiver],
-            DownloadManager().check_downloaded_data(test_receiver))
+        self.assertEqual(test_class.data_dir, new_class.data_dir)

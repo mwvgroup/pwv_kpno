@@ -31,13 +31,10 @@ import pwv_kpno
 from pwv_kpno.downloads import URLDownload
 from tests.utils import TestWithCleanEnv
 
-TEST_DATA_DIR = Path(__file__).parent / 'testing_data'
-TEST_DATA_CONFIG = TEST_DATA_DIR / 'test_data.yml'
-
 
 @TestWithCleanEnv()
 class DataDir(TestCase):
-    """Tests the ``data_dir`` property points to the correct location"""
+    """Tests that the ``data_dir`` property points to the correct location"""
 
     def user_provided_directory(self):
         """Test directory equals innit argument when given"""
@@ -73,6 +70,7 @@ class DataDir(TestCase):
 @TestWithCleanEnv()
 @requests_mock.Mocker()
 class DownloadSuomiUrl(TestCase):
+    """Tests for the ``download_suomi_url`` function"""
 
     def test_connection_errors_not_caught(self, mocker: requests_mock.Mocker):
         """Test connection errors are not caught silently"""
@@ -97,12 +95,26 @@ class DownloadSuomiUrl(TestCase):
     def test_saves_to_correct_file_name(self, mocker: requests_mock.Mocker):
         """Test downloads are written to a file with the correct name"""
 
+        # Register dummy URL
         url = 'http://test.com'
         mocker.register_uri('GET', url)
 
+        # Execute mock download
         downloader = URLDownload()
         fname = 'test_file.plt'
         expected_path = downloader.data_dir / fname
 
+        # Downloaded file should exist with correct file name
         URLDownload().download_suomi_url(url, fname)
         self.assertTrue(expected_path.exists())
+
+
+class Repr(TestCase):
+    """Tests for the string representation of ``URLDownloader``"""
+
+    def test_can_be_evaluated(self):
+        """Test the class representation can be evaluated"""
+
+        test_class = URLDownload()
+        new_class = eval(repr(test_class))
+        self.assertEqual(test_class.data_dir, new_class.data_dir)

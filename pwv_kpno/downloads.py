@@ -17,7 +17,20 @@
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
 """The ``downloads`` module is responsible for downloading precipitable
-water vapor measurements from SuomiNet onto the local machine.
+water vapor measurements from SuomiNet servers onto the local machine. Data
+files are stored in one of the following locations:
+
+1. If a specific directory is specified by the user at the time of download,
+   data files are downloaded to that directory.
+2. If variable ``SUOMINET_DIR`` is set in the working environment, data is
+   downloaded to the directory assigned to that variable.
+3. If neither of the above cases are true, data is downloaded into the
+   installation directory.
+
+The ``ReleaseDownloader`` class is best suited for situations where explicit
+control is required over which files are downloaded and where they should be
+written (assuming that location is different than the package default).
+For all other cases, see the ``DownloadManager`` class.
 """
 
 import os
@@ -37,19 +50,19 @@ class URLDownload:
     """Handles the downloading of SuomiNet data files from arbitrary URLs"""
 
     def __init__(self, data_dir: PathLike = None):
-        """Handles the downloading of SuomiNet data files from arbitrary URLs
+        """Handles the downloading of data files from arbitrary URLs
 
-        Data is downloaded to a single location according to the following
-        priority:
-          1. The location specified by the ``data_dir`` variable
-          2. The location defined by the ``SUOMINET_DIR`` environmental variable
-          3. Internally within the package's installation directory
+        Data is downloaded to which ever of the following directories is
+        resolved first:
+            1. The location specified by the ``data_dir`` variable at innit
+            2. The location defined by the ``SUOMINET_DIR`` environmental variable
+            3. Internally within the package's installation directory
 
         Args:
             data_dir: Overrides the default path to download data to
         """
 
-        self._data_dir = Path(data_dir) if data_dir else self._find_data_dir()
+        self._data_dir = Path(data_dir) if data_dir else self._find_default_data_dir()
 
     @property
     def data_dir(self) -> Path:
@@ -58,11 +71,12 @@ class URLDownload:
         return self._data_dir
 
     @staticmethod
-    def _find_data_dir() -> Path:
+    def _find_default_data_dir() -> Path:
         """Return the directory where local SuomiNet data files are stored
 
-        Returns the path indicated by the environmental variable ``SUOMINET_DIR``.
-        If ``SUOMINET_DIR`` is not set, return a path in the installation directory.
+        Return the path indicated by the environmental variable
+        ``SUOMINET_DIR``. If ``SUOMINET_DIR`` is not set, return a path in the
+        installation directory.
         """
 
         if 'SUOMINET_DIR' in os.environ:
@@ -75,7 +89,7 @@ class URLDownload:
         return directory
 
     def download_suomi_url(self, url: str, fname: str, timeout: float = None):
-        """Download SuomiNet data from a URL
+        """Download data from a URL
 
         Args:
             url: The url of the data file to download
@@ -97,7 +111,7 @@ class URLDownload:
                 ofile.write(response.content)
 
     def __repr__(self) -> str:
-        return 'URLDownload({})'.format(self._data_dir)
+        return "URLDownload('{}')".format(self._data_dir)
 
 
 class ReleaseDownloader(URLDownload):
@@ -160,11 +174,11 @@ class ReleaseDownloader(URLDownload):
         self.download_suomi_url(url, fname, timeout)
 
     def __repr__(self) -> str:
-        return 'ReleaseDownloader({}, {})'.format(self.receiver_id, self._data_dir)
+        return "ReleaseDownloader('{}', '{}')".format(self.receiver_id, self._data_dir)
 
 
 class DownloadManager(URLDownload):
-    """Manages SuomiNet data for the current environment / local environment"""
+    """Manages SuomiNet data accessible from the current environment"""
 
     def check_downloaded_receivers(self) -> List[str]:
         """Return a list of receiver Id's that have data downloaded to the current environment
@@ -198,14 +212,18 @@ class DownloadManager(URLDownload):
         return available_years
 
     # Todo: document release types
-    def delete_local_data(self, receiver_id: str, years: list = None, release_type: str = None, verbose=False):
+    def delete_local_data(self, receiver_id: str, years: list = None,
+                          release_type: str = None, dry_run: bool = False) -> List[Path]:
         """Delete downloaded SuomiNet data from the current environment
 
          Args:
              receiver_id: Id of a SuomiNet GPS receiver to check for downloaded data
              years: List of years to delete data from (defaults to all available years)
              release_type: Release type to delete data for (defaults to all available types)
-             verbose: Print deleted file paths to system output
+             dry_run: Returns a list of files that would be deleted without actually deleting them
+
+         Returns:
+             - A list of file paths that were deleted
          """
 
         # Default to a file pattern that includes all data types and years
@@ -214,12 +232,15 @@ class DownloadManager(URLDownload):
         path_pattern = f'{receiver_id}{release_type}_{{}}.plt'
 
         # Delete all data matching the file pattern
+        out_files = []
         for year in years:
             for file in self._data_dir.glob(path_pattern.format(year)):
-                if verbose:
-                    print(f'Deleting {file.resolve()}')
+                out_files.append(file)
 
-                file.unlink()
+                if not dry_run:
+                    file.unlink()
+
+        return out_files
 
     @staticmethod
     def download_available_data(receiver_id: str, year: Union[int, List] = None, timeout: float = None) -> List:
@@ -263,4 +284,4 @@ class DownloadManager(URLDownload):
         return sorted(successful_years)
 
     def __repr__(self) -> str:
-        return 'DownloadManager({})'.format(self._data_dir)
+        return "DownloadManager('{}')".format(self._data_dir)
