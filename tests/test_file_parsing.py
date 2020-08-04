@@ -24,6 +24,7 @@ from datetime import datetime
 from pathlib import Path
 from unittest import TestCase
 
+import numpy as np
 from pytz import utc
 
 from pwv_kpno import file_parsing
@@ -31,7 +32,7 @@ from pwv_kpno import file_parsing
 TEST_DATA_DIR = Path(__file__).parent / 'testing_data'
 
 
-class DateFormatConversion(TestCase):
+class SuomiDateToTimestamp(TestCase):
     """Test the conversion of SuomiNet datetime format to timestamps"""
 
     def test_round_off_error_correction(self):
@@ -60,6 +61,29 @@ class DateFormatConversion(TestCase):
             error_msg.format(dec_31_2021_23_15))
 
 
+class ParsePathStem(TestCase):
+    """Tests for the ``_parse_path_stem`` function"""
+
+    def setUp(self):
+        """Define a dummy file path"""
+
+        self.receiver_id = 'RECI'
+        self.year = 2020
+        self.test_path = Path('{}dy_{}'.format(self.receiver_id, self.year))
+
+    def test_correct_receiver(self):
+        """Test the correct receiver Id is recovered from the file path"""
+
+        receiver_id, year = file_parsing._parse_path_stem(self.test_path)
+        self.assertEqual(self.receiver_id, receiver_id)
+
+    def test_correct_year(self):
+        """Test the correct year is recovered from the file path"""
+
+        receiver_id, year = file_parsing._parse_path_stem(self.test_path)
+        self.assertEqual(self.year, year)
+
+
 class SuomiNetFileParsing(TestCase):
     """Test file parsing of SuomiNet data files"""
 
@@ -67,26 +91,28 @@ class SuomiNetFileParsing(TestCase):
         """Test returned data has correct columns"""
 
         # Data file with no known formatting issues
-        parsed_data = file_parsing.read_suomi_data(TEST_DATA_DIR / 'KITThr_2016.plt')
-        expected_columns = ['date', 'KITT', 'KITT_err', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH']
-        self.assertEqual(expected_columns, parsed_data.colnames)
+        parsed_data = file_parsing.read_suomi_file(TEST_DATA_DIR / 'KITThr_2016.plt')
+        expected_columns = ['PWV', 'PWVErr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH']
+        np.testing.assert_array_equal(expected_columns, parsed_data.columns)
 
-    def test_dates_are_unique(self):
+    def test_indexed_by_date(self):
+        """Test the index is named ``date``"""
+
+        parsed_data = file_parsing.read_suomi_file(TEST_DATA_DIR / 'KITThr_2016.plt')
+        self.assertEqual('date', parsed_data.index.name)
+
+    def test_index_is_unique(self):
         """Test for the removal of any duplicate dates"""
 
         # Data file with known duplicate entries
-        parsed_data = file_parsing.read_suomi_data(TEST_DATA_DIR / 'AZAMhr_2015.plt')
-
-        table_entries = len(parsed_data)
-        unique_dates = len(set(parsed_data['date']))
-        self.assertEqual(table_entries, unique_dates)
+        parsed_data = file_parsing.read_suomi_file(TEST_DATA_DIR / 'AZAMhr_2015.plt')
+        self.assertFalse(parsed_data.index.duplicated().any())
 
     def test_removed_negative_values(self):
         """Test for the removal of negative PWV values"""
 
-        parsed_data = file_parsing.read_suomi_data(TEST_DATA_DIR / 'KITThr_2016.plt')
-        is_negative_pwv = any(parsed_data['KITT'] < 0)
-        self.assertFalse(is_negative_pwv)
+        parsed_data = file_parsing.read_suomi_file(TEST_DATA_DIR / 'KITThr_2016.plt')
+        self.assertFalse(any(parsed_data['PWV'] < 0))
 
     def test_parse_2010_data(self):
         """Test file parsing of SuomiNet data published in 2010
@@ -96,4 +122,21 @@ class SuomiNetFileParsing(TestCase):
         to have a different number of columns from the second half of the year.
         """
 
-        file_parsing.read_suomi_data(TEST_DATA_DIR / 'SA48dy_2010.plt')
+        file_parsing.read_suomi_file(TEST_DATA_DIR / 'SA48dy_2010.plt')
+
+
+class LoadRecDirectory(TestCase):
+    """Tests for the ``load_rec_directory`` function"""
+
+    def test_empty_dataframe_columns(self):
+        """Test returned DataFrame has correct column names"""
+
+        data = file_parsing.load_rec_directory('dummy_receiver')
+        expected_columns = ['PWV, PWVErr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH']
+        self.assertListEqual(expected_columns, list(data.columns))
+
+    def test_empty_dataframe_index(self):
+        """Test the returned DataFrame is indexed by ``date``"""
+
+        data = file_parsing.load_rec_directory('dummy_receiver')
+        self.assertEqual('date', data.index.name)

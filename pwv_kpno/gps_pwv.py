@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+# !/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
 #    This file is part of the pwv_kpno software package.
@@ -24,153 +24,304 @@ and pressure measurements) and PWV concentrations (both measured and modeled).
 import warnings
 from copy import deepcopy
 from datetime import datetime
-from typing import Dict
+from typing import Set
 from typing import Tuple
 
 import numpy as np
-from astropy.table import Table
-from scipy.odr import ODR, RealData, polynomial
+import pandas as pd
+from scipy.odr import ODR, Output, RealData, polynomial
 
-from .downloads import check_downloaded_data
-from .types import NumpyReturn, NumpyArgument
-
-warnings.filterwarnings("ignore", message='Empty data detected for ODR instance.')
+from .file_parsing import load_rec_directory
+from .types import DataCuts, DataCuts1D, NumpyArgument, NumpyReturn
 
 
-def _linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> Tuple[np.array, np.array]:
-    """Optimize and apply a linear regression using masked arrays
+def apply_data_cuts(data: pd.DataFrame, cuts: DataCuts1D):
+    """Apply a dictionary of data cuts to a DataFrame
 
-    Generates a linear fit f using orthogonal distance regression and returns
-    the applied model f(x). If y is completely masked, return y and sy.
+    Only return data that is within the specified ranges
 
     Args:
-        x: The independent variable of the regression
-        y: The dependent variable of the regression
-        sx: Standard deviations of x
-        sy: Standard deviations of y
+        data: Data to apply cuts on
+        cuts: Dict with a list of tuples (cut start, cut end)
 
     Returns:
-        The applied linear regression on x as a masked array
-        The uncertainty in the applied linear regression as a masked array
+        A subset of the passed DataFrame
     """
 
-    x = np.ma.array(x)  # This type cast will propagate into returns
-    y = np.ma.array(y)  # It also ensures that x, y have a .mask attribute
-
-    if y.mask.all():
-        return y, sy
-
-    # Fit data with orthogonal distance regression (ODR)
-    indices = ~np.logical_or(x.mask, y.mask)
-    data = RealData(x=x[indices], y=y[indices], sx=sx[indices], sy=sy[indices])
-    odr = ODR(data, polynomial(1), beta0=[0., 1.])
-    fit_results = odr.run()
-
-    fit_fail = 'Numerical error detected' in fit_results.stopreason
-    if fit_fail:
-        raise RuntimeError(fit_results.stopreason)
-
-    # Apply the linear regression
-    b, m = fit_results.beta
-    applied_fit = m * x + b
-    applied_fit.mask = np.logical_or(x.mask, applied_fit <= 0)
-
-    std = np.ma.std(y[indices] - m * x[indices] - b)
-    error = np.ma.zeros(applied_fit.shape) + std
-    error.mask = applied_fit.mask
-
-    return applied_fit, error
-
-
-def _search_data_table(
-        data: Table, year: int = None, month: int = None, day=None, hour=None,
-        colname: str = 'date') -> Table:
-    """Return a subset of a table with dates corresponding to a given timespan
-
-    Args:
-        data: Astropy table to return a subset of
-        year: Only return data within the given year
-        month: Only return data within the given month
-        day: Only return data within the given day
-        hour: Only return data within the given hour
-        colname: Name of the column in ``data`` having UTC timestamps
-    """
-
-    # Raise exception for bad datetime args
-    datetime(year, month, day, hour)
-    raise NotImplementedError
-
-
-def _apply_data_cuts(data: Table, data_cuts: dict, exclusive: bool) -> Table:
-    """Apply data cuts from settings to a table of SuomiNet measurements
-
-    Args:
-        data: A table containing data from a SuomiNet data file
-        data_cuts: Dict of tuples with (upper, lower) bounds for each column
-        exclusive: Whether ``data_cuts`` exclude the given regions as opposed
-            to including them.
-
-    Returns:
-        A copy of the data with applied data cuts
-    """
-
-    for param_name, cut_list in data_cuts.items():
+    for param_name, cut_list in cuts:
         for start, end in cut_list:
-            indices = (start < data[param_name]) & (data[param_name] < end)
-
-            if exclusive:
-                indices = ~indices
-
-            data = data[indices]
+            data = data[(start <= data[param_name]) & (data[param_name] <= end)]
 
     return data
 
 
-class GPSReceiver:
-    """Represents data taken by a SuomiNet GPS receiver"""
+def search_data_table(
+        data: pd.DataFrame, year: int = None, month: int = None, day=None,
+        hour=None, colname: str = 'date') -> pd.DataFrame:
+    """Return a subset of a table with dates corresponding to a given timespan
 
-    def __init__(self, primary: str, secondaries: Tuple[str] = None,
-                 exclude_cut: dict = None, include_cut: dict = None):
-        """Provides data access to weather and PWV data for a GPS receiver
+        Args:
+            data: Pandas DataFrame to return a subset of
+            year: Only return data within the given year
+            month: Only return data within the given month
+            day: Only return data within the given day
+            hour: Only return data within the given hour
+            colname: Use a column in ``data`` instead of the index
+        """
+
+    # Raise exception for bad datetime args
+    datetime(
+        year if year else 1,
+        month if month else 1,
+        day if day else 1,
+        hour if hour else 1)
+
+    # Todo: search DataFrame index by default
+    if any((year, month, day, hour)):
+        raise NotImplementedError
+
+    return data
+
+
+class PWVData:
+    """Loads GPS weather data and applies data cuts"""
+
+    _cached_class_data = dict()  # To store cached data
+    _ref_count = dict()  # To count references to cached data by instances
+
+    def __init__(self, primary: str, secondaries: Set[str] = None, data_cuts: dict = None):
+        """Provides data access to weather and PWV data
 
         Args:
             primary: SuomiNet Id of the receiver to access
             secondaries: Secondary receivers used to supplement periods with
                 missing primary data
-            exclude_cut: Ignore data in the given ranges
-            include_cut: Only include data in the given ranges
+            data_cuts: Only include data in the given ranges
+        """
+
+        self.primary = primary
+        self.secondaries = secondaries or set()
+        self.data_cuts = data_cuts or dict()
+
+    def _load_data_with_cuts(self, receiver_id: str) -> pd.DataFrame:
+        """Load data for a given GPS receiver into memory
+
+        Args:
+            receiver_id: Id of the SuomiNet GPS receiver to load data for
+
+        Returns:
+            A Pandas DataFrame
+        """
+
+        receiver_data = load_rec_directory(receiver_id)
+        receiver_cuts = self.data_cuts.get(receiver_id, {}).items()
+        return apply_data_cuts(receiver_data, receiver_cuts)
+
+    def weather_data(self, year: int = None, month: int = None, day=None, hour=None) -> pd.DataFrame:
+        """Returns a table of all weather data for the primary receiver
+
+        Data is returned as an pandas DataFrame indexed by the SuomiNet Id
+        of each GPS receiver. Results can be optionally refined by year,
+        month, day, and hour.
+
+        Args:
+            year: The year of the desired PWV data
+            month: The month of the desired PWV data
+            day: The day of the desired PWV data
+            hour: The hour of the desired PWV data in 24-hour format
+
+        Returns:
+            A pandas DataFrame
+        """
+
+        primary_data = self._load_data_with_cuts(self.primary)
+        return search_data_table(primary_data, year, month, day, hour)
+
+
+class PWVModeling(PWVData):
+    """Handles the modeling of PWV for times when direct measurements are not
+    available at the primary location.
+    """
+
+    # noinspection PyMissingConstructor
+    def __init__(self, primary: str, secondaries: Set[str] = None, data_cuts: dict = None):
+        """Handles getter / setter logic for class attributes
+
+        Args:
+            primary: SuomiNet Id of the receiver to access
+            secondaries: Secondary receivers used to supplement periods with
+                missing primary data
+            data_cuts: Only include data in the given ranges
         """
 
         self._primary = primary
-        self._secondaries = tuple(secondaries) if secondaries else tuple()
-        self.exclude_cut = exclude_cut
-        self.include_cut = include_cut
+        self._secondaries = set(secondaries) if secondaries else set()
+        self._data_cuts = data_cuts if data_cuts else dict()
+        self._pwv_model = None
 
-        self._instance_data = {rec: check_downloaded_data(rec) for rec in self.secondaries}
-        self._instance_data[self.primary] = check_downloaded_data(self.primary)
+        if primary in secondaries:
+            raise ValueError('Primary receiver cannot be listed as a secondary receiver')
+
+    ###########################################################################
+    # Getter / setters are used to reset the cached PWV Model
+    ###########################################################################
 
     @property
     def primary(self) -> str:
+        """The primary GPS receiver to retrieve PWV data for"""
+
         return self._primary
 
     @primary.setter
-    def primary(self, value):
-        raise NotImplementedError
+    def primary(self, value: str):
+        """Change the instance's primary receiver and clear cached data"""
+
+        # No action necessary if new value == old value
+        if value == self._primary:
+            return
+
+        self._primary = value
+        self._pwv_model = None
 
     @property
-    def secondaries(self) -> Tuple[str]:
+    def secondaries(self) -> Set[str]:
+        """Secondary GPS receivers used to model the PWV concentration at
+         the primary GPS location when primary data is not available.
+         """
+
         return self._secondaries
 
     @secondaries.setter
-    def secondaries(self, value):
-        raise NotImplementedError
+    def secondaries(self, value: Tuple[str]):
+        """Change the instance's secondary receivers and clear cached data"""
+
+        # No action necessary if new value == old value
+        if value == self._secondaries:
+            return
+
+        self._secondaries = value
+        self._pwv_model = None
 
     @property
-    def instance_data(self) -> Dict[str, Tuple[int]]:
-        # Dictionary with years of available data at instantiation
-        return deepcopy(self._instance_data)
+    def data_cuts(self) -> DataCuts:
+        """Dictionary of data cuts on returned data for each GPS receiver"""
 
-    def modeled_pwv(self, year: int = None, month: int = None, day=None, hour=None) -> Table:
+        return deepcopy(self._data_cuts)
+
+    @data_cuts.setter
+    def data_cuts(self, value: DataCuts):
+        """Change the instance's data cuts and clear the cached PWV Model"""
+
+        self._data_cuts = value
+        self._pwv_model = None
+
+    ###########################################################################
+    # PWV is modeled by separately fitting the primary PWV as a function of
+    # the PWV measured by each secondary receiver and then averaging the result
+    ###########################################################################
+
+    @staticmethod
+    def _linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> Output:
+        """Optimize and apply a linear regression using masked arrays
+
+        Generates a linear fit f using orthogonal distance regression and returns
+        the applied model f(x). If y is completely masked, return y and sy.
+
+        Args:
+            x: The independent variable of the regression
+            y: The dependent variable of the regression
+            sx: Standard deviations of x
+            sy: Standard deviations of y
+
+        Returns:
+            The applied linear regression on x
+            The uncertainty in the applied linear regression
+        """
+
+        data = RealData(x=x, y=y, sx=sx, sy=sy)
+        odr = ODR(data, polynomial(1), beta0=[0., 1.])
+
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", message='Empty data detected for ODR instance.')
+            fit_results = odr.run()
+
+        fit_fail = 'Numerical error detected' in fit_results.stopreason
+        if fit_fail:
+            raise RuntimeError(fit_results.stopreason)
+
+        return fit_results
+
+    def _fit_to_secondary(self, secondary_receiver: str) -> Tuple[pd.Series, pd.Series]:
+        """Apply a linear fit to the primary PWV data as a function of the PWV
+        at a secondary location
+
+        Args:
+            secondary_receiver: Receiver Id for the secondary location
+
+        Returns:
+            - The fitted PWV (mm)
+            - Error values for the fitted PWV
+        """
+
+        # Get subset of primary / secondary data with datetimes that overlap
+        primary_data = self._load_data_with_cuts(self._primary)
+        secondary_data = self._load_data_with_cuts(secondary_receiver)
+        joined_data = primary_data \
+            .join(secondary_data, lsuffix='Primary', rsuffix='Secondary') \
+            .dropna(subset=['PWVPrimary', 'PWVErrPrimary', 'PWVSecondary', 'PWVErrSecondary'])
+
+        # Evaluate the fit
+        fit_results = self._linear_regression(
+            joined_data['PWVSecondary'],
+            joined_data['PWVErrSecondary'],
+            joined_data['PWVPrimary'],
+            joined_data['PWVErrPrimary'])
+
+        # Apply the linear regression
+        b, m = fit_results.beta
+        applied_fit = m * joined_data['PWVSecondary'] + b
+        residuals = joined_data['PWVPrimary'] - applied_fit
+        errors = residuals.std()
+
+        applied_fit.name = 'fitted_pwv'
+        errors.name = 'fitted_err'
+        return applied_fit, errors
+
+    def _calc_avg_pwv_model(self) -> pd.DataFrame:
+        """Determines a PWV model using each off site receiver and averages them
+
+        Returns:
+            A DataFrame with modeled PWV values and the associated errors over time
+        """
+
+        fitted_pwv = pd.DataFrame()
+        fitted_error = pd.DataFrame()
+        for secondary_rec in self._secondaries:
+            try:
+                _fitted_pwv, _fitted_error = self._fit_to_secondary(secondary_rec)
+
+            except RuntimeError:  # Failed ODR regression
+                warnings.warn('Linear regression failed for {}'.format(secondary_rec))
+
+            fitted_pwv[secondary_rec] = _fitted_pwv
+            fitted_error[secondary_rec] = _fitted_error
+
+        # Average PWV models from different sites
+        out_data = pd.DataFrame({
+            'PWV': fitted_pwv.mean(axis=1),
+            'PWVErr': np.sqrt((fitted_error ** 2).sum(axis=1)) / len(fitted_error)
+        })
+
+        if out_data.empty:
+            warnings.warn('No overlapping PWV data between primary and secondary '
+                          'receivers. Cannot model PWV for times when primary '
+                          'receiver is offline')
+
+        primary_data = self._load_data_with_cuts(self._primary)
+        out_data.loc[primary_data.index] = primary_data
+        return out_data.dropna().sort_index()
+
+    def modeled_pwv(self, year: int = None, month: int = None, day=None, hour=None) -> pd.DataFrame:
         """Return a table of the modeled PWV at the primary GPS site
 
         Return the modeled precipitable water vapor level at the primary
@@ -184,58 +335,52 @@ class GPSReceiver:
             hour: The hour of the desired PWV data in 24-hour format
 
         Returns:
-            An astropy table of modeled PWV values in mm
+            A pandas DataFrame of modeled PWV values in mm
         """
 
-        raise NotImplementedError
+        if self._pwv_model is None:
+            self._pwv_model = self._calc_avg_pwv_model()
 
-    def measured_pwv(self, year: int = None, month: int = None, day=None, hour=None) -> Table:
-        """Return an astropy table of PWV measurements taken by SuomiNet
+        return search_data_table(self._pwv_model, year, month, day, hour)
 
-        Values are returned for all primary and secondary receivers.
-        Columns are named using the SuomiNet IDs for different GPS receivers.
-        PWV measurements for each receiver are recorded in millimeters.
-        Results can be optionally refined by year, month, day, and hour.
 
-        Args:
-            year: The year of the desired PWV data
-            month: The month of the desired PWV data
-            day: The day of the desired PWV data
-            hour: The hour of the desired PWV data in 24-hour format
+class GPSReceiver(PWVModeling):
+    """Data access for measurements taken by SuomiNet GPS receivers"""
 
-        Returns:
-            An astropy table of measured PWV values in mm
-        """
-
-        raise NotImplementedError
-
-    def weather_data(self, year: int = None, month: int = None, day=None, hour=None) -> Table:
-        """Returns a table of all weather_Data data for the primary receiver
-
-        Data is returned as an astropy table with columns 'date', 'PWV',
-        'PWV_err', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', and 'SrfcRH'.
-        Results can be optionally refined by year, month, day, and hour.
-
-        Args:
-            year: The year of the desired PWV data
-            month: The month of the desired PWV data
-            day: The day of the desired PWV data
-            hour: The hour of the desired PWV data in 24-hour format
-
-        Returns:
-            An astropy Table
-        """
-
-        raise NotImplementedError
-
-    def interp_pwv_date(self, date: NumpyArgument) -> NumpyReturn:
+    # Todo: Add limit on number of successive values interpolate
+    def interp_pwv_date(self, date: NumpyArgument, method: str = 'linear', order=None) -> NumpyReturn:
         """Evaluate the PWV model for a given datetime
 
         Args:
             date: UTC datetime object or timestamp
+            method: interpolation technique to use. Supported methods include
+                'linear' 'nearest', 'zero', 'slinear', 'quadratic', 'cubic',
+                'spline', 'barycentric', 'polynomial'
+            order: Order of interpolation if using ‘polynomial’ or ‘spline’
 
         Returns:
             Line of sight PWV concentration at the given datetime
         """
 
+        if method == 'linear':
+            method = 'index'
+
+        valid_methods = (
+            'index', 'nearest', 'zero', 'slinear', 'quadratic', 'cubic',
+            'spline', 'barycentric', 'polynomial')
+
+        if method not in valid_methods:
+            raise ValueError(f'Invalid interpolation method: {method}')
+
         raise NotImplementedError
+
+        # pwv_model = self.modeled_pwv().copy()
+        # pwv_model.loc[date] = np.nan
+        # interp_data = pwv_model.interpolate(
+        #     method=method, limit_direction='both', limit_area='inside', order=order
+        # ).loc[date]
+
+        # if interp_data.isna().any():
+        #     warnings.warn('Some values were outside the permitted interpolation range')
+
+        # return interp_data

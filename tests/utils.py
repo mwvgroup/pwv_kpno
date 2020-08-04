@@ -1,18 +1,35 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
+#    This file is part of the pwv_kpno software package.
+#
+#    The pwv_kpno package is free software: you can redistribute it and/or
+#    modify it under the terms of the GNU General Public License as published
+#    by the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    The pwv_kpno package is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+#    Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
+
 """Utilities used to ensure a stable and predictable testing environment"""
 
 import functools
 import os
 from datetime import datetime, timedelta
+from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 from astropy.table import Table
 from pytz import utc
 
 
+# Todo: Wrap setUp and tearDown methods as well
 class TestWithCleanEnv:
     """Context manager and decorator for running tests in a clean environment
 
@@ -20,20 +37,27 @@ class TestWithCleanEnv:
     directory.
     """
 
-    def __init__(self, data_path: str = None):
-        """Clears all environmental variables and set ``SUOMINET_DIR``
+    def __init__(self, data_path: Union[str, Path] = None):
+        """Clears all environmental variables and set the ``SUOMINET_DIR``
+        variable
 
-        Value for ``SUOMINET_DIR`` defaults to a temporary directory.
+        Value for ``SUOMINET_DIR`` defaults to a temporary directory. Can be
+        used as a context manager, function decorator, or class decorator. If
+        used as a class decorator, only methods named ``test_*`` are wrapped.
 
         Args:
-            data_path: Optional path to set ``SUOMINET_DIR`` to
+            data_path: Optional path to set as ``SUOMINET_DIR``
         """
+
+        if isinstance(data_path, Path):
+            data_path = str(data_path)
 
         self._data_path = data_path
 
     def __call__(self, obj):
-        # Decide whether we should wrap a callable or a class
+        # Wrap the passed object or callable
 
+        # Decide whether we should wrap ``obj`` as a class or function
         if isinstance(obj, type):
             return self._decorate_class(obj)
 
@@ -61,32 +85,29 @@ class TestWithCleanEnv:
         if not self._data_path:  # If there is no user defined path
             self._temp_dir.cleanup()
 
-    @staticmethod
-    def _decorate_callable(func: callable) -> callable:
+    def _decorate_callable(self, func: callable) -> callable:
         # Decorates a callable
 
         @functools.wraps(func)
         def inner(*args, **kwargs):
-            with TestWithCleanEnv():
+            with TestWithCleanEnv(self._data_path):
                 return func(*args, **kwargs)
 
         return inner
 
     def _decorate_class(self, wrap_class: type) -> type:
-        # Decorates methods in a class with request_mock
+        # Decorates class methods
         # Method will be decorated only if it name begins with ``test_``
 
         for attr_name in dir(wrap_class):
             # Skip attributes without correct prefix
-            if not attr_name.startswith('test_'):
+            if not (attr_name.startswith('test_')):
                 continue
 
             # Skip attributes that are not callable
             attr = getattr(wrap_class, attr_name)
-            if not hasattr(attr, '__call__'):
-                continue
-
-            setattr(wrap_class, attr_name, self._decorate_callable(attr))
+            if callable(attr):
+                setattr(wrap_class, attr_name, self._decorate_callable(attr))
 
         return wrap_class
 

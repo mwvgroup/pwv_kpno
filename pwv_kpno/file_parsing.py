@@ -21,17 +21,17 @@ in the SuomiNet file format.
 """
 
 from datetime import datetime, timedelta
+from functools import partial
 from pathlib import Path
-from typing import Tuple
-from typing import Union
+from typing import Tuple, Union
 
 import numpy as np
-from astropy.table import Table, unique
+import pandas as pd
 
 from .types import PathLike
+from .downloads import DownloadManager
 
 
-@np.vectorize
 def _suomi_date_to_timestamp(year: int, days: Union[str, float]) -> float:
     """Convert the SuomiNet date format into UTC timestamp
 
@@ -74,9 +74,8 @@ def _parse_path_stem(path: Path) -> Tuple[str, int]:
     return receiver_id, year
 
 
-# Todo: allow for seperate data cuts for including and excluding data
-def read_suomi_data(path: PathLike) -> Table:
-    """Return PWV measurements from a SuomiNet data file as an astropy table
+def read_suomi_file(path: PathLike) -> pd.DataFrame:
+    """Return PWV measurements from a SuomiNet data file as an pandas DataFrame
 
     Datetimes are expressed as UNIX timestamps and PWV is measured
     in millimeters.
@@ -89,30 +88,69 @@ def read_suomi_data(path: PathLike) -> Table:
         path: File path to be read
 
     Returns:
-        An astropy Table with data from path
+        An pandas DataFrame with data from the specified path
     """
 
     path = Path(path)
-    receiver_id, year = _parse_path_stem(path)
-
-    names = ['date', receiver_id, receiver_id + '_err', 'ZenithDelay',
-             'SrfcPress', 'SrfcTemp', 'SrfcRH']
-
-    data = np.genfromtxt(
+    names = ['date', 'PWV', 'PWVErr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH']
+    data = pd.read_csv(
         path,
         names=names,
         usecols=range(0, len(names)),
-        dtype=[float for _ in names])
+        delim_whitespace=True,
+        index_col=False)
 
-    data = Table(data)
-    data = data[data[receiver_id] > 0]
+    # Remove masked PWV values, but not other masked data
+    clean_data = data \
+        .replace(-99.9, np.nan) \
+        .replace({'PWV': -9.9, '*': -99.9}, {'PWV': np.nan}) \
+        .dropna(subset=['PWV']) \
+        .drop_duplicates(subset='date', keep=False) \
+        .set_index('date')
+
+    # Convert time values from SuomiNet format to UTC timestamps
+    receiver_id, year = _parse_path_stem(path)
+    date_conversion = partial(_suomi_date_to_timestamp, year)
+    clean_data.index = clean_data.index.map(date_conversion)
 
     # SuomiNet rounds their error and can report an error of zero
     # We compensate by adding an error of 0.025
-    data[receiver_id + '_err'] = np.round(data[receiver_id + '_err'] + 0.025, 3)
+    clean_data['PWVErr'] = np.round(clean_data['PWVErr'] + 0.025, 3)
+
+    return clean_data
+
+
+# Todo: Allow loading of specific data types
+def load_rec_directory(receiver_id: str, directory: PathLike = None) -> pd.DataFrame:
+    """Load all data for a given GPS receiver from a directory
+
+    Data from daily data releases is prioritized over hourly data releases
+
+    Args:
+        receiver_id: Id of the SuomiNet GPS receiver to load data for
+        directory: Directory to load data from (Defaults to package default)
+
+    Returns:
+        A pandas DataFrame of SuomiNet weather data
+    """
+
+    directory = DownloadManager().data_dir if directory is None else directory
+
+    # Data release types ordered in terms of priority
+    # Prefer global data over daily data over hourly data
+    data_types = ('gl', 'dy', 'hr')
+
+    data = []  # Collector for DataFrames with data from each data type
+    for dtype in data_types:
+        global_files = list(directory.glob(f'{receiver_id}{dtype}_*.plt'))
+        if global_files:
+            data.append(pd.concat([read_suomi_file(f) for f in global_files]))
 
     if data:
-        data = unique(data, keys='date', keep='none')
-        data['date'] = _suomi_date_to_timestamp(year, data['date'])
+        combined_data = pd.concat(data)
+        return combined_data.loc[~combined_data.index.duplicated(keep='first')]
 
-    return data
+    return pd.DataFrame(columns=[
+        'date', 'PWV, PWVErr',
+        'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH'
+    ]).set_index('date')

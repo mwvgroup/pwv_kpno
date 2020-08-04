@@ -28,6 +28,8 @@ at https://mwvgroup.github.io/pwv_kpno/ or through the standard python help
 function.
 """
 
+from .gps_pwv import GPSReceiver
+
 __authors__ = ['MWV Research Group']
 __copyright__ = 'Copyright 2017, MWV Research Group'
 __credits__ = [
