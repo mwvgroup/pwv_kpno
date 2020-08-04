@@ -75,7 +75,7 @@ def _parse_path_stem(path: Path) -> Tuple[str, int]:
 
 
 def read_suomi_file(path: PathLike) -> pd.DataFrame:
-    """Return PWV measurements from a SuomiNet data file as an astropy table
+    """Return PWV measurements from a SuomiNet data file as an pandas DataFrame
 
     Datetimes are expressed as UNIX timestamps and PWV is measured
     in millimeters.
@@ -88,7 +88,7 @@ def read_suomi_file(path: PathLike) -> pd.DataFrame:
         path: File path to be read
 
     Returns:
-        An astropy Table with data from path
+        An pandas DataFrame with data from the specified path
     """
 
     path = Path(path)
@@ -140,7 +140,7 @@ def load_rec_directory(receiver_id: str, directory: PathLike = None) -> pd.DataF
     # Prefer global data over daily data over hourly data
     data_types = ('gl', 'dy', 'hr')
 
-    data = []  # Collector for astropy tables with data from each data type
+    data = []  # Collector for DataFrames with data from each data type
     for dtype in data_types:
         global_files = list(directory.glob(f'{receiver_id}{dtype}_*.plt'))
         if global_files:
@@ -153,4 +153,4 @@ def load_rec_directory(receiver_id: str, directory: PathLike = None) -> pd.DataF
     return pd.DataFrame(columns=[
         'date', 'PWV, PWVErr',
         'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH'
-    ])
+    ]).set_index('date')
