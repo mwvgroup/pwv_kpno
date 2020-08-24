@@ -122,7 +122,6 @@ def read_suomi_file(path: PathLike) -> pd.DataFrame:
     return clean_data
 
 
-# Todo: Allow loading of specific data types
 def load_rec_directory(receiver_id: str, directory: PathLike = None) -> pd.DataFrame:
     """Load all data for a given GPS receiver from a directory
 
