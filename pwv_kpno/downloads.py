@@ -36,7 +36,7 @@ For all other cases, see the ``DownloadManager`` class.
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Iterable
 from warnings import catch_warnings, simplefilter
 
 import numpy as np
@@ -211,7 +211,7 @@ class DownloadManager(URLDownload):
         available_years['hourly'] = sorted(available_years['hourly'])
         return available_years
 
-    def delete_local_data(self, receiver_id: str, years: list = None,
+    def delete_local_data(self, receiver_id: str, years: Iterable[int] = None,
                           dry_run: bool = False) -> List[Path]:
         """Delete downloaded SuomiNet data from the current environment
 
@@ -245,7 +245,7 @@ class DownloadManager(URLDownload):
         return out_files
 
     @staticmethod
-    def download_available_data(receiver_id: str, year: Union[int, List] = None, timeout: float = None) -> List:
+    def download_available_data(receiver_id: str, year: Union[int, Iterable[int]] = None, timeout: float = None) -> List:
         """Download all available SuomiNet data for a given year and SuomiNet id
 
         Convenience function for downloading any available data from the CONUS

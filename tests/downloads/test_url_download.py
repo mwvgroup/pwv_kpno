@@ -36,13 +36,13 @@ from tests.utils import TestWithCleanEnv
 class DataDir(TestCase):
     """Tests that the ``data_dir`` property points to the correct location"""
 
-    def user_provided_directory(self):
+    def test_user_provided_directory(self):
         """Test directory equals innit argument when given"""
 
         with TemporaryDirectory() as temp_dir:
             self.assertEqual(Path(temp_dir), URLDownload(temp_dir).data_dir)
 
-    def env_variable_is_defined(self):
+    def test_env_variable_defined_directory(self):
         """Test directory defaults to env variable if not given at innit"""
 
         downloader = URLDownload()

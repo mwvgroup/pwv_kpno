@@ -115,6 +115,67 @@ class DownloadAvailableData(TestCase):
         self.assertListEqual([2012], returned_years)
 
 
+@TestWithCleanEnv()
+class DeleteLocalData(TestCase):
+    """Tests for the ``delete_local_data`` function"""
+
+    def setUp(self) -> None:
+        """Create dummy files to delete during tests"""
+
+        self.download_manager = DownloadManager()
+
+        # Create dummy SuomiNet data files
+        self.file_list = []
+        for receiver in ('rec1', 'rec2'):
+            for data_type in ('hr', 'dy', 'gl'):
+                for year in range(2010, 2016):
+                    fname = '{}{}_{}.plt'.format(receiver, data_type, year)
+                    dummy_file = self.download_manager.data_dir / fname
+                    dummy_file.touch()
+                    self.file_list.append(dummy_file)
+
+        # Create a dummy NON-SuomiNet data file
+        self.non_suomi_file = self.download_manager.data_dir / 'non_suomi_file.plt'
+        self.non_suomi_file.touch()
+
+    def test_dry_run_leaves_files(self):
+        """Test a dry run does not delete any files"""
+
+        self.download_manager.delete_local_data('rec1', dry_run=True)
+        for file in self.file_list:
+            self.assertTrue(file.exists(), 'File was deleted: {}'.format(file))
+
+    def test_deletes_given_years(self):
+        """Test files are only deleted for the given years"""
+
+        yr_to_del = (2010, 2011)
+        self.download_manager.delete_local_data('rec1', years=yr_to_del)
+        for file in  self.file_list:
+            year = int(file.stem[-4:])
+            if 'rec1' in file.stem and year in yr_to_del:
+                self.assertFalse(file.exists())
+
+            else:
+                self.assertTrue(file.exists())
+
+    def test_defaults_to_all_years(self):
+        """Test all years are deleted by default"""
+
+        self.download_manager.delete_local_data('rec1')
+        for file in self.download_manager.data_dir.glob('*.plt'):
+            if 'rec1' in file.stem:
+                self.assertFalse(file.exists())
+
+            else:
+                self.assertTrue(file.exists())
+
+    def test_non_suomi_files_are_safe(self):
+        """Test non-suominet data files are not deleted"""
+
+        self.download_manager.delete_local_data('rec1')
+        self.assertTrue(self.non_suomi_file.exists(), 'Non-SuomiNet file was deleted')
+
+
 class Repr(TestCase):
     """Tests for the string representation of ``URLDownloader``"""
 
