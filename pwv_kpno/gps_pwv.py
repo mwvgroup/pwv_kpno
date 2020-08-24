@@ -60,18 +60,20 @@ def search_data_table(
         hour=None, colname: str = None) -> pd.DataFrame:
     """Return a subset of a table with dates corresponding to a given timespan
 
-        Args:
-            data: Pandas DataFrame to return a subset of
-            year: Only return data within the given year
-            month: Only return data within the given month
-            day: Only return data within the given day
-            hour: Only return data within the given hour
-            colname: Use a column in ``data`` instead of the index
-        """
+    Args:
+        data: Pandas DataFrame to return a subset of
+        year: Only return data within the given year
+        month: Only return data within the given month
+        day: Only return data within the given day
+        hour: Only return data within the given hour
+        colname: Use a column in ``data`` instead of the index
+    """
 
     # Get just the datetime args that aren't None
     test_attr = dict(year=year, month=month, day=day, hour=hour)
     test_attr = {k: v for k, v in test_attr.items() if v}
+    if not test_attr:
+        return data
 
     # Raise exception for bad datetime args
     datetime(
@@ -81,15 +83,16 @@ def search_data_table(
         test_attr.get('hour', 1)
     )
 
-    # Todo: Revisit to see if performance better than n * k is necessary
-    def is_good_date(timestamp: float) -> bool:
-        """Return whether given time stamp is within datetime limits"""
+    search_col = data[colname] if colname else data.index
+    matches_kw = tuple(getattr(search_col.index, k) == v for k, v in test_attr.items())
 
-        date = datetime.fromtimestamp(timestamp)
-        return all(getattr(date, k) == v for k, v in test_attr.items())
+    # If we are only searching against a single attr then use the booleans from
+    # that attr to select from the array
+    if len(matches_kw) == 1:
+        return data[matches_kw[0]]
 
-    search_column = data[colname] if colname else data.index
-    return data[search_column.map(is_good_date)]
+    # If checking multiple attr's, when need to logically combine them
+    return data[np.logical_and(*matches_kw)]
 
 
 class PWVData:
@@ -108,7 +111,7 @@ class PWVData:
             data_cuts: Only include data in the given ranges
         """
 
-        self.primary = primary
+        self.primary = primary.upper()
         self.secondaries = secondaries or set()
         self.data_cuts = data_cuts or dict()
 
@@ -186,10 +189,10 @@ class PWVModeling(PWVData):
         """Change the instance's primary receiver and clear cached data"""
 
         # No action necessary if new value == old value
-        if value == self._primary:
+        if value.upper() == self._primary:
             return
 
-        self._primary = value
+        self._primary = value.upper()
         self._pwv_model = None
 
     @property
@@ -356,12 +359,15 @@ class PWVModeling(PWVData):
 class GPSReceiver(PWVModeling):
     """Data access for measurements taken by SuomiNet GPS receivers"""
 
-    # Todo: Add limit on number of successive values interpolate
-    def interp_pwv_date(self, date: NumpyArgument, method: str = 'linear', order=None) -> NumpyReturn:
+    def interp_pwv_date(self, date: NumpyArgument, interp_limit: float = None,
+                        method: str = 'linear', order=None) -> NumpyReturn:
         """Evaluate the PWV model for a given datetime
 
         Args:
             date: UTC datetime object or timestamp
+            interp_limit: Require measured values within the given time
+                interval, otherwise result will be nan
+                (Defined in units of 30 min).
             method: interpolation technique to use. Supported methods include
                 'linear' 'nearest', 'zero', 'slinear', 'quadratic', 'cubic',
                 'spline', 'barycentric', 'polynomial'
@@ -381,15 +387,23 @@ class GPSReceiver(PWVModeling):
         if method not in valid_methods:
             raise ValueError(f'Invalid interpolation method: {method}')
 
-        raise NotImplementedError
+        # Resample modeled values onto a uniform sampling of time values
+        # Credit: https://stackoverflow.com/a/47148740
+        pwv_model = self.modeled_pwv()
+        old_index = pwv_model.index
+        new_index = pd.date_range(old_index.min(), old_index.max(), freq='30min')
+        uniform_model = pwv_model.reindex(old_index.union(new_index))
 
-        # pwv_model = self.modeled_pwv().copy()
-        # pwv_model.loc[date] = np.nan
-        # interp_data = pwv_model.interpolate(
-        #     method=method, limit_direction='both', limit_area='inside', order=order
-        # ).loc[date]
+        # We loose some efficiency here because we have to interpolate more
+        # values than necessary (because of the resampling). However, the
+        # resampling allows us to enforce physically meaningful interpolation
+        # limits. Fortunately, interpolation is relatively cheap.
+        uniform_model.loc[date] = np.nan
+        interp_data = uniform_model.interpolate(
+            method=method, limit=interp_limit, limit_direction='both', limit_area='inside', order=order
+        ).loc[date]
 
-        # if interp_data.isna().any():
-        #     warnings.warn('Some values were outside the permitted interpolation range')
+        if interp_data.isna().any():
+            warnings.warn('Some values were outside the permitted interpolation range')
 
-        # return interp_data
+        return interp_data
