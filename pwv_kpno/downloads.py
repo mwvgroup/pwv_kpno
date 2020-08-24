@@ -22,10 +22,10 @@ files are stored in one of the following locations:
 
 1. If a specific directory is specified by the user at the time of download,
    data files are downloaded to that directory.
-2. If variable ``SUOMINET_DIR`` is set in the working environment, data is
+2. If the variable ``SUOMINET_DIR`` is set in the working environment, data is
    downloaded to the directory assigned to that variable.
 3. If neither of the above cases are true, data is downloaded into the
-   installation directory.
+   installation directory of ``pwv_kpno`` package.
 
 The ``ReleaseDownloader`` class is best suited for situations where explicit
 control is required over which files are downloaded and where they should be
@@ -211,15 +211,17 @@ class DownloadManager(URLDownload):
         available_years['hourly'] = sorted(available_years['hourly'])
         return available_years
 
-    # Todo: document release types
     def delete_local_data(self, receiver_id: str, years: list = None,
-                          release_type: str = None, dry_run: bool = False) -> List[Path]:
+                          dry_run: bool = False) -> List[Path]:
         """Delete downloaded SuomiNet data from the current environment
+
+        Valid arguments for release type include ``hourly`` for hourly data
+        release files, ``daily`` for daily releases, and ``global`` for global
+        data releases.
 
          Args:
              receiver_id: Id of a SuomiNet GPS receiver to check for downloaded data
              years: List of years to delete data from (defaults to all available years)
-             release_type: Release type to delete data for (defaults to all available types)
              dry_run: Returns a list of files that would be deleted without actually deleting them
 
          Returns:
@@ -228,7 +230,7 @@ class DownloadManager(URLDownload):
 
         # Default to a file pattern that includes all data types and years
         years = years if years else ['*']
-        release_type = release_type if release_type else '*'
+        release_type = '*'
         path_pattern = f'{receiver_id}{release_type}_{{}}.plt'
 
         # Delete all data matching the file pattern
