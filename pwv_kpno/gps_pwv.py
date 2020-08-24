@@ -57,7 +57,7 @@ def apply_data_cuts(data: pd.DataFrame, cuts: DataCuts1D):
 
 def search_data_table(
         data: pd.DataFrame, year: int = None, month: int = None, day=None,
-        hour=None, colname: str = None) -> pd.DataFrame:
+        hour=None) -> pd.DataFrame:
     """Return a subset of a table with dates corresponding to a given timespan
 
     Args:
@@ -69,37 +69,25 @@ def search_data_table(
         colname: Use a column in ``data`` instead of the index
     """
 
-    # Get just the datetime args that aren't None
-    test_attr = dict(year=year, month=month, day=day, hour=hour)
-    test_attr = {k: v for k, v in test_attr.items() if v}
-    if not test_attr:
+    # Raise exception for bad datetime args
+    datetime(year or 1, month or 1, day or 1, hour or 1)
+
+    if data.empty:
         return data
 
-    # Raise exception for bad datetime args
-    datetime(
-        test_attr.get('year', 1),
-        test_attr.get('month', 1),
-        test_attr.get('day', 1),
-        test_attr.get('hour', 1)
-    )
+    # Convert datetimes into strings and compare dates against the test string
+    date_format = ''
+    test_string = ''
+    for formatter, kwarg in zip(('%Y', '%m', '%d', '%h'), (year, month, day, hour)):
+        if kwarg:
+            date_format += formatter
+            test_string += str(kwarg).zfill(2)
 
-    search_col = data[colname] if colname else data.index
-    matches_kw = tuple(getattr(search_col.index, k) == v for k, v in test_attr.items())
-
-    # If we are only searching against a single attr then use the booleans from
-    # that attr to select from the array
-    if len(matches_kw) == 1:
-        return data[matches_kw[0]]
-
-    # If checking multiple attr's, when need to logically combine them
-    return data[np.logical_and(*matches_kw)]
+    return data[data.index.dt.strftime(date_format) == test_string]
 
 
 class PWVData:
     """Loads GPS weather data and applies data cuts"""
-
-    _cached_class_data = dict()  # To store cached data
-    _ref_count = dict()  # To count references to cached data by instances
 
     def __init__(self, primary: str, secondaries: Set[str] = None, data_cuts: dict = None):
         """Provides data access to weather and PWV data
@@ -169,7 +157,7 @@ class PWVModeling(PWVData):
         self._primary = primary
         self._secondaries = set(secondaries) if secondaries else set()
         self._data_cuts = data_cuts if data_cuts else dict()
-        self._pwv_model = None
+        self._pwv_model = None  # Place holder for lazy loading
 
         if primary in secondaries:
             raise ValueError('Primary receiver cannot be listed as a secondary receiver')
@@ -237,7 +225,7 @@ class PWVModeling(PWVData):
         """Optimize and apply a linear regression using masked arrays
 
         Generates a linear fit f using orthogonal distance regression and returns
-        the applied model f(x). If y is completely masked, return y and sy.
+        the applied model f(x).
 
         Args:
             x: The independent variable of the regression
@@ -246,8 +234,7 @@ class PWVModeling(PWVData):
             sy: Standard deviations of y
 
         Returns:
-            The applied linear regression on x
-            The uncertainty in the applied linear regression
+            A Scipy.odr Output object
         """
 
         data = RealData(x=x, y=y, sx=sx, sy=sy)
@@ -263,12 +250,14 @@ class PWVModeling(PWVData):
 
         return fit_results
 
-    def _fit_to_secondary(self, secondary_receiver: str) -> Tuple[pd.Series, pd.Series]:
+    def _fit_to_secondary(self, primary_data: pd.DataFrame,
+                          secondary_data: pd.DataFrame) -> Tuple[pd.Series, pd.Series]:
         """Apply a linear fit to the primary PWV data as a function of the PWV
         at a secondary location
 
         Args:
-            secondary_receiver: Receiver Id for the secondary location
+            primary_data: SuomiNet data from the primary receiver
+            secondary_data: SuomiNet data from the secondary receiver
 
         Returns:
             - The fitted PWV (mm)
@@ -276,8 +265,6 @@ class PWVModeling(PWVData):
         """
 
         # Get subset of primary / secondary data with datetimes that overlap
-        primary_data = self._load_data_with_cuts(self._primary)
-        secondary_data = self._load_data_with_cuts(secondary_receiver)
         joined_data = primary_data \
             .join(secondary_data, lsuffix='Primary', rsuffix='Secondary') \
             .dropna(subset=['PWVPrimary', 'PWVErrPrimary', 'PWVSecondary', 'PWVErrSecondary'])
@@ -306,17 +293,24 @@ class PWVModeling(PWVData):
             A DataFrame with modeled PWV values and the associated errors over time
         """
 
+        primary_data = self._load_data_with_cuts(self._primary)
+
+        # Fit fit the primary receiver's PWV data as function of each secondary
+        # receiver and accumulate the results
         fitted_pwv = pd.DataFrame()
         fitted_error = pd.DataFrame()
         for secondary_rec in self._secondaries:
+            secondary_data = self._load_data_with_cuts(secondary_rec)
+
             try:
-                _fitted_pwv, _fitted_error = self._fit_to_secondary(secondary_rec)
+                _fitted_pwv, _fitted_error = self._fit_to_secondary(primary_data, secondary_data)
 
             except RuntimeError:  # Failed ODR regression
-                warnings.warn('Linear regression failed for {}'.format(secondary_rec))
+                warnings.warn('Linear regression failed for {}. Dropped from model'.format(secondary_rec))
 
-            fitted_pwv[secondary_rec] = _fitted_pwv
-            fitted_error[secondary_rec] = _fitted_error
+            else:
+                fitted_pwv[secondary_rec] = _fitted_pwv
+                fitted_error[secondary_rec] = _fitted_error
 
         # Average PWV models from different sites
         out_data = pd.DataFrame({
