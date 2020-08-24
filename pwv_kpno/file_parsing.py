@@ -24,12 +24,13 @@ from datetime import datetime, timedelta
 from functools import partial
 from pathlib import Path
 from typing import Tuple, Union
+from warnings import warn
 
 import numpy as np
 import pandas as pd
 
-from .types import PathLike
 from .downloads import DownloadManager
+from .types import PathLike
 
 
 def _suomi_date_to_timestamp(year: int, days: Union[str, float]) -> float:
@@ -112,6 +113,7 @@ def read_suomi_file(path: PathLike) -> pd.DataFrame:
     receiver_id, year = _parse_path_stem(path)
     date_conversion = partial(_suomi_date_to_timestamp, year)
     clean_data.index = clean_data.index.map(date_conversion)
+    clean_data.index = pd.to_datetime(clean_data.index, unit='s')
 
     # SuomiNet rounds their error and can report an error of zero
     # We compensate by adding an error of 0.025
@@ -149,6 +151,8 @@ def load_rec_directory(receiver_id: str, directory: PathLike = None) -> pd.DataF
     if data:
         combined_data = pd.concat(data)
         return combined_data.loc[~combined_data.index.duplicated(keep='first')]
+
+    warn('No local data found for {}'.format(receiver_id))
 
     return pd.DataFrame(columns=[
         'date', 'PWV, PWVErr',
