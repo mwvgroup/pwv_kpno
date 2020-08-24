@@ -26,7 +26,22 @@ import numpy as np
 import scipy
 from scipy.stats import binned_statistic
 
-from .types import ArrayLike
+from .types import ArrayLike, NumpyArgument
+
+
+def calc_pwv_eff(pwv_los: NumpyArgument, norm_pwv: float = 2, exp: float = 0.6, ):
+    """Convert PWV along line of sight to PWV effective
+
+    pwv_eff =  (pwv_los / norm_pwv) ** exp
+
+    Args:
+        pwv_los: PWV along line of sight
+        norm_pwv: Normalize result such that an effective PWV of one is
+            equivalent to this amount of PWV along line of sight.
+        exp: Power by which to scale PWV effective
+    """
+
+    return (pwv_los / norm_pwv) ** exp
 
 
 def bin_transmission(wave, transmission, resolution) -> Tuple[np.arry, np.array]:
@@ -76,6 +91,7 @@ class Transmission:
         """
 
         self.pwv = pwv
+        self._pwv_eff = calc_pwv_eff(pwv)
         self.wave = wave
         self.transmission = transmission
 
@@ -91,7 +107,7 @@ class Transmission:
             An array of transmission values
         """
 
-        wave, trans =  bin_transmission(self.wave, self.transmission, resolution)
+        wave, trans = bin_transmission(self.wave, self.transmission, resolution)
         return trans
 
     def __call__(self, pwv: float, wave: ArrayLike = None, resolution: float = None) -> np.ndarray:
@@ -179,6 +195,3 @@ class CrossSectionTransmission(Transmission):
         return 'CrossSectionTransmission(pwv={}, wave={}, transmission={})'.format(
             self.wave, self.wave, self.transmission)
 
-
-# Todo: Define the default transmission model
-default_model = Transmission([], [], [])
