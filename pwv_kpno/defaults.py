@@ -20,12 +20,13 @@
 objects with pre-defined data cuts that have been investigated for each site.
 """
 
-from .gps_pwv import GPSReceiver
-from .transmission import Transmission
+# Underscores to prevent user from thinking there is a default ``transmission``
+# or ``GPSReceiver`` object
+from . import transmission as _transmission
+from .gps_pwv import PWVModel as _GPSReceiver
 
-# Todo: Define the default transmission model
-default_transmission = Transmission([], [], [])
+default_transmission = _transmission.TransmissionModel([], [], [])
+v1_transmission = _transmission.CrossSectionTransmission([], [])
 
-default_KITT = GPSReceiver('KITT')
-
-default_CTIO = GPSReceiver('CTIO')
+kitt = _GPSReceiver('KITT')
+ctio = _GPSReceiver('CTIO')
