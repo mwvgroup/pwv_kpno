@@ -245,7 +245,8 @@ class DownloadManager(URLDownload):
         return out_files
 
     @staticmethod
-    def download_available_data(receiver_id: str, year: Union[int, Iterable[int]] = None, timeout: float = None) -> List:
+    def download_available_data(
+            receiver_id: str, year: Union[int, Iterable[int]] = None, timeout: float = None) -> List:
         """Download all available SuomiNet data for a given year and SuomiNet id
 
         Convenience function for downloading any available data from the CONUS

@@ -86,9 +86,11 @@ def bin_transmission(transmission, resolution, wave=None) -> pd.Series:
         max(wave) + half_res + resolution,
         resolution)
 
+    # noinspection PyArgumentEqualDefault
     statistic_left, bin_edges_left, _ = binned_statistic(
         wave, transmission, statistic='mean', bins=bins[:-1])
 
+    # noinspection PyArgumentEqualDefault
     statistic_right, bin_edges_right, _ = binned_statistic(
         wave, transmission, statistic='mean', bins=bins[1:])
 

@@ -290,6 +290,7 @@ class PWVModel:
                 fitted_error[secondary_rec] = _fitted_error
 
         # Average PWV models from different sites
+        # noinspection PyTypeChecker
         out_data = pd.DataFrame({
             'PWV': fitted_pwv.mean(axis=1),
             'PWVErr': np.sqrt((fitted_error ** 2).sum(axis=1)) / len(fitted_error)
