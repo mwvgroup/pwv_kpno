@@ -129,7 +129,7 @@ class TransmissionModel:
         try:
             self._interp_func = lNDI(points, values)
 
-        except QhullError:  # Wrap an otherwise cryptic error message
+        except ValueError:  # Wrap an otherwise cryptic error message
             raise ValueError('Dimensions of init arguments do not match.')
 
     @property
@@ -203,19 +203,20 @@ class CrossSectionTransmission:
 
         return (cls.n_a * cls.h2o_density) / (cls.h2o_molar_mass * cls.one_mm_in_cm)
 
-    def __call__(self, pwv: float, wave: ArrayLike = None, resolution: float = None) -> pd.Series:
+    def __call__(self, pwv: float, wave: ArrayLike = None) -> pd.Series:
         """Evaluate transmission model at given wavelengths
 
         Args:
             pwv: Line of sight PWV to interpolate for
             wave: Wavelengths to evaluate transmission for in angstroms
-            resolution: Reduce model to the given resolution
 
         Returns:
             The interpolated transmission at the given wavelengths / resolution
         """
 
+        wave = self.samp_wave if wave is None else wave
+
         # Evaluate transmission using the Beer-Lambert Law
-        tau = pwv * self.cross_sections * self._num_density_conversion
+        tau = pwv * self.cross_sections * self._num_density_conversion()
         transmission = np.interp(wave, self.samp_wave, np.exp(-tau))
         return pd.Series(transmission, index=wave)

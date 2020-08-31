@@ -50,6 +50,11 @@ class TransmissionCall(TestCase):
         returned_trans = self.transmission(test_pwv)
         np.testing.assert_equal(self.transmission._samp_transmission[1], returned_trans)
 
+    def test_default_wavelengths_match_init(self):
+        """Test return values are index by init wavelengths by default"""
+
+        np.testing.assert_equal(self.transmission(4).index.to_numpy(), self.transmission.samp_wave)
+
     def test_interpolates_for_given_wavelengths(self):
         """Test an interpolation is performed for specified wavelengths when given"""
 
@@ -66,12 +71,14 @@ class IncompatibleInitArguments(TestCase):
     def runTest(self):
         """Instantiate a ``TransmissionModel`` with malformed arguments"""
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ValueError) as cm:
             TransmissionModel(
                 samp_pwv=[1, 2],
                 samp_wave=[100, 200],
                 samp_transmission=[[1, ], [2, ]]  # Expected (2, 2) array
             )
+
+        self.assertEqual(str(cm.exception), 'Dimensions of init arguments do not match.')
 
 
 class AccessibleInitParams(TestCase):
