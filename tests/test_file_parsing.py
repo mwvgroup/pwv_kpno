@@ -28,7 +28,6 @@ import numpy as np
 from pytz import utc
 
 from pwv_kpno import file_parsing
-from tests.utils import TestWithCleanEnv
 
 TEST_DATA_DIR = Path(__file__).parent / 'testing_data'
 
@@ -124,36 +123,3 @@ class SuomiNetFileParsing(TestCase):
         """
 
         file_parsing.read_suomi_file(TEST_DATA_DIR / 'SA48dy_2010.plt')
-
-
-@TestWithCleanEnv(TEST_DATA_DIR)
-class LoadRecDirectory(TestCase):
-    """Tests for the ``load_rec_directory`` function"""
-
-    def test_empty_dataframe_columns(self):
-        """Test returned DataFrame has correct column names"""
-
-        # Use a fake receiver Id should return an empty dataframe
-        data = file_parsing.load_rec_directory('dummy_receiver')
-        expected_columns = ['PWV, PWVErr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH']
-        self.assertListEqual(expected_columns, list(data.columns))
-
-    def test_empty_dataframe_index(self):
-        """Test the returned DataFrame is indexed by ``date``"""
-
-        # Use a fake receiver Id should return an empty dataframe
-        data = file_parsing.load_rec_directory('dummy_receiver')
-        self.assertEqual('date', data.index.name)
-
-    def test_warns_on_empty_data(self):
-        """Test a warning is raised for an empty data frame"""
-
-        with self.assertWarns(Warning):
-            file_parsing.load_rec_directory('dummy_receiver')
-
-    def test_expected_years_are_parsed(self):
-        """Test data is returned from all available data files for a given receiver"""
-
-        azam_data = file_parsing.load_rec_directory('AZAM')
-        self.assertEqual(2015, azam_data.index.min().year, '2015 data missing from return')
-        self.assertEqual(2016, azam_data.index.max().year, '2016 data missing from return')

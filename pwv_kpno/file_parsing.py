@@ -24,12 +24,10 @@ from datetime import datetime, timedelta
 from functools import partial
 from pathlib import Path
 from typing import Tuple, Union
-from warnings import warn
 
 import numpy as np
 import pandas as pd
 
-from .downloads import DownloadManager
 from .types import PathLike
 
 
@@ -120,40 +118,3 @@ def read_suomi_file(path: PathLike) -> pd.DataFrame:
     clean_data['PWVErr'] = np.round(clean_data['PWVErr'] + 0.025, 3)
 
     return clean_data
-
-
-def load_rec_directory(receiver_id: str, directory: PathLike = None) -> pd.DataFrame:
-    """Load all data for a given GPS receiver from a directory
-
-    Data from daily data releases is prioritized over hourly data releases
-
-    Args:
-        receiver_id: Id of the SuomiNet GPS receiver to load data for
-        directory: Directory to load data from (Defaults to package default)
-
-    Returns:
-        A pandas DataFrame of SuomiNet weather data
-    """
-
-    directory = DownloadManager().data_dir if directory is None else directory
-
-    # Data release types ordered in terms of priority
-    # Prefer global data over daily data over hourly data
-    data_types = ('gl', 'dy', 'hr')
-
-    data = []  # Collector for DataFrames with data from each data type
-    for dtype in data_types:
-        global_files = list(directory.glob(f'{receiver_id}{dtype}_*.plt'))
-        if global_files:
-            data.append(pd.concat([read_suomi_file(f) for f in global_files]))
-
-    if data:
-        combined_data = pd.concat(data)
-        return combined_data.loc[~combined_data.index.duplicated(keep='first')]
-
-    warn('No local data found for {}'.format(receiver_id))
-
-    return pd.DataFrame(columns=[
-        'date', 'PWV, PWVErr',
-        'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH'
-    ]).set_index('date')

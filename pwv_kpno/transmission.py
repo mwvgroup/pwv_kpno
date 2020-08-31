@@ -184,7 +184,7 @@ class CrossSectionTransmission:
         long with the Beer-Lambert law.
 
         Args:
-            samp_wave: 1D Array or sampled wavelengths in angstroms
+            samp_wave: 1D Array of sampled wavelengths in angstroms
             cross_sections: 1D array with cross sections in cm squared
         """
 

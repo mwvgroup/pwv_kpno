@@ -31,14 +31,15 @@ import numpy as np
 import pandas as pd
 from scipy.odr import ODR, Output, RealData, polynomial
 
-from .file_parsing import load_rec_directory
+from .downloads import DownloadManager
+from .file_parsing import read_suomi_file
 from .types import DataCuts, DataCuts1D, NumpyArgument, NumpyReturn
 
 
-def apply_data_cuts(data: pd.DataFrame, cuts: DataCuts1D):
+def apply_data_cuts(data: pd.DataFrame, cuts: DataCuts1D) -> pd.DataFrame:
     """Apply a dictionary of data cuts to a DataFrame
 
-    Only return data that is within the specified ranges
+    Only return data that is within the specified value ranges
 
     Args:
         data: Data to apply cuts on
@@ -66,13 +67,18 @@ def search_data_table(
         month: Only return data within the given month
         day: Only return data within the given day
         hour: Only return data within the given hour
-        colname: Use a column in ``data`` instead of the index
     """
 
     # Raise exception for bad datetime args
-    datetime(year or 1, month or 1, day or 1, hour or 1)
+    # We use ``if`` here instead of ``or`` since some values may be zero
+    datetime(
+        1 if year is None else year,
+        1 if month is None else month,
+        1 if day is None else day,
+        1 if hour is None else hour
+    )
 
-    if data.empty:
+    if data.empty or not any((year, month, day, hour)):
         return data
 
     # Convert datetimes into strings and compare dates against the test string
@@ -83,68 +89,52 @@ def search_data_table(
             date_format += formatter
             test_string += str(kwarg).zfill(2)
 
-    return data[data.index.dt.strftime(date_format) == test_string]
+    return data[data.index.strftime(date_format) == test_string]
 
 
-class PWVData:
-    """Loads GPS weather data and applies data cuts"""
+def load_rec_data(receiver_id: str) -> pd.DataFrame:
+    """Load all data for a given GPS receiver from a directory
 
-    def __init__(self, primary: str, secondaries: Set[str] = None, data_cuts: dict = None):
-        """Provides data access to weather and PWV data
+    Data from daily data releases is prioritized over hourly data releases
 
-        Args:
-            primary: SuomiNet Id of the receiver to access
-            secondaries: Secondary receivers used to supplement periods with
-                missing primary data
-            data_cuts: Only include data in the given ranges
-        """
+    Args:
+        receiver_id: Id of the SuomiNet GPS receiver to load data for
 
-        self.primary = primary.upper()
-        self.secondaries = secondaries or set()
-        self.data_cuts = data_cuts or dict()
+    Returns:
+        A pandas DataFrame of SuomiNet weather data
+    """
 
-    def _load_data_with_cuts(self, receiver_id: str) -> pd.DataFrame:
-        """Load data for a given GPS receiver into memory
+    directory = DownloadManager().data_dir
 
-        Args:
-            receiver_id: Id of the SuomiNet GPS receiver to load data for
+    # Data release types ordered in terms of priority
+    # Prefer global data over daily data over hourly data
+    data_types = ('gl', 'dy', 'hr')
 
-        Returns:
-            A Pandas DataFrame
-        """
+    data = []  # Collector for DataFrames with data from each data type
+    for dtype in data_types:
+        global_files = list(directory.glob(f'{receiver_id}{dtype}_*.plt'))
+        if global_files:
+            data.append(pd.concat([read_suomi_file(f) for f in global_files]))
 
-        receiver_data = load_rec_directory(receiver_id)
-        receiver_cuts = self.data_cuts.get(receiver_id, {}).items()
-        return apply_data_cuts(receiver_data, receiver_cuts)
+    if data:
+        combined_data = pd.concat(data)
+        return combined_data.loc[~combined_data.index.duplicated(keep='first')]
 
-    def weather_data(self, year: int = None, month: int = None, day=None, hour=None) -> pd.DataFrame:
-        """Returns a table of all weather data for the primary receiver
+    warnings.warn('No local data found for {}'.format(receiver_id))
 
-        Data is returned as an pandas DataFrame indexed by the SuomiNet Id
-        of each GPS receiver. Results can be optionally refined by year,
-        month, day, and hour.
-
-        Args:
-            year: The year of the desired PWV data
-            month: The month of the desired PWV data
-            day: The day of the desired PWV data
-            hour: The hour of the desired PWV data in 24-hour format
-
-        Returns:
-            A pandas DataFrame
-        """
-
-        primary_data = self._load_data_with_cuts(self.primary)
-        return search_data_table(primary_data, year, month, day, hour)
+    return pd.DataFrame(columns=[
+        'date', 'PWV, PWVErr',
+        'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH'
+    ]).set_index('date')
 
 
-class PWVModeling(PWVData):
+class PWVModel:
     """Handles the modeling of PWV for times when direct measurements are not
     available at the primary location.
     """
 
     # noinspection PyMissingConstructor
-    def __init__(self, primary: str, secondaries: Set[str] = None, data_cuts: dict = None):
+    def __init__(self, primary: str, secondaries: Set[str] = None, data_cuts: DataCuts = None) -> None:
         """Handles getter / setter logic for class attributes
 
         Args:
@@ -154,34 +144,19 @@ class PWVModeling(PWVData):
             data_cuts: Only include data in the given ranges
         """
 
-        self._primary = primary
-        self._secondaries = set(secondaries) if secondaries else set()
+        self._primary = primary.upper()
+        self._secondaries = set(s.upper() for s in secondaries) if secondaries else set()
         self._data_cuts = data_cuts if data_cuts else dict()
         self._pwv_model = None  # Place holder for lazy loading
 
-        if primary in secondaries:
+        if primary in self._secondaries:
             raise ValueError('Primary receiver cannot be listed as a secondary receiver')
-
-    ###########################################################################
-    # Getter / setters are used to reset the cached PWV Model
-    ###########################################################################
 
     @property
     def primary(self) -> str:
         """The primary GPS receiver to retrieve PWV data for"""
 
         return self._primary
-
-    @primary.setter
-    def primary(self, value: str):
-        """Change the instance's primary receiver and clear cached data"""
-
-        # No action necessary if new value == old value
-        if value.upper() == self._primary:
-            return
-
-        self._primary = value.upper()
-        self._pwv_model = None
 
     @property
     def secondaries(self) -> Set[str]:
@@ -191,34 +166,36 @@ class PWVModeling(PWVData):
 
         return self._secondaries
 
-    @secondaries.setter
-    def secondaries(self, value: Tuple[str]):
-        """Change the instance's secondary receivers and clear cached data"""
-
-        # No action necessary if new value == old value
-        if value == self._secondaries:
-            return
-
-        self._secondaries = value
-        self._pwv_model = None
-
     @property
     def data_cuts(self) -> DataCuts:
         """Dictionary of data cuts on returned data for each GPS receiver"""
 
         return deepcopy(self._data_cuts)
 
-    @data_cuts.setter
-    def data_cuts(self, value: DataCuts):
-        """Change the instance's data cuts and clear the cached PWV Model"""
-
-        self._data_cuts = value
-        self._pwv_model = None
-
     ###########################################################################
     # PWV is modeled by separately fitting the primary PWV as a function of
     # the PWV measured by each secondary receiver and then averaging the result
     ###########################################################################
+
+    def _load_data_with_cuts(self, receiver_id: str) -> pd.DataFrame:
+        """Returns a table of all weather data for the primary receiver
+
+        Data is returned as an pandas DataFrame indexed by the SuomiNet Id
+        of each GPS receiver. Results can be optionally refined by year,
+        month, day, and hour.
+
+        Args:
+            receiver_id: Id of the receiver to load data for
+
+        Returns:
+            A pandas DataFrame
+        """
+
+        receiver_data = load_rec_data(receiver_id)
+        receiver_cuts = self.data_cuts.get(receiver_id, {}).items()
+
+        # noinspection PyTypeChecker
+        return apply_data_cuts(receiver_data, receiver_cuts)
 
     @staticmethod
     def _linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> Output:
@@ -349,10 +326,6 @@ class PWVModeling(PWVData):
 
         return search_data_table(self._pwv_model, year, month, day, hour)
 
-
-class GPSReceiver(PWVModeling):
-    """Data access for measurements taken by SuomiNet GPS receivers"""
-
     def interp_pwv_date(self, date: NumpyArgument, interp_limit: float = None,
                         method: str = 'linear', order=None) -> NumpyReturn:
         """Evaluate the PWV model for a given datetime
@@ -401,3 +374,7 @@ class GPSReceiver(PWVModeling):
             warnings.warn('Some values were outside the permitted interpolation range')
 
         return interp_data
+
+    def __repr__(self) -> str:
+        return 'PWVModel(primary="{}", secondaries={}, data_cuts={})'.format(
+            self.primary, self.secondaries, self.data_cuts)
