@@ -21,27 +21,25 @@
 
 from pathlib import Path
 from unittest import TestCase
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 
 from pwv_kpno.gps_pwv import PWVModel, search_data_table
 from tests.utils import TestWithCleanEnv
 
-TEST_DATA_DIR = Path(__file__).parent / 'testing_data'
+TEST_DATA_DIR = Path(__file__).parent.parent / 'testing_data'
 
 
-class AttributeAccess(TestCase):
-    """Test receiver values for the ``PWVModel`` are read only"""
+# noinspection PyPropertyAccess
+class ReadOnlyProperties(TestCase):
+    """Test properties for the ``PWVModel`` are read only"""
 
     def setUp(self):
         self.primary = 'REC1'
         self.secondaries = {'REC2', 'REC3'}
-        self.receiver = PWVModel(primary=self.primary, secondaries=self.secondaries)
-
-    def test_primary_rec_accessible(self):
-        """Test the primary receiver is accessible through the ``primary`` attribute"""
-
-        self.assertEqual(self.primary, self.receiver.primary)
+        self.data_cuts = {'KITT': {'PWV': [(2, 8)]}}
+        self.receiver = PWVModel(self.primary, self.secondaries, self.data_cuts)
 
     def test_primary_rec_not_settable(self):
         """Test the ``primary`` attribute has no setter"""
@@ -49,16 +47,17 @@ class AttributeAccess(TestCase):
         with self.assertRaises(AttributeError):
             self.receiver.primary = 'NEW_PRIMARY'
 
-    def test_secondary_recs_accessible(self):
-        """Test the secondary receivers are accessible through the ``secondaries`` attribute"""
-
-        self.assertEqual(self.secondaries, self.receiver.secondaries)
-
     def test_secondary_recs_not_settable(self):
         """Test the ``secondaries`` attribute has no setter"""
 
         with self.assertRaises(AttributeError):
             self.receiver.secondaries = {'NEW_REC_1', 'NEW_REC_2'}
+
+    def test_data_cuts_not_settable(self):
+        """Test the ``data_cuts`` attribute has no setter"""
+
+        with self.assertRaises(AttributeError):
+            self.receiver.data_cuts = dict()
 
 
 @TestWithCleanEnv(TEST_DATA_DIR)
@@ -66,7 +65,7 @@ class ModeledPWV(TestCase):
     """Tests for the 'PWVModel.modeled_pwv' function"""
 
     def setUp(self):
-        self.receiver = PWVModel('KITT')
+        self.receiver = PWVModel('KITT', {'AZAM'})
 
     def test_filtering_by_args(self):
         """Test returned dates are filtered by kwarg arguments"""
@@ -86,17 +85,10 @@ class ModeledPWV(TestCase):
         expected_col_order = ['PWV', 'PWVErr']
         np.testing.assert_equal(expected_col_order, returned_column_order)
 
-
-class PWVDateInterpolation(TestCase):
-    """Tests for the ``PWVModel.interp_pwv_date`` function"""
-
-    def setUp(self):
-        self.receiver = PWVModel('KITT')
-
     def test_error_for_out_of_bounds(self):
         """Test a value error is raised when interpolating for an out of bounds date"""
 
-        max_date = max(self.receiver.modeled_pwv()['date'])
+        max_date = self.receiver.modeled_pwv().index.max()
         out_of_bounds_date = max_date + 1
         self.assertRaises(ValueError, self.receiver.interp_pwv_date, out_of_bounds_date)
 
@@ -111,7 +103,7 @@ class PWVDateInterpolation(TestCase):
         """Test interpolation recovers grid points of the modeled PWV"""
 
         modeled_pwv = self.receiver.modeled_pwv()
-        target_date = modeled_pwv['date'][0]
+        target_date = modeled_pwv.index[0]
         target_pwv = modeled_pwv['pwv'][0]
         interpolated_pwv = self.receiver.interp_pwv_date(target_date)
         self.assertEqual(target_pwv, interpolated_pwv)
@@ -121,7 +113,7 @@ class PWVDateInterpolation(TestCase):
 
         modeled_pwv = self.receiver.modeled_pwv()
         test_date = 1594467199  # July 11th, 2020
-        expected_pwv = np.interp(test_date, modeled_pwv['date'], modeled_pwv['pwv'])
+        expected_pwv = np.interp(test_date, modeled_pwv.index, modeled_pwv['PWV'])
         returned_pwv = self.receiver.interp_pwv_date(test_date)
         self.assertEqual(expected_pwv, returned_pwv)
 

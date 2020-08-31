@@ -26,6 +26,7 @@ import numpy as np
 from pwv_kpno.transmission import CrossSectionTransmission
 
 
+# noinspection PyMethodMayBeStatic
 class PhysicalConstants(TestCase):
     """Tests for the values of physical constants used in the transmission model"""
 

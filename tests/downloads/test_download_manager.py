@@ -66,7 +66,7 @@ class CheckDownloadedData(TestCase):
             self.test_data_config = yaml.load(infile, yaml.SafeLoader)
 
     def test_return_matches_test_data(self):
-        """Tests returned years matche test data for KITT"""
+        """Test the returned years match test data for KITT"""
 
         test_receiver = 'KITT'
 

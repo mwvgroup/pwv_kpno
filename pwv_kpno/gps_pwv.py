@@ -49,7 +49,7 @@ def apply_data_cuts(data: pd.DataFrame, cuts: DataCuts1D) -> pd.DataFrame:
         A subset of the passed DataFrame
     """
 
-    for param_name, cut_list in cuts:
+    for param_name, cut_list in cuts.items():
         for start, end in cut_list:
             data = data[(start <= data[param_name]) & (data[param_name] <= end)]
 
@@ -145,8 +145,8 @@ class PWVModel:
         """
 
         self._primary = primary.upper()
-        self._secondaries = set(s.upper() for s in secondaries) if secondaries else set()
         self._data_cuts = data_cuts if data_cuts else dict()
+        self._secondaries = set() if secondaries is None else set(s.upper() for s in secondaries)
         self._pwv_model = None  # Place holder for lazy loading
 
         if primary in self._secondaries:
@@ -192,10 +192,25 @@ class PWVModel:
         """
 
         receiver_data = load_rec_data(receiver_id)
-        receiver_cuts = self.data_cuts.get(receiver_id, {}).items()
+        receiver_cuts = self.data_cuts.get(receiver_id, {})
 
         # noinspection PyTypeChecker
         return apply_data_cuts(receiver_data, receiver_cuts)
+
+    def weather_data(self, year: int = None, month: int = None, day=None, hour=None) -> pd.DataFrame:
+        """Return a table of weather data taken at the primary GPS receiver
+
+        Args:
+            year: The year of the desired PWV data
+            month: The month of the desired PWV data
+            day: The day of the desired PWV data
+            hour: The hour of the desired PWV data in 24-hour format
+
+        Returns:
+            A pandas DataFrame of modeled PWV values in mm
+        """
+
+        return search_data_table(self._load_data_with_cuts(self.primary), year, month, day, hour)
 
     @staticmethod
     def _linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> Output:
@@ -257,7 +272,7 @@ class PWVModel:
         b, m = fit_results.beta
         applied_fit = m * joined_data['PWVSecondary'] + b
         residuals = joined_data['PWVPrimary'] - applied_fit
-        errors = residuals.std()
+        errors = residuals # Todo: add back in .std()
 
         applied_fit.name = 'fitted_pwv'
         errors.name = 'fitted_err'
@@ -270,13 +285,13 @@ class PWVModel:
             A DataFrame with modeled PWV values and the associated errors over time
         """
 
-        primary_data = self._load_data_with_cuts(self._primary)
+        primary_data = self.weather_data()
 
         # Fit fit the primary receiver's PWV data as function of each secondary
         # receiver and accumulate the results
         fitted_pwv = pd.DataFrame()
         fitted_error = pd.DataFrame()
-        for secondary_rec in self._secondaries:
+        for secondary_rec in self.secondaries:
             secondary_data = self._load_data_with_cuts(secondary_rec)
 
             try:
@@ -301,8 +316,8 @@ class PWVModel:
                           'receivers. Cannot model PWV for times when primary '
                           'receiver is offline')
 
-        primary_data = self._load_data_with_cuts(self._primary)
-        out_data.loc[primary_data.index] = primary_data
+        # Upsert data from the primary receiver
+        out_data = pd.concat([out_data[~out_data.index.isin(primary_data.index)], primary_data[['PWV', 'PWVErr']]])
         return out_data.dropna().sort_index()
 
     def modeled_pwv(self, year: int = None, month: int = None, day=None, hour=None) -> pd.DataFrame:
