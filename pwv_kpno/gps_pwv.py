@@ -56,6 +56,34 @@ def apply_data_cuts(data: pd.DataFrame, cuts: DataCuts1D) -> pd.DataFrame:
     return data
 
 
+def linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> Output:
+    """Optimize and apply a linear regression using masked arrays
+
+    Generates a linear fit f using orthogonal distance regression and returns
+    the applied model f(x).
+
+    Args:
+        x: The independent variable of the regression
+        y: The dependent variable of the regression
+        sx: Standard deviations of x
+        sy: Standard deviations of y
+
+    Returns:
+        A Scipy.odr Output object
+    """
+
+    data = RealData(x=x, y=y, sx=sx, sy=sy)
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore")
+        odr = ODR(data, polynomial(1), beta0=[0., 1.])
+        fit_results = odr.run()
+
+    if 'Numerical error detected' in fit_results.stopreason:
+        raise RuntimeError(fit_results.stopreason)
+
+    return fit_results
+
+
 def search_data_table(
         data: pd.DataFrame, year: int = None, month: int = None, day=None,
         hour=None) -> pd.DataFrame:
@@ -213,37 +241,7 @@ class PWVModel:
         return search_data_table(self._load_data_with_cuts(self.primary), year, month, day, hour)
 
     @staticmethod
-    def _linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> Output:
-        """Optimize and apply a linear regression using masked arrays
-
-        Generates a linear fit f using orthogonal distance regression and returns
-        the applied model f(x).
-
-        Args:
-            x: The independent variable of the regression
-            y: The dependent variable of the regression
-            sx: Standard deviations of x
-            sy: Standard deviations of y
-
-        Returns:
-            A Scipy.odr Output object
-        """
-
-        data = RealData(x=x, y=y, sx=sx, sy=sy)
-        odr = ODR(data, polynomial(1), beta0=[0., 1.])
-
-        with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", message='Empty data detected for ODR instance.')
-            fit_results = odr.run()
-
-        fit_fail = 'Numerical error detected' in fit_results.stopreason
-        if fit_fail:
-            raise RuntimeError(fit_results.stopreason)
-
-        return fit_results
-
-    def _fit_to_secondary(self, primary_data: pd.DataFrame,
-                          secondary_data: pd.DataFrame) -> Tuple[pd.Series, pd.Series]:
+    def _fit_to_secondary(primary_data: pd.DataFrame, secondary_data: pd.DataFrame) -> Tuple[pd.Series, pd.Series]:
         """Apply a linear fit to the primary PWV data as a function of the PWV
         at a secondary location
 
@@ -262,20 +260,20 @@ class PWVModel:
             .dropna(subset=['PWVPrimary', 'PWVErrPrimary', 'PWVSecondary', 'PWVErrSecondary'])
 
         # Evaluate the fit
-        fit_results = self._linear_regression(
+        fit_results = linear_regression(
             joined_data['PWVSecondary'],
-            joined_data['PWVErrSecondary'],
             joined_data['PWVPrimary'],
+            joined_data['PWVErrSecondary'],
             joined_data['PWVErrPrimary'])
 
         # Apply the linear regression
         b, m = fit_results.beta
         applied_fit = m * joined_data['PWVSecondary'] + b
-        residuals = joined_data['PWVPrimary'] - applied_fit
-        errors = residuals # Todo: add back in .std()
-
         applied_fit.name = 'fitted_pwv'
-        errors.name = 'fitted_err'
+
+        residuals = joined_data['PWVPrimary'] - applied_fit
+        errors = pd.Series(residuals.std(), name='fitted_err', index=applied_fit.index)
+
         return applied_fit, errors
 
     def _calc_avg_pwv_model(self) -> pd.DataFrame:

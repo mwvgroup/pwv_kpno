@@ -19,27 +19,39 @@
 
 """Tests for the ``pwv_kpno.gps_pwv.PWVModel`` class"""
 
-from pathlib import Path
 from unittest import TestCase
 
 import numpy as np
 import pandas as pd
 
-from pwv_kpno.gps_pwv import PWVModel, search_data_table
-from tests.utils import TestWithCleanEnv
-
-TEST_DATA_DIR = Path(__file__).parent.parent / 'testing_data'
+from pwv_kpno.gps_pwv import PWVModel
 
 
 # noinspection PyPropertyAccess
-class ReadOnlyProperties(TestCase):
-    """Test properties for the ``PWVModel`` are read only"""
+class ReceiverIdHandling(TestCase):
+    """Test related to the access and formatting of receiver Id's"""
 
     def setUp(self):
+        """Create a mock pwv model for testing"""
+
         self.primary = 'REC1'
         self.secondaries = {'REC2', 'REC3'}
         self.data_cuts = {'KITT': {'PWV': [(2, 8)]}}
         self.receiver = PWVModel(self.primary, self.secondaries, self.data_cuts)
+
+    def test_value_error_primary_in_secondaries(self):
+        """Test ``ValueError`` is raise if primary rec is listed in secondaries"""
+
+        with self.assertRaises(ValueError):
+            PWVModel('REC1', {'REC1', 'REC2'})
+
+    def test_receivers_are_uppercase(self):
+        """Test receivers are stored in uppercase"""
+
+        pwv_model = PWVModel('rec1', {'rec2'})
+        secondaries = list(pwv_model.secondaries)  # So we can index secondaries
+        self.assertTrue(pwv_model.primary.isupper(), 'Primary receiver is not uppercase.')
+        self.assertTrue(secondaries[0].isupper(), 'Secondary receiver is not uppercase.')
 
     def test_primary_rec_not_settable(self):
         """Test the ``primary`` attribute has no setter"""
@@ -60,62 +72,18 @@ class ReadOnlyProperties(TestCase):
             self.receiver.data_cuts = dict()
 
 
-@TestWithCleanEnv(TEST_DATA_DIR)
-class ModeledPWV(TestCase):
-    """Tests for the 'PWVModel.modeled_pwv' function"""
+class FitToSecondary(TestCase):
+    """Tests for the _fit_to_secondary`` function"""
 
     def setUp(self):
-        self.receiver = PWVModel('KITT', {'AZAM'})
+        self.secondary = pd.DataFrame({
+            'PWV': np.arange(0, 10),
+            'PWVErr': np.full(10, .1)
+        })
+        self.primary = self.secondary.iloc[0:8].copy()
 
-    def test_filtering_by_args(self):
-        """Test returned dates are filtered by kwarg arguments"""
-
-        search_kwargs = {'year': 2010, 'month': 7, 'day': 21, 'hour': 5}
-        full_table = self.receiver.modeled_pwv()
-        searched_table = search_data_table(full_table, **search_kwargs)
-        returned_table = self.receiver.modeled_pwv(**search_kwargs)
-        pd.testing.assert_frame_equal(searched_table, returned_table)
-
-    def test_returned_column_names(self):
-        """Test returned table has two columns named ``date`` and the
-        primary receiver Id
-        """
-
-        returned_column_order = self.receiver.modeled_pwv().columns.values
-        expected_col_order = ['PWV', 'PWVErr']
-        np.testing.assert_equal(expected_col_order, returned_column_order)
-
-    def test_error_for_out_of_bounds(self):
-        """Test a value error is raised when interpolating for an out of bounds date"""
-
-        max_date = self.receiver.modeled_pwv().index.max()
-        out_of_bounds_date = max_date + 1
-        self.assertRaises(ValueError, self.receiver.interp_pwv_date, out_of_bounds_date)
-
-    def test_error_for_no_nearby_data(self):
-        """Test an error is raised if no modeled PWV values are available
-        within a given range of the requested datetime
-        """
-
-        self.fail()
-
-    def test_recovers_model_at_grid_points(self):
-        """Test interpolation recovers grid points of the modeled PWV"""
-
-        modeled_pwv = self.receiver.modeled_pwv()
-        target_date = modeled_pwv.index[0]
-        target_pwv = modeled_pwv['pwv'][0]
-        interpolated_pwv = self.receiver.interp_pwv_date(target_date)
-        self.assertEqual(target_pwv, interpolated_pwv)
-
-    def test_return_matches_linear_interpolation(self):
-        """Test the returned PWV is consistent with a linear interpolation"""
-
-        modeled_pwv = self.receiver.modeled_pwv()
-        test_date = 1594467199  # July 11th, 2020
-        expected_pwv = np.interp(test_date, modeled_pwv.index, modeled_pwv['PWV'])
-        returned_pwv = self.receiver.interp_pwv_date(test_date)
-        self.assertEqual(expected_pwv, returned_pwv)
+    def test_run(self):
+        breakpoint()
 
 
 class Repr(TestCase):

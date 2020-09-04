@@ -28,6 +28,9 @@ from typing import List, Tuple, Union
 from astropy.table import Table
 from pytz import utc
 
+TEST_DATA_DIR = Path(__file__).parent / 'testing_data'
+TEST_DATA_CONFIG = TEST_DATA_DIR / 'test_data.yml'
+
 
 # Todo: Wrap setUp and tearDown methods as well
 class TestWithCleanEnv:

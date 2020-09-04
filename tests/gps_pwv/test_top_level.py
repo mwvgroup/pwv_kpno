@@ -19,6 +19,7 @@
 
 """Tests for top level functions of the ``gps_pwv`` module"""
 
+import warnings
 from datetime import datetime
 from pathlib import Path
 from unittest import TestCase
@@ -26,7 +27,7 @@ from unittest import TestCase
 import numpy as np
 import pandas as pd
 
-from pwv_kpno.gps_pwv import apply_data_cuts, load_rec_data, search_data_table
+from pwv_kpno.gps_pwv import apply_data_cuts, linear_regression, load_rec_data, search_data_table
 from tests.utils import TestWithCleanEnv
 
 TEST_DATA_DIR = Path(__file__).parent.parent / 'testing_data'
@@ -56,6 +57,28 @@ class ApplyDataCuts(TestCase):
 
         cut_data = apply_data_cuts(self.test_data.copy(), dict())
         pd.testing.assert_frame_equal(cut_data, self.test_data)
+
+
+class LinearRegression(TestCase):
+    """Tests for the ``linear_regression`` function"""
+
+    @staticmethod
+    def test_empty_data():
+        """Test the fit will not raise an error or warning for empty data"""
+
+        with warnings.catch_warnings():
+            warnings.filterwarnings('error')
+            linear_regression([], [], [], [])
+
+    @staticmethod
+    def test_fit_recovers_linear_parameters():
+        """Test the linear regression recovers fit parameters from mock data"""
+
+        sim_params = np.array([10, 2])
+        x = np.arange(1, 10)
+        y = sim_params[1] * x + sim_params[0]
+        fit_result = linear_regression(x=x, y=y, sx=.1 * x, sy=.1 * y)
+        np.testing.assert_array_almost_equal(fit_result.beta, sim_params)
 
 
 class SearchDataTables(TestCase):

@@ -30,10 +30,8 @@ import requests_mock
 import yaml
 
 from pwv_kpno.downloads import DownloadManager
-from tests.utils import TestWithCleanEnv
+from tests.utils import TestWithCleanEnv, TEST_DATA_DIR, TEST_DATA_CONFIG
 
-TEST_DATA_DIR = Path(__file__).parent.parent / 'testing_data'
-TEST_DATA_CONFIG = TEST_DATA_DIR / 'test_data.yml'
 
 
 @TestWithCleanEnv(TEST_DATA_DIR)
