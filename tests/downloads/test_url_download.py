@@ -78,19 +78,15 @@ class DownloadSuomiUrl(TestCase):
         url = 'http://test.com'
         mocker.register_uri('GET', url, exc=requests.exceptions.ConnectTimeout)
 
-        func_args = dict(url=url, fname='test.plt')
-        self.assertRaises(
-            requests.exceptions.ConnectTimeout,
-            URLDownload().download_suomi_url,
-            **func_args
-        )
+        with self.assertRaises(requests.exceptions.ConnectTimeout):
+            URLDownload().download_suomi_url(url=url, fname='test.plt', verbose=False)
 
     def test_queries_correct_url(self, mocker: requests_mock.Mocker):
         """Test only the given URL is queried"""
 
         url = 'http://test.com'
         mocker.register_uri('GET', url)
-        URLDownload().download_suomi_url(url, 'dummy_name')
+        URLDownload().download_suomi_url(url, 'dummy_name', verbose=False)
 
     def test_saves_to_correct_file_name(self, mocker: requests_mock.Mocker):
         """Test downloads are written to a file with the correct name"""
@@ -105,7 +101,7 @@ class DownloadSuomiUrl(TestCase):
         expected_path = downloader.data_dir / fname
 
         # Downloaded file should exist with correct file name
-        URLDownload().download_suomi_url(url, fname)
+        URLDownload().download_suomi_url(url, fname, verbose=False)
         self.assertTrue(expected_path.exists())
 
 

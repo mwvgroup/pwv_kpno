@@ -75,15 +75,20 @@ class ReceiverIdHandling(TestCase):
 class FitToSecondary(TestCase):
     """Tests for the _fit_to_secondary`` function"""
 
-    def setUp(self):
-        self.secondary = pd.DataFrame({
-            'PWV': np.arange(0, 10),
+    @staticmethod
+    def test_fit_recovers_simulated_data():
+        """Test fit recovers simulated data"""
+
+        # If the secondary data is a subset of the primary data, the
+        # fit should recover the secondary data
+        secondary = pd.DataFrame({
+            'PWV': np.arange(0., 10.),
             'PWVErr': np.full(10, .1)
         })
-        self.primary = self.secondary.iloc[0:8].copy()
+        primary = secondary.iloc[0:8].copy()
 
-    def test_run(self):
-        breakpoint()
+        applied_fit, errors = PWVModel._fit_to_secondary(primary, secondary)
+        pd.testing.assert_series_equal(applied_fit, secondary.PWV)
 
 
 class Repr(TestCase):

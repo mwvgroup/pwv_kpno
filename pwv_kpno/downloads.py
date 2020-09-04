@@ -34,14 +34,16 @@ For all other cases, see the ``DownloadManager`` class.
 """
 
 import os
+import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Union, Iterable
+from typing import Dict, Iterable, List, Union
 from warnings import catch_warnings, simplefilter
 
 import numpy as np
 import requests
 from requests.exceptions import ConnectionError, HTTPError
+from tqdm import tqdm
 
 from .types import PathLike
 
@@ -88,27 +90,46 @@ class URLDownload:
         directory.mkdir(exist_ok=True, parents=True)
         return directory
 
-    def download_suomi_url(self, url: str, fname: str, timeout: float = None):
+    def download_suomi_url(self, url: str, fname: str, timeout: float = None,
+                           force: bool = False, verbose: bool = True):
         """Download data from a URL
 
         Args:
             url: The url of the data file to download
             fname: The name of the file to write to
             timeout: How long to wait before the request times out
+            force: Execute download even if local data already exists
+            verbose: Display a progress bar
 
         Raises:
             HTTPError, TimeoutError, ConnectionError
         """
 
+        out_path = self._data_dir / fname
+        if out_path.exists() and not force:
+            return
+
         with catch_warnings():
             simplefilter('ignore')
-            response = requests.get(url, timeout=timeout, verify=False)
+            response = requests.get(url, stream=True, timeout=timeout, verify=False)
 
         # 404 error code means SuomiNet has no data file to download
         if response.status_code != 404:
             response.raise_for_status()
-            with open(self._data_dir / fname, 'wb') as ofile:
-                ofile.write(response.content)
+
+            chunk_size = 1024
+            with open(out_path, 'wb') as ofile:
+                with tqdm(
+                        unit='B',
+                        unit_scale=True,
+                        unit_divisor=chunk_size,
+                        file=sys.stdout,
+                        desc=out_path.stem,
+                        disable=not verbose,
+                        total=int(response.headers.get('content-length', 0)),
+                ) as pbar:
+                    for data in response.iter_content(chunk_size=chunk_size):
+                        pbar.update(ofile.write(data))
 
     def __repr__(self) -> str:
         return "URLDownload('{}')".format(self._data_dir)
@@ -128,12 +149,14 @@ class ReleaseDownloader(URLDownload):
         super().__init__(data_dir)
         self.receiver_id = receiver_id
 
-    def download_conus_daily(self, year: int, timeout=None):
+    def download_conus_daily(self, year: int, timeout=None, force: bool = False, verbose: bool = True):
         """Download CONUS data from the SuomiNet daily data releases
 
         Args:
             year: Year to download data for
             timeout: How long to wait before the request times out
+            force: Execute download even if local data already exists
+            verbose: Display a progress bar
 
         Raises:
             HTTPError, TimeoutError, ConnectionError
@@ -141,14 +164,16 @@ class ReleaseDownloader(URLDownload):
 
         fname = '{}dy_{}.plt'.format(self.receiver_id, year)
         url = 'https://www.suominet.ucar.edu/data/staYrDay/{}pp_{}.plt'.format(self.receiver_id, year)
-        self.download_suomi_url(url, fname, timeout)
+        self.download_suomi_url(url, fname, timeout, force, verbose)
 
-    def download_conus_hourly(self, year: int, timeout=None):
+    def download_conus_hourly(self, year: int, timeout=None, force: bool = False, verbose: bool = True):
         """Download CONUS data from the SuomiNet hourly data releases
 
         Args:
             year: Year to download data for
             timeout: How long to wait before the request times out
+            force: Execute download even if local data already exists
+            verbose: Display a progress bar
 
         Raises:
             HTTPError, TimeoutError, ConnectionError
@@ -156,14 +181,16 @@ class ReleaseDownloader(URLDownload):
 
         fname = '{}hr_{}.plt'.format(self.receiver_id, year)
         url = 'https://www.suominet.ucar.edu/data/staYrHr/{}nrt_{}.plt'.format(self.receiver_id, year)
-        self.download_suomi_url(url, fname, timeout)
+        self.download_suomi_url(url, fname, timeout, force, verbose)
 
-    def download_global_daily(self, year: int, timeout=None):
+    def download_global_daily(self, year: int, timeout=None, force: bool = False, verbose: bool = True):
         """Download global data from the SuomiNet daily data releases
 
         Args:
             year: Year to download data for
             timeout: How long to wait before the request times out
+            force: Execute download even if local data already exists
+            verbose: Display a progress bar
 
         Raises:
             HTTPError, TimeoutError, ConnectionError
@@ -171,7 +198,7 @@ class ReleaseDownloader(URLDownload):
 
         fname = '{}gl_{}.plt'.format(self.receiver_id, year)
         url = 'https://www.suominet.ucar.edu/data/staYrDayGlob/{}nrt_{}.plt'.format(self.receiver_id, year)
-        self.download_suomi_url(url, fname, timeout)
+        self.download_suomi_url(url, fname, timeout, force, verbose)
 
     def __repr__(self) -> str:
         return "ReleaseDownloader('{}', '{}')".format(self.receiver_id, self._data_dir)
@@ -246,7 +273,8 @@ class DownloadManager(URLDownload):
 
     @staticmethod
     def download_available_data(
-            receiver_id: str, year: Union[int, Iterable[int]] = None, timeout: float = None) -> List:
+            receiver_id: str, year: Union[int, Iterable[int]] = None,
+            timeout: float = None, force: bool = False, verbose: bool = True):
         """Download all available SuomiNet data for a given year and SuomiNet id
 
         Convenience function for downloading any available data from the CONUS
@@ -257,9 +285,8 @@ class DownloadManager(URLDownload):
             receiver_id: Id of the SuomiNet GPS receiver to download data for
             year: Year to download data for
             timeout: How long to wait before the request times out
-
-        Returns:
-            List of downloaded years
+            force: Execute download even if local data already exists
+            verbose: Display progress bars for the downloading files
         """
 
         release_downloader = ReleaseDownloader(receiver_id)
@@ -270,21 +297,16 @@ class DownloadManager(URLDownload):
         )
 
         if year is None:
-            year = np.arange(2010, datetime.now().year + 1)
+            year = np.arange(datetime.now().year - 5, datetime.now().year + 1)
 
-        successful_years = set()
         for yr in np.array(year):  # Typecasting to array ensures argument is iterable
             for download_func in download_operations:
                 try:
                     # noinspection PyArgumentList
-                    download_func(yr, timeout)
+                    download_func(yr, timeout, force, verbose)
 
                 except (TimeoutError, HTTPError, ConnectionError):
                     continue
-
-                successful_years.add(yr)
-
-        return sorted(successful_years)
 
     def __repr__(self) -> str:
         return "DownloadManager('{}')".format(self._data_dir)

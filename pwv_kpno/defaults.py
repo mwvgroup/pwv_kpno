@@ -28,5 +28,4 @@ from .gps_pwv import PWVModel as _GPSReceiver
 default_transmission = _transmission.TransmissionModel([], [], [])
 v1_transmission = _transmission.CrossSectionTransmission([], [])
 
-kitt = _GPSReceiver('KITT')
-ctio = _GPSReceiver('CTIO')
+kitt = _GPSReceiver('KITT', ('AZAM', 'SA48', 'P014', 'SA46'))

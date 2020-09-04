@@ -260,17 +260,14 @@ class PWVModel:
             .dropna(subset=['PWVPrimary', 'PWVErrPrimary', 'PWVSecondary', 'PWVErrSecondary'])
 
         # Evaluate the fit
-        fit_results = linear_regression(
+        b, m = linear_regression(
             joined_data['PWVSecondary'],
             joined_data['PWVPrimary'],
             joined_data['PWVErrSecondary'],
-            joined_data['PWVErrPrimary'])
+            joined_data['PWVErrPrimary']).beta
 
         # Apply the linear regression
-        b, m = fit_results.beta
-        applied_fit = m * joined_data['PWVSecondary'] + b
-        applied_fit.name = 'fitted_pwv'
-
+        applied_fit = m * secondary_data.PWV + b
         residuals = joined_data['PWVPrimary'] - applied_fit
         errors = pd.Series(residuals.std(), name='fitted_err', index=applied_fit.index)
 

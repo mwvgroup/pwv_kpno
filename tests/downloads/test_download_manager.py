@@ -20,18 +20,13 @@
 """Tests for the ``pwv_kpno.downloads.DownloadManager`` class"""
 
 import re
-from datetime import datetime
-from pathlib import Path
 from unittest import TestCase
 
-import numpy as np
-import requests
 import requests_mock
 import yaml
 
 from pwv_kpno.downloads import DownloadManager
-from tests.utils import TestWithCleanEnv, TEST_DATA_DIR, TEST_DATA_CONFIG
-
+from tests.utils import TEST_DATA_CONFIG, TEST_DATA_DIR, TestWithCleanEnv
 
 
 @TestWithCleanEnv(TEST_DATA_DIR)
@@ -78,17 +73,6 @@ class CheckDownloadedData(TestCase):
 class DownloadAvailableData(TestCase):
     """Tests for the ``download_available_data`` function"""
 
-    def test_default_years_span_2010_through_present(self, mocker):
-        """Test returned years default to 2010 through present year"""
-
-        # We register all possible urls so that every data download attempt
-        # will be considered a "success"
-        mocker.register_uri('GET', re.compile('https://*'))
-
-        returned_years = DownloadManager().download_available_data('dummy_id')
-        expected_years = np.arange(2010, datetime.now().year + 1).tolist()
-        self.assertListEqual(expected_years, returned_years)
-
     def test_only_passed_years_are_requested(self, mocker):
         """Test URL requests are only performed for the given years"""
 
@@ -98,19 +82,7 @@ class DownloadAvailableData(TestCase):
             mocker.register_uri('GET', re.compile(f'https://.*{year}\.plt'))
 
         # Will raise error if URL for an unregistered year is requested
-        returned_years = DownloadManager().download_available_data('dummy_id', years)
-
-        # All test years should be returned as successful
-        self.assertListEqual(years, returned_years)
-
-    def test_only_successful_years_are_returned(self, mocker):
-        """Test returned years only includes successful downloads"""
-
-        # Setup up the year 2012 to succeed and 2013 to fail
-        mocker.register_uri('GET', re.compile(f'https://.*2012\.plt'))
-        mocker.register_uri('GET', re.compile(f'https://.*2013\.plt'), exc=requests.exceptions.HTTPError)
-        returned_years = DownloadManager().download_available_data('dummy_id', [2012, 2013])
-        self.assertListEqual([2012], returned_years)
+        DownloadManager().download_available_data('dummy_id', years, verbose=False)
 
 
 @TestWithCleanEnv()
@@ -148,7 +120,7 @@ class DeleteLocalData(TestCase):
 
         yr_to_del = (2010, 2011)
         self.download_manager.delete_local_data('rec1', years=yr_to_del)
-        for file in  self.file_list:
+        for file in self.file_list:
             year = int(file.stem[-4:])
             if 'rec1' in file.stem and year in yr_to_del:
                 self.assertFalse(file.exists())

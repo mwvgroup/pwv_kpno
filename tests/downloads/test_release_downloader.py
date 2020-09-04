@@ -84,7 +84,7 @@ class DownloadedPathNames(TestCase):
         # Allow all possible URL's with SSL
         with requests_mock.Mocker() as mocker:
             mocker.register_uri('GET', re.compile('https://*'), )
-            download_func(self.dummy_rec_name, self.dummy_year)
+            download_func(self.dummy_rec_name, self.dummy_year, verbose=False)
 
         expected_path = self.downloader.data_dir / file_name
         self.assertTrue(expected_path.exists())
