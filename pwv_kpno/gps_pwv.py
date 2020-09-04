@@ -337,8 +337,8 @@ class PWVModel:
 
         return search_data_table(self._pwv_model, year, month, day, hour)
 
-    def interp_pwv_date(self, date: NumpyArgument, interp_limit: float = None,
-                        method: str = 'linear', order=None) -> NumpyReturn:
+    def interp_pwv_date(self, date: NumpyArgument, interp_limit: int = None,
+                        method: str = 'linear', order: int = None) -> NumpyReturn:
         """Evaluate the PWV model for a given datetime
 
         Args:
@@ -377,9 +377,7 @@ class PWVModel:
         # resampling allows us to enforce physically meaningful interpolation
         # limits. Fortunately, interpolation is relatively cheap.
         uniform_model.loc[date] = np.nan
-        interp_data = uniform_model.interpolate(
-            method=method, limit=interp_limit, limit_direction='both', limit_area='inside', order=order
-        ).loc[date]
+        interp_data = uniform_model.interpolate(method=method, limit=interp_limit, order=order).loc[date]
 
         if interp_data.isna().any():
             warnings.warn('Some values were outside the permitted interpolation range')

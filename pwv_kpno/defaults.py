@@ -25,7 +25,7 @@ objects with pre-defined data cuts that have been investigated for each site.
 from . import transmission as _transmission
 from .gps_pwv import PWVModel as _GPSReceiver
 
-default_transmission = _transmission.TransmissionModel([], [], [])
-v1_transmission = _transmission.CrossSectionTransmission([], [])
+# default_transmission = _transmission.TransmissionModel([], [], [])
+# v1_transmission = _transmission.CrossSectionTransmission([], [])
 
 kitt = _GPSReceiver('KITT', ('AZAM', 'SA48', 'P014', 'SA46'))
