@@ -1,0 +1,4 @@
+sphinx
+sphinxcontrib-fulltoc
+sphinx-bootstrap-theme
+sphinx_copybutton
