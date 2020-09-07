@@ -1,7 +1,7 @@
 .. |version| image:: https://img.shields.io/badge/version-1.0.0-blue.svg
    :target: https://pypi.python.org/pypi/pwv-kpno/
 
-.. |python| image:: https://img.shields.io/badge/python-2.7,%203.5+-blue.svg
+.. |python| image:: https://img.shields.io/badge/python-3.5+-blue.svg
    :target: #
 
 .. |license| image:: https://img.shields.io/badge/license-GPL%20v3.0-blue.svg
@@ -31,7 +31,7 @@
    :maxdepth: 1
    :caption: API Docs:
 
-   api/install
+   api/pwv_kpno
    api/defaults
    api/downloads
    api/file_parsing
@@ -63,31 +63,22 @@
 
 |
 
-What is pwv_kpno?
-=================
+What is *pwv_kpno*?
+===================
 
 **pwv_kpno** is a scientific Python package that provides models for the
-atmospheric transmission due to precipitable water vapor (PWV) at user
-specified sites. By measuring the delay of dual-band GPS signals traveling
-through the atmosphere, it is possible to determine the PWV column density
-along the line of sight. **pwv_kpno** leverages this principle to provide
-atmospheric models for user definable sites as a function of date,
-time, and airmass. Using the package, ground-based photometric observations
-taken between 3,000 and 12,000 Å can be easily corrected for atmospheric
-effects due to PWV.
+atmospheric transmission due to precipitable water vapor (PWV). Using GPS
+measurements of the atmosphere, the package provides atmospheric models
+for user definable sites as a function of date, time, and airmass. Customizable
+transmission models are also available independent of location (i.e., using
+user defined parameters instead of GPS based measurements) and span a wavelength
+coverage of 3,000 to 12,000 Angstroms.
 
-How it Works
-============
-
-The SuomiNet project is a meteorological initiative that provides semi-hourly
+**pwv_kpno** is based on publicly available data taken by the SuomiNet project:
+a meteorological initiative that provides semi-hourly
 PWV measurements for hundreds of GPS receivers worldwide. The **pwv_kpno**
 package uses published SuomiNet data in conjunction with MODTRAN models to
 determine the modeled, time-dependent atmospheric transmission.
-By default, the package provides access to the modeled transmission
-function at Kitt Peak National Observatory. However, the package is designed
-to be easily extensible to other locations within the SuomiNet Network.
-Additionally, **pwv_kpno** provides access to atmospheric models as a function
-of PWV, which is independent of geographical location.
 
 |
 

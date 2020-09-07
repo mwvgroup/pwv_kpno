@@ -37,7 +37,8 @@ release = pwv_kpno.__version__
 # Specify theme specific settings
 html_theme = 'bootstrap'
 links = [
-    ("Documentation", "source/documentation/install.html", 1),
+    ("Quick Start", "source/quick_start.html", 1),
+    ("API Documentation", "source/api/pwv_kpno.html", 1),
     ("Examples", "source/examples/correcting_photometry.html", 1),
     ("Validation", "source/validation/overview.html", 1),
     ("Need Help?", "https://github.com/mwvgroup/pwv_kpno/issues/new/choose", 1),
