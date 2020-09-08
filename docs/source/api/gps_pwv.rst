@@ -1,3 +1,5 @@
+.. _gps_pwv:
+
 pwv_kpno.gps_pwv
 ================
 

@@ -1,3 +1,5 @@
+.. _downloads:
+
 pwv_kpno.downloads
 ==================
 

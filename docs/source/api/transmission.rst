@@ -1,3 +1,5 @@
+.. _transmission:
+
 pwv_kpno.transmission
 =====================
 

@@ -1,3 +1,5 @@
+.. _defaults:
+
 pwv_kpno.defaults
 =================
 

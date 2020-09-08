@@ -18,7 +18,10 @@
 
 """The ``gps_pwv`` module is responsible for serving SuomiNet GPS data at a
 given location. This includes location specific weather data (e.g., temperature
-and pressure measurements) and PWV concentrations (both measured and modeled).
+and pressure measurements) and PWV concentrations along the line of sight.
+
+Module Documentation
+--------------------
 """
 
 import warnings

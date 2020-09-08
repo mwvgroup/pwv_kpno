@@ -41,7 +41,7 @@ class SuomiDateToTimestamp(TestCase):
         # Date with known round off error before bug fix in 0.9.13
         jan_01_2010_01_15 = datetime(2010, 1, 1, 1, 15, tzinfo=utc)
         self.assertEqual(
-            file_parsing._suomi_date_to_timestamp(2010, '1.05208'),
+            file_parsing.suomi_date_to_timestamp(2010, '1.05208'),
             jan_01_2010_01_15.timestamp())
 
     def test_correct_conversion_for_known_dates(self):
@@ -50,13 +50,13 @@ class SuomiDateToTimestamp(TestCase):
         error_msg = 'Incorrect _timestamp for {}'
         jan_01_2000_00_15 = datetime(2000, 1, 1, 0, 15, tzinfo=utc)
         self.assertEqual(
-            file_parsing._suomi_date_to_timestamp(2000, '1.01042'),
+            file_parsing.suomi_date_to_timestamp(2000, '1.01042'),
             jan_01_2000_00_15.timestamp(),
             error_msg.format(jan_01_2000_00_15))
 
         dec_31_2021_23_15 = datetime(2021, 12, 31, 23, 15, tzinfo=utc)
         self.assertEqual(
-            file_parsing._suomi_date_to_timestamp(2021, '365.96875'),
+            file_parsing.suomi_date_to_timestamp(2021, '365.96875'),
             dec_31_2021_23_15.timestamp(),
             error_msg.format(dec_31_2021_23_15))
 

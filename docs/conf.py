@@ -29,7 +29,7 @@ html_static_path = ['./static/']
 
 # General project meta data
 project = 'pwv_kpno'
-copyright = '2018, Daniel J. Perrefort'
+copyright = '2018, MWV Research Group'
 author = 'Daniel J. Perrefort'
 version = pwv_kpno.__version__
 release = pwv_kpno.__version__
@@ -48,8 +48,7 @@ links = [
 html_theme_options = {
     'navbar_sidebarrel': False,  # Disable next / last page buttons in nav bar
     'navbar_links': links,  # Specifies custom nav bar links
-    'bootswatch_theme': "cosmo",
-    'navbar_class': "navbar navbar-inverse",  # Invert nav bar color
+    'bootswatch_theme': "flatly",
     'source_link_position': "footer"
 }
 

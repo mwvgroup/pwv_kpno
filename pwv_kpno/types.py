@@ -16,9 +16,34 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
-"""The ``types`` module defines object types used by the parent package to
-inform type hints. For more information on Python type hinting, see Python
+"""The ``types`` module defines typing aliases used by the parent package to
+inform type hints. Aliases defined here can be used to support type hints in
+downstream projects for which **pwv_kpno** is a dependency, and ensure
+compatibility with modern IDE inspection tools.
+
+For more information on Python type hinting, see Python
 Enhancement Protocol 484: https://www.python.org/dev/peps/pep-0484/ .
+
+Typing Aliases
+--------------
+
++---------------------------+-------------------------------------------------+
+| Alias                     | Typing Equivalence                              |
++===========================+=================================================+
+| ``PathLike``              | ``Union[str, Path]``                            |
++---------------------------+-------------------------------------------------+
+| ``ArrayLike``             | ``Union[list, ndarray, Series]``                |
++---------------------------+-------------------------------------------------+
+| ``NumpyArgument``         | ``Union[float, list, ndarray, Series]``         |
++---------------------------+-------------------------------------------------+
+| ``NumpyReturn``           | ``Union[float, ndarray]``                       |
++---------------------------+-------------------------------------------------+
+| ``DataCuts1D``            | ``Dict[str, List[Tuple[float, float]]]``        |
++---------------------------+-------------------------------------------------+
+| ``DataCuts``              | ``Dict[str, DataCuts1D]``                       |
++---------------------------+-------------------------------------------------+
+
+
 """
 
 from pathlib import Path as Path

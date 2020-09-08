@@ -17,20 +17,23 @@
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
 """The ``downloads`` module is responsible for downloading precipitable
-water vapor measurements from SuomiNet servers onto the local machine. Data
-files are stored in one of the following locations:
+water vapor measurements from SuomiNet servers onto the local machine.
+Data files are stored on the local machine in one of the following locations:
 
-1. If a specific directory is specified by the user at the time of download,
+1. If a specific directory is specified at the time of download,
    data files are downloaded to that directory.
 2. If the variable ``SUOMINET_DIR`` is set in the working environment, data is
    downloaded to the directory assigned to that variable.
-3. If neither of the above cases are true, data is downloaded into the
+3. If neither of the above cases are satisfied, data is downloaded into the
    installation directory of ``pwv_kpno`` package.
 
 The ``ReleaseDownloader`` class is best suited for situations where explicit
 control is required over which files are downloaded and where they should be
 written (assuming that location is different than the package default).
 For all other cases, see the ``DownloadManager`` class.
+
+Module Documentation
+--------------------
 """
 
 import os

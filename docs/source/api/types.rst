@@ -1,3 +1,5 @@
+.. _types:
+
 pwv_kpno.types
 ==============
 

@@ -16,8 +16,11 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
-"""The ``file_parsing`` module is responsible for parsing files written
-in the SuomiNet file format.
+"""The ``file_parsing`` module is responsible for parsing plain text files
+written in the SuomiNet file format.
+
+Module Documentation
+--------------------
 """
 
 from datetime import datetime, timedelta
@@ -31,7 +34,7 @@ import pandas as pd
 from .types import PathLike
 
 
-def _suomi_date_to_timestamp(year: int, days: Union[str, float]) -> float:
+def suomi_date_to_timestamp(year: int, days: Union[str, float]) -> float:
     """Convert the SuomiNet date format into UTC timestamp
 
     SuomiNet dates are stored as decimal days in a given year. For example,
@@ -109,7 +112,7 @@ def read_suomi_file(path: PathLike) -> pd.DataFrame:
 
     # Convert time values from SuomiNet format to UTC timestamps
     receiver_id, year = _parse_path_stem(path)
-    date_conversion = partial(_suomi_date_to_timestamp, year)
+    date_conversion = partial(suomi_date_to_timestamp, year)
     clean_data.index = clean_data.index.map(date_conversion)
     clean_data.index = pd.to_datetime(clean_data.index, unit='s')
 

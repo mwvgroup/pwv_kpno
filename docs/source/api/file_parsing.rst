@@ -1,3 +1,5 @@
+.. _file_parsing:
+
 pwv_kpno.file_parsing
 =====================
 
