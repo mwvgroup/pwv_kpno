@@ -23,7 +23,6 @@ absorption due to PWV.
 import numpy as np
 import pandas as pd
 from scipy.interpolate import LinearNDInterpolator as lNDI
-from scipy.spatial.qhull import QhullError
 from scipy.stats import binned_statistic
 
 from .types import ArrayLike, NumpyArgument, NumpyReturn

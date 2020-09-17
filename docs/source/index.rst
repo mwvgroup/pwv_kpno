@@ -29,7 +29,7 @@
 .. toctree::
    :hidden:
    :maxdepth: 1
-   :caption: API Docs:
+   :caption: API Documentation:
 
    api/pwv_kpno
    api/defaults
@@ -52,7 +52,7 @@
 .. toctree::
    :hidden:
    :maxdepth: 1
-   :caption: Validation:
+   :caption: Science Validation:
 
    validation/overview
    validation/data_handling

@@ -24,23 +24,37 @@ compatibility with modern IDE inspection tools.
 For more information on Python type hinting, see Python
 Enhancement Protocol 484: https://www.python.org/dev/peps/pep-0484/ .
 
+
+Usage Example
+-------------
+
+Aliases from this module can be used to assign type hints for custom functions.
+
+.. code-block:: python
+
+   from pwv_kpno.types import ArrayLike, PathLike
+
+   def custom_file_parser(path: PathLike) -> ArrayLike:
+       ...
+
+
 Typing Aliases
 --------------
 
 +---------------------------+-------------------------------------------------+
 | Alias                     | Typing Equivalence                              |
 +===========================+=================================================+
-| ``PathLike``              | ``Union[str, Path]``                            |
-+---------------------------+-------------------------------------------------+
 | ``ArrayLike``             | ``Union[list, ndarray, Series]``                |
++---------------------------+-------------------------------------------------+
+| ``DataCuts``              | ``Dict[str, DataCuts1D]``                       |
++---------------------------+-------------------------------------------------+
+| ``DataCuts1D``            | ``Dict[str, List[Tuple[float, float]]]``        |
 +---------------------------+-------------------------------------------------+
 | ``NumpyArgument``         | ``Union[float, list, ndarray, Series]``         |
 +---------------------------+-------------------------------------------------+
 | ``NumpyReturn``           | ``Union[float, ndarray]``                       |
 +---------------------------+-------------------------------------------------+
-| ``DataCuts1D``            | ``Dict[str, List[Tuple[float, float]]]``        |
-+---------------------------+-------------------------------------------------+
-| ``DataCuts``              | ``Dict[str, DataCuts1D]``                       |
+| ``PathLike``              | ``Union[str, Path]``                            |
 +---------------------------+-------------------------------------------------+
 
 
