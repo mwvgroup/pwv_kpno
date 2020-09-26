@@ -59,12 +59,21 @@ Default Objects
 
 """
 
-# Underscores to prevent user from thinking there is a default ``transmission``
-# or ``GPSReceiver`` object
+from pathlib import Path
+
+import pandas as pd
+
+# Private to prevent user from thinking there is a default ``transmission`` or ``GPSReceiver`` object
 from . import transmission as _transmission
 from .gps_pwv import PWVModel as _GPSReceiver
 
 # default_transmission = _transmission.TransmissionModel([], [], [])
-# v1_transmission = _transmission.CrossSectionTransmission([], [])
+
+_defaults_dir = Path(__file__).resolve().parent / 'default_atmosphere'
+_default_v1_data = pd.read_csv(_defaults_dir / 'h2ocs.txt', usecols=[1, 2], delimiter=' ', header=None, names=['wave', 'cross_section'])
+v1_transmission = _transmission.CrossSectionTransmission(
+    _default_v1_data.wave * 1000,
+    _default_v1_data.cross_section)
 
 kitt = _GPSReceiver('KITT', ('AZAM', 'SA48', 'P014', 'SA46'))
+ctio = _GPSReceiver('CTIO')
