@@ -74,11 +74,27 @@ transmission models are also available independent of location (i.e., using
 user defined parameters instead of GPS based measurements) and span a wavelength
 coverage of 3,000 to 12,000 Angstroms.
 
+How it Works
+------------
+
 **pwv_kpno** is based on publicly available data taken by the SuomiNet project:
 a meteorological initiative that provides semi-hourly
 PWV measurements for hundreds of GPS receivers worldwide. The **pwv_kpno**
-package uses published SuomiNet data in conjunction with MODTRAN models to
-determine the modeled, time-dependent atmospheric transmission.
+package uses published SuomiNet data in conjunction with MODTRAN / LIBRADTRAN models to
+modeled the time-dependent atmospheric transmission.
+
+Contributing and Attribution
+----------------------------
+
+*pwv_kpno* is open source software released under the GNU General Public
+License. Issues raised on `GitHub <https://github.com/mwvgroup/pwv_kpno>`_ and
+pull requests from contributors are welcome. Additionally, pull requests
+introducing default configuration files for new sites are also welcome.
+
+If you use **pwv_kpno** as part of any published work or research, we ask that
+you please cite `Perrefort, Wood-Vasey et al. 2018 <https://arxiv.org/abs/1806.09701>`_.
+If the publisher allows, you can also include a footnote with a link pointing
+to this documentation page.
 
 |
 

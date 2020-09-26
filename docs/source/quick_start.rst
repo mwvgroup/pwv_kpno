@@ -16,7 +16,7 @@ recommended method for installing **pwv_kpno**. To install with pip, run:
 The pip package manager will automatically install any missing dependencies
 in your Python environment. If you have any issues installing the package,
 try installing the dependency manually and then reinstall **pwv_kpno**.
-Dependencies can be installed with pip by running:
+Dependencies can be installed manually with pip by running:
 
 .. code-block:: bash
    :linenos:
