@@ -20,6 +20,8 @@
 absorption due to PWV.
 """
 
+from typing import Union, List, Collection
+
 import numpy as np
 import pandas as pd
 from scipy.interpolate import LinearNDInterpolator as lNDI
@@ -149,7 +151,8 @@ class TransmissionModel:
 
         return self._samp_transmission
 
-    def __call__(self, pwv: float, wave: ArrayLike = None) -> pd.Series:
+    def __call__(self, pwv: Union[float, Collection[float]], wave: ArrayLike = None
+                 ) -> Union[pd.Series, List[pd.Series]]:
         """Evaluate transmission model at given wavelengths
 
         Args:
@@ -161,10 +164,13 @@ class TransmissionModel:
         """
 
         wave = self._samp_wave if wave is None else wave
-        pwv_eff = calc_pwv_eff(pwv, norm_pwv=self._norm_pwv, eff_exp=self._eff_exp)
-        xi = [[pwv_eff, w] for w in wave]
+        if np.isscalar(pwv):
+            pwv_eff = calc_pwv_eff(pwv, norm_pwv=self._norm_pwv, eff_exp=self._eff_exp)
+            xi = [[pwv_eff, w] for w in wave]
+            return pd.Series(self._interp_func(xi), index=wave)
 
-        return pd.Series(self._interp_func(xi), index=wave)
+        else:
+            return [self.__call__(p) for p in pwv]
 
 
 class CrossSectionTransmission:
@@ -202,7 +208,8 @@ class CrossSectionTransmission:
 
         return (cls.n_a * cls.h2o_density) / (cls.h2o_molar_mass * cls.one_mm_in_cm)
 
-    def __call__(self, pwv: float, wave: ArrayLike = None) -> pd.Series:
+    def __call__(self, pwv: Union[float, Collection[float]], wave: ArrayLike = None
+                 ) -> Union[pd.Series, List[pd.Series]]:
         """Evaluate transmission model at given wavelengths
 
         Args:
@@ -214,8 +221,11 @@ class CrossSectionTransmission:
         """
 
         wave = self.samp_wave if wave is None else wave
+        if np.isscalar(pwv):
+            # Evaluate transmission using the Beer-Lambert Law
+            tau = pwv * self.cross_sections * self._num_density_conversion()
+            transmission = np.interp(wave, self.samp_wave, np.exp(-tau))
+            return pd.Series(transmission, index=wave)
 
-        # Evaluate transmission using the Beer-Lambert Law
-        tau = pwv * self.cross_sections * self._num_density_conversion()
-        transmission = np.interp(wave, self.samp_wave, np.exp(-tau))
-        return pd.Series(transmission, index=wave)
+        else:
+            return [self.__call__(p) for p in pwv]
