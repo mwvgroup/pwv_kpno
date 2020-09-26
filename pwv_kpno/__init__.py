@@ -57,6 +57,6 @@ __credits__ = [
 ]
 
 __license__ = 'GPL V3'
-__version__ = '2.0.0.dev1'
+__version__ = '2.0.0.dev2'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Release'
