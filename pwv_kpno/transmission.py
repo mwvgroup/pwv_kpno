@@ -167,10 +167,10 @@ class TransmissionModel:
         if np.isscalar(pwv):
             pwv_eff = calc_pwv_eff(pwv, norm_pwv=self._norm_pwv, eff_exp=self._eff_exp)
             xi = [[pwv_eff, w] for w in wave]
-            return pd.Series(self._interp_func(xi), index=wave)
+            return pd.Series(self._interp_func(xi), index=wave, name=f'{float(np.round(pwv, 4))} mm')
 
         else:
-            return [self.__call__(p) for p in pwv]
+            return pd.concat([self.__call__(p) for p in pwv], axis=1)
 
 
 class CrossSectionTransmission:
@@ -225,7 +225,7 @@ class CrossSectionTransmission:
             # Evaluate transmission using the Beer-Lambert Law
             tau = pwv * self.cross_sections * self._num_density_conversion()
             transmission = np.interp(wave, self.samp_wave, np.exp(-tau))
-            return pd.Series(transmission, index=wave)
+            return pd.Series(transmission, index=wave, name=f'{float(np.round(pwv, 4))} mm')
 
         else:
-            return [self.__call__(p) for p in pwv]
+            return pd.concat([self.__call__(p) for p in pwv], axis=1)
