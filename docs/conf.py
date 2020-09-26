@@ -38,8 +38,8 @@ release = pwv_kpno.__version__
 html_theme = 'bootstrap'
 links = [
     ("Install", "source/install.html", 1),
-    ("API Documentation", "source/api/pwv_kpno.html", 1),
     ("Examples", "source/examples/correcting_photometry.html", 1),
+    ("API Documentation", "source/api/pwv_kpno.html", 1),
     ("Validation", "source/validation/overview.html", 1),
     ("Need Help?", "https://github.com/mwvgroup/pwv_kpno/issues/new/choose", 1),
     # ("Source Code", "https://github.com/mwvgroup/pwv_kpno", 1)
