@@ -1,0 +1,1 @@
+Code snippets from the *Examples* section of the documentation.
