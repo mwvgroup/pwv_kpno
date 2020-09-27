@@ -17,23 +17,11 @@
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
 """The ``file_parsing`` module is responsible for parsing plain text files
-written in the SuomiNet file format.
+written in the SuomiNet file format. For more information on how to access
+locally available SuomiNet data, see the :ref:`gps_pwv` module.
 
-Usage Example
--------------
-
-Here is an example on how to download and delete data from your local machine.
-
-.. code-block:: python
-
-   from pwv_kpno.file_parsing import read_suomi_file
-
-   test_path = 'my/file/path.plt'
-   file_data = read_suomi_file(test_path)
-   print(file_data)
-
-Module Documentation
---------------------
+Module API
+----------
 """
 
 from datetime import datetime, timedelta

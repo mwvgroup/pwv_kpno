@@ -28,7 +28,7 @@
 
 .. toctree::
    :hidden:
-   :maxdepth: 1
+   :maxdepth: 0
    :caption: API Documentation:
 
    api/pwv_kpno
@@ -41,7 +41,7 @@
 
 .. toctree::
    :hidden:
-   :maxdepth: 1
+   :maxdepth: 0
    :caption: Examples:
 
    examples/correcting_photometry
@@ -51,7 +51,7 @@
 
 .. toctree::
    :hidden:
-   :maxdepth: 1
+   :maxdepth: 0
    :caption: Science Validation:
 
    validation/overview

@@ -17,7 +17,16 @@
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
 """The ``transmission`` module is responsible modeling atmospheric
-absorption due to PWV.
+absorption due to PWV. Dedicated classes are used to represent different
+approaches to calculating the atmospheric transmission function:
+
+1. To interpolate through a pre-tabulated atmospheric transmission model, see
+   the ``TransmissionModel`` class.
+2. To calculate the atmospheric transmission function directly from a set
+   of molecular cross-sections, see the ``CrossSectionTransmission``.
+
+Module API
+----------
 """
 
 from typing import Union, List, Collection

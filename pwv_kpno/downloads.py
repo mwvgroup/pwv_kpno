@@ -27,6 +27,8 @@ Data files are stored on the local machine in one of the following locations:
 3. If neither of the above cases are satisfied, data is downloaded into the
    installation directory of ``pwv_kpno`` package.
 
+Module API
+----------
 """
 
 import os

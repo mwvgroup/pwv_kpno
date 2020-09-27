@@ -24,20 +24,6 @@ compatibility with modern IDE inspection tools.
 For more information on Python type hinting, see Python
 Enhancement Protocol 484: https://www.python.org/dev/peps/pep-0484/ .
 
-
-Usage Example
--------------
-
-Aliases from this module can be used to assign type hints for custom functions.
-
-.. code-block:: python
-
-   from pwv_kpno.types import ArrayLike, PathLike
-
-   def custom_file_parser(path: PathLike) -> ArrayLike:
-       ...
-
-
 Typing Aliases
 --------------
 

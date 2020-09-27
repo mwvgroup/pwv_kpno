@@ -20,8 +20,8 @@
 given location. This includes location specific weather data (e.g., temperature
 and pressure measurements) and PWV concentrations along the line of sight.
 
-Module Documentation
---------------------
+Module API
+----------
 """
 
 import warnings

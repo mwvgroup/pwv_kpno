@@ -17,11 +17,13 @@
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
 """The ``defaults`` module provides pre-built transmission models and data
-access objects as a convenience for the user. Transmission models are provided
+access objects as a convenience for the user.
+
+Transmission models are provided
 using both the original, MODTRAN based transmission data from version 1.0 of
-**pwv_kpno** (deprecated) , and using an updated set of measurements base on
-TAPAS. Data access objects are also included for select GPS locations, each
-using settings selected by the developers as being desirable for most general
+**pwv_kpno** (deprecated), and using an updated set of measurements base on
+TAPAS. Data access objects are also included for select GPS locations, and
+include settings selected by the developers as being desirable for most general
 science cases.
 
 Included Defaults
