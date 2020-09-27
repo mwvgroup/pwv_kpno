@@ -50,8 +50,6 @@
    examples/correcting_photometry.rst
    examples/correcting_spectra.rst
    examples/raw_data_parsing.rst
-   examples/typing_support.rst
-
 
 .. toctree::
    :hidden:
