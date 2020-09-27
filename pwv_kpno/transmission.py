@@ -32,7 +32,8 @@ Module API
 # Todo: Include auto resolution binning
 # Todo: Test vectorized operation support
 
-from typing import Union, List, Collection
+import abc
+from typing import Union, Collection
 
 import numpy as np
 import pandas as pd
@@ -91,6 +92,9 @@ def bin_transmission(transmission, resolution, wave=None) -> pd.Series:
     if wave is None:
         wave = transmission.index
 
+    if resolution <= (np.array(wave[1:]) - wave[:-1]).min():
+        raise ValueError('Requested resolution exceeds resolution of underlying model')
+
     # Create bins that uniformly sample the given wavelength range
     # at the given resolution
     half_res = resolution / 2
@@ -113,7 +117,38 @@ def bin_transmission(transmission, resolution, wave=None) -> pd.Series:
     return pd.Series(statistic, index=bin_centers)
 
 
-class TransmissionModel:
+class AbstractTransmission:
+    """Abstract transmission model that supports calculations with arrays of PWV values"""
+
+    @abc.abstractmethod
+    def _calc_transmission(self, pwv: float, wave: ArrayLike = None, res: float = None) -> pd.Series:
+        pass
+
+    def __call__(
+            self,
+            pwv: Union[float, Collection[float]],
+            wave: ArrayLike = None,
+            res: float = None) -> Union[pd.Series, pd.DataFrame]:
+        """Evaluate transmission model at given wavelengths
+
+        Args:
+            pwv: Line of sight PWV to interpolate for
+            wave: Wavelengths to evaluate transmission for in angstroms
+            res: Resolution to bin the atmospheric model to
+
+        Returns:
+            The interpolated transmission at the given wavelengths / resolution
+        """
+
+        wave = self.samp_wave if wave is None else wave
+        if np.isscalar(pwv):
+            return self._calc_transmission(pwv, wave, res)
+
+        else:
+            return pd.concat([self.__call__(p, wave, res) for p in pwv], axis=1)
+
+
+class TransmissionModel(AbstractTransmission):
     """Represents PWV atmospheric transmission model using pre-tabulated
     transmission values.
     """
@@ -131,16 +166,18 @@ class TransmissionModel:
         self._samp_pwv = samp_pwv
         self._samp_wave = samp_wave
         self._samp_transmission = samp_transmission
-        self._norm_pwv = norm_pwv
-        self._eff_exp = eff_exp
+        self.norm_pwv = norm_pwv
+        self.eff_exp = eff_exp
+        self.build_interpolator(samp_pwv, samp_transmission, samp_wave)
+
+    def build_interpolator(self, samp_pwv, samp_transmission, samp_wave):
 
         # Build interpolation function used to calculate transmission values
-        pwv_eff = calc_pwv_eff(samp_pwv, norm_pwv=norm_pwv, eff_exp=eff_exp)
+        pwv_eff = calc_pwv_eff(samp_pwv, norm_pwv=self.norm_pwv, eff_exp=self.eff_exp)
         points = np.array(np.meshgrid(pwv_eff, samp_wave)).T.reshape(-1, 2)
         values = np.array(samp_transmission).flatten()
-
         try:
-            self._interp_func = lNDI(points, values)
+            return lNDI(points, values)
 
         except ValueError:  # Wrap an otherwise cryptic error message
             raise ValueError('Dimensions of init arguments do not match.')
@@ -163,29 +200,36 @@ class TransmissionModel:
 
         return self._samp_transmission
 
-    def __call__(self, pwv: Union[float, Collection[float]], wave: ArrayLike = None
-                 ) -> Union[pd.Series, List[pd.Series]]:
+    def _calc_transmission(self, pwv: float, wave: ArrayLike = None, res: float = None) -> pd.Series:
         """Evaluate transmission model at given wavelengths
 
         Args:
             pwv: Line of sight PWV to interpolate for
             wave: Wavelengths to evaluate transmission for in angstroms
+            res: Resolution to bin the atmospheric model to
 
         Returns:
             The interpolated transmission at the given wavelengths / resolution
         """
 
-        wave = self._samp_wave if wave is None else wave
-        if np.isscalar(pwv):
-            pwv_eff = calc_pwv_eff(pwv, norm_pwv=self._norm_pwv, eff_exp=self._eff_exp)
-            xi = [[pwv_eff, w] for w in wave]
-            return pd.Series(self._interp_func(xi), index=wave, name=f'{float(np.round(pwv, 4))} mm')
+        # Build interpolation function
+        sampled_pwv = calc_pwv_eff(self.samp_pwv, self.norm_pwv, self.eff_exp)
+        sampled_transmission = self._samp_transmission
+        sampled_wavelengths = self.samp_wave
+        if res:
+            sampled_transmission = bin_transmission(sampled_transmission, res, wave)
+            sampled_wavelengths = sampled_wavelengths.index
 
-        else:
-            return pd.concat([self.__call__(p, wave) for p in pwv], axis=1)
+        interp_func = self.build_interpolator(sampled_pwv, sampled_transmission, sampled_wavelengths)
+
+        # Build interpolation grid
+        pwv_eff = calc_pwv_eff(pwv, norm_pwv=self.norm_pwv, eff_exp=self.eff_exp)
+        xi = [[pwv_eff, w] for w in wave]
+
+        return pd.Series(interp_func(xi), index=wave, name=f'{float(np.round(pwv, 4))} mm')
 
 
-class CrossSectionTransmission:
+class CrossSectionTransmission(AbstractTransmission):
     """Represents PWV atmospheric transmission model calculated from
     per-wavelength cross-sections
     """
@@ -220,24 +264,32 @@ class CrossSectionTransmission:
 
         return (cls.n_a * cls.h2o_density) / (cls.h2o_molar_mass * cls.one_mm_in_cm)
 
-    def __call__(self, pwv: Union[float, Collection[float]], wave: ArrayLike = None
-                 ) -> Union[pd.Series, List[pd.Series]]:
+    def _calc_transmission(
+            self,
+            pwv: Union[float, Collection[float]],
+            wave: ArrayLike = None,
+            res: float = None) -> pd.Series:
         """Evaluate transmission model at given wavelengths
 
         Args:
             pwv: Line of sight PWV to interpolate for
             wave: Wavelengths to evaluate transmission for in angstroms
+            res: Resolution to bin the atmospheric model to
 
         Returns:
             The interpolated transmission at the given wavelengths / resolution
         """
 
-        wave = self.samp_wave if wave is None else wave
-        if np.isscalar(pwv):
-            # Evaluate transmission using the Beer-Lambert Law
-            tau = pwv * self.cross_sections * self._num_density_conversion()
-            transmission = np.interp(wave, self.samp_wave, np.exp(-tau))
-            return pd.Series(transmission, index=wave, name=f'{float(np.round(pwv, 4))} mm')
+        # Evaluate transmission using the Beer-Lambert Law
+        tau = pwv * self.cross_sections * self._num_density_conversion()
+        transmission = np.exp(-tau)
+        transmission_wavelengths = self.samp_wave
 
-        else:
-            return pd.concat([self.__call__(p, wave) for p in pwv], axis=1)
+        if res:
+            transmission = bin_transmission(transmission, res, transmission_wavelengths)
+            transmission_wavelengths = transmission.index
+
+        return pd.Series(
+            np.interp(wave, transmission_wavelengths, transmission),
+            name=f'{float(np.round(pwv, 4))} mm',
+            index=wave)
