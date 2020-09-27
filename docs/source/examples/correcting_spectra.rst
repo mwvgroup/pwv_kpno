@@ -2,13 +2,13 @@
 Correcting Spectrographic Observations
 **************************************
 
-Although **pwv_kpno** is primarily designed for correcting photometric
+.. Although **pwv_kpno** is primarily designed for correcting photometric
 observations, it can also be used to correct spectra. However, it is
 strongly recommended to read the
 `Validation section <../../validation/html/transmission_function.html#comparison-to-observations>`_
 first.
 
-Correcting observed spectra for PWV effects is achieved in four steps:
+Correcting observed spectra for PWV effects is generally achieved in four steps:
 
 #. Use **pwv_kpno** to determine the PWV transmission function corresponding to a given observation
 #. Interpolate the transmission function to match the observed wavelengths

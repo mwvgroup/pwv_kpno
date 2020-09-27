@@ -26,16 +26,33 @@ Legacy Install
 --------------
 
 If you don’t have pip available on your system, the package source code can
-be downloaded from GitHub. The package can then be installed by running the
-following from the project’s root directory:
+be downloaded from GitHub_.
+
+.. _GitHub: https://github.com/mwvgroup/pwv_kpno.git
 
 .. code-block:: bash
 
-   python setup.py install --user
+   git clone https://github.com/mwvgroup/pwv_kpno.git
+
+The package can then be installed by running the included setup file:
+
+.. code-block:: bash
+
+   python pwv_kpno/setup.py install --user
 
 As in the previous method, any missing dependencies in your Python environment
 should be installed automatically. If you have any issues installing the
 package, install each dependency from requirements.txt and then try again.
+
+Package Setup
+-------------
+
+By default, data downloaded by the **pwv_kpno** package is downloaded to the
+installation directory. While this avoids most potential permission erros,
+it also means that each installation of the package will download and manage
+duplicate data. If you are working with multiple environments, the
+``SUOMINET_DIR`` variable can be set in the working environment to configure
+where data should be downloaded by the **pwv_kpno** package.
 
 Running Tests
 -------------
