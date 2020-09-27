@@ -29,6 +29,8 @@ Module API
 ----------
 """
 
+# Todo: Include auto resolution binning
+
 from typing import Union, List, Collection
 
 import numpy as np
@@ -179,7 +181,7 @@ class TransmissionModel:
             return pd.Series(self._interp_func(xi), index=wave, name=f'{float(np.round(pwv, 4))} mm')
 
         else:
-            return pd.concat([self.__call__(p) for p in pwv], axis=1)
+            return pd.concat([self.__call__(p, wave) for p in pwv], axis=1)
 
 
 class CrossSectionTransmission:
@@ -237,4 +239,4 @@ class CrossSectionTransmission:
             return pd.Series(transmission, index=wave, name=f'{float(np.round(pwv, 4))} mm')
 
         else:
-            return pd.concat([self.__call__(p) for p in pwv], axis=1)
+            return pd.concat([self.__call__(p, wave) for p in pwv], axis=1)
