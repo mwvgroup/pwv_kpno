@@ -29,7 +29,6 @@ Module API
 ----------
 """
 
-# Todo: Include auto resolution binning
 # Todo: Test vectorized operation support
 
 import abc
@@ -163,11 +162,13 @@ class TransmissionModel(AbstractTransmission):
             samp_transmission: 2D array with transmission values for each PWV and wavelength
         """
 
-        self._samp_pwv = samp_pwv
-        self._samp_wave = samp_wave
-        self._samp_transmission = samp_transmission
+        self.samp_pwv = samp_pwv
+        self.samp_wave = samp_wave
+        self.samp_transmission = samp_transmission
         self.norm_pwv = norm_pwv
         self.eff_exp = eff_exp
+
+        # Will raise error for malformed arguments
         self.build_interpolator(samp_pwv, samp_transmission, samp_wave)
 
     def build_interpolator(self, samp_pwv, samp_transmission, samp_wave):
@@ -181,24 +182,6 @@ class TransmissionModel(AbstractTransmission):
 
         except ValueError:  # Wrap an otherwise cryptic error message
             raise ValueError('Dimensions of init arguments do not match.')
-
-    @property
-    def samp_pwv(self):
-        """Returns the value of ``samp_pwv`` specified at init"""
-
-        return self._samp_pwv
-
-    @property
-    def samp_wave(self):
-        """Returns the value of ``samp_wave`` specified at init"""
-
-        return self._samp_wave
-
-    @property
-    def samp_transmission(self):
-        """Returns the value of ``samp_transmission`` specified at init"""
-
-        return self._samp_transmission
 
     def _calc_transmission(self, pwv: float, wave: ArrayLike = None, res: float = None) -> pd.Series:
         """Evaluate transmission model at given wavelengths
@@ -214,7 +197,7 @@ class TransmissionModel(AbstractTransmission):
 
         # Build interpolation function
         sampled_pwv = calc_pwv_eff(self.samp_pwv, self.norm_pwv, self.eff_exp)
-        sampled_transmission = self._samp_transmission
+        sampled_transmission = self.samp_transmission
         sampled_wavelengths = self.samp_wave
         if res:
             sampled_transmission = bin_transmission(sampled_transmission, res, wave)

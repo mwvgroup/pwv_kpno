@@ -79,36 +79,3 @@ class IncompatibleInitArguments(TestCase):
             )
 
         self.assertEqual(str(cm.exception), 'Dimensions of init arguments do not match.')
-
-
-class AccessibleInitParams(TestCase):
-    """Test init kwargs are accessible from instances"""
-
-    @classmethod
-    def setUpClass(cls):
-        """Create a dummy ``Transmission`` object"""
-
-        cls.samp_pwv = [0, 2, 4]
-        cls.samp_wave = np.arange(1000, 2000, 100)
-        cls.samp_transmission = [
-            np.ones_like(cls.samp_wave),
-            np.full_like(cls.samp_wave, .5),
-            np.zeros_like(cls.samp_wave)
-        ]
-
-        cls.transmission = TransmissionModel(cls.samp_pwv, cls.samp_wave, cls.samp_transmission)
-
-    def test_samp_pwv_access(self):
-        """Test property access for ``samp_pwv`` init kwarg"""
-
-        np.testing.assert_equal(self.transmission.samp_pwv, self.samp_pwv)
-
-    def test_samp_wave_access(self):
-        """Test property access for ``samp_wave`` init kwarg"""
-
-        np.testing.assert_equal(self.transmission.samp_wave, self.samp_wave)
-
-    def test_samp_transmission_access(self):
-        """Test property access for ``samp_transmission`` init kwarg"""
-
-        np.testing.assert_equal(self.transmission.samp_transmission, self.samp_transmission)
