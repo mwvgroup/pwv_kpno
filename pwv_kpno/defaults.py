@@ -16,27 +16,16 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
-"""The ``defaults`` module provides pre-built ``GPSReceiver`` instances and
-transmission models. These instances are provided for convenience and include
-settings selected by the developers as being desirable for most general
-science cases. Summaries for each object provided in the ``defaults`` module
-are provided below.
+"""The ``defaults`` module provides pre-built transmission models and data
+access objects as a convenience for the user. Transmission models are provided
+using both the original, MODTRAN based transmission data from version 1.0 of
+**pwv_kpno** (deprecated) , and using an updated set of measurements base on
+TAPAS. Data access objects are also included for select GPS locations, each
+using settings selected by the developers as being desirable for most general
+science cases.
 
-Usage Example
--------------
-
-.. code-block:: python
-
-   # Load the pre-built data access object for Kitt Peak National Observatory
-   from pwv_kpno.defaults import kitt
-
-   # Use pre-built instances like any other instance
-   print(kitt.primary)
-   print(kitt.secondaries)
-   print(kitt.data_cuts)
-
-Default Objects
----------------
+Included Defaults
+-----------------
 
 +--------------------------+------------------------------+------------------------------------------------------------+
 | Instance Name            | Object Type                  | Summary                                                    |
@@ -45,14 +34,15 @@ Default Objects
 | ``kitt``                 | ``GPSReceiver``              | Includes preselected secondary receivers and data cuts on  |
 |                          |                              | the measured pressure values.                              |
 +--------------------------+------------------------------+------------------------------------------------------------+
-|                          |                              | Default data access for Cerro-tololo International         |
-| ``ctio``                 | ``GPSReceiver``              | Observatory Includes no secondary receivers                |
+|                          |                              | Default data access for Cerro-Tololo International         |
+| ``ctio``                 | ``GPSReceiver``              | Observatory. Includes no secondary receivers               |
 |                          |                              | but some data cuts.                                        |
 +--------------------------+------------------------------+------------------------------------------------------------+
-| ``default_transmission`` | ``TransmissionModel``        | Default atmospheric transmission model based on TAPAS      |
+| ``default_transmission`` | ``TransmissionModel``        | Default atmospheric transmission model based on TAPAS.     |
 +--------------------------+------------------------------+------------------------------------------------------------+
-| ``v1_transmission``      | ``CrossSectionTransmission`` | For backwards compatibility only. The atmospheric          |
-|                          |                              | transmission model from Version 1 of the package.          |
+| ``v1_transmission``      | ``CrossSectionTransmission`` | Included for backward compatibility. The MODTRAN based     |
+|                          |                              | atmospheric transmission model  introduced in Version 1 of |
+|                          |                              | **pwv_kpno**.                                              |
 +--------------------------+------------------------------+------------------------------------------------------------+
 
 
