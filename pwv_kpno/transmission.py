@@ -30,6 +30,7 @@ Module API
 """
 
 # Todo: Include auto resolution binning
+# Todo: Test vectorizedopperation support
 
 from typing import Union, List, Collection
 
