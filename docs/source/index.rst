@@ -28,7 +28,7 @@
 
 .. toctree::
    :hidden:
-   :maxdepth: 0
+   :titlesonly:
    :caption: API Documentation:
 
    api/pwv_kpno
@@ -41,17 +41,21 @@
 
 .. toctree::
    :hidden:
-   :maxdepth: 0
+   :titlesonly:
    :caption: Examples:
 
-   examples/correcting_photometry
-   examples/correcting_spectra
-   examples/data_cuts
+   examples/modeling.rst
+   examples/downloading_pwv_data.rst
+   examples/data_cuts.rst
+   examples/correcting_photometry.rst
+   examples/correcting_spectra.rst
+   examples/raw_data_parsing.rst
+   examples/typing_support.rst
 
 
 .. toctree::
    :hidden:
-   :maxdepth: 0
+   :titlesonly:
    :caption: Science Validation:
 
    validation/overview
