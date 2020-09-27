@@ -22,7 +22,7 @@ access objects as a convenience for the user.
 Transmission models are provided
 using both the original, MODTRAN based transmission data from version 1.0 of
 **pwv_kpno** (deprecated), and using an updated set of measurements base on
-TAPAS. Data access objects are also included for select GPS locations, and
+LIBRADTRAN. Data access objects are also included for select GPS locations, and
 include settings selected by the developers as being desirable for most general
 science cases.
 
@@ -40,7 +40,7 @@ Included Defaults
 | ``ctio``                 | ``GPSReceiver``              | Observatory. Includes no secondary receivers               |
 |                          |                              | but some data cuts.                                        |
 +--------------------------+------------------------------+------------------------------------------------------------+
-| ``default_transmission`` | ``TransmissionModel``        | Default atmospheric transmission model based on TAPAS.     |
+| ``default_transmission`` | ``TransmissionModel``        | Default atmospheric transmission model based on LIBRADTRAN.|
 +--------------------------+------------------------------+------------------------------------------------------------+
 | ``v1_transmission``      | ``CrossSectionTransmission`` | Included for backward compatibility. The MODTRAN based     |
 |                          |                              | atmospheric transmission model  introduced in Version 1 of |
