@@ -111,3 +111,9 @@ class BinTransmission(TestCase):
 
         # noinspection PyTypeChecker
         np.testing.assert_equal(expected_wavelengths, binned_wavelengths)
+
+    def test_requested_resolution_higher_than_sampling(self):
+        """Test a ValueError is raised when binning at a resolution above the sampled transmission values"""
+
+        with self.assertRaises(ValueError):
+            bin_transmission(self.test_transmission, resolution=.01)
