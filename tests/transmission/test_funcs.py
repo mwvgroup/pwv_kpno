@@ -41,25 +41,33 @@ class CalcPWVEff(TestCase):
 
         self.assertEqual(1, calc_pwv_eff(2))
 
-    def test_list_support(self):
+    @staticmethod
+    def test_array_support():
         """Test function executes successfully for list arguments"""
 
-        calc_pwv_eff([1, 2])
+        test_args = [1, 2]
+        expected_returns = [calc_pwv_eff(p) for p in test_args]
+        np.testing.assert_equal(expected_returns, calc_pwv_eff([1, 2]))
 
 
 class CalcPWVLos(TestCase):
     """Tests for the ``calc_pwv_los`` function"""
 
-    def test_is_inverse_of_calc_pwv_eff(self):
+    @staticmethod
+    def test_is_inverse_of_calc_pwv_eff():
         """Test the function is the inverse of ``calc_pwv_los``"""
 
         test_pwv_los = 4
-        np.testing.assert_approx_equal(test_pwv_los, calc_pwv_los(calc_pwv_eff(test_pwv_los)))
+        np.testing.assert_approx_equal(
+            test_pwv_los, calc_pwv_los(calc_pwv_eff(test_pwv_los)))
 
-    def test_list_support(self):
+    @staticmethod
+    def test_array_support():
         """Test function executes successfully for list arguments"""
 
-        calc_pwv_los([1, 2])
+        test_args = [1, 2]
+        expected_returns = [calc_pwv_los(p) for p in test_args]
+        np.testing.assert_equal(expected_returns, calc_pwv_los([1, 2]))
 
 
 class BinTransmission(TestCase):

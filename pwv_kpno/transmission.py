@@ -76,7 +76,7 @@ def calc_pwv_los(pwv_eff: NumpyArgument, norm_pwv: float = 2, eff_exp: float = 0
     return norm_pwv * pwv_eff ** np.divide(1, eff_exp)
 
 
-def bin_transmission(transmission, resolution, wave=None) -> pd.Series:
+def bin_transmission(transmission: ArrayLike, resolution: float, wave: ArrayLike = None) -> pd.Series:
     """Bin a transmission table using a normalized integration
 
     Args:
@@ -116,8 +116,8 @@ def bin_transmission(transmission, resolution, wave=None) -> pd.Series:
     return pd.Series(statistic, index=bin_centers)
 
 
-class AbstractTransmission:
-    """Abstract transmission model that supports calculations with arrays of PWV values"""
+class VectorizedCall:
+    """Adds array support for callable calculations"""
 
     @abc.abstractmethod
     def _calc_transmission(self, pwv: float, wave: ArrayLike = None, res: float = None) -> pd.Series:
@@ -147,7 +147,7 @@ class AbstractTransmission:
             return pd.concat([self.__call__(p, wave, res) for p in pwv], axis=1)
 
 
-class TransmissionModel(AbstractTransmission):
+class TransmissionModel(VectorizedCall):
     """Represents PWV atmospheric transmission model using pre-tabulated
     transmission values.
     """
@@ -169,9 +169,18 @@ class TransmissionModel(AbstractTransmission):
         self.eff_exp = eff_exp
 
         # Will raise error for malformed arguments
-        self.build_interpolator(samp_pwv, samp_transmission, samp_wave)
+        self._build_interpolator(samp_pwv, samp_wave, samp_transmission)
 
-    def build_interpolator(self, samp_pwv, samp_transmission, samp_wave):
+    def _build_interpolator(self, samp_pwv, samp_wave, samp_transmission):
+        """Construct a scipy interpolator for a given set of wavelengths, PWV,  and transmissions
+
+        Interpolation if performed as a function of PWV effective.
+
+        Args:
+            samp_pwv: 1D array of PWV values for the sampled transmission
+            samp_wave: 1D Array with wavelengths in angstroms for the sampled transmission
+            samp_transmission: 2D array with transmission values for each PWV and wavelength
+        """
 
         # Build interpolation function used to calculate transmission values
         pwv_eff = calc_pwv_eff(samp_pwv, norm_pwv=self.norm_pwv, eff_exp=self.eff_exp)
@@ -203,7 +212,7 @@ class TransmissionModel(AbstractTransmission):
             sampled_transmission = bin_transmission(sampled_transmission, res, wave)
             sampled_wavelengths = sampled_wavelengths.index
 
-        interp_func = self.build_interpolator(sampled_pwv, sampled_transmission, sampled_wavelengths)
+        interp_func = self._build_interpolator(sampled_pwv, sampled_wavelengths, sampled_transmission)
 
         # Build interpolation grid
         pwv_eff = calc_pwv_eff(pwv, norm_pwv=self.norm_pwv, eff_exp=self.eff_exp)
@@ -212,7 +221,7 @@ class TransmissionModel(AbstractTransmission):
         return pd.Series(interp_func(xi), index=wave, name=f'{float(np.round(pwv, 4))} mm')
 
 
-class CrossSectionTransmission(AbstractTransmission):
+class CrossSectionTransmission(VectorizedCall):
     """Represents PWV atmospheric transmission model calculated from
     per-wavelength cross-sections
     """
