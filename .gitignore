@@ -1,4 +1,5 @@
 push_pypi
+example_notebooks
 
 # OS Files
 *.DS_Store
