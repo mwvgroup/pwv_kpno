@@ -48,8 +48,6 @@
    examples/downloading_pwv_data.rst
    examples/data_cuts.rst
    examples/correcting_photometry.rst
-   examples/correcting_spectra.rst
-   examples/raw_data_parsing.rst
 
 .. toctree::
    :hidden:

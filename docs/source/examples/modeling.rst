@@ -1,7 +1,8 @@
 Transmission Modeling
 =====================
 
-
+This section demonstrates the use of atmospheric models to determine the
+atmospheric transmission function due to Precipitable Water Vapor (PWV).
 
 Evaluating a Transmission Model
 -------------------------------
@@ -29,7 +30,7 @@ the highest available resolution
    > 3000.10     1.000000
    > 3000.15     1.000000
    > 3000.20     1.000000
-   >               ...
+   > ...              ...
    > 11999.80    0.995957
    > 11999.85    0.995927
    > 11999.90    0.995875
@@ -80,7 +81,7 @@ values.
    > 3002     1.000000
    > 3003     1.000000
    > 3004     1.000000
-   >            ...
+   > ...           ...
    > 11995    0.996006
    > 11996    0.994342
    > 11997    0.934950
@@ -117,8 +118,8 @@ Here is an example that visualizes the effect of the ``res`` argument:
    :target: ../../_static/images/res_arg_demo.png
    :align:   center
 
-Defining a Transmission Model
------------------------------
+Defining Custom Transmission Models
+-----------------------------------
 
 The **pwv_kpno** package provides predefined transmission models as part of the
 ``defaults`` module. However, customized transmission models can also be defined
