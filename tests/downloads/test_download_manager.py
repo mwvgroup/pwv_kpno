@@ -119,10 +119,10 @@ class DeleteLocalData(TestCase):
         """Test files are only deleted for the given years"""
 
         yr_to_del = (2010, 2011)
-        self.download_manager.delete_local_data('rec1', years=yr_to_del)
+        self.download_manager.delete_local_data('REC1', years=yr_to_del)
         for file in self.file_list:
             year = int(file.stem[-4:])
-            if 'rec1' in file.stem and year in yr_to_del:
+            if 'REC1' in file.stem and year in yr_to_del:
                 self.assertFalse(file.exists())
 
             else:
@@ -131,9 +131,9 @@ class DeleteLocalData(TestCase):
     def test_defaults_to_all_years(self):
         """Test all years are deleted by default"""
 
-        self.download_manager.delete_local_data('rec1')
+        self.download_manager.delete_local_data('REC1')
         for file in self.download_manager.data_dir.glob('*.plt'):
-            if 'rec1' in file.stem:
+            if 'REC1' in file.stem:
                 self.assertFalse(file.exists())
 
             else:

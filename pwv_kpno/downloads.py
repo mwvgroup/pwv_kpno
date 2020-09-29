@@ -145,7 +145,7 @@ class ReleaseDownloader(URLDownload):
         """
 
         super().__init__(data_dir)
-        self.receiver_id = receiver_id
+        self.receiver_id = receiver_id.upper()
 
     def download_conus_daily(self, year: int, timeout=None, force: bool = False, verbose: bool = True):
         """Download CONUS data from the SuomiNet daily data releases
@@ -160,7 +160,7 @@ class ReleaseDownloader(URLDownload):
             HTTPError, TimeoutError, ConnectionError
         """
 
-        fname = '{}dy_{}.plt'.format(self.receiver_id, year)
+        fname = '{}dy_{}.plt'.format(self.receiver_id.upper(), year)
         url = 'https://www.suominet.ucar.edu/data/staYrDay/{}pp_{}.plt'.format(self.receiver_id, year)
         self.download_suomi_url(url, fname, timeout, force, verbose)
 
@@ -177,7 +177,7 @@ class ReleaseDownloader(URLDownload):
             HTTPError, TimeoutError, ConnectionError
         """
 
-        fname = '{}hr_{}.plt'.format(self.receiver_id, year)
+        fname = '{}hr_{}.plt'.format(self.receiver_id.upper(), year)
         url = 'https://www.suominet.ucar.edu/data/staYrHr/{}nrt_{}.plt'.format(self.receiver_id, year)
         self.download_suomi_url(url, fname, timeout, force, verbose)
 
@@ -194,7 +194,7 @@ class ReleaseDownloader(URLDownload):
             HTTPError, TimeoutError, ConnectionError
         """
 
-        fname = '{}gl_{}.plt'.format(self.receiver_id, year)
+        fname = '{}gl_{}.plt'.format(self.receiver_id.upper(), year)
         url = 'https://www.suominet.ucar.edu/data/staYrDayGlob/{}nrt_{}.plt'.format(self.receiver_id, year)
         self.download_suomi_url(url, fname, timeout, force, verbose)
 
@@ -226,7 +226,7 @@ class DownloadManager(URLDownload):
 
         available_years = {'global': [], 'daily': [], 'hourly': []}
         release_type = {'gl': 'global', 'dy': 'daily', 'hr': 'hourly'}
-        for fpath in self._data_dir.glob(f'{receiver_id}*.plt'):
+        for fpath in self._data_dir.glob('{}*.plt'.format(receiver_id.upper())):
             year = int(fpath.stem[-4:])
             data_type = release_type[fpath.stem[4:6]]
             available_years[data_type].append(year)
@@ -256,7 +256,7 @@ class DownloadManager(URLDownload):
         # Default to a file pattern that includes all data types and years
         years = years if years else ['*']
         release_type = '*'
-        path_pattern = f'{receiver_id}{release_type}_{{}}.plt'
+        path_pattern = '{}{}_{{}}.plt'.format(receiver_id.upper(), release_type)
 
         # Delete all data matching the file pattern
         out_files = []
@@ -297,7 +297,7 @@ class DownloadManager(URLDownload):
         if year is None:
             year = np.arange(datetime.now().year - 5, datetime.now().year + 1)
 
-        for yr in np.array(year):  # Typecasting to array ensures argument is iterable
+        for yr in np.atleast_1d(year):  # Typecasting to array ensures argument is iterable
             for download_func in download_operations:
                 try:
                     # noinspection PyArgumentList

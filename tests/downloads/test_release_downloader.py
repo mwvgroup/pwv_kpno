@@ -69,7 +69,7 @@ class DownloadedPathNames(TestCase):
     def setUp(self):
         """Instantiate a ``ReleaseDownloader`` object for testing"""
 
-        self.dummy_rec_name = 'dummy_receiver_id'
+        self.dummy_rec_name = 'dummy_receiver_id'.upper()
         self.downloader = ReleaseDownloader(self.dummy_rec_name)
         self.dummy_year = 2020
 
