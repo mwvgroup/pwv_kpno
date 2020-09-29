@@ -30,18 +30,22 @@ from tests.utils import TestWithCleanEnv
 
 @requests_mock.Mocker()
 @TestWithCleanEnv()
-class DownloadURLS(TestCase):
-    """Test download_functions retrieve data from the correct URLs"""
+class TargetURLS(TestCase):
+    """Test each download function retrieves data from the appropriate URLs"""
 
     # Expected URLs for each kind of data release. Supports regex.
-    conus_daily_url = 'https://www.suominet.ucar.edu/data/staYrDay/*'
-    conus_hourly_url = 'https://www.suominet.ucar.edu/data/staYrHr/*'
-    global_daily_url = 'https://www.suominet.ucar.edu/data/staYrDayGlob/*'
+    # Suominet URLs expect receiver Id's to be uppercase
+    test_suominet_id = 'dummy_receiver_id'
+    conus_daily_url = 'https://www.suominet.ucar.edu/data/staYrDay/{}*'.format(test_suominet_id.upper())
+    conus_hourly_url = 'https://www.suominet.ucar.edu/data/staYrHr/{}*'.format(test_suominet_id.upper())
+    global_daily_url = 'https://www.suominet.ucar.edu/data/staYrDayGlob/{}*'.format(test_suominet_id.upper())
 
     def setUp(self):
         """Instantiate a ``ReleaseDownloader`` object for testing"""
 
-        self.downloader = ReleaseDownloader('dummy_receiver_id')
+        # Note that we pass a lowercase version of the ID
+        # The ReleaseDownloader should automatically correct it to upper case
+        self.downloader = ReleaseDownloader(self.test_suominet_id.lower())
 
     def test_correct_conus_daily_url(self, mocker):
         """Test ``download_conus_daily`` downloads from the conus daily url"""

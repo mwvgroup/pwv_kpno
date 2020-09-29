@@ -85,7 +85,7 @@ class DownloadSuomiUrl(TestCase):
         """Test only the given URL is queried"""
 
         url = 'http://test.com'
-        mocker.register_uri('GET', url)
+        mocker.register_uri('GET', url)  # Will raise error for any other URL
         URLDownload().download_suomi_url(url, 'dummy_name', verbose=False)
 
     def test_saves_to_correct_file_name(self, mocker: requests_mock.Mocker):
