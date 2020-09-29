@@ -3,8 +3,8 @@ Installation
 
 To install the **pwv_kpno** API, please choose one of the options below.
 
-Using PIP (Recommended)
------------------------
+Install Using PIP (Recommended)
+-------------------------------
 
 Using the `pip package manager <https://pip.pypa.io/en/stable/>`_ is the
 recommended method for installing **pwv_kpno**. To install with pip, run:
@@ -22,11 +22,10 @@ Dependencies can be installed manually with pip by running:
 
     pip install -r requirements.txt
 
-Legacy Install
---------------
+Install from Source
+-------------------
 
-If you don’t have pip available on your system, the package source code can
-be downloaded from GitHub_.
+The package source code can be downloaded from GitHub_.
 
 .. _GitHub: https://github.com/mwvgroup/pwv_kpno.git
 
