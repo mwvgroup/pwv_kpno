@@ -14,8 +14,9 @@ mbar. Here we demonstrate this cut against the distribution of pressure
 measurements taken at Kitt Peak from March 2015 through the end of 2017.
 
 .. rst-class:: validation_figure
-.. figure::  ../../static/pressure_cut.pdf
-    :align:   center
+.. figure::  /../../_static/images/pressure_cut.png
+   :target: ../../_static/images/pressure_cut.png
+   :align:   center
 
 General Data Cuts
 =================
@@ -26,6 +27,7 @@ pressure measurements a natural indicator for outlier and non-physical data
 points. Demonstrated below, we ignore PWV measurements that lie outside a
 site-specific pressure range. Note that measurements for Kitt Peak have an
 additional cut for periods when the barometric sensor was malfunctioning.
+Dropped data points are shown in orange.
 
 
 +--------------+------------------+--------------------+--------------------+
@@ -43,5 +45,6 @@ additional cut for periods when the barometric sensor was malfunctioning.
 +--------------+------------------+--------------------+--------------------+
 
 .. rst-class:: validation_figure
-.. figure::  ../../static/data_cuts.png
-    :align:   center
+.. image::  /../../_static/images/data_cuts.png
+   :target: ../../_static/images/data_cuts.png
+   :align:   center

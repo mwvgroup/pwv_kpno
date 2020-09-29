@@ -26,7 +26,8 @@ difference in PWV between locations is due to differences in altitude.
 Measurements were taken at Kitt Peak National Observatory begin in March of 2015.
 
 .. rst-class:: validation_figure
-.. image::  /_static/modeled_vs_measured_pwv.png
+.. image::  /../../_static/images/modeled_vs_measured_pwv.png
+   :target: ../../_static/images/modeled_vs_measured_pwv.png
    :align:   center
 
 Residuals of PWV Models

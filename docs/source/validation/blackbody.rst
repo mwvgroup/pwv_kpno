@@ -18,8 +18,9 @@ for a PWV column density of 15 mm is applied to the SED. This is compared to
 the black body SED scaled using the integrated absorption in each band in red.
 
 .. rst-class:: validation_figure
-.. figure::  /_static/images/blackbody.png
-    :align:   center
+.. image::  /../../_static/images/blackbody.png
+   :target: ../../_static/images/blackbody.png
+   :align:   center
 
 Zero Point Bias
 ===============
@@ -34,5 +35,6 @@ point. Error values are shown for a PWV column density of 5 (left) and 30 mm
 (right).
 
 .. rst-class:: validation_figure
-.. figure:: /_static/images/zero_point_bias.png
-    :align:   center
+.. image::  /../../_static/images/zero_point_bias.png
+   :target: ../../_static/images/zero_point_bias.png
+   :align:   center

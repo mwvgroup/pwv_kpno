@@ -13,8 +13,9 @@ and 30 mm (bottom). Note that absorption features do not scale linearly with
 PWV, and some saturate at relatively low column densities.
 
 .. rst-class:: validation_figure
-.. figure::  ../../static/transmission_levels.pdf
-    :align:   center
+.. image::  /../../_static/images/transmission_levels.png
+   :target: ../../_static/images/transmission_levels.png
+   :align:   center
 
 Line Saturation and Binning
 ===========================
@@ -30,8 +31,9 @@ to two different resolutions for an airmass of one and a PWV column density of
 1 mm (top), 15 mm (middle), and 30 mm (bottom).
 
 .. rst-class:: validation_figure
-.. figure::  ../../static/transmission_binning.pdf
-    :align:   center
+.. image::  /../../_static/images/transmission_binning.png
+   :target: ../../_static/images/transmission_binning.png
+   :align:   center
 
 Comparison to Observations
 ==========================
@@ -59,5 +61,6 @@ performed well enough overall to be used to satisfactorily correct photometric
 observations.
 
 .. rst-class:: validation_figure
-.. figure::  ../../static/spectral_correction.png
-    :align:   center
+.. image::  /../../_static/images/spectral_correction.png
+   :target: ../../_static/images/spectral_correction.png
+   :align:   center
