@@ -87,7 +87,8 @@ class ParsePathStem(TestCase):
 class SuomiNetFileParsing(TestCase):
     """Test file parsing of SuomiNet data files"""
 
-    def test_column_names(self):
+    @staticmethod
+    def test_column_names():
         """Test returned data has correct columns"""
 
         # Data file with no known formatting issues
@@ -114,7 +115,8 @@ class SuomiNetFileParsing(TestCase):
         parsed_data = SuomiFileParser(TEST_DATA_DIR / 'KITThr_2016.plt')
         self.assertFalse(any(parsed_data['PWV'] < 0))
 
-    def test_parse_2010_data(self):
+    @staticmethod
+    def test_parse_2010_data():
         """Test file parsing of SuomiNet data published in 2010
 
         In 2010 SuomiNet changed the number of columns in their automatically

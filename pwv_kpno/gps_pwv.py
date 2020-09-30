@@ -42,7 +42,7 @@ class GPSReceiver:
     """Data access object for Weather data taken by a SuomiNet GPS Receiver"""
 
     def __init__(self, rec_id: str, data_cuts: DataCuts = None, cache_data=True) -> None:
-        """Data access object for Weather data taken by a SUomiNet GPS Receiver
+        """Data access object for Weather data taken by a SuomiNet GPS Receiver
 
         Args:
             rec_id: SuomiNet Id of a GPS receiver (e.g., KITT)
@@ -141,6 +141,7 @@ class GPSReceiver:
             month: The month of the desired PWV data
             day: The day of the desired PWV data
             hour: The hour of the desired PWV data in 24-hour format
+            apply_cuts: Return data with data cuts applied
 
         Returns:
             A pandas DataFrame of modeled PWV values in mm
@@ -244,8 +245,8 @@ class PWVModel:
     ###########################################################################
 
     @staticmethod
-    def _fit_primary_to_secondary(primary_data: pd.DataFrame, secondary_data: pd.DataFrame) -> Tuple[
-        pd.Series, pd.Series]:
+    def _fit_primary_to_secondary(
+            primary_data: pd.DataFrame, secondary_data: pd.DataFrame) -> Tuple[pd.Series, pd.Series]:
         """Apply a linear fit to the primary PWV data as a function of the PWV
         at a secondary location
 

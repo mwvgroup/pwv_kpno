@@ -81,7 +81,8 @@ class DownloadSuomiUrl(TestCase):
         with self.assertRaises(requests.exceptions.ConnectTimeout):
             URLDownload().download_suomi_url(url=url, fname='test.plt', verbose=False)
 
-    def test_queries_correct_url(self, mocker: requests_mock.Mocker):
+    @staticmethod
+    def test_queries_correct_url(mocker: requests_mock.Mocker):
         """Test only the given URL is queried"""
 
         url = 'http://test.com'

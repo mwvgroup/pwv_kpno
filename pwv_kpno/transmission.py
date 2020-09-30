@@ -119,6 +119,8 @@ def bin_transmission(transmission: ArrayLike, resolution: float, wave: ArrayLike
 class VectorizedCall:
     """Adds array support for callable calculations"""
 
+    samp_wave = None  # Default model wavelengths to be defined by child class
+
     @abc.abstractmethod
     def _calc_transmission(self, pwv: float, wave: ArrayLike = None, res: float = None) -> pd.Series:
         pass

@@ -40,6 +40,7 @@ class SuomiFileParser:
 
     # Override init and just parse file path instead
     def __new__(cls, path: PathLike) -> pd.DataFrame:
+        # noinspection PyArgumentList
         return cls.__call__(cls, path)
 
     @staticmethod

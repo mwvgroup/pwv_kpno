@@ -27,6 +27,7 @@ from unittest import TestCase
 import numpy as np
 import pandas as pd
 
+# noinspection PyProtectedMember
 from pwv_kpno._utils import apply_data_cuts, linear_regression, search_data_table
 from tests.wrappers import TestWithCleanEnv
 
