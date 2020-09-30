@@ -29,8 +29,6 @@ Module API
 ----------
 """
 
-# Todo: Test vectorized operation support
-
 import abc
 from typing import Union, Collection
 
@@ -185,9 +183,9 @@ class TransmissionModel(VectorizedCall):
         """
 
         # Build interpolation function used to calculate transmission values
-        pwv_eff = calc_pwv_eff(samp_pwv, norm_pwv=self.norm_pwv, eff_exp=self.eff_exp)
-        points = np.array(np.meshgrid(pwv_eff, samp_wave)).T.reshape(-1, 2)
+        points = np.array(np.meshgrid(samp_pwv, samp_wave)).T.reshape(-1, 2)
         values = np.array(samp_transmission).flatten()
+
         try:
             return lNDI(points, values)
 

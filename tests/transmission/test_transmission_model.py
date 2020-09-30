@@ -34,22 +34,23 @@ class TransmissionCall(TestCase):
         """Create a dummy ``Transmission`` object"""
 
         self.pwv = [0, 2, 4]
-        wave = np.arange(1000, 2000, 100)
-        sim_trans = [
+        wave = np.arange(1000., 2000., 100)
+        self.sim_trans = [
             np.ones_like(wave),
             np.full_like(wave, .5),
             np.zeros_like(wave)
         ]
 
-        self.transmission = TransmissionModel(self.pwv, wave, sim_trans)
+        self.transmission = TransmissionModel(self.pwv, wave, self.sim_trans)
 
     def test_interpolation_on_grid_point(self):
         """Test interpolation result matches sampled values at the grid points"""
 
         test_pwv = self.pwv[1]
+        expected_transmission = self.transmission.samp_transmission[1]
 
         returned_trans = self.transmission(test_pwv)
-        np.testing.assert_equal(self.transmission._samp_transmission[1], returned_trans)
+        np.testing.assert_equal(expected_transmission, returned_trans)
 
     def test_default_wavelengths_match_init(self):
         """Test return values are index by init wavelengths by default"""
