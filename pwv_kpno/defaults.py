@@ -60,12 +60,25 @@ from .gps_pwv import PWVModel as _GPSReceiver
 # default_transmission = _transmission.TransmissionModel([], [], [])
 
 _defaults_dir = Path(__file__).resolve().parent / 'default_atmosphere'
-_default_v1_data = pd.read_csv(_defaults_dir / 'h2ocs.txt', usecols=[1, 2], delimiter=' ', header=None, names=['wave', 'cross_section'])
+_default_v1_data = pd.read_csv(
+    _defaults_dir / 'h2ocs.txt',
+    usecols=[1, 2],
+    delimiter=' ',
+    header=None,
+    names=['wave', 'cross_section'])
+
 v1_transmission = _transmission.CrossSectionTransmission(
     _default_v1_data.wave * 10_000,  # Convert wavelength values to angstroms
     _default_v1_data.cross_section)
 
 del _default_v1_data
 
-kitt = _GPSReceiver('KITT', ('AZAM', 'SA48', 'P014', 'SA46'))
+kitt = _GPSReceiver('KITT', ('AZAM', 'SA48', 'P014', 'SA46'),
+                    data_cuts={
+                        'AZAM': {'SrfcPress': [[880, 925]]},
+                        'KITT': {'SrfcPress': [[775, 1000]],  'date': [[1451606400.0, 1459468800.0]]},
+                        'P014': {'SrfcPress': [[870, 1000]]},
+                        'SA46': {'SrfcPress': [[900, 1000]]},
+                        'SA48': {'SrfcPress': [[910, 1000]]}
+                    })
 ctio = _GPSReceiver('CTIO')

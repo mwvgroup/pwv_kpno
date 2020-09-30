@@ -35,7 +35,7 @@ import os
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Iterable, List, Union
+from typing import Dict, Collection, List, Union
 from warnings import catch_warnings, simplefilter
 
 import numpy as np
@@ -236,13 +236,9 @@ class DownloadManager(URLDownload):
         available_years['hourly'] = sorted(available_years['hourly'])
         return available_years
 
-    def delete_local_data(self, receiver_id: str, years: Iterable[int] = None,
+    def delete_local_data(self, receiver_id: str, years: Collection[int] = None,
                           dry_run: bool = False) -> List[Path]:
         """Delete downloaded SuomiNet data from the current environment
-
-        Valid arguments for release type include ``hourly`` for hourly data
-        release files, ``daily`` for daily releases, and ``global`` for global
-        data releases.
 
          Args:
              receiver_id: Id of a SuomiNet GPS receiver to check for downloaded data
@@ -271,7 +267,7 @@ class DownloadManager(URLDownload):
 
     @staticmethod
     def download_available_data(
-            receiver_id: str, year: Union[int, Iterable[int]] = None,
+            receiver_id: str, year: Union[int, Collection[int]] = None,
             timeout: float = None, force: bool = False, verbose: bool = True):
         """Download all available SuomiNet data for a given year and SuomiNet id
 

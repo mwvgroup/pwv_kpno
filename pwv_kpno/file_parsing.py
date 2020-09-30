@@ -35,90 +35,96 @@ import pandas as pd
 from .types import PathLike
 
 
-def suomi_date_to_timestamp(year: int, days: Union[str, float]) -> float:
-    """Convert the SuomiNet date format into UTC timestamp
+class SuomiFileParser:
 
-    SuomiNet dates are stored as decimal days in a given year. For example,
-    February 1st, 00:15 would be 36.01042.
+    @staticmethod
+    def suomi_date_to_timestamp(year: int, days: Union[str, float]) -> float:
+        """Convert the SuomiNet date format into UTC timestamp
 
-    Args:
-        year: The year of the desired timestamp
-        days: The number of days that have passed since january 1st
+        SuomiNet dates are stored as decimal days in a given year. For example,
+        February 1st, 00:15 would be 36.01042.
 
-    Returns:
-        The seconds from UTC epoch to the provided date as a float
-    """
+        Args:
+            year: The year of the desired timestamp
+            days: The number of days that have passed since january 1st
 
-    jan_1st = datetime(year=year, month=1, day=1)
-    date = jan_1st + timedelta(days=float(days) - 1)
+        Returns:
+            The seconds from UTC epoch to the provided date as a float
+        """
 
-    # Correct for round off error in SuomiNet date format
-    date = date.replace(second=0, microsecond=0)
-    while date.minute % 5:
-        date += timedelta(minutes=1)
+        jan_1st = datetime(year=year, month=1, day=1)
+        date = jan_1st + timedelta(days=float(days) - 1)
 
-    timestamp = (date - datetime(1970, 1, 1)).total_seconds()
-    return timestamp
+        # Correct for round off error in SuomiNet date format
+        date = date.replace(second=0, microsecond=0)
+        while date.minute % 5:
+            date += timedelta(minutes=1)
 
+        timestamp = (date - datetime(1970, 1, 1)).total_seconds()
+        return timestamp
 
-def _parse_path_stem(path: Path) -> Tuple[str, int]:
-    """Return the receiver Id and year from a SuomiNet file name
+    @staticmethod
+    def _parse_path_stem(path: Path) -> Tuple[str, int]:
+        """Return the receiver Id and year from a SuomiNet file name
 
-    Args:
-        path: Path of the file
+        Args:
+            path: Path of the file
 
-    Returns:
-        - The receiver Id
-        - The year
-    """
+        Returns:
+            - The receiver Id
+            - The year
+        """
 
-    receiver_id = path.stem[:4]
-    year = int(path.stem[-4:])
-    return receiver_id, year
+        receiver_id = path.stem[:4]
+        year = int(path.stem[-4:])
+        return receiver_id, year
 
+    def __new__(*args):
+        # Override instantiation to call __call__ instead
+        return '__call__'
 
-def read_suomi_file(path: PathLike) -> pd.DataFrame:
-    """Return PWV measurements from a SuomiNet data file as an pandas DataFrame
+    def __call__(self, path: PathLike) -> pd.DataFrame:
+        """Return PWV measurements from a SuomiNet data file as an pandas DataFrame
 
-    Datetimes are expressed as UNIX timestamps and PWV is measured
-    in millimeters.
+            Datetimes are expressed as UNIX timestamps and PWV is measured
+            in millimeters.
 
-    Data is removed from the array for dates where:
-        1. The PWV level is negative (the GPS receiver is offline)
-        2. Dates are duplicates with unequal measurements
+            Data is removed from the array for dates where:
+                1. The PWV level is negative (the GPS receiver is offline)
+                2. Dates are duplicates with unequal measurements
 
-    Args:
-        path: File path to be read
+            Args:
+                path: File path to be read
 
-    Returns:
-        An pandas DataFrame with data from the specified path
-    """
+            Returns:
+                An pandas DataFrame with data from the specified path
+            """
 
-    path = Path(path)
-    names = ['date', 'PWV', 'PWVErr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH']
-    data = pd.read_csv(
-        path,
-        names=names,
-        usecols=range(0, len(names)),
-        delim_whitespace=True,
-        index_col=False)
+        path = Path(path)
+        names = ['date', 'PWV', 'PWVErr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH']
+        data = pd.read_csv(
+            path,
+            names=names,
+            usecols=range(0, len(names)),
+            delim_whitespace=True,
+            index_col=False)
 
-    # Remove masked PWV values, but not other masked data
-    clean_data = data \
-        .replace(-99.9, np.nan) \
-        .replace({'PWV': -9.9, '*': -99.9}, {'PWV': np.nan}) \
-        .dropna(subset=['PWV']) \
-        .drop_duplicates(subset='date', keep=False) \
-        .set_index('date')
+        # Remove masked PWV values, but not other masked data
+        clean_data = data \
+            .replace(-99.9, np.nan) \
+            .replace({'PWV': -9.9, '*': -99.9}, {'PWV': np.nan}) \
+            .dropna(subset=['PWV']) \
+            .drop_duplicates(subset='date', keep=False) \
+            .set_index('date')
 
-    # Convert time values from SuomiNet format to UTC timestamps
-    receiver_id, year = _parse_path_stem(path)
-    date_conversion = partial(suomi_date_to_timestamp, year)
-    clean_data.index = clean_data.index.map(date_conversion)
-    clean_data.index = pd.to_datetime(clean_data.index, unit='s')
+        # Convert time values from SuomiNet format to UTC timestamps
+        receiver_id, year = self._parse_path_stem(path)
+        date_conversion = partial(self.suomi_date_to_timestamp, year)
+        clean_data.index = clean_data.index.map(date_conversion)
+        clean_data.index = pd.to_datetime(clean_data.index, unit='s')
 
-    # SuomiNet rounds their error and can report an error of zero
-    # We compensate by adding an error of 0.025
-    clean_data['PWVErr'] = np.round(clean_data['PWVErr'] + 0.025, 3)
+        # SuomiNet rounds their error and can report an error of zero
+        # We compensate by adding an error of 0.025
+        clean_data['PWVErr'] = np.round(clean_data['PWVErr'] + 0.025, 3)
 
-    return clean_data
+        return clean_data

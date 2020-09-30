@@ -25,177 +25,41 @@ Module API
 """
 
 import warnings
-from copy import deepcopy
-from datetime import datetime
+from copy import deepcopy, copy
 from typing import Set
-from typing import Tuple
+from typing import Tuple, Union, Collection, List, Dict
 
 import numpy as np
 import pandas as pd
-from scipy.odr import ODR, Output, RealData, polynomial
 
+from . import _utils as utils
 from .downloads import DownloadManager
 from .file_parsing import read_suomi_file
-from .types import DataCuts, DataCuts1D, NumpyArgument, NumpyReturn
+from .types import DataCuts, NumpyArgument, NumpyReturn, Path
 
 
-def apply_data_cuts(data: pd.DataFrame, cuts: DataCuts1D) -> pd.DataFrame:
-    """Apply a dictionary of data cuts to a DataFrame
+class GPSReceiver:
+    """Data access object for Weather data taken by a SuomiNet GPS Receiver"""
 
-    Only return data that is within the specified value ranges
-
-    Args:
-        data: Data to apply cuts on
-        cuts: Dict with a list of tuples (cut start, cut end)
-
-    Returns:
-        A subset of the passed DataFrame
-    """
-
-    for param_name, cut_list in cuts.items():
-        for start, end in cut_list:
-            data = data[(start <= data[param_name]) & (data[param_name] <= end)]
-
-    return data
-
-
-def linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> Output:
-    """Optimize and apply a linear regression using masked arrays
-
-    Generates a linear fit f using orthogonal distance regression and returns
-    the applied model f(x).
-
-    Args:
-        x: The independent variable of the regression
-        y: The dependent variable of the regression
-        sx: Standard deviations of x
-        sy: Standard deviations of y
-
-    Returns:
-        A Scipy.odr Output object
-    """
-
-    data = RealData(x=x, y=y, sx=sx, sy=sy)
-    with warnings.catch_warnings():
-        warnings.filterwarnings("ignore")
-        odr = ODR(data, polynomial(1), beta0=[0., 1.])
-        fit_results = odr.run()
-
-    if 'Numerical error detected' in fit_results.stopreason:
-        raise RuntimeError(fit_results.stopreason)
-
-    return fit_results
-
-
-def search_data_table(
-        data: pd.DataFrame, year: int = None, month: int = None, day=None,
-        hour=None) -> pd.DataFrame:
-    """Return a subset of a table with dates corresponding to a given timespan
-
-    Args:
-        data: Pandas DataFrame to return a subset of
-        year: Only return data within the given year
-        month: Only return data within the given month
-        day: Only return data within the given day
-        hour: Only return data within the given hour
-    """
-
-    # Raise exception for bad datetime args
-    # We use ``if`` here instead of ``or`` since some values may be zero
-    datetime(
-        1 if year is None else year,
-        1 if month is None else month,
-        1 if day is None else day,
-        1 if hour is None else hour
-    )
-
-    if data.empty or not any((year, month, day, hour)):
-        return data
-
-    # Convert datetimes into strings and compare dates against the test string
-    date_format = ''
-    test_string = ''
-    for formatter, kwarg in zip(('%Y', '%m', '%d', '%h'), (year, month, day, hour)):
-        if kwarg:
-            date_format += formatter
-            test_string += str(kwarg).zfill(2)
-
-    return data[data.index.strftime(date_format) == test_string]
-
-
-def load_rec_data(receiver_id: str) -> pd.DataFrame:
-    """Load all data for a given GPS receiver from a directory
-
-    Data from daily data releases is prioritized over hourly data releases
-
-    Args:
-        receiver_id: Id of the SuomiNet GPS receiver to load data for
-
-    Returns:
-        A pandas DataFrame of SuomiNet weather data
-    """
-
-    directory = DownloadManager().data_dir
-
-    # Data release types ordered in terms of priority
-    # Prefer global data over daily data over hourly data
-    data_types = ('gl', 'dy', 'hr')
-
-    data = []  # Collector for DataFrames with data from each data type
-    for dtype in data_types:
-        global_files = list(directory.glob(f'{receiver_id}{dtype}_*.plt'))
-        if global_files:
-            data.append(pd.concat([read_suomi_file(f) for f in global_files]))
-
-    if data:
-        combined_data = pd.concat(data)
-        return combined_data.loc[~combined_data.index.duplicated(keep='first')]
-
-    warnings.warn('No local data found for {}'.format(receiver_id))
-
-    return pd.DataFrame(columns=[
-        'date', 'PWV, PWVErr',
-        'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH'
-    ]).set_index('date')
-
-
-class PWVModel:
-    """Handles the modeling of PWV for times when direct measurements are not
-    available at the primary location.
-    """
-
-    # noinspection PyMissingConstructor
-    def __init__(self, primary: str, secondaries: Set[str] = None, data_cuts: DataCuts = None) -> None:
-        """Handles getter / setter logic for class attributes
+    def __init__(self, rec_id: str, data_cuts: DataCuts = None, cache_data=True) -> None:
+        """Data access object for Weather data taken by a SUomiNet GPS Receiver
 
         Args:
-            primary: SuomiNet Id of the receiver to access
-            secondaries: Secondary receivers used to supplement periods with
-                missing primary data
+            rec_id: SuomiNet Id of a GPS receiver (e.g., KITT)
             data_cuts: Only include data in the given ranges
+            cache_data: Optionally keep a cached copy of the data in memory
         """
 
-        self._primary = primary.upper()
+        self._rec_id = rec_id.upper()
         self._data_cuts = data_cuts if data_cuts else dict()
-        self._secondaries = set() if secondaries is None else set(s.upper() for s in secondaries)
-        self._pwv_model = None  # Place holder for lazy loading
-
-        if primary in self._secondaries:
-            raise ValueError('Primary receiver cannot be listed as a secondary receiver')
+        self._cache_data = cache_data
+        self._cache = None
 
     @property
-    def primary(self) -> str:
-        """The primary GPS receiver to retrieve PWV data for"""
+    def rec_id(self) -> str:
+        """SuomiNet Id of the current GPS receiver"""
 
-        return self._primary
-
-    @property
-    def secondaries(self) -> Set[str]:
-        """Secondary GPS receivers used to model the PWV concentration at
-         the primary GPS location when primary data is not available.
-         """
-
-        return self._secondaries
+        return copy(self._rec_id)
 
     @property
     def data_cuts(self) -> DataCuts:
@@ -203,32 +67,73 @@ class PWVModel:
 
         return deepcopy(self._data_cuts)
 
-    ###########################################################################
-    # PWV is modeled by separately fitting the primary PWV as a function of
-    # the PWV measured by each secondary receiver and then averaging the result
-    ###########################################################################
+    @property
+    def cache_data(self) -> bool:
+        """Boolean indicating whether to store a copy of loaded data in memory"""
 
-    def _load_data_with_cuts(self, receiver_id: str) -> pd.DataFrame:
-        """Returns a table of all weather data for the primary receiver
+        return self._cache_data
 
-        Data is returned as an pandas DataFrame indexed by the SuomiNet Id
-        of each GPS receiver. Results can be optionally refined by year,
-        month, day, and hour.
+    @cache_data.setter
+    def cache_data(self, val: bool) -> None:
+        """Boolean indicating whether to store a copy of loaded data in memory"""
 
-        Args:
-            receiver_id: Id of the receiver to load data for
+        if not val:  # Clear any cached data
+            self.clear_cache()
+
+        self._cache_data = val
+
+    def clear_cache(self, suppress_errors=False):
+        if not (self.cache_data or suppress_errors):
+            raise RuntimeError(
+                'Data caching is disabled for this instance. '
+                'Did you remember to specify `cache_data` at init?')
+
+        self._cache = None
+
+    def _load_rec_data(self) -> pd.DataFrame:
+        """Load all data for a given GPS receiver from a directory
+
+        Data from daily data releases is prioritized over hourly data releases
 
         Returns:
-            A pandas DataFrame
+            A pandas DataFrame of SuomiNet weather data
         """
 
-        receiver_data = load_rec_data(receiver_id)
-        receiver_cuts = self.data_cuts.get(receiver_id, {})
+        directory = DownloadManager().data_dir
 
-        # noinspection PyTypeChecker
-        return apply_data_cuts(receiver_data, receiver_cuts)
+        # Data release types ordered in terms of priority
+        # Prefer global data over daily data over hourly data
+        data_types = ('gl', 'dy', 'hr')
 
-    def weather_data(self, year: int = None, month: int = None, day=None, hour=None) -> pd.DataFrame:
+        data = []  # Collector for DataFrames with data from each data type
+        for dtype in data_types:
+            global_files = list(directory.glob('{}{}_*.plt'.format(self._rec_id, dtype)))
+            if global_files:
+                data.append(pd.concat([read_suomi_file(f) for f in global_files]))
+
+        if data:
+            combined_data = pd.concat(data)
+            return combined_data.loc[~combined_data.index.duplicated(keep='first')]
+
+        warnings.warn('No local data found for {}'.format(self._rec_id))
+
+        return pd.DataFrame(columns=[
+            'date', 'PWV, PWVErr',
+            'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH'
+        ]).set_index('date')
+
+    def _fetch_cached_data(self):
+        """Return data for the current GPS receiver. Use cached data if available"""
+
+        if self.cache_data:
+            if self._cache is None:
+                self._cache = self._load_rec_data()
+
+            return deepcopy(self._cache)
+
+        return self._load_rec_data()
+
+    def weather_data(self, year: int = None, month: int = None, day=None, hour=None, apply_cuts=True) -> pd.DataFrame:
         """Return a table of weather data taken at the primary GPS receiver
 
         Args:
@@ -241,10 +146,106 @@ class PWVModel:
             A pandas DataFrame of modeled PWV values in mm
         """
 
-        return search_data_table(self._load_data_with_cuts(self.primary), year, month, day, hour)
+        data = self._fetch_cached_data()
+        if apply_cuts:
+            data = utils.apply_data_cuts(data, self._data_cuts)
+
+        return utils.search_data_table(data, year, month, day, hour)
+
+    def check_downloaded_data(self) -> Dict[str, List[int]]:
+        """Determine which years of data have been downloaded to the local machine
+
+        Returns:
+            A dictionary of the form {<release type>: <list of years>}
+        """
+
+        m = DownloadManager()
+        return m.check_downloaded_data(self.rec_id)
+
+    def download_available_data(
+            self, year: Union[int, Collection[int]] = None,
+            timeout: float = None, force: bool = False, verbose: bool = True):
+        """Download all available SuomiNet data for a given year
+
+        Args:
+            year: Year to download data for
+            timeout: How long to wait before the request times out
+            force: Execute download even if local data already exists
+            verbose: Display progress bars for the downloading files
+        """
+
+        m = DownloadManager()
+        m.download_available_data(self.rec_id, year=year, timeout=timeout, force=force, verbose=verbose)
+        self.clear_cache(suppress_errors=True)
+
+    def delete_local_data(self, years: Collection[int] = None, dry_run: bool = False) -> List[Path]:
+        """Delete downloaded SuomiNet data from the current environment
+
+         Args:
+             years: List of years to delete data from (defaults to all available years)
+             dry_run: Returns a list of files that would be deleted without actually deleting them
+
+         Returns:
+             - A list of file paths that were deleted
+         """
+
+        m = DownloadManager()
+        return m.delete_local_data(self.rec_id, years=years, dry_run=dry_run)
+
+    def __repr__(self) -> str:
+        if self.cache_data:
+            return 'GPSReceiver(rec_id="{}", data_cuts={}, cache_data=True)'.format(self.rec_id, self.data_cuts)
+
+        else:
+            return 'GPSReceiver(rec_id="{}", data_cuts={})'.format(self.rec_id, self.data_cuts)
+
+
+class PWVModel:
+    """Handles the modeling of PWV for times when direct measurements are not
+    available at the primary location.
+    """
+
+    # noinspection PyMissingConstructor
+    def __init__(self, primary: GPSReceiver, secondaries: Set[GPSReceiver] = None, data_cuts: DataCuts = None) -> None:
+        """Handles getter / setter logic for class attributes
+
+        Args:
+            primary: SuomiNet Id of the receiver to access
+            secondaries: Secondary receivers used to supplement periods with
+                missing primary data
+            data_cuts: Only include data in the given ranges
+        """
+
+        self._primary = primary
+        self._data_cuts = data_cuts if data_cuts else dict()
+        self._secondaries = set() if secondaries is None else set(secondaries)
+        self._pwv_model = None  # Place holder for lazy loading
+
+        if primary in self._secondaries:
+            raise ValueError('Primary receiver cannot be listed as a secondary receiver')
+
+    @property
+    def primary(self) -> GPSReceiver:
+        """The primary GPS receiver to retrieve PWV data for"""
+
+        return self._primary
+
+    @property
+    def secondaries(self) -> Set[GPSReceiver]:
+        """Secondary GPS receivers used to model the PWV concentration at
+         the primary GPS location when primary data is not available.
+         """
+
+        return self._secondaries
+
+    ###########################################################################
+    # PWV is modeled by separately fitting the primary PWV as a function of
+    # the PWV measured by each secondary receiver and then averaging the result
+    ###########################################################################
 
     @staticmethod
-    def _fit_to_secondary(primary_data: pd.DataFrame, secondary_data: pd.DataFrame) -> Tuple[pd.Series, pd.Series]:
+    def _fit_primary_to_secondary(primary_data: pd.DataFrame, secondary_data: pd.DataFrame) -> Tuple[
+        pd.Series, pd.Series]:
         """Apply a linear fit to the primary PWV data as a function of the PWV
         at a secondary location
 
@@ -263,7 +264,7 @@ class PWVModel:
             .dropna(subset=['PWVPrimary', 'PWVErrPrimary', 'PWVSecondary', 'PWVErrSecondary'])
 
         # Evaluate the fit
-        b, m = linear_regression(
+        b, m = utils.linear_regression(
             joined_data['PWVSecondary'],
             joined_data['PWVPrimary'],
             joined_data['PWVErrSecondary'],
@@ -283,17 +284,17 @@ class PWVModel:
             A DataFrame with modeled PWV values and the associated errors over time
         """
 
-        primary_data = self.weather_data()
+        primary_data = self.primary.weather_data()
 
         # Fit fit the primary receiver's PWV data as function of each secondary
         # receiver and accumulate the results
         fitted_pwv = pd.DataFrame()
         fitted_error = pd.DataFrame()
         for secondary_rec in self.secondaries:
-            secondary_data = self._load_data_with_cuts(secondary_rec)
+            secondary_data = secondary_rec.weather_data()
 
             try:
-                _fitted_pwv, _fitted_error = self._fit_to_secondary(primary_data, secondary_data)
+                _fitted_pwv, _fitted_error = self._fit_primary_to_secondary(primary_data, secondary_data)
 
             except RuntimeError:  # Failed ODR regression
                 warnings.warn('Linear regression failed for {}. Dropped from model'.format(secondary_rec))
@@ -338,10 +339,10 @@ class PWVModel:
         if self._pwv_model is None:
             self._pwv_model = self._calc_avg_pwv_model()
 
-        return search_data_table(self._pwv_model, year, month, day, hour)
+        return utils.search_data_table(self._pwv_model, year, month, day, hour)
 
-    def interp_pwv_date(self, date: NumpyArgument, interp_limit: int = None,
-                        method: str = 'linear', order: int = None) -> NumpyReturn:
+    def __call__(self, date: NumpyArgument, interp_limit: int = None,
+                 method: str = 'linear', order: int = None) -> NumpyReturn:
         """Evaluate the PWV model for a given datetime
 
         Args:
@@ -388,5 +389,4 @@ class PWVModel:
         return interp_data
 
     def __repr__(self) -> str:
-        return 'PWVModel(primary="{}", secondaries={}, data_cuts={})'.format(
-            self.primary, self.secondaries, self.data_cuts)
+        return 'PWVModel(primary="{}", secondaries={})'.format(self.primary, self.secondaries)
