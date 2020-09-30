@@ -148,9 +148,7 @@ class VectorizedCall:
 
 
 class TransmissionModel(VectorizedCall):
-    """Represents PWV atmospheric transmission model using pre-tabulated
-    transmission values.
-    """
+    """Interpolates the PWV transmission function using pre-tabulated transmission values"""
 
     def __init__(self, samp_pwv: ArrayLike, samp_wave: ArrayLike, samp_transmission: ArrayLike,
                  norm_pwv: float = 2, eff_exp: float = 0.6):
@@ -171,7 +169,8 @@ class TransmissionModel(VectorizedCall):
         # Will raise error for malformed arguments
         self._build_interpolator(samp_pwv, samp_wave, samp_transmission)
 
-    def _build_interpolator(self, samp_pwv, samp_wave, samp_transmission):
+    @staticmethod
+    def _build_interpolator(samp_pwv, samp_wave, samp_transmission):
         """Construct a scipy interpolator for a given set of wavelengths, PWV,  and transmissions
 
         Interpolation if performed as a function of PWV effective.
@@ -193,7 +192,7 @@ class TransmissionModel(VectorizedCall):
             raise ValueError('Dimensions of init arguments do not match.')
 
     def _calc_transmission(self, pwv: float, wave: ArrayLike = None, res: float = None) -> pd.Series:
-        """Evaluate transmission model at given wavelengths
+        """Evaluate the transmission model at the given wavelengths
 
         Args:
             pwv: Line of sight PWV to interpolate for
@@ -222,9 +221,7 @@ class TransmissionModel(VectorizedCall):
 
 
 class CrossSectionTransmission(VectorizedCall):
-    """Represents PWV atmospheric transmission model calculated from
-    per-wavelength cross-sections
-    """
+    """Calculated PWV transmission using per-wavelength cross-sections"""
 
     # Define physical constants
     n_a = 6.02214129E23  # 1 / mol (Avogadro's constant)
@@ -261,7 +258,7 @@ class CrossSectionTransmission(VectorizedCall):
             pwv: Union[float, Collection[float]],
             wave: ArrayLike = None,
             res: float = None) -> pd.Series:
-        """Evaluate transmission model at given wavelengths
+        """Evaluate the transmission model at the given wavelengths
 
         Args:
             pwv: Line of sight PWV to interpolate for

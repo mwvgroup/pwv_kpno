@@ -41,7 +41,6 @@ Typing Aliases
 | ``PathLike``              | ``Union[str, Path]``                            |
 +---------------------------+-------------------------------------------------+
 
-
 """
 
 from pathlib import Path as Path

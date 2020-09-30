@@ -26,7 +26,6 @@ Module API
 
 import warnings
 from copy import deepcopy, copy
-from typing import Set
 from typing import Tuple, Union, Collection, List, Dict
 
 import numpy as np
@@ -39,18 +38,23 @@ from .types import DataCuts, NumpyArgument, NumpyReturn, Path
 
 
 class GPSReceiver:
-    """Data access object for Weather data taken by a SuomiNet GPS Receiver"""
+    """Data access object for weather data taken by a SuomiNet GPS system"""
 
-    def __init__(self, rec_id: str, data_cuts: DataCuts = None, cache_data=True) -> None:
-        """Data access object for Weather data taken by a SuomiNet GPS Receiver
+    def __init__(self, receiver_id: str, data_cuts: DataCuts = None, cache_data=True) -> None:
+        """Data access object for weather data taken by a SuomiNet GPS system
+
+        The optional ``data_cuts`` argument is expected as a dictionary mapping
+        column names to a list of tuples [(cut start, cut end), ...]. Data
+        cuts on ``date`` values are exclusive. All other data cuts are inclusive.
+
 
         Args:
-            rec_id: SuomiNet Id of a GPS receiver (e.g., KITT)
+            receiver_id: SuomiNet Id of a GPS receiver (e.g., KITT)
             data_cuts: Only include data in the given ranges
             cache_data: Optionally keep a cached copy of the data in memory
         """
 
-        self._rec_id = rec_id.upper()
+        self._rec_id = receiver_id.upper()
         self._data_cuts = data_cuts if data_cuts else dict()
         self._cache_data = cache_data
         self._cache = None
@@ -89,14 +93,16 @@ class GPSReceiver:
 
         self._cache_data = val
 
-    def clear_cache(self, suppress_errors:bool=False) -> None:
+    def clear_cache(self, suppress_errors: bool = False) -> None:
         """Clear any cached data from memory
+
+        Raises an error if caching is turned off for current instance.
 
         Args:
             suppress_errors: Ignore any errors that are raised
 
         Raises:
-            RuntimeError: If caching is turned off for current instance
+            RuntimeError
         """
 
         if not (self.cache_data or suppress_errors):
@@ -107,7 +113,7 @@ class GPSReceiver:
         self._cache = None
 
     def _load_rec_data(self) -> pd.DataFrame:
-        """Load all data for a given GPS receiver from a directory
+        """Load all available data for the GPS receiver id
 
         Data from daily data releases is prioritized over hourly data releases
 
@@ -138,8 +144,12 @@ class GPSReceiver:
             'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH'
         ]).set_index('date')
 
-    def _fetch_cached_data(self):
-        """Return data for the current GPS receiver. Use cached data if available"""
+    def _fetch_cached_data(self) -> pd.DataFrame:
+        """Return data for the current GPS receiver. Use cached data if available.
+
+        Returns:
+            A pandas DataFrame with GPS weather data
+        """
 
         if self.cache_data:
             if self._cache is None:
@@ -150,7 +160,7 @@ class GPSReceiver:
         return self._load_rec_data()
 
     def weather_data(self, year: int = None, month: int = None, day=None, hour=None, apply_cuts=True) -> pd.DataFrame:
-        """Return a table of weather data taken at the primary GPS receiver
+        """Return a table of weather data taken by SuomiNet
 
         Args:
             year: The year of the desired PWV data
@@ -176,12 +186,11 @@ class GPSReceiver:
             A dictionary of the form {<release type>: <list of years>}
         """
 
-        m = DownloadManager()
-        return m.check_downloaded_data(self.rec_id)
+        return DownloadManager().check_downloaded_data(self.rec_id)
 
     def download_available_data(
             self, year: Union[int, Collection[int]] = None,
-            timeout: float = None, force: bool = False, verbose: bool = True):
+            timeout: float = None, force: bool = False, verbose: bool = True) -> None:
         """Download all available SuomiNet data for a given year
 
         Args:
@@ -191,10 +200,9 @@ class GPSReceiver:
             verbose: Display progress bars for the downloading files
         """
 
-        m = DownloadManager()
-        r = m.download_available_data(self.rec_id, year=year, timeout=timeout, force=force, verbose=verbose)
+        manager = DownloadManager()
+        manager.download_available_data(self.rec_id, year=year, timeout=timeout, force=force, verbose=verbose)
         self.clear_cache(suppress_errors=True)
-        return r
 
     def delete_local_data(self, years: Collection[int] = None, dry_run: bool = False) -> List[Path]:
         """Delete downloaded SuomiNet data from the current environment
@@ -207,8 +215,7 @@ class GPSReceiver:
              - A list of file paths that were deleted
          """
 
-        m = DownloadManager()
-        return m.delete_local_data(self.rec_id, years=years, dry_run=dry_run)
+        return DownloadManager().delete_local_data(self.rec_id, years=years, dry_run=dry_run)
 
     def __repr__(self) -> str:
         if self.cache_data:
@@ -220,23 +227,23 @@ class GPSReceiver:
 
 class PWVModel:
     """Handles the modeling of PWV for times when direct measurements are not
-    available at the primary location.
+    available from a given GPS receiver.
     """
 
     # noinspection PyMissingConstructor
-    def __init__(self, primary: GPSReceiver, secondaries: Set[GPSReceiver] = None, data_cuts: DataCuts = None) -> None:
-        """Handles getter / setter logic for class attributes
+    def __init__(self, primary: GPSReceiver, secondaries: Collection[GPSReceiver] = None,
+                 data_cuts: DataCuts = None) -> None:
+        """Model the PWV at a given GPS receivers using measurements from other, nearby receivers.
 
         Args:
             primary: SuomiNet Id of the receiver to access
-            secondaries: Secondary receivers used to supplement periods with
-                missing primary data
+            secondaries: Secondary receivers used to supplement periods with missing primary data
             data_cuts: Only include data in the given ranges
         """
 
         self._primary = primary
         self._data_cuts = data_cuts if data_cuts else dict()
-        self._secondaries = set() if secondaries is None else set(secondaries)
+        self._secondaries = secondaries
         self._pwv_model = None  # Place holder for lazy loading
 
         if primary in self._secondaries:
@@ -249,7 +256,7 @@ class PWVModel:
         return self._primary
 
     @property
-    def secondaries(self) -> Set[GPSReceiver]:
+    def secondaries(self) -> Collection[GPSReceiver]:
         """Secondary GPS receivers used to model the PWV concentration at
          the primary GPS location when primary data is not available.
          """
@@ -264,8 +271,7 @@ class PWVModel:
     @staticmethod
     def _fit_primary_to_secondary(
             primary_data: pd.DataFrame, secondary_data: pd.DataFrame) -> Tuple[pd.Series, pd.Series]:
-        """Apply a linear fit to the primary PWV data as a function of the PWV
-        at a secondary location
+        """Apply a linear fit to the primary PWV data as a function of the PWV at a secondary location
 
         Args:
             primary_data: SuomiNet data from the primary receiver

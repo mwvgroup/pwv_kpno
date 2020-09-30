@@ -18,7 +18,7 @@
 
 """The ``downloads`` module is responsible for downloading precipitable
 water vapor measurements from SuomiNet servers onto the local machine.
-Data files are stored on the local machine in one of the following locations:
+Data files are stored downloaded to one of the following locations:
 
 1. If a specific directory is specified at the time of download,
    data files are downloaded to that directory.
@@ -49,7 +49,7 @@ from .types import PathLike
 class URLDownload:
     """Handles the downloading of SuomiNet data files from arbitrary URLs"""
 
-    def __init__(self, data_dir: PathLike = None):
+    def __init__(self, data_dir: PathLike = None) -> None:
         """Handles the downloading of data files from arbitrary URLs
 
         Data is downloaded to which ever of the following directories is
@@ -76,7 +76,7 @@ class URLDownload:
 
         Return the path indicated by the environmental variable
         ``SUOMINET_DIR``. If ``SUOMINET_DIR`` is not set, return a path in the
-        installation directory.
+        installation directory. Create the directory if it does not exist.
         """
 
         if 'SUOMINET_DIR' in os.environ:
@@ -89,7 +89,7 @@ class URLDownload:
         return directory
 
     def download_suomi_url(self, url: str, fname: str, timeout: float = None,
-                           force: bool = False, verbose: bool = True):
+                           force: bool = False, verbose: bool = True) -> None:
         """Download data from a URL
 
         Args:
@@ -136,7 +136,7 @@ class URLDownload:
 class ReleaseDownloader(URLDownload):
     """Handles the downloading of specific SuomiNet data releases"""
 
-    def __init__(self, receiver_id: str, data_dir: PathLike = None):
+    def __init__(self, receiver_id: str, data_dir: PathLike = None) -> None:
         """Handles the downloading of specific SuomiNet data releases
 
         Args:
@@ -147,7 +147,7 @@ class ReleaseDownloader(URLDownload):
         super().__init__(data_dir)
         self.receiver_id = receiver_id.upper()
 
-    def download_conus_daily(self, year: int, timeout=None, force: bool = False, verbose: bool = True):
+    def download_conus_daily(self, year: int, timeout=None, force: bool = False, verbose: bool = True) -> None:
         """Download CONUS data from the SuomiNet daily data releases
 
         Args:
@@ -164,7 +164,7 @@ class ReleaseDownloader(URLDownload):
         url = 'https://www.suominet.ucar.edu/data/staYrDay/{}pp_{}.plt'.format(self.receiver_id, year)
         self.download_suomi_url(url, fname, timeout, force, verbose)
 
-    def download_conus_hourly(self, year: int, timeout=None, force: bool = False, verbose: bool = True):
+    def download_conus_hourly(self, year: int, timeout=None, force: bool = False, verbose: bool = True) -> None:
         """Download CONUS data from the SuomiNet hourly data releases
 
         Args:
@@ -181,7 +181,7 @@ class ReleaseDownloader(URLDownload):
         url = 'https://www.suominet.ucar.edu/data/staYrHr/{}nrt_{}.plt'.format(self.receiver_id, year)
         self.download_suomi_url(url, fname, timeout, force, verbose)
 
-    def download_global_daily(self, year: int, timeout=None, force: bool = False, verbose: bool = True):
+    def download_global_daily(self, year: int, timeout=None, force: bool = False, verbose: bool = True) -> None:
         """Download global data from the SuomiNet daily data releases
 
         Args:
@@ -268,12 +268,12 @@ class DownloadManager(URLDownload):
     @staticmethod
     def download_available_data(
             receiver_id: str, year: Union[int, Collection[int]] = None,
-            timeout: float = None, force: bool = False, verbose: bool = True):
+            timeout: float = None, force: bool = False, verbose: bool = True) -> None:
         """Download all available SuomiNet data for a given year and SuomiNet id
 
         Convenience function for downloading any available data from the CONUS
         daily, CONUS hourly, and global daily data releases. If no year is
-        specified, all available data is downloaded for years 2010 onward.
+        specified, all available data is downloaded for the past five years.
 
         Args:
             receiver_id: Id of the SuomiNet GPS receiver to download data for

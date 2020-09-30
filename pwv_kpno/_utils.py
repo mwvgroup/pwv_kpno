@@ -18,9 +18,6 @@
 
 """The ``_utils`` module is a grab bag of utilities for running fits and
 manipulating tabular data.
-
-Module API
-----------
 """
 
 import warnings
@@ -36,11 +33,11 @@ from .types import DataCuts
 def apply_data_cuts(data: pd.DataFrame, cuts: DataCuts) -> pd.DataFrame:
     """Apply a dictionary of data cuts to a DataFrame
 
-    Only return data that is within the specified value ranges
+    Data cuts on ``date`` values are exclusive. All other data cuts are inclusive.
 
     Args:
         data: Data to apply cuts on
-        cuts: Dict with a list of tuples (cut start, cut end)
+        cuts: Dict of column names with a list of tuples [(cut start, cut end), ...]
 
     Returns:
         A subset of the passed DataFrame
@@ -48,7 +45,11 @@ def apply_data_cuts(data: pd.DataFrame, cuts: DataCuts) -> pd.DataFrame:
 
     for param_name, cut_list in cuts.items():
         for start, end in cut_list:
-            data = data[(start <= data[param_name]) & (data[param_name] <= end)]
+            if param_name == 'date':
+                data = data[(data.index <= start) & (end <= data.index)]
+
+            else:
+                data = data[(start <= data[param_name]) & (data[param_name] <= end)]
 
     return data
 
@@ -56,8 +57,8 @@ def apply_data_cuts(data: pd.DataFrame, cuts: DataCuts) -> pd.DataFrame:
 def linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> Output:
     """Optimize and apply a linear regression using masked arrays
 
-    Generates a linear fit f using orthogonal distance regression and returns
-    the applied model f(x).
+    Generates a linear fit ``f`` using orthogonal distance regression and
+    returns the applied model ``f(x)``.
 
     Args:
         x: The independent variable of the regression
@@ -82,8 +83,7 @@ def linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> O
 
 
 def search_data_table(
-        data: pd.DataFrame, year: int = None, month: int = None, day=None,
-        hour=None) -> pd.DataFrame:
+        data: pd.DataFrame, year: int = None, month: int = None, day=None, hour=None) -> pd.DataFrame:
     """Return a subset of a table with dates corresponding to a given timespan
 
     Args:

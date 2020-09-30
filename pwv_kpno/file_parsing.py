@@ -86,21 +86,21 @@ class SuomiFileParser:
         return receiver_id, year
 
     def __call__(self, path: PathLike) -> pd.DataFrame:
-        """Return PWV measurements from a SuomiNet data file as an pandas DataFrame
+        """Return PWV measurements from a SuomiNet data file as a pandas DataFrame
 
-            Datetimes are expressed as UNIX timestamps and PWV is measured
-            in millimeters.
+        Datetimes are expressed as UNIX timestamps and PWV is measured
+        in millimeters.
 
-            Data is removed from the array for dates where:
-                1. The PWV level is negative (the GPS receiver is offline)
-                2. Dates are duplicates with unequal measurements
+        Data is removed from the array for dates where:
+            1. The PWV level is negative (the GPS receiver is offline)
+            2. Dates are duplicates with unequal measurements
 
-            Args:
-                path: File path to be read
+        Args:
+            path: File path to be read
 
-            Returns:
-                An pandas DataFrame with data from the specified path
-            """
+        Returns:
+            An pandas DataFrame with data from the specified path
+        """
 
         path = Path(path)
         names = ['date', 'PWV', 'PWVErr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH']

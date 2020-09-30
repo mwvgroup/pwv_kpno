@@ -22,25 +22,38 @@ access objects as a convenience for the user.
 Transmission models are provided
 using both the original, MODTRAN based transmission data from version 1.0 of
 **pwv_kpno** (deprecated), and using an updated set of measurements base on
-LIBRADTRAN. Data access objects are also included for select GPS locations, and
+TAPAS. Data access objects are also included for select GPS locations, and
 include settings selected by the developers as being desirable for most general
 science cases.
 
-Included Defaults
------------------
+Default Data Access Objects
+---------------------------
+
++--------------------------+----------------------------------------------------+--------------------------------------+
+| Instance Name            | Summary                                            | Data Cuts                            |
++==========================+====================================================+======================================+
+| ``azam``                 | Default data access for Amado Arizona.             | ``800 < SrfcPress < 925`` mbar       |
++--------------------------+----------------------------------------------------+--------------------------------------+
+| ``ctio``                 | Default data access for Cerro-Tololo International | ``0 < PWV < 30`` mm                  |
++--------------------------+----------------------------------------------------+--------------------------------------+
+|                          | Default data access for Kitt Peak National         |  ``775 < SrfcPress < 1000`` mbar     |
+| ``kitt``                 | Observatory. Data cuts include a period where the  | and drops UTC timestamps 1451606400  |
+|                          | pressure sensor was malfunctioning                 | through 1459468800                   |
++--------------------------+----------------------------------------------------+--------------------------------------+
+| ``P014``                 | Default data access for Sahuarita Arizona.         | ``870 < SrfcPress < 1000`` mbar      |
++--------------------------+----------------------------------------------------+--------------------------------------+
+| ``SA46``                 | Default data access for Tucson Arizona.            | ``900 < SrfcPress < 1000`` mbar      |
++--------------------------+----------------------------------------------------+--------------------------------------+
+| ``SA48``                 | Default data access for Sells Arizona.             | ``910 < SrfcPress < 1000`` mbar      |
++--------------------------+----------------------------------------------------+--------------------------------------+
+
+Default Transmission Models
+---------------------------
 
 +--------------------------+------------------------------+------------------------------------------------------------+
-| Instance Name            | Object Type                  | Summary                                                    |
+| Instance Name            | Model Type                   | Summary                                                    |
 +==========================+==============================+============================================================+
-|                          |                              | Default data access for Kitt Peak National Observatory.    |
-| ``kitt``                 | ``GPSReceiver``              | Includes preselected secondary receivers and data cuts on  |
-|                          |                              | the measured pressure values.                              |
-+--------------------------+------------------------------+------------------------------------------------------------+
-|                          |                              | Default data access for Cerro-Tololo International         |
-| ``ctio``                 | ``GPSReceiver``              | Observatory. Includes no secondary receivers               |
-|                          |                              | but some data cuts.                                        |
-+--------------------------+------------------------------+------------------------------------------------------------+
-| ``default_transmission`` | ``TransmissionModel``        | Default atmospheric transmission model based on LIBRADTRAN.|
+| ``v2_transmission``      | ``TransmissionModel``        | Default atmospheric transmission model based on TAPAS.     |
 +--------------------------+------------------------------+------------------------------------------------------------+
 | ``v1_transmission``      | ``CrossSectionTransmission`` | Included for backward compatibility. The MODTRAN based     |
 |                          |                              | atmospheric transmission model  introduced in Version 1 of |
@@ -53,32 +66,40 @@ from pathlib import Path
 
 import pandas as pd
 
-# Private to prevent user from thinking there is a default ``transmission`` or ``GPSReceiver`` object
+# Private underscore to prevent user from thinking imports are default objects
 from . import transmission as _transmission
-from .gps_pwv import PWVModel as _GPSReceiver
-
-# default_transmission = _transmission.TransmissionModel([], [], [])
+from .gps_pwv import GPSReceiver as _GPSReceiver, PWVModel as _PWVModel
 
 _defaults_dir = Path(__file__).resolve().parent / 'default_atmosphere'
-_default_v1_data = pd.read_csv(
-    _defaults_dir / 'h2ocs.txt',
-    usecols=[1, 2],
-    delimiter=' ',
-    header=None,
-    names=['wave', 'cross_section'])
 
-v1_transmission = _transmission.CrossSectionTransmission(
-    _default_v1_data.wave * 10_000,  # Convert wavelength values to angstroms
-    _default_v1_data.cross_section)
+kitt = _GPSReceiver('KITT', data_cuts={'SrfcPress': [(775, 1000), ], 'date': [(1451606400.0, 1459468800.0), ]},
+                    cache_data=False)
+azam = _GPSReceiver('AZAM', data_cuts={'SrfcPress': [(880, 925), ]}, cache_data=False)
+p014 = _GPSReceiver('P014', data_cuts={'SrfcPress': [(870, 1000), ]}, cache_data=False)
+sa46 = _GPSReceiver('SA46', data_cuts={'SrfcPress': [(900, 1000), ]}, cache_data=False)
+sa48 = _GPSReceiver('SA48', data_cuts={'SrfcPress': [(910, 1000), ]}, cache_data=False)
+ctio = _GPSReceiver('CTIO', data_cuts={'PWV': [(0, 30), ]})
+kitt_model = _PWVModel(kitt, secondaries=(azam, p014, sa46, sa48))
 
-del _default_v1_data
 
-kitt = _GPSReceiver('KITT', ('AZAM', 'SA48', 'P014', 'SA46'),
-                    data_cuts={
-                        'AZAM': {'SrfcPress': [[880, 925]]},
-                        'KITT': {'SrfcPress': [[775, 1000]],  'date': [[1451606400.0, 1459468800.0]]},
-                        'P014': {'SrfcPress': [[870, 1000]]},
-                        'SA46': {'SrfcPress': [[900, 1000]]},
-                        'SA48': {'SrfcPress': [[910, 1000]]}
-                    })
-ctio = _GPSReceiver('CTIO')
+def _load_v1_transmission():
+    _default_v1_data = pd.read_csv(
+        _defaults_dir / 'h2ocs.txt',
+        usecols=[1, 2],
+        delimiter=' ',
+        header=None,
+        names=['wave', 'cross_section'])
+
+    return _transmission.CrossSectionTransmission(
+        _default_v1_data.wave * 10_000,  # Convert wavelength values to angstroms
+        _default_v1_data.cross_section)
+
+
+v1_transmission = _load_v1_transmission()
+
+
+def _load_v2_transmission():
+    return None
+
+
+v2_transmission = _load_v1_transmission()
