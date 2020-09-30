@@ -60,7 +60,7 @@ class GPSReceiver:
         self._cache = None
 
     @property
-    def rec_id(self) -> str:
+    def receiver_id(self) -> str:
         """SuomiNet Id of the current GPS receiver"""
 
         return copy(self._rec_id)
@@ -186,7 +186,7 @@ class GPSReceiver:
             A dictionary of the form {<release type>: <list of years>}
         """
 
-        return DownloadManager().check_downloaded_data(self.rec_id)
+        return DownloadManager().check_downloaded_data(self.receiver_id)
 
     def download_available_data(
             self, year: Union[int, Collection[int]] = None,
@@ -201,7 +201,7 @@ class GPSReceiver:
         """
 
         manager = DownloadManager()
-        manager.download_available_data(self.rec_id, year=year, timeout=timeout, force=force, verbose=verbose)
+        manager.download_available_data(self.receiver_id, year=year, timeout=timeout, force=force, verbose=verbose)
         self.clear_cache(suppress_errors=True)
 
     def delete_local_data(self, years: Collection[int] = None, dry_run: bool = False) -> List[Path]:
@@ -215,14 +215,14 @@ class GPSReceiver:
              - A list of file paths that were deleted
          """
 
-        return DownloadManager().delete_local_data(self.rec_id, years=years, dry_run=dry_run)
+        return DownloadManager().delete_local_data(self.receiver_id, years=years, dry_run=dry_run)
 
     def __repr__(self) -> str:
         if self.cache_data:
-            return 'GPSReceiver(rec_id="{}", data_cuts={}, cache_data=True)'.format(self.rec_id, self.data_cuts)
+            return 'GPSReceiver(rec_id="{}", data_cuts={}, cache_data=True)'.format(self.receiver_id, self.data_cuts)
 
         else:
-            return 'GPSReceiver(rec_id="{}", data_cuts={})'.format(self.rec_id, self.data_cuts)
+            return 'GPSReceiver(rec_id="{}", data_cuts={})'.format(self.receiver_id, self.data_cuts)
 
 
 class PWVModel:

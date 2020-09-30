@@ -102,4 +102,4 @@ def _load_v2_transmission():
     return None
 
 
-v2_transmission = _load_v1_transmission()
+v2_transmission = _load_v2_transmission()

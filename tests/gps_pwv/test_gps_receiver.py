@@ -41,7 +41,7 @@ class ReceiverIdUppercase(SetupMixin, TestCase):
         """Test receivers are stored in uppercase"""
 
         receiver = GPSReceiver('rec1')
-        self.assertTrue(receiver.rec_id.isupper(), 'Receiver Id is not uppercase.')
+        self.assertTrue(receiver.receiver_id.isupper(), 'Receiver Id is not uppercase.')
 
     def test_id_non_muatable(self):
         receiver = GPSReceiver('rec1')

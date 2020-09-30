@@ -18,17 +18,75 @@
 
 """This file tests the ``pwv_kpno.defaults`` module."""
 
-from unittest import TestCase
+from unittest import TestCase, skip
+
+from pwv_kpno import transmission
 
 
-# noinspection PyUnresolvedReferences
-class TestImportAvailability(TestCase):
+class TestReceiverAvailability(TestCase):
+    """Test availability of default data access objects"""
 
-    def test_v1_transmission(self):
-        from pwv_kpno.defaults import v1_transmission
+    def test_azam(self):
+        """Test AZAM receiver has correct receiver Id"""
 
-    def test_kitt(self):
-        from pwv_kpno.defaults import kitt
+        from pwv_kpno.defaults import azam
+        self.assertEqual(azam.receiver_id, 'AZAM')
 
     def test_ctio(self):
+        """Test CTIO receiver has correct receiver Id"""
+
         from pwv_kpno.defaults import ctio
+        self.assertEqual(ctio.receiver_id, 'CTIO')
+
+    def test_kitt(self):
+        """Test KITT receiver has correct receiver Id"""
+
+        from pwv_kpno.defaults import kitt
+        self.assertEqual(kitt.receiver_id, 'KITT')
+
+    def test_p014(self):
+        """Test P014 receiver has correct receiver Id"""
+
+        from pwv_kpno.defaults import p014
+        self.assertEqual(p014.receiver_id, 'P014')
+
+    def test_sa46(self):
+        """Test SA46 receiver has correct receiver Id"""
+
+        from pwv_kpno.defaults import sa46
+        self.assertEqual(sa46.receiver_id, 'SA46')
+
+    def test_sa48(self):
+        """Test SA48 receiver has correct receiver Id"""
+
+        from pwv_kpno.defaults import sa48
+        self.assertEqual(sa48.receiver_id, 'SA48')
+
+
+class TestTransmissionModelAvailability(TestCase):
+    """Test availability of default transmission models"""
+
+    def test_v1_transmission(self):
+        """Test v1 transmission is a ``CrossSectionTransmission`` instance"""
+
+        from pwv_kpno.defaults import v1_transmission
+        self.assertIsInstance(v1_transmission, transmission.CrossSectionTransmission)
+
+    @skip('V2 transmission not implemented yet')
+    def test_v2_transmission(self):
+        """Test v1 transmission is a ``TransmissionModel`` instance"""
+
+        from pwv_kpno.defaults import v2_transmission
+        self.assertIsInstance(v2_transmission, transmission.TransmissionModel)
+
+
+class TestPWVModelAvailability(TestCase):
+    """Test availability of PWV model for Kitt Peak"""
+
+    def test_kitt_model(self):
+        """Test Kitt Peak model has correct secondary receivers"""
+
+        from pwv_kpno.defaults import kitt_model
+        secondaries = [r.receiver_id for r in kitt_model.secondaries]
+        expected = ('AZAM', 'P014', 'SA46', 'SA48')
+        self.assertSequenceEqual(secondaries, expected)

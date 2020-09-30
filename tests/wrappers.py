@@ -20,13 +20,9 @@
 
 import functools
 import os
-from datetime import datetime, timedelta
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import List, Tuple, Union
-
-from astropy.table import Table
-from pytz import utc
+from typing import Union
 
 TEST_DATA_DIR = Path(__file__).parent / 'testing_data'
 TEST_DATA_CONFIG = TEST_DATA_DIR / 'test_data.yml'
@@ -104,7 +100,7 @@ class TestWithCleanEnv:
 
         for attr_name in dir(wrap_class):
             # Skip attributes without correct prefix
-            if not (attr_name.startswith('test_')):
+            if not (attr_name.startswith('test_')  or attr_name in ('setUp')):
                 continue
 
             # Skip attributes that are not callable
