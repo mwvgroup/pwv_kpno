@@ -194,7 +194,7 @@ class ReleaseDownloader(URLDownload):
             HTTPError, TimeoutError, ConnectionError
         """
 
-        fname = '{}_{}global.plt'.format(self.receiver_id.upper(), year)
+        fname = '{}gl_{}.plt'.format(self.receiver_id.upper(), year)
         url = 'https://www.suominet.ucar.edu/data/staYrDayGlob/{}_{}global.plt'.format(self.receiver_id, year)
         self.download_suomi_url(url, fname, timeout, force, verbose)
 
