@@ -112,7 +112,7 @@ class DownloadedPathNames(TestCase):
 
         self.assertCorrectFilePath(
             self.downloader.download_global_daily,
-            f'{self.dummy_rec_name}gl_{self.dummy_year}.plt')
+            f'{self.dummy_rec_name}_{self.dummy_year}global.plt')
 
 
 class Repr(TestCase):

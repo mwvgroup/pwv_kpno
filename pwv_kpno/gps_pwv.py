@@ -176,8 +176,9 @@ class GPSReceiver:
         """
 
         m = DownloadManager()
-        m.download_available_data(self.rec_id, year=year, timeout=timeout, force=force, verbose=verbose)
+        r = m.download_available_data(self.rec_id, year=year, timeout=timeout, force=force, verbose=verbose)
         self.clear_cache(suppress_errors=True)
+        return r
 
     def delete_local_data(self, years: Collection[int] = None, dry_run: bool = False) -> List[Path]:
         """Delete downloaded SuomiNet data from the current environment
