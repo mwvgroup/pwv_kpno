@@ -63,9 +63,16 @@ class GPSReceiver:
 
     @property
     def data_cuts(self) -> DataCuts:
-        """Dictionary of data cuts on returned data for each GPS receiver"""
+        """Dictionary of data cuts on returned weather data"""
 
         return deepcopy(self._data_cuts)
+
+    @data_cuts.setter
+    def data_cuts(self, val: DataCuts) -> None:
+        """Dictionary of data cuts on returned weather data"""
+
+        self.clear_cache(suppress_errors=True)
+        self._data_cuts = val
 
     @property
     def cache_data(self) -> bool:
@@ -82,7 +89,16 @@ class GPSReceiver:
 
         self._cache_data = val
 
-    def clear_cache(self, suppress_errors=False):
+    def clear_cache(self, suppress_errors:bool=False) -> None:
+        """Clear any cached data from memory
+
+        Args:
+            suppress_errors: Ignore any errors that are raised
+
+        Raises:
+            RuntimeError: If caching is turned off for current instance
+        """
+
         if not (self.cache_data or suppress_errors):
             raise RuntimeError(
                 'Data caching is disabled for this instance. '

@@ -125,36 +125,3 @@ class SearchDataTables(TestCase):
         """Test the original dataframe is returned when no kwargs are specified"""
 
         pd.testing.assert_frame_equal(self.test_data, search_data_table(self.test_data))
-
-
-@TestWithCleanEnv(TEST_DATA_DIR)
-class LoadRecDirectory(TestCase):
-    """Tests for the ``load_rec_data`` function"""
-
-    def test_empty_dataframe_columns(self):
-        """Test returned DataFrame has correct column names"""
-
-        # Use a fake receiver Id should return an empty dataframe
-        data = load_rec_data('dummy_receiver')
-        expected_columns = ['PWV, PWVErr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH']
-        self.assertListEqual(expected_columns, list(data.columns))
-
-    def test_empty_dataframe_index(self):
-        """Test the returned DataFrame is indexed by ``date``"""
-
-        # Use a fake receiver Id should return an empty dataframe
-        data = load_rec_data('dummy_receiver')
-        self.assertEqual('date', data.index.name)
-
-    def test_warns_on_empty_data(self):
-        """Test a warning is raised for an empty data frame"""
-
-        with self.assertWarns(Warning):
-            load_rec_data('dummy_receiver')
-
-    def test_expected_years_are_parsed(self):
-        """Test data is returned from all available data files for a given receiver"""
-
-        azam_data = load_rec_data('AZAM')
-        self.assertEqual(2015, azam_data.index.min().year, '2015 data missing from return')
-        self.assertEqual(2016, azam_data.index.max().year, '2016 data missing from return')

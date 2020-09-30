@@ -32,9 +32,7 @@ Typing Aliases
 +===========================+=================================================+
 | ``ArrayLike``             | ``Union[list, ndarray, Series]``                |
 +---------------------------+-------------------------------------------------+
-| ``DataCuts``              | ``Dict[str, DataCuts1D]``                       |
-+---------------------------+-------------------------------------------------+
-| ``DataCuts1D``            | ``Dict[str, List[Tuple[float, float]]]``        |
+| ``DataCuts``              | ``Dict[str, List[Tuple[float, float]]]``        |
 +---------------------------+-------------------------------------------------+
 | ``NumpyArgument``         | ``Union[float, list, ndarray, Series]``         |
 +---------------------------+-------------------------------------------------+
@@ -56,5 +54,4 @@ PathLike = Union[str, Path]
 ArrayLike = Union[list, ndarray, Series]
 NumpyArgument = Union[float, list, ndarray, Series]
 NumpyReturn = Union[float, ndarray]
-DataCuts1D = Dict[str, List[Tuple[float, float]]]
-DataCuts = Dict[str, DataCuts1D]
+DataCuts = Dict[str, List[Tuple[float, float]]]

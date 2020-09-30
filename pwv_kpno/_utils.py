@@ -30,10 +30,10 @@ import numpy as np
 import pandas as pd
 from scipy.odr import ODR, Output, RealData, polynomial
 
-from .types import DataCuts1D
+from .types import DataCuts
 
 
-def apply_data_cuts(data: pd.DataFrame, cuts: DataCuts1D) -> pd.DataFrame:
+def apply_data_cuts(data: pd.DataFrame, cuts: DataCuts) -> pd.DataFrame:
     """Apply a dictionary of data cuts to a DataFrame
 
     Only return data that is within the specified value ranges

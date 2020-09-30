@@ -65,15 +65,8 @@ class NumpyReturn(TestBase, TestCase):
     support_types = (float, ndarray)
 
 
-class DataCuts1D(TestBase, TestCase):
-    """Tests for the ``DataCuts1D`` generic type"""
-
-    hint_type = types.DataCuts1D
-    support_types = (str, List[Tuple[float, float]])
-
-
 class DataCuts(TestBase, TestCase):
     """Tests for the ``DataCuts`` generic type"""
 
     hint_type = types.DataCuts
-    support_types = (str, types.DataCuts1D)
+    support_types = (str, List[Tuple[float, float]])

@@ -16,8 +16,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno. If not, see <http://www.gnu.org/licenses/>.
 
-"""This file tests the pwv_kpno._download_pwv_data module to ensure SuomiNet
-data is downloaded and parsed correctly.
+"""This file tests the S``uomiFileParser`` class to ensure SuomiNet
+data is parsed correctly.
 """
 
 from datetime import datetime
@@ -29,7 +29,7 @@ from pytz import utc
 
 from pwv_kpno.file_parsing import SuomiFileParser
 
-TEST_DATA_DIR = Path(__file__).parent / 'testing_data'
+TEST_DATA_DIR = Path(__file__).parent.parent / 'testing_data'
 
 
 class SuomiDateToTimestamp(TestCase):

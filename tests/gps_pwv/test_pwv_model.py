@@ -45,14 +45,6 @@ class ReceiverIdHandling(TestCase):
         with self.assertRaises(ValueError):
             PWVModel('REC1', {'REC1', 'REC2'})
 
-    def test_receivers_are_uppercase(self):
-        """Test receivers are stored in uppercase"""
-
-        pwv_model = PWVModel('rec1', {'rec2'})
-        secondaries = list(pwv_model.secondaries)  # So we can index secondaries
-        self.assertTrue(pwv_model.primary.isupper(), 'Primary receiver is not uppercase.')
-        self.assertTrue(secondaries[0].isupper(), 'Secondary receiver is not uppercase.')
-
     def test_primary_rec_not_settable(self):
         """Test the ``primary`` attribute has no setter"""
 
@@ -64,12 +56,6 @@ class ReceiverIdHandling(TestCase):
 
         with self.assertRaises(AttributeError):
             self.receiver.secondaries = {'NEW_REC_1', 'NEW_REC_2'}
-
-    def test_data_cuts_not_settable(self):
-        """Test the ``data_cuts`` attribute has no setter"""
-
-        with self.assertRaises(AttributeError):
-            self.receiver.data_cuts = dict()
 
 
 class FitToSecondary(TestCase):
