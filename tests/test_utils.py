@@ -27,8 +27,8 @@ from unittest import TestCase
 import numpy as np
 import pandas as pd
 
-from pwv_kpno.gps_pwv import apply_data_cuts, linear_regression, load_rec_data, search_data_table
-from tests.utils import TestWithCleanEnv
+from pwv_kpno._utils import apply_data_cuts, linear_regression, search_data_table
+from tests.wrappers import TestWithCleanEnv
 
 TEST_DATA_DIR = Path(__file__).parent.parent / 'testing_data'
 

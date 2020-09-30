@@ -34,7 +34,7 @@ import pandas as pd
 
 from . import _utils as utils
 from .downloads import DownloadManager
-from .file_parsing import read_suomi_file
+from .file_parsing import SuomiFileParser
 from .types import DataCuts, NumpyArgument, NumpyReturn, Path
 
 
@@ -109,7 +109,7 @@ class GPSReceiver:
         for dtype in data_types:
             global_files = list(directory.glob('{}{}_*.plt'.format(self._rec_id, dtype)))
             if global_files:
-                data.append(pd.concat([read_suomi_file(f) for f in global_files]))
+                data.append(pd.concat([SuomiFileParser(f) for f in global_files]))
 
         if data:
             combined_data = pd.concat(data)

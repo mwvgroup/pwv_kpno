@@ -27,7 +27,7 @@ from unittest import TestCase
 import numpy as np
 from pytz import utc
 
-from pwv_kpno import file_parsing
+from pwv_kpno.file_parsing import SuomiFileParser
 
 TEST_DATA_DIR = Path(__file__).parent / 'testing_data'
 
@@ -41,7 +41,7 @@ class SuomiDateToTimestamp(TestCase):
         # Date with known round off error before bug fix in 0.9.13
         jan_01_2010_01_15 = datetime(2010, 1, 1, 1, 15, tzinfo=utc)
         self.assertEqual(
-            file_parsing.suomi_date_to_timestamp(2010, '1.05208'),
+            SuomiFileParser.suomi_date_to_timestamp(2010, '1.05208'),
             jan_01_2010_01_15.timestamp())
 
     def test_correct_conversion_for_known_dates(self):
@@ -50,13 +50,13 @@ class SuomiDateToTimestamp(TestCase):
         error_msg = 'Incorrect _timestamp for {}'
         jan_01_2000_00_15 = datetime(2000, 1, 1, 0, 15, tzinfo=utc)
         self.assertEqual(
-            file_parsing.suomi_date_to_timestamp(2000, '1.01042'),
+            SuomiFileParser.suomi_date_to_timestamp(2000, '1.01042'),
             jan_01_2000_00_15.timestamp(),
             error_msg.format(jan_01_2000_00_15))
 
         dec_31_2021_23_15 = datetime(2021, 12, 31, 23, 15, tzinfo=utc)
         self.assertEqual(
-            file_parsing.suomi_date_to_timestamp(2021, '365.96875'),
+            SuomiFileParser.suomi_date_to_timestamp(2021, '365.96875'),
             dec_31_2021_23_15.timestamp(),
             error_msg.format(dec_31_2021_23_15))
 
@@ -74,13 +74,13 @@ class ParsePathStem(TestCase):
     def test_correct_receiver(self):
         """Test the correct receiver Id is recovered from the file path"""
 
-        receiver_id, year = file_parsing._parse_path_stem(self.test_path)
+        receiver_id, year = SuomiFileParser.parse_path_stem(self.test_path)
         self.assertEqual(self.receiver_id, receiver_id)
 
     def test_correct_year(self):
         """Test the correct year is recovered from the file path"""
 
-        receiver_id, year = file_parsing._parse_path_stem(self.test_path)
+        receiver_id, year = SuomiFileParser.parse_path_stem(self.test_path)
         self.assertEqual(self.year, year)
 
 
@@ -91,27 +91,27 @@ class SuomiNetFileParsing(TestCase):
         """Test returned data has correct columns"""
 
         # Data file with no known formatting issues
-        parsed_data = file_parsing.read_suomi_file(TEST_DATA_DIR / 'KITThr_2016.plt')
+        parsed_data = SuomiFileParser(TEST_DATA_DIR / 'KITThr_2016.plt')
         expected_columns = ['PWV', 'PWVErr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH']
         np.testing.assert_array_equal(expected_columns, parsed_data.columns)
 
     def test_indexed_by_date(self):
         """Test the index is named ``date``"""
 
-        parsed_data = file_parsing.read_suomi_file(TEST_DATA_DIR / 'KITThr_2016.plt')
+        parsed_data = SuomiFileParser(TEST_DATA_DIR / 'KITThr_2016.plt')
         self.assertEqual('date', parsed_data.index.name)
 
     def test_index_is_unique(self):
         """Test for the removal of any duplicate dates"""
 
         # Data file with known duplicate entries
-        parsed_data = file_parsing.read_suomi_file(TEST_DATA_DIR / 'AZAMhr_2015.plt')
+        parsed_data = SuomiFileParser(TEST_DATA_DIR / 'AZAMhr_2015.plt')
         self.assertFalse(parsed_data.index.duplicated().any())
 
     def test_removed_negative_values(self):
         """Test for the removal of negative PWV values"""
 
-        parsed_data = file_parsing.read_suomi_file(TEST_DATA_DIR / 'KITThr_2016.plt')
+        parsed_data = SuomiFileParser(TEST_DATA_DIR / 'KITThr_2016.plt')
         self.assertFalse(any(parsed_data['PWV'] < 0))
 
     def test_parse_2010_data(self):
@@ -122,4 +122,4 @@ class SuomiNetFileParsing(TestCase):
         to have a different number of columns from the second half of the year.
         """
 
-        file_parsing.read_suomi_file(TEST_DATA_DIR / 'SA48dy_2010.plt')
+        SuomiFileParser(TEST_DATA_DIR / 'SA48dy_2010.plt')

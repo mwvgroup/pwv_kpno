@@ -87,7 +87,7 @@ class FitToSecondary(TestCase):
         })
         primary = secondary.iloc[0:8].copy()
 
-        applied_fit, errors = PWVModel._fit_to_secondary(primary, secondary)
+        applied_fit, errors = PWVModel._fit_primary_to_secondary(primary, secondary)
         pd.testing.assert_series_equal(applied_fit, secondary.PWV)
 
 

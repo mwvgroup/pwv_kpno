@@ -36,6 +36,11 @@ from .types import PathLike
 
 
 class SuomiFileParser:
+    """File parser for data written in the SuomiNet file format"""
+
+    # Override init and just parse file path instead
+    def __new__(cls, path: PathLike) -> pd.DataFrame:
+        return cls.__call__(cls, path)
 
     @staticmethod
     def suomi_date_to_timestamp(year: int, days: Union[str, float]) -> float:
@@ -64,7 +69,7 @@ class SuomiFileParser:
         return timestamp
 
     @staticmethod
-    def _parse_path_stem(path: Path) -> Tuple[str, int]:
+    def parse_path_stem(path: Path) -> Tuple[str, int]:
         """Return the receiver Id and year from a SuomiNet file name
 
         Args:
@@ -78,10 +83,6 @@ class SuomiFileParser:
         receiver_id = path.stem[:4]
         year = int(path.stem[-4:])
         return receiver_id, year
-
-    def __new__(*args):
-        # Override instantiation to call __call__ instead
-        return '__call__'
 
     def __call__(self, path: PathLike) -> pd.DataFrame:
         """Return PWV measurements from a SuomiNet data file as an pandas DataFrame
@@ -118,7 +119,7 @@ class SuomiFileParser:
             .set_index('date')
 
         # Convert time values from SuomiNet format to UTC timestamps
-        receiver_id, year = self._parse_path_stem(path)
+        receiver_id, year = self.parse_path_stem(path)
         date_conversion = partial(self.suomi_date_to_timestamp, year)
         clean_data.index = clean_data.index.map(date_conversion)
         clean_data.index = pd.to_datetime(clean_data.index, unit='s')

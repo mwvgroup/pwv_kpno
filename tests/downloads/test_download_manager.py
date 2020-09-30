@@ -26,7 +26,7 @@ import requests_mock
 import yaml
 
 from pwv_kpno.downloads import DownloadManager
-from tests.utils import TEST_DATA_CONFIG, TEST_DATA_DIR, TestWithCleanEnv
+from tests.wrappers import TEST_DATA_CONFIG, TEST_DATA_DIR, TestWithCleanEnv
 
 
 @TestWithCleanEnv(TEST_DATA_DIR)

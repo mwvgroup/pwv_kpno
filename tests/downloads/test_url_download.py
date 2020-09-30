@@ -29,7 +29,7 @@ import requests_mock
 
 import pwv_kpno
 from pwv_kpno.downloads import URLDownload
-from tests.utils import TestWithCleanEnv
+from tests.wrappers import TestWithCleanEnv
 
 
 @TestWithCleanEnv()

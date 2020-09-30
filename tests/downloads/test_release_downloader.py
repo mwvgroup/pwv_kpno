@@ -25,7 +25,7 @@ from unittest import TestCase
 import requests_mock
 
 from pwv_kpno.downloads import ReleaseDownloader
-from tests.utils import TestWithCleanEnv
+from tests.wrappers import TestWithCleanEnv
 
 
 @requests_mock.Mocker()
