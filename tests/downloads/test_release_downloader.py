@@ -29,8 +29,7 @@ from tests.wrappers import TestWithCleanEnv
 
 
 @requests_mock.Mocker()
-@TestWithCleanEnv()
-class TargetURLS(TestCase):
+class TargetURLS(TestCase, TestWithCleanEnv):
     """Test each download function retrieves data from the appropriate URLs"""
 
     # Expected URLs for each kind of data release. Supports regex.
@@ -39,6 +38,14 @@ class TargetURLS(TestCase):
     conus_daily_url = 'https://www.suominet.ucar.edu/data/staYrDay/{}*'.format(test_suominet_id.upper())
     conus_hourly_url = 'https://www.suominet.ucar.edu/data/staYrHr/{}*'.format(test_suominet_id.upper())
     global_daily_url = 'https://www.suominet.ucar.edu/data/staYrDayGlob/{}*'.format(test_suominet_id.upper())
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpENV(cls)
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownENV(cls)
 
     def setUp(self):
         """Instantiate a ``ReleaseDownloader`` object for testing"""
@@ -66,9 +73,16 @@ class TargetURLS(TestCase):
         self.downloader.download_global_daily(2020)
 
 
-@TestWithCleanEnv()
-class DownloadedPathNames(TestCase):
+class DownloadedPathNames(TestCase, TestWithCleanEnv):
     """Test downloaded files are saved with the correct naming scheme"""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpENV()
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownENV()
 
     def setUp(self):
         """Instantiate a ``ReleaseDownloader`` object for testing"""

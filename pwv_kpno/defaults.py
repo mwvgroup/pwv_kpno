@@ -32,19 +32,19 @@ Default Data Access Objects
 +--------------------------+----------------------------------------------------+--------------------------------------+
 | Instance Name            | Summary                                            | Data Cuts                            |
 +==========================+====================================================+======================================+
-| ``azam``                 | Default data access for Amado Arizona.             | ``800 < SrfcPress < 925`` mbar       |
+| ``azam``                 | Default data access for Amado Arizona.             |   800 < SrfcPress < 925   mbar       |
 +--------------------------+----------------------------------------------------+--------------------------------------+
-| ``ctio``                 | Default data access for Cerro-Tololo International | ``0 < PWV < 30`` mm                  |
+| ``ctio``                 | Default data access for Cerro-Tololo International |   0 < PWV < 30   mm                  |
 +--------------------------+----------------------------------------------------+--------------------------------------+
-|                          | Default data access for Kitt Peak National         |  ``775 < SrfcPress < 1000`` mbar     |
+|                          | Default data access for Kitt Peak National         | 775 < SrfcPress < 1000 mbar          |
 | ``kitt``                 | Observatory. Data cuts include a period where the  | and drops UTC timestamps 1451606400  |
 |                          | pressure sensor was malfunctioning                 | through 1459468800                   |
 +--------------------------+----------------------------------------------------+--------------------------------------+
-| ``P014``                 | Default data access for Sahuarita Arizona.         | ``870 < SrfcPress < 1000`` mbar      |
+| ``P014``                 | Default data access for Sahuarita Arizona.         |   870 < SrfcPress < 1000   mbar      |
 +--------------------------+----------------------------------------------------+--------------------------------------+
-| ``SA46``                 | Default data access for Tucson Arizona.            | ``900 < SrfcPress < 1000`` mbar      |
+| ``SA46``                 | Default data access for Tucson Arizona.            |   900 < SrfcPress < 1000   mbar      |
 +--------------------------+----------------------------------------------------+--------------------------------------+
-| ``SA48``                 | Default data access for Sells Arizona.             | ``910 < SrfcPress < 1000`` mbar      |
+| ``SA48``                 | Default data access for Sells Arizona.             |   910 < SrfcPress < 1000   mbar      |
 +--------------------------+----------------------------------------------------+--------------------------------------+
 
 Default Transmission Models

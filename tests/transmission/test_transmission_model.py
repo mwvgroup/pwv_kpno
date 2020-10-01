@@ -73,7 +73,7 @@ class TransmissionCall(TestCase):
         self.assertIsInstance(transmission, pd.Series)
         self.assertEqual(transmission.name, f'4.0 mm')
 
-    def test_vectorized_support(self):
+    def test_vector_pwv_returns_dataframe(self):
         """Test passing a vector of PWV values returns a pandas DataFrame"""
 
         transmission = self.transmission([4, 5])
