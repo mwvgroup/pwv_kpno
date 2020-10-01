@@ -26,7 +26,7 @@ The original environment is restored after the tests exit.
 Recipes
 -------
 
-To set ``SUOMINET_DIR`` to a temporary directory for a single test:
+To set ``SUOMINET_DIR`` to a different temporary directory for each test:
 
 .. code-block:: python
 
@@ -36,10 +36,12 @@ To set ``SUOMINET_DIR`` to a temporary directory for a single test:
        def test_func_1(self):
            ...
 
+       @TestWithCleanEnv()
        def test_func_2(self):
            ...
 
-To set ``SUOMINET_DIR`` to a different temporary directory for each test:
+To set ``SUOMINET_DIR`` to a single temporary
+directory that persists until all tests in the class exit:
 
 .. code-block:: python
 
@@ -51,22 +53,6 @@ To set ``SUOMINET_DIR`` to a different temporary directory for each test:
 
        def test_func_2(self):
            ...
-
-You may want the temporary directory to be shared by the per-test setup
-and tear down functions. To set ``SUOMINET_DIR`` to a single temporary
-directory that persists until all tests in the class exit:
-
-.. code-block:: python
-
-   class MyTests(TestCase, TestWithCleanEnv):
-
-   @classmethod
-   def setUpClass(cls):
-       super().setUpENV(cls)
-
-   @classmethod
-   def tearDownClass(cls):
-       super().tearDownENV(cls)
 
 To set ``SUOMINET_DIR`` to a predefined directory instead of a temporary one:
 
@@ -80,6 +66,13 @@ To set ``SUOMINET_DIR`` to a predefined directory instead of a temporary one:
 
       def test_func_2(self):
           ...
+
+To wrap a single code block:
+
+.. code-block:: python
+
+   with TestWithCleanEnv():
+       return func(*args, **kwargs)
 """
 
 import functools
@@ -110,19 +103,17 @@ class TestWithCleanEnv:
         used as a class decorator, only methods named ``test_*`` are wrapped.
 
         Args:
-            data_path: Optional path to set as ``SUOMINET_DIR``
+            data_path: Optional path to set as ``SUOMINET_DIR``. Defaults to temporary directory
         """
 
-        if isinstance(data_path, Path):
-            data_path = str(data_path)
+        # Temporary directory needs to be created at init so we can ensure it
+        # will persist for each test when wrapping a class
+        self._temp_dir = None
+        if data_path is None:
+            self._temp_dir = TemporaryDirectory()
+            data_path = self._temp_dir.name
 
-        self._data_path = data_path
-
-    def setUpENV(self):
-        self.__enter__(self)
-
-    def tearDownENV(self):
-        self.__exit__(self)
+        self._data_path = str(data_path)
 
     def __call__(self, obj):
         # Wrap the passed object or callable
@@ -138,21 +129,14 @@ class TestWithCleanEnv:
 
         self._old_environ = dict(os.environ)
         os.environ.clear()
-
-        if self._data_path is not None:  # Use user defined path
-            os.environ['SUOMINET_DIR'] = self._data_path
-
-        else:
-            self._temp_dir = TemporaryDirectory()
-            os.environ['SUOMINET_DIR'] = self._temp_dir.name
+        os.environ['SUOMINET_DIR'] = self._data_path
 
     def __exit__(self, *args):
         # Restore the original environment
 
         os.environ.clear()
         os.environ.update(self._old_environ)
-
-        if not self._data_path:  # If there is no user defined path
+        if self._temp_dir is not None:
             self._temp_dir.cleanup()
 
     def _decorate_callable(self, func: callable) -> callable:
@@ -171,7 +155,10 @@ class TestWithCleanEnv:
 
         for attr_name in dir(wrap_class):
             # Skip attributes without correct prefix
-            if not (attr_name.startswith('test_') or attr_name in ('setUp')):
+            if not (attr_name.startswith('test') or
+                    attr_name.startswith('assert') or
+                    attr_name in ('setUp')
+            ):
                 continue
 
             # Skip attributes that are not callable

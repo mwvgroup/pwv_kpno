@@ -103,7 +103,7 @@ class URLDownload:
             HTTPError, TimeoutError, ConnectionError
         """
 
-        out_path = self._data_dir / fname
+        out_path = self.data_dir / fname
         if out_path.exists() and not force:
             return
 

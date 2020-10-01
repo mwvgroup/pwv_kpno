@@ -29,7 +29,8 @@ from tests.wrappers import TestWithCleanEnv
 
 
 @requests_mock.Mocker()
-class TargetURLS(TestCase, TestWithCleanEnv):
+@TestWithCleanEnv()
+class TargetURLS(TestCase):
     """Test each download function retrieves data from the appropriate URLs"""
 
     # Expected URLs for each kind of data release. Supports regex.
@@ -38,14 +39,6 @@ class TargetURLS(TestCase, TestWithCleanEnv):
     conus_daily_url = 'https://www.suominet.ucar.edu/data/staYrDay/{}*'.format(test_suominet_id.upper())
     conus_hourly_url = 'https://www.suominet.ucar.edu/data/staYrHr/{}*'.format(test_suominet_id.upper())
     global_daily_url = 'https://www.suominet.ucar.edu/data/staYrDayGlob/{}*'.format(test_suominet_id.upper())
-
-    @classmethod
-    def setUpClass(cls):
-        super().setUpENV(cls)
-
-    @classmethod
-    def tearDownClass(cls):
-        super().tearDownENV(cls)
 
     def setUp(self):
         """Instantiate a ``ReleaseDownloader`` object for testing"""
@@ -73,16 +66,9 @@ class TargetURLS(TestCase, TestWithCleanEnv):
         self.downloader.download_global_daily(2020)
 
 
-class DownloadedPathNames(TestCase, TestWithCleanEnv):
+@TestWithCleanEnv()
+class DownloadedPathNames(TestCase):
     """Test downloaded files are saved with the correct naming scheme"""
-
-    @classmethod
-    def setUpClass(cls):
-        super().setUpENV()
-
-    @classmethod
-    def tearDownClass(cls):
-        super().tearDownENV()
 
     def setUp(self):
         """Instantiate a ``ReleaseDownloader`` object for testing"""
@@ -102,10 +88,10 @@ class DownloadedPathNames(TestCase, TestWithCleanEnv):
         # Allow all possible URL's with SSL
         with requests_mock.Mocker() as mocker:
             mocker.register_uri('GET', re.compile('https://*'), )
-            download_func(self.dummy_rec_name, self.dummy_year, verbose=False)
+            download_func(self.dummy_year, verbose=False)
 
         expected_path = self.downloader.data_dir / file_name
-        self.assertTrue(expected_path.exists())
+        self.assertTrue(expected_path.exists(), 'Path does not exist {}'.format(expected_path))
 
     def test_correct_conus_daily_path_format(self):
         """Test ``download_conus_daily`` uses the correct file pattern"""
