@@ -71,14 +71,14 @@ class TransmissionCall(TestCase):
 
         transmission = self.transmission(4)
         self.assertIsInstance(transmission, pd.Series)
-        self.assertEqual(transmission.name, f'4.0 mm')
+        self.assertEqual(transmission.name, '4.0 mm')
 
     def test_vector_pwv_returns_dataframe(self):
         """Test passing a vector of PWV values returns a pandas DataFrame"""
 
         transmission = self.transmission([4, 5])
         self.assertIsInstance(transmission, pd.DataFrame)
-        np.testing.assert_equal(transmission.columns.values, [f'4.0 mm', f'5.0 mm'])
+        np.testing.assert_equal(transmission.columns.values, ['4.0 mm', '5.0 mm'])
 
 
 class IncompatibleInitArguments(TestCase):

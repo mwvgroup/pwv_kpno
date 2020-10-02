@@ -49,7 +49,7 @@ class DataDir(TestCase):
         expected_dir = os.environ['SUOMINET_DIR']
         self.assertEqual(
             Path(expected_dir), downloader.data_dir,
-            f'Returned path did not equal environmental variable: {expected_dir}')
+            'Returned path did not equal environmental variable: {}'.format(expected_dir))
 
     def test_no_env_variable(self):
         """Test return directory is inside package if not in environment"""

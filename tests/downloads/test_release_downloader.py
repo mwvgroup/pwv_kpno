@@ -98,21 +98,21 @@ class DownloadedPathNames(TestCase):
 
         self.assertCorrectFilePath(
             self.downloader.download_conus_daily,
-            f'{self.dummy_rec_name}dy_{self.dummy_year}.plt')
+            '{}dy_{}.plt'.format(self.dummy_rec_name, self.dummy_year))
 
     def test_correct_conus_hourly_path_format(self):
         """Test ``download_conus_hourly`` uses the correct file pattern"""
 
         self.assertCorrectFilePath(
             self.downloader.download_conus_hourly,
-            f'{self.downloader.receiver_id}hr_{self.dummy_year}.plt')
+            '{}hr_{}.plt'.format(self.downloader.receiver_id, self.dummy_year))
 
     def test_correct_conus_global_daily_path_format(self):
         """Test ``download_global_daily`` uses the correct file pattern"""
 
         self.assertCorrectFilePath(
             self.downloader.download_global_daily,
-            f'{self.dummy_rec_name}gl_{self.dummy_year}.plt')
+            '{}gl_{}.plt'.format(self.downloader.receiver_id, self.dummy_year))
 
 
 class Repr(TestCase):
