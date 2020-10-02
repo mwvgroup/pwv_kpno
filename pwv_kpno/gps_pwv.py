@@ -391,7 +391,7 @@ class PWVModel:
             'spline', 'barycentric', 'polynomial')
 
         if method not in valid_methods:
-            raise ValueError(f'Invalid interpolation method: {method}')
+            raise ValueError('Invalid interpolation method: {}'.format(method))
 
         # Resample modeled values onto a uniform sampling of time values
         # Credit: https://stackoverflow.com/a/47148740

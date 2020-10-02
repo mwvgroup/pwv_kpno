@@ -212,7 +212,7 @@ class DownloadManager(URLDownload):
             A list of Id's for SuomiNet GPS receivers
         """
 
-        return sorted(set(fpath.stem[:4] for fpath in self._data_dir.glob(f'*.plt')))
+        return sorted(set(fpath.stem[:4] for fpath in self._data_dir.glob('*.plt')))
 
     def check_downloaded_data(self, receiver_id: str) -> Dict[str, List[int]]:
         """Determine which data files have been downloaded for a given receiver Id

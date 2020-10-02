@@ -217,7 +217,7 @@ class TransmissionModel(VectorizedCall):
         pwv_eff = calc_pwv_eff(pwv, norm_pwv=self.norm_pwv, eff_exp=self.eff_exp)
         xi = [[pwv_eff, w] for w in wave]
 
-        return pd.Series(interp_func(xi), index=wave, name=f'{float(np.round(pwv, 4))} mm')
+        return pd.Series(interp_func(xi), index=wave, name='{} mm'.format(float(np.round(pwv, 4))))
 
 
 class CrossSectionTransmission(VectorizedCall):
@@ -280,5 +280,5 @@ class CrossSectionTransmission(VectorizedCall):
 
         return pd.Series(
             np.interp(wave, transmission_wavelengths, transmission),
-            name=f'{float(np.round(pwv, 4))} mm',
+            name='{} mm'.format(float(np.round(pwv, 4))),
             index=wave)
