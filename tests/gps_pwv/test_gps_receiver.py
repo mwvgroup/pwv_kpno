@@ -19,78 +19,101 @@
 
 """Tests for the ``pwv_kpno.gps_pwv.GPSReceiver`` class"""
 
-from unittest import TestCase, skip
+from unittest import TestCase
 
 from pwv_kpno.gps_pwv import GPSReceiver
+from tests.wrappers import TestWithCleanEnv, TEST_DATA_DIR
 
 
 class SetupMixin:
+    """Creates a dummy ``GPSReceiver`` object for testing"""
 
     def setUp(self):
         """Create a mock pwv model for testing"""
 
-        self.primary = 'REC1'
+        self.primary = 'KITT'
         self.data_cuts = {'PWV': [(2, 8)]}
         self.receiver = GPSReceiver(self.primary, self.data_cuts, cache_data=True)
 
 
 # noinspection PyPropertyAccess
-class ReceiverIdUppercase(SetupMixin, TestCase):
+class ReceiverId(SetupMixin, TestCase):
+    """Test accessibility and formatting of the ``receiver_id`` attribute"""
 
     def test_id_is_uppercase(self):
-        """Test receivers are stored in uppercase"""
+        """Test receiver Id is forced to be uppercase"""
 
         receiver = GPSReceiver('rec1')
         self.assertTrue(receiver.receiver_id.isupper(), 'Receiver Id is not uppercase.')
 
-    def test_id_non_muatable(self):
-        receiver = GPSReceiver('rec1')
+    def test_receiver_id_non_muatable(self):
+        """Test the ``receiver_id`` object is not settable"""
+
         with self.assertRaises(AttributeError):
-            receiver.rec_id = 'rec2'
+            self.receiver.receiver_id = 'rec2'
 
 
 class CacheClearing(SetupMixin, TestCase):
+    """Test that various methods clear cached data from memory"""
 
     def test_clear_raises_error_when_cache_disabled(self):
+        """Test an error is thrown when clearing the cache with caching disabled"""
+
         self.receiver.cache_data = False
         with self.assertRaises(RuntimeError):
             self.receiver.clear_cache()
 
-    def test_cache_is_cleared(self):
+    def test_clear_cache_func(self):
+        """Test the ``clear_cache`` function resets the class' cache"""
+
         self.receiver._cache = True  # Assign anything that isn't None
         self.receiver.clear_cache()
         self.assertIsNone(self.receiver._cache, 'Cache was not reset to None')
 
+    def test_cache_data_attr(self):
+        """Test setting the ``cache_data`` attribute resets the class' cache"""
 
-@skip
-# @TestWithCleanEnv(TEST_DATA_DIR)
-class LoadRecDirectory(TestCase):
+        self.receiver._cache = True  # Assign anything that isn't None
+        self.receiver.cache_data = False
+        self.assertIsNone(self.receiver._cache, 'Cache was not reset to None')
+
+    def test_data_cuts_attr(self):
+        """Test setting the ``data_cuts`` attribute resets the class' cache"""
+
+        self.receiver._cache = True  # Assign anything that isn't None
+        self.receiver.data_cuts = dict()
+        self.assertIsNone(self.receiver._cache, 'Cache was not reset to None')
+
+
+@TestWithCleanEnv(TEST_DATA_DIR)
+class LoadRecDirectory(SetupMixin, TestCase):
     """Tests for the ``load_rec_data`` function"""
 
     def test_empty_dataframe_columns(self):
         """Test returned DataFrame has correct column names"""
 
         # Use a fake receiver Id should return an empty dataframe
-        data = load_rec_data('dummy_receiver')
-        expected_columns = ['PWV, PWVErr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH']
+        data = self.receiver._load_rec_data()
+        expected_columns = ['PWV', 'PWVErr', 'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH']
         self.assertListEqual(expected_columns, list(data.columns))
 
     def test_empty_dataframe_index(self):
         """Test the returned DataFrame is indexed by ``date``"""
 
         # Use a fake receiver Id should return an empty dataframe
-        data = load_rec_data('dummy_receiver')
+        data = self.receiver._load_rec_data()
         self.assertEqual('date', data.index.name)
 
     def test_warns_on_empty_data(self):
         """Test a warning is raised for an empty data frame"""
 
+        receiver = GPSReceiver('dummy_receiver')
         with self.assertWarns(Warning):
-            load_rec_data('dummy_receiver')
+            receiver._load_rec_data()
 
     def test_expected_years_are_parsed(self):
         """Test data is returned from all available data files for a given receiver"""
 
-        azam_data = load_rec_data('AZAM')
+        azam_data = GPSReceiver('AZAM').weather_data()
         self.assertEqual(2015, azam_data.index.min().year, '2015 data missing from return')
         self.assertEqual(2016, azam_data.index.max().year, '2016 data missing from return')

@@ -140,7 +140,7 @@ class GPSReceiver:
         warnings.warn('No local data found for {}'.format(self._rec_id))
 
         return pd.DataFrame(columns=[
-            'date', 'PWV, PWVErr',
+            'date', 'PWV', 'PWVErr',
             'ZenithDelay', 'SrfcPress', 'SrfcTemp', 'SrfcRH'
         ]).set_index('date')
 
