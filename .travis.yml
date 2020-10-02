@@ -15,7 +15,6 @@ install:
 
   # Extra dependencies for running tests
   - pip install coverage
-  - pip install unittest
 
 script:
   - coverage run -m unittest
