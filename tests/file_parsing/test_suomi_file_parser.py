@@ -69,7 +69,7 @@ class ParsePathStem(TestCase):
 
         self.receiver_id = 'RECI'
         self.year = 2020
-        self.test_path = Path('{}dy_{}'.format(self.receiver_id, self.year))
+        self.test_path = Path(f'{self.receiver_id}dy_{self.year}')
 
     def test_correct_receiver(self):
         """Test the correct receiver Id is recovered from the file path"""

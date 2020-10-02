@@ -100,7 +100,7 @@ class DeleteLocalData(TestCase):
         for receiver in ('rec1', 'rec2'):
             for data_type in ('hr', 'dy', 'gl'):
                 for year in range(2010, 2016):
-                    fname = '{}{}_{}.plt'.format(receiver, data_type, year)
+                    fname = f'{receiver}{data_type}_{year}.plt'
                     dummy_file = self.download_manager.data_dir / fname
                     dummy_file.touch()
                     self.file_list.append(dummy_file)
@@ -114,7 +114,7 @@ class DeleteLocalData(TestCase):
 
         self.download_manager.delete_local_data('rec1', dry_run=True)
         for file in self.file_list:
-            self.assertTrue(file.exists(), 'File was deleted: {}'.format(file))
+            self.assertTrue(file.exists(), f'File was deleted: {file}')
 
     def test_deletes_given_years(self):
         """Test files are only deleted for the given years"""

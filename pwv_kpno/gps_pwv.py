@@ -129,7 +129,7 @@ class GPSReceiver:
 
         data = []  # Collector for DataFrames with data from each data type
         for dtype in data_types:
-            global_files = list(directory.glob('{}{}_*.plt'.format(self._rec_id, dtype)))
+            global_files = list(directory.glob(f'{self._rec_id}{dtype}_*.plt'))
             if global_files:
                 data.append(pd.concat([SuomiFileParser(f) for f in global_files]))
 
@@ -137,7 +137,7 @@ class GPSReceiver:
             combined_data = pd.concat(data)
             return combined_data.loc[~combined_data.index.duplicated(keep='first')]
 
-        warnings.warn('No local data found for {}'.format(self._rec_id))
+        warnings.warn(f'No local data found for {self._rec_id}')
 
         return pd.DataFrame(columns=[
             'date', 'PWV', 'PWVErr',
@@ -219,10 +219,10 @@ class GPSReceiver:
 
     def __repr__(self) -> str:
         if self.cache_data:
-            return 'GPSReceiver(rec_id="{}", data_cuts={}, cache_data=True)'.format(self.receiver_id, self.data_cuts)
+            return f'GPSReceiver(rec_id="{self.receiver_id}", data_cuts={self.data_cuts}, cache_data=True)'
 
         else:
-            return 'GPSReceiver(rec_id="{}", data_cuts={})'.format(self.receiver_id, self.data_cuts)
+            return f'GPSReceiver(rec_id="{self.receiver_id}", data_cuts={self.data_cuts})'
 
 
 class PWVModel:
@@ -321,7 +321,7 @@ class PWVModel:
                 _fitted_pwv, _fitted_error = self._fit_primary_to_secondary(primary_data, secondary_data)
 
             except RuntimeError:  # Failed ODR regression
-                warnings.warn('Linear regression failed for {}. Dropped from model'.format(secondary_rec))
+                warnings.warn(f'Linear regression failed for {secondary_rec}. Dropped from model')
 
             else:
                 fitted_pwv[secondary_rec] = _fitted_pwv
@@ -413,4 +413,4 @@ class PWVModel:
         return interp_data
 
     def __repr__(self) -> str:
-        return 'PWVModel(primary="{}", secondaries={})'.format(self.primary, self.secondaries)
+        return f'PWVModel(primary="{self.primary}", secondaries={self.secondaries})'

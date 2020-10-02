@@ -36,9 +36,9 @@ class TargetURLS(TestCase):
     # Expected URLs for each kind of data release. Supports regex.
     # Suominet URLs expect receiver Id's to be uppercase
     test_suominet_id = 'dummy_receiver_id'
-    conus_daily_url = 'https://www.suominet.ucar.edu/data/staYrDay/{}*'.format(test_suominet_id.upper())
-    conus_hourly_url = 'https://www.suominet.ucar.edu/data/staYrHr/{}*'.format(test_suominet_id.upper())
-    global_daily_url = 'https://www.suominet.ucar.edu/data/staYrDayGlob/{}*'.format(test_suominet_id.upper())
+    conus_daily_url = f'https://www.suominet.ucar.edu/data/staYrDay/{test_suominet_id.upper()}*'
+    conus_hourly_url = f'https://www.suominet.ucar.edu/data/staYrHr/{test_suominet_id.upper()}*'
+    global_daily_url = f'https://www.suominet.ucar.edu/data/staYrDayGlob/{test_suominet_id.upper()}*'
 
     def setUp(self):
         """Instantiate a ``ReleaseDownloader`` object for testing"""
@@ -91,7 +91,7 @@ class DownloadedPathNames(TestCase):
             download_func(self.dummy_year, verbose=False)
 
         expected_path = self.downloader.data_dir / file_name
-        self.assertTrue(expected_path.exists(), 'Path does not exist {}'.format(expected_path))
+        self.assertTrue(expected_path.exists(), f'Path does not exist {expected_path}')
 
     def test_correct_conus_daily_path_format(self):
         """Test ``download_conus_daily`` uses the correct file pattern"""

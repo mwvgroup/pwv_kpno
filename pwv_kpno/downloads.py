@@ -130,7 +130,7 @@ class URLDownload:
                         pbar.update(ofile.write(data))
 
     def __repr__(self) -> str:
-        return "URLDownload('{}')".format(self._data_dir)
+        return f"URLDownload('{self._data_dir}')"
 
 
 class ReleaseDownloader(URLDownload):
@@ -160,8 +160,8 @@ class ReleaseDownloader(URLDownload):
             HTTPError, TimeoutError, ConnectionError
         """
 
-        fname = '{}dy_{}.plt'.format(self.receiver_id.upper(), year)
-        url = 'https://www.suominet.ucar.edu/data/staYrDay/{}pp_{}.plt'.format(self.receiver_id, year)
+        fname = f'{self.receiver_id.upper()}dy_{year}.plt'
+        url = f'https://www.suominet.ucar.edu/data/staYrDay/{self.receiver_id}pp_{year}.plt'
         self.download_suomi_url(url, fname, timeout, force, verbose)
 
     def download_conus_hourly(self, year: int, timeout=None, force: bool = False, verbose: bool = True) -> None:
@@ -177,8 +177,8 @@ class ReleaseDownloader(URLDownload):
             HTTPError, TimeoutError, ConnectionError
         """
 
-        fname = '{}hr_{}.plt'.format(self.receiver_id.upper(), year)
-        url = 'https://www.suominet.ucar.edu/data/staYrHr/{}nrt_{}.plt'.format(self.receiver_id, year)
+        fname = f'{self.receiver_id.upper()}hr_{year}.plt'
+        url = f'https://www.suominet.ucar.edu/data/staYrHr/{self.receiver_id}nrt_{year}.plt'
         self.download_suomi_url(url, fname, timeout, force, verbose)
 
     def download_global_daily(self, year: int, timeout=None, force: bool = False, verbose: bool = True) -> None:
@@ -194,12 +194,12 @@ class ReleaseDownloader(URLDownload):
             HTTPError, TimeoutError, ConnectionError
         """
 
-        fname = '{}gl_{}.plt'.format(self.receiver_id.upper(), year)
-        url = 'https://www.suominet.ucar.edu/data/staYrDayGlob/{}_{}global.plt'.format(self.receiver_id, year)
+        fname = f'{self.receiver_id.upper()}gl_{year}.plt'
+        url = f'https://www.suominet.ucar.edu/data/staYrDayGlob/{self.receiver_id}_{year}global.plt'
         self.download_suomi_url(url, fname, timeout, force, verbose)
 
     def __repr__(self) -> str:
-        return "ReleaseDownloader('{}', '{}')".format(self.receiver_id, self._data_dir)
+        return f"ReleaseDownloader('{self.receiver_id}', '{self._data_dir}')"
 
 
 class DownloadManager(URLDownload):
@@ -226,7 +226,7 @@ class DownloadManager(URLDownload):
 
         available_years = {'global': [], 'daily': [], 'hourly': []}
         release_type = {'gl': 'global', 'dy': 'daily', 'hr': 'hourly'}
-        for fpath in self._data_dir.glob('{}*.plt'.format(receiver_id.upper())):
+        for fpath in self._data_dir.glob(f'{receiver_id.upper()}*.plt'):
             year = int(fpath.stem[-4:])
             data_type = release_type[fpath.stem[4:6]]
             available_years[data_type].append(year)
@@ -252,7 +252,7 @@ class DownloadManager(URLDownload):
         # Default to a file pattern that includes all data types and years
         years = years if years else ['*']
         release_type = '*'
-        path_pattern = '{}{}_{{}}.plt'.format(receiver_id.upper(), release_type)
+        path_pattern = f'{receiver_id.upper()}{release_type}_{{}}.plt'
 
         # Delete all data matching the file pattern
         out_files = []
@@ -303,4 +303,4 @@ class DownloadManager(URLDownload):
                     continue
 
     def __repr__(self) -> str:
-        return "DownloadManager('{}')".format(self._data_dir)
+        return f"DownloadManager('{self._data_dir}')"
