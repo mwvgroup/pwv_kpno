@@ -125,3 +125,9 @@ class SuomiNetFileParsing(TestCase):
         """
 
         SuomiFileParser(TEST_DATA_DIR / 'SA48dy_2010.plt')
+
+    def test_index_is_tz_aware(self):
+        """Test returned datetime index is tz aware"""
+
+        parsed_data = SuomiFileParser(TEST_DATA_DIR / 'KITThr_2016.plt')
+        self.assertEqual(parsed_data.index[0].tz, utc)
