@@ -79,8 +79,8 @@ class DownloadAvailableData(TestCase):
         # Only register the years we want to test. Other years will raise an error
         years = [2011, 2012, 2018]
         for year in years:
-            mocker.register_uri('GET', re.compile('https://.*{}\.plt'.format(year)))
-            mocker.register_uri('GET', re.compile('https://.*{}global\.plt'.format(year)))
+            mocker.register_uri('GET', re.compile(f'https://.*{year}\.plt'))
+            mocker.register_uri('GET', re.compile(f'https://.*{year}global\.plt'))
 
         # Will raise error if URL for an unregistered year is requested
         DownloadManager().download_available_data('dummy_id', years, verbose=False)
