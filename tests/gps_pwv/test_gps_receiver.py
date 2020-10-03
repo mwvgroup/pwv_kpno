@@ -21,6 +21,9 @@
 
 from unittest import TestCase
 
+import numpy as np
+import pandas as pd
+
 from pwv_kpno.gps_pwv import GPSReceiver
 from tests.wrappers import TestWithCleanEnv, TEST_DATA_DIR
 
@@ -117,6 +120,18 @@ class LoadRecDirectory(SetupMixin, TestCase):
         azam_data = GPSReceiver('AZAM').weather_data()
         self.assertEqual(2015, azam_data.index.min().year, '2015 data missing from return')
         self.assertEqual(2016, azam_data.index.max().year, '2016 data missing from return')
+
+
+class TestDataCutsApplied(TestCase):
+    """Test data cuts are applied to the returned data"""
+
+    def runTest(cls):
+        test_data = pd.DataFrame({'PWV': np.arange(10)})
+        receiver = GPSReceiver('dummy_id', data_cuts={'PWV': [(1, float('inf'))]}, cache_data=True)
+        receiver._cache = test_data
+
+        pd.testing.assert_frame_equal(receiver.weather_data(apply_cuts=False), test_data)
+        pd.testing.assert_frame_equal(receiver.weather_data(), test_data[test_data.PWV >= 1])
 
 
 class Repr(TestCase):
