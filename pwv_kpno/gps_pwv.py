@@ -243,9 +243,6 @@ class PWVModel:
         self._secondaries = secondaries
         self._pwv_model = None  # Place holder for lazy loading
 
-        if primary.receiver_id in [r.receiver_id for r in self._secondaries]:
-            raise ValueError('Primary receiver cannot be listed as a secondary receiver')
-
     @property
     def primary(self) -> GPSReceiver:
         """The primary GPS receiver to retrieve PWV data for"""
