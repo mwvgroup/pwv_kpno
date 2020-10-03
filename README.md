@@ -4,8 +4,8 @@
 </h1>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[![release](https://img.shields.io/badge/version-1.2.0-blue.svg)]()
-[![python](https://img.shields.io/badge/python-3.5+-blue.svg)]()
+[![release](https://img.shields.io/badge/version-2.0.0.dev-blue.svg)]()
+[![python](https://img.shields.io/badge/python-3.6+-blue.svg)]()
 [![license](https://img.shields.io/badge/license-GPL%20v3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![Build Status](https://travis-ci.org/mwvgroup/pwv_kpno.svg?branch=master)](https://travis-ci.org/mwvgroup/pwv_kpno)
 [![Coverage Status](https://coveralls.io/repos/github/mwvgroup/pwv_kpno/badge.svg?branch=master)](https://coveralls.io/github/mwvgroup/pwv_kpno?branch=master)

@@ -52,7 +52,6 @@ setup(name='pwv_kpno',
       long_description=long_description(),
       long_description_content_type='text/markdown',
       classifiers=[
-          'Development Status :: 4 - Beta',
           'Intended Audience :: Science/Research',
           'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
           'Natural Language :: English',

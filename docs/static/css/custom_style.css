@@ -1,0 +1,98 @@
+:root {
+    --blue: #2c3e50;
+    --indigo: #6610f2;
+    --purple: #6f42c1;
+    --pink: #e83e8c;
+    --red: #e74c3c;
+    --orange: #fd7e14;
+    --yellow: #f39c12;
+    --green: #18bc9c;
+    --teal: #20c997;
+    --cyan: #3498db;
+    --white: #fff;
+    --gray: #95a5a6;
+    --gray-dark: #343a40;
+    --primary: #2c3e50;
+    --secondary: #95a5a6;
+    --success: #18bc9c;
+    --info: #3498db;
+    --warning: #f39c12;
+    --danger: #e74c3c;
+    --light: #ecf0f1;
+    --dark: #7b8a8b;
+    --breakpoint-xs: 0;
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+    --font-family-sans-serif: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+h1, h2, h3, h4 {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+a {
+    color: var(--info);
+    padding: 20px 0;
+}
+
+body {
+    color: var(--gray-dark);
+    text-align: justify;
+}
+
+body div.bs-sidenav {
+    text-align: left;
+}
+
+body div.section div.section {
+    margin-top: 50px;
+}
+
+footer {
+    margin-top: 50px;
+    background-color: var(--secondary);
+}
+
+footer a {
+    color: black;
+}
+
+/* Admonitions like warnings, notes, alerts, etc. */
+.admonition.warning {
+    background-color: var(--orange);
+    margin: 15px 20px !important;
+    padding: 15px !important;
+}
+
+.admonition.note {
+    background-color: #acc7da;
+    color: var(--gray-dark);
+    padding: 10px;
+    border: none;
+}
+
+code.descname, code.descclassname {
+    color: var(--info);
+    padding: 0 2px;
+}
+
+
+table.badges td {
+    text-align: center !important;
+}
+
+.row {
+    padding-bottom: 50px;
+}
+
+.figure.logo {
+    max-width: 800px;
+}
+
+.figure.validation-figure {
+    max-width: 80%;
+}

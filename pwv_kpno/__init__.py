@@ -16,42 +16,35 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
-"""pwv_kpno provides models for the atmospheric transmission function due to
-precipitable water vapor (PWV). Using PWV measurements published
-by the SuomiNet project (https://www.suominet.ucar.edu), this package is
-capable of returning the modeled PWV transmission for a given date and time
-at customizable geographic locations. By default, this functionality
-is set to model Kitt Peak National Observatory. Default models cover
-wavelengths from 3,000 to 12,000 Angstroms at a resolution of 0.05 Angstroms.
+"""``pwv_kpno`` provides models for the atmospheric transmission function due
+to precipitable water vapor (PWV). Using PWV measurements published by the
+SuomiNet project (https://www.suominet.ucar.edu), the package provides access
+to the modeled PWV concentration and/or atmospheric transmission for a given
+date and time at customizable geographic locations. The atmospheric
+transmission can also be determined manually for a given set of atmospheric
+parameters.
 
-For more information on using this package, documentation is available online
-at https://mwvgroup.github.io/pwv_kpno/ or through the standard python help
-function.
+Package Modules
+---------------
 
-An incomplete guide to getting started:
-
-    To model the effects of PWV absorption on a black body, see the
-    documentation for the `blackbody_with_atm` module:
-
-      >>> from pwv_kpno import blackbody_with_atm as bb_atm
-
-
-    To model the atmospheric transmission function, either for a known PWV
-    concentration or for a datetime at a particular location, see the `pw_atm`
-    module:
-
-      >>> from pwv_kpno import pwv_atm
-
-
-    To configure this package to model a custom geographical site, and to
-    modify other package settings, see the `package_settings` module:
-
-      >>> from pwv_kpno import package_settings
++---------------------+---------------------------------------------------------+
+| Module              | Description                                             |
++=====================+=========================================================+
+| :ref:`defaults`     | Prebuilt receiver objects and transmission models.      |
++---------------------+---------------------------------------------------------+
+| :ref:`downloads`    | Handles the downloading of data from SuomiNet servers.  |
++---------------------+---------------------------------------------------------+
+| :ref:`file_parsing` | Parses files written in the the SuomiNet file format.   |
++---------------------+---------------------------------------------------------+
+| :ref:`gps_pwv`      | PWV modeling and data access for given GPS locations.   |
++---------------------+---------------------------------------------------------+
+| :ref:`transmission` | Models the PWV atmospheric transmission function.       |
++---------------------+---------------------------------------------------------+
+| :ref:`types`        | Custom object types for PEP 484 support.                |
++---------------------+---------------------------------------------------------+
 """
 
-from . import blackbody_with_atm
-from . import package_settings
-from . import pwv_atm
+from .gps_pwv import PWVModel
 
 __authors__ = ['MWV Research Group']
 __copyright__ = 'Copyright 2017, MWV Research Group'
@@ -64,12 +57,6 @@ __credits__ = [
 ]
 
 __license__ = 'GPL V3'
-__version__ = '1.2.2'
+__version__ = '2.0.0.dev5'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Release'
-
-from .package_settings import settings as _settings
-
-from .package_settings import settings as _settings
-
-_settings.set_site('kitt_peak')

@@ -1,22 +1,28 @@
-# Distribution / packaging / building
-*.pyc
-env/
-build/
-dist/
-.eggs/
-pwv_kpno.egg-info/
-pwv_kpno-*/
-pwv_kpno/__pycache__/
+push_pypi
+example_notebooks
 
-# Unit tests / coverage reports
-.cache/
-
-# IDE / Notebook files
-*.ipynb
-.idea/
-
-# Opperating system files
+# OS Files
 *.DS_Store
 
-# Used by developer
-cmd_line.py
+# IDE files
+.idea/
+
+# Python build files
+*__pycache__*
+*.pyc
+.eggs/
+*.egg-info/
+build/
+dist/
+
+# Testing cache files
+.pytest_cache/
+
+# Built Docs
+docs/build
+
+# Jupyter Notebook Checkpoints
+*.ipynb_checkpoints/
+
+# Downloaded SUomiNet data files
+pwv_kpno/suomi_data

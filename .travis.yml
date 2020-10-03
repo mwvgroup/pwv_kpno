@@ -6,16 +6,22 @@ os:
 matrix:
   include:
     - python: 3.6
+    - python: 3.7
     - python: 3.8
 
 install:
+  - pip install -r requirements.txt
   - python setup.py install
-  - pip install coveralls
-  - pip install pytest-cov
-  - pip freeze
+  - pip install coverage
+
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
 
 script:
-  - pytest --cov=pwv_kpno/
+  - coverage run -m unittest
 
-after_success:
-  - "coveralls"
+after_script:
+  - coverage xml
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT

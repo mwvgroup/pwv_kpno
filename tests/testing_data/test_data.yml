@@ -1,0 +1,16 @@
+# This file defines what data the test suite should expect to exist in the
+# `testing_data` directory. If the contents of this file do not match the
+# contents of the parent directory, expect some tests to fail.
+
+AZAM:
+  hourly: [2015]
+  daily: []
+  global: []
+KITT:
+  hourly: [2016]
+  daily: []
+  global: []
+SA48:
+  hourly: []
+  daily: [2010]
+  global: []
