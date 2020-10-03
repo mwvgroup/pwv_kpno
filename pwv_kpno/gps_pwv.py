@@ -59,6 +59,10 @@ class GPSReceiver:
         self._cache_data = cache_data
         self._cache = None
 
+    def __eq__(self, other):
+        raise NotImplementedError(
+            'Cannot equate ``GPSReceiver`` objects. Did you mean to compare ``<instance>.receiver_id``?')
+
     @property
     def receiver_id(self) -> str:
         """SuomiNet Id of the current GPS receiver"""
@@ -218,11 +222,7 @@ class GPSReceiver:
         return DownloadManager().delete_local_data(self.receiver_id, years=years, dry_run=dry_run)
 
     def __repr__(self) -> str:
-        if self.cache_data:
-            return f'GPSReceiver(rec_id="{self.receiver_id}", data_cuts={self.data_cuts}, cache_data=True)'
-
-        else:
-            return f'GPSReceiver(rec_id="{self.receiver_id}", data_cuts={self.data_cuts})'
+        return f'GPSReceiver(receiver_id="{self.receiver_id}", data_cuts={self.data_cuts}, cache_data={self.cache_data})'
 
 
 class PWVModel:
@@ -231,23 +231,17 @@ class PWVModel:
     """
 
     # noinspection PyMissingConstructor
-    def __init__(self, primary: GPSReceiver, secondaries: Collection[GPSReceiver] = None,
-                 data_cuts: DataCuts = None) -> None:
+    def __init__(self, primary: GPSReceiver, secondaries: Collection[GPSReceiver] = None) -> None:
         """Model the PWV at a given GPS receivers using measurements from other, nearby receivers.
 
         Args:
-            primary: SuomiNet Id of the receiver to access
+            primary: Primary GPS receiver to model PWV for
             secondaries: Secondary receivers used to supplement periods with missing primary data
-            data_cuts: Only include data in the given ranges
         """
 
         self._primary = primary
-        self._data_cuts = data_cuts if data_cuts else dict()
         self._secondaries = secondaries
         self._pwv_model = None  # Place holder for lazy loading
-
-        if primary in self._secondaries:
-            raise ValueError('Primary receiver cannot be listed as a secondary receiver')
 
     @property
     def primary(self) -> GPSReceiver:
@@ -413,4 +407,4 @@ class PWVModel:
         return interp_data
 
     def __repr__(self) -> str:
-        return f'PWVModel(primary="{self.primary}", secondaries={self.secondaries})'
+        return f'PWVModel(primary={self.primary}, secondaries={self.secondaries})'

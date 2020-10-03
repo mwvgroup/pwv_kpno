@@ -123,7 +123,7 @@ class SuomiFileParser:
         receiver_id, year = self.parse_path_stem(path)
         date_conversion = partial(self.suomi_date_to_timestamp, year)
         clean_data.index = clean_data.index.map(date_conversion)
-        clean_data.index = pd.to_datetime(clean_data.index, unit='s')
+        clean_data.index = pd.to_datetime(clean_data.index, unit='s', utc=True)
 
         # SuomiNet rounds their error and can report an error of zero
         # We compensate by adding an error of 0.025
