@@ -117,3 +117,16 @@ class LoadRecDirectory(SetupMixin, TestCase):
         azam_data = GPSReceiver('AZAM').weather_data()
         self.assertEqual(2015, azam_data.index.min().year, '2015 data missing from return')
         self.assertEqual(2016, azam_data.index.max().year, '2016 data missing from return')
+
+
+class Repr(TestCase):
+    """Tests for the string representation of ``URLDownloader``"""
+
+    def test_can_be_evaluated(self):
+        """Test the class representation can be evaluated"""
+
+        test_class = GPSReceiver('TESTID', data_cuts={'PWV': [(1, 2)]}, cache_data=False)
+        new_class = eval(repr(test_class))
+        self.assertEqual(new_class.receiver_id, test_class.receiver_id)
+        self.assertEqual(new_class.data_cuts, test_class.data_cuts)
+        self.assertEqual(new_class.cache_data, test_class.cache_data)

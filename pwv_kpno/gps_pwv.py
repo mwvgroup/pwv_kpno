@@ -218,11 +218,7 @@ class GPSReceiver:
         return DownloadManager().delete_local_data(self.receiver_id, years=years, dry_run=dry_run)
 
     def __repr__(self) -> str:
-        if self.cache_data:
-            return f'GPSReceiver(rec_id="{self.receiver_id}", data_cuts={self.data_cuts}, cache_data=True)'
-
-        else:
-            return f'GPSReceiver(rec_id="{self.receiver_id}", data_cuts={self.data_cuts})'
+        return f'GPSReceiver(receiver_id="{self.receiver_id}", data_cuts={self.data_cuts}, cache_data={self.cache_data})'
 
 
 class PWVModel:
