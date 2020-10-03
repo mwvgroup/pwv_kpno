@@ -1,8 +1,5 @@
-numpy
-pandas
-pytz
-pyyaml
+numpy>=1.17.0
+astropy>=3.0.0
 requests
-requests_mock
+pytz
 scipy
-tqdm
