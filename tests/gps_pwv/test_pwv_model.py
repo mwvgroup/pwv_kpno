@@ -24,7 +24,7 @@ from unittest import TestCase
 import numpy as np
 import pandas as pd
 
-from pwv_kpno.gps_pwv import PWVModel
+from pwv_kpno.gps_pwv import PWVModel, GPSReceiver
 
 
 # noinspection PyPropertyAccess
@@ -34,28 +34,21 @@ class ReceiverIdHandling(TestCase):
     def setUp(self):
         """Create a mock pwv model for testing"""
 
-        self.primary = 'REC1'
-        self.secondaries = {'REC2', 'REC3'}
-        self.data_cuts = {'KITT': {'PWV': [(2, 8)]}}
-        self.receiver = PWVModel(self.primary, self.secondaries, self.data_cuts)
-
-    def test_value_error_primary_in_secondaries(self):
-        """Test ``ValueError`` is raise if primary rec is listed in secondaries"""
-
-        with self.assertRaises(ValueError):
-            PWVModel('REC1', {'REC1', 'REC2'})
+        self.primary = GPSReceiver('REC1')
+        self.secondaries = [GPSReceiver('REC2'), GPSReceiver('REC3')]
+        self.model = PWVModel(self.primary, self.secondaries)
 
     def test_primary_rec_not_settable(self):
         """Test the ``primary`` attribute has no setter"""
 
         with self.assertRaises(AttributeError):
-            self.receiver.primary = 'NEW_PRIMARY'
+            self.model.primary = GPSReceiver('NEW_PRIMARY')
 
     def test_secondary_recs_not_settable(self):
         """Test the ``secondaries`` attribute has no setter"""
 
         with self.assertRaises(AttributeError):
-            self.receiver.secondaries = {'NEW_REC_1', 'NEW_REC_2'}
+            self.model.secondaries = [GPSReceiver('NEW_REC_1')]
 
 
 class FitToSecondary(TestCase):
@@ -83,9 +76,6 @@ class Repr(TestCase):
     def test_can_be_evaluated(self):
         """Test the class representation can be evaluated"""
 
-        primary = 'PRIM'
-        secondaries = {'SEC1', 'SEC2'}
-        receiver = eval(repr(PWVModel(primary, secondaries)))
-
-        self.assertEqual(primary, receiver.primary, 'Incorrect primary receiver.')
-        self.assertEqual(secondaries, receiver.secondaries, 'Incorrect secondary receivers.')
+        primary = GPSReceiver('PRIM')
+        secondaries = [GPSReceiver('SEC1'), GPSReceiver('SEC2')]
+        eval(repr(PWVModel(primary, secondaries)))

@@ -56,7 +56,7 @@ Default Transmission Models
 | ``v2_transmission``      | ``TransmissionModel``        | Default atmospheric transmission model based on TAPAS.     |
 +--------------------------+------------------------------+------------------------------------------------------------+
 | ``v1_transmission``      | ``CrossSectionTransmission`` | Included for backward compatibility. The MODTRAN based     |
-|                          |                              | atmospheric transmission model  introduced in Version 1 of |
+|                          |                              | atmospheric transmission model used in Version 1 of        |
 |                          |                              | **pwv_kpno**.                                              |
 +--------------------------+------------------------------+------------------------------------------------------------+
 
