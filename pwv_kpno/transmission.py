@@ -96,8 +96,8 @@ def bin_transmission(transmission: ArrayLike, resolution: float, wave: ArrayLike
     # at the given resolution
     half_res = resolution / 2
     bins = np.arange(
-        min(wave) - half_res,
-        max(wave) + half_res + resolution,
+        wave[0] - half_res,
+        wave[-1] + half_res + resolution,
         resolution)
 
     # noinspection PyArgumentEqualDefault
@@ -160,8 +160,11 @@ class TransmissionModel(VectorizedCall):
             samp_transmission: 2D array with transmission values for each PWV and wavelength
         """
 
+        if not np.all(np.diff(samp_wave) >= 0):
+            raise ValueError('Input wavelengths must be sorted.')
+
         self.samp_pwv = samp_pwv
-        self.samp_wave = samp_wave
+        self.samp_wave = np.array(samp_wave)
         self.samp_transmission = samp_transmission
         self.norm_pwv = norm_pwv
         self.eff_exp = eff_exp
@@ -240,7 +243,10 @@ class CrossSectionTransmission(VectorizedCall):
             cross_sections: 1D array with cross sections in cm squared
         """
 
-        self.samp_wave = samp_wave
+        if not np.all(np.diff(samp_wave) >= 0):
+            raise ValueError('Input wavelengths must be sorted.')
+
+        self.samp_wave = np.array(samp_wave)
         self.cross_sections = cross_sections
 
     @classmethod
