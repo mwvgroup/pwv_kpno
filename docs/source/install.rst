@@ -1,7 +1,8 @@
 Installation
 ============
 
-To install the **pwv_kpno** API, please choose one of the options below.
+The **pwv_kpno** package is open source and can be installed using
+any of the options listed below.
 
 Install Using PIP (Recommended)
 -------------------------------
@@ -13,19 +14,11 @@ recommended method for installing **pwv_kpno**. To install with pip, run:
 
     pip install pwv_kpno
 
-The pip package manager will automatically install any missing dependencies
-in your Python environment. If you have any issues installing the package,
-try installing the dependency manually and then reinstall **pwv_kpno**.
-Dependencies can be installed manually with pip by running:
-
-.. code-block:: bash
-
-    pip install -r requirements.txt
-
 Install from Source
 -------------------
 
-The package source code can be downloaded from GitHub_.
+The package source code is available on GitHub_ and can be downloaded from
+the GitHub webpage or using the ``git`` command line client:
 
 .. _GitHub: https://github.com/mwvgroup/pwv_kpno.git
 
@@ -33,7 +26,8 @@ The package source code can be downloaded from GitHub_.
 
    git clone https://github.com/mwvgroup/pwv_kpno.git
 
-The package can then be installed by running the included setup file:
+Once the source code has been downloaded, it can be installed in your
+current working environment by running the included setup file:
 
 .. code-block:: bash
 
@@ -41,30 +35,39 @@ The package can then be installed by running the included setup file:
 
 As in the previous method, any missing dependencies in your Python environment
 should be installed automatically. If you have any issues installing the
-package, install each dependency from requirements.txt and then try again.
+package, install each dependency listed in the included
+``requirements.txt`` file and try again.
 
 Package Setup
 -------------
 
-By default, data downloaded by the **pwv_kpno** package is downloaded to the
-installation directory. While this avoids most potential permission erros,
-it also means that each installation of the package will download and manage
-duplicate data. If you are working with multiple environments, the
-``SUOMINET_DIR`` variable can be set in the working environment to configure
-where data should be downloaded by the **pwv_kpno** package.
+By default, any data downloaded by **pwv_kpno** is stored in the
+installation directory. This avoids potential permission errors and cross-talk
+between installations in different environments. However, when working with
+multiple environments (such as when using conda) you may wish to have
+installations share ownership of the downloaded data. In this case, the
+``SUOMINET_DIR`` variable can be set in your working environment to configure
+where data should be written by the **pwv_kpno** package.
+
+To enable this feature, define the following in your ``.bashrc`` or
+``.bash_profile`` file:
+
+.. code-block:: bash
+
+   export SUOMINET_DIR="/my/data/directory"
 
 Running Tests
 -------------
 
-If desired, you can run the **pwv_kpno** test suite against the installed
-package. This can be accomplished using pip:
+You can run the **pwv_kpno** test suite against the installed
+package using the ``setup.py`` file included with the source code:
 
-.. code-block:: bash
+.. code-block::
 
    pip install --install-option test
 
 or using the ``setup.py`` file:
 
-.. code-block:: bash
+.. code-block::
 
    python setup.py test
