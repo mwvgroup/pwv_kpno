@@ -27,6 +27,7 @@ master_doc = 'source/index'  # Document with master table of contents
 pygments_style = 'sphinx'  # Syntax highlighting style
 highlight_language = 'python3'
 html_static_path = ['./static/']
+copybutton_prompt_text = '>>> '
 
 # General project meta data
 project = 'pwv_kpno'
