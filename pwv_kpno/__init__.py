@@ -60,3 +60,25 @@ __license__ = 'GPL V3'
 __version__ = '2.0.0.dev6'
 __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Release'
+
+
+def plot_transmission(wavelengths, transmission):
+    """Plot atmospheric transmission values as a function of wavelength
+
+    Args:
+        wavelengths: Array of wavelength values in units of Angstroms
+        transmission: Array of dimensionless transmission values
+    """
+
+    import numpy as np
+    from matplotlib import pyplot as plt
+
+    fig, axis = plt.subplots()
+    axis.fill_between(wavelengths, transmission, np.ones_like(transmission))
+
+    axis.set_xlim(min(wavelengths), max(wavelengths))
+    axis.set_ylim(0, 1)
+
+    axis.set_xlabel(r'Wavelengths [$\AA$]')
+    axis.set_ylabel(r'Atmospheric Transmission')
+    return fig
