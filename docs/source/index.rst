@@ -29,6 +29,16 @@
 .. toctree::
    :hidden:
    :titlesonly:
+   :caption: Examples:
+
+   examples/modeling.rst
+   examples/downloading_pwv_data.rst
+   examples/data_cuts.rst
+   examples/correcting_photometry.rst
+
+.. toctree::
+   :hidden:
+   :titlesonly:
    :caption: API Documentation:
 
    api/pwv_kpno
@@ -38,16 +48,6 @@
    api/gps_pwv
    api/transmission
    api/types
-
-.. toctree::
-   :hidden:
-   :titlesonly:
-   :caption: Examples:
-
-   examples/modeling.rst
-   examples/downloading_pwv_data.rst
-   examples/data_cuts.rst
-   examples/correcting_photometry.rst
 
 .. toctree::
    :hidden:
@@ -66,35 +66,46 @@
 What is *pwv_kpno*?
 ===================
 
-**pwv_kpno** is a scientific Python package that provides models for the
-atmospheric transmission due to precipitable water vapor (PWV). Using GPS
-measurements of the atmosphere, the package provides atmospheric models
+**pwv_kpno** is an open-source Python package for modeling the transmission of
+light through Earth's atmosphere due to atmospheric water vapor. Using GPS
+measurements of the atmosphere, the package provides transmission models
 for user definable sites as a function of date, time, and airmass. Customizable
 transmission models are also available independent of location (i.e., using
 user defined parameters instead of GPS based measurements) and span a wavelength
 coverage of 3,000 to 12,000 Angstroms.
 
+.. doctest:: python
+
+   >>> import numpy as np
+   >>> from pwv_kpno.defaults import v1_transmission
+   >>> from pwv_kpno import plot_transmission
+
+   >>> # Define wavelength values in units of angstroms
+   >>> wavelengths = np.arange(3000, 12000)
+   >>> transmission = v1_transmission(wavelengths)
+   >>> fig = plot_transmission(wavelengths, transmission)
+   >>> fig.show()
+
+
 How it Works
 ------------
 
-**pwv_kpno** is based on publicly available data taken by the SuomiNet project:
-a meteorological initiative that provides semi-hourly
-PWV measurements for hundreds of GPS receivers worldwide. The **pwv_kpno**
-package uses published SuomiNet data in conjunction with MODTRAN / LIBRADTRAN models to
-modeled the time-dependent atmospheric transmission.
+**pwv_kpno** is based on public data taken by the SuomiNet project:
+a meteorological initiative that provides semi-hourly precipitable water vapor
+(PWV) measurements for hundreds of GPS receivers worldwide. The **pwv_kpno**
+package uses published SuomiNet data in conjunction with MODTRAN / LIBRADTRAN
+models to modeled the time-dependent atmospheric transmission.
 
 Contributing and Attribution
 ----------------------------
 
-*pwv_kpno* is open source software released under the GNU General Public
-License. Issues raised on `GitHub <https://github.com/mwvgroup/pwv_kpno>`_ and
-pull requests from contributors are welcome. Additionally, pull requests
-introducing default configuration files for new sites are also welcome.
-
+The **pwv_kpno** package is open source software released under the GNU General
+Public License. Issues raised on `GitHub <https://github.com/mwvgroup/pwv_kpno>`_
+and pull requests from contributors are welcome.
 If you use **pwv_kpno** as part of any published work or research, we ask that
 you please cite `Perrefort, Wood-Vasey et al. 2018 <https://arxiv.org/abs/1806.09701>`_.
-If the publisher allows, you can also include a footnote with a link pointing
-to this documentation page.
+If the publisher allows, you are encouraged to also include a footnote with a
+link pointing at this documentation page.
 
 |
 

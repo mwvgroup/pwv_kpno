@@ -15,7 +15,8 @@ extensions = [
     'sphinx.ext.mathjax',  # For rendering mathematical equations
     'sphinx.ext.autosectionlabel',  # Auto generates section labels
     'sphinxcontrib.fulltoc',  # Adds full table contents to side bar
-    'sphinx_copybutton'  # Adds copy button to demo code
+    'sphinx_copybutton',  # Adds copy button to demo code
+    'sphinx.ext.doctest'
 ]
 
 # Rendering settings
