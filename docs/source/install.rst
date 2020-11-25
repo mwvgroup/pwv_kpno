@@ -1,8 +1,11 @@
+:orphan:
+
 Installation
 ============
 
 The **pwv_kpno** package is open source and can be installed using
-any of the options listed below.
+any of the options listed below. Please take care to review the package setup
+section regardless of your chosen installation procedure.
 
 Install Using PIP (Recommended)
 -------------------------------
@@ -13,6 +16,14 @@ recommended method for installing **pwv_kpno**. To install with pip, run:
 .. code-block:: bash
 
     pip install pwv_kpno
+
+If desired, the test suite can be executed against the installed package
+as follows:
+
+.. code-block::
+
+   pip install pwv_kpno --install-option test
+
 
 Install from Source
 -------------------
@@ -38,6 +49,12 @@ should be installed automatically. If you have any issues installing the
 package, install each dependency listed in the included
 ``requirements.txt`` file and try again.
 
+The package test suite can also be executed using the setup file:
+
+.. code-block::
+
+   python setup.py test
+
 Package Setup
 -------------
 
@@ -55,19 +72,3 @@ To enable this feature, define the following in your ``.bashrc`` or
 .. code-block:: bash
 
    export SUOMINET_DIR="/my/data/directory"
-
-Running Tests
--------------
-
-You can run the **pwv_kpno** test suite against the installed
-package using the ``setup.py`` file included with the source code:
-
-.. code-block::
-
-   pip install --install-option test
-
-or using the ``setup.py`` file:
-
-.. code-block::
-
-   python setup.py test
