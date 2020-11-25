@@ -36,7 +36,7 @@ Package Modules
 +---------------------+---------------------------------------------------------+
 | :ref:`file_parsing` | Parses files written in the the SuomiNet file format.   |
 +---------------------+---------------------------------------------------------+
-| :ref:`gps_pwv`      | PWV modeling and data access for given GPS locations.   |
+| :ref:`gps_pwv`      | Data access and PWV modeling for given GPS locations.   |
 +---------------------+---------------------------------------------------------+
 | :ref:`transmission` | Models the PWV atmospheric transmission function.       |
 +---------------------+---------------------------------------------------------+
