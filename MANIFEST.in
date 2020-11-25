@@ -1,4 +1,5 @@
 include README.md
 include LICENSE.txt
+include requirements.txt
 graft pwv_kpno/default_atmosphere
 graft tests

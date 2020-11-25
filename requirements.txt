@@ -6,3 +6,4 @@ requests
 requests_mock
 scipy
 tqdm
+matplotlib
