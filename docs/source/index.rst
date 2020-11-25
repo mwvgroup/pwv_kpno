@@ -77,6 +77,30 @@ coverage of 3,000 to 12,000 Angstroms.
 .. doctest:: python
 
    >>> import numpy as np
+      >>> import pwv_kpno
+      >>> from pwv_kpno.defaults import default_trans
+
+      >>> # Define wavelength values in units of angstroms
+      >>> wavelengths = np.arange(3000, 12000)
+      >>> transmission = v1_transmission(pwv=5, wave=wavelengths)
+      >>> fig = pwv_kpno.plot_transmission(wavelengths, transmission)
+      >>> fig.show()
+      >>> import pwv_kpno
+      >>> from pwv_kpno.defaults import v1_transmission
+
+      >>> # Define wavelength values in units of angstroms
+      >>> wavelengths = np.arange(3000, 12000)
+      >>> transmission = default_trans(pwv=5, wave=wavelengths)
+      >>> fig = pwv_kpno.plot_transmission(wavelengths, transmission)
+      >>> fig.show()
+      >>> import pwv_kpno
+      >>> from pwv_kpno.defaults import v1_transmission
+
+      >>> # Define wavelength values in units of angstroms
+      >>> wavelengths = np.arange(3000, 12000)
+      >>> transmission = default_trans(pwv=5, wave=wavelengths)
+      >>> fig = pwv_kpno.plot_transmission(wavelengths, transmission)
+      >>> fig.show()
    >>> import pwv_kpno
    >>> from pwv_kpno.defaults import v1_transmission
 

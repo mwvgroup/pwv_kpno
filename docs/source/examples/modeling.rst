@@ -11,7 +11,27 @@ the highest available resolution
 
 .. doctest:: python
 
-   >>> from pwv_kpno.defaults import v1_transmission
+   >>> from pwv_kpno.defaults import default_trans
+      >>>
+      >>> pwv = 5
+      >>> transmission = v1_transmission(pwv)
+      >>> print(transmission)
+      3000.00     1.000000
+      3000.05     1.000000
+      3000.10     1.000000
+      3000.15     1.000000
+      3000.20     1.000000
+                    ...
+      11999.80    0.995957
+      11999.85    0.995927
+      11999.90    0.995875
+      11999.95    0.995805
+      12000.00    0.995718
+      Name: 5.0 mm, Length: 180001, dtype: float64
+
+
+   Notice when evaluating transmission models for a single PWV concentration, the
+   returned value is a pandas
    >>>
    >>> pwv = 5
    >>> transmission = v1_transmission(pwv)

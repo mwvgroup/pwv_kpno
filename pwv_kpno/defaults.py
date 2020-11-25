@@ -72,8 +72,7 @@ from .gps_pwv import GPSReceiver as _GPSReceiver, PWVModel as _PWVModel
 
 _defaults_dir = Path(__file__).resolve().parent / 'default_atmosphere'
 
-kitt = _GPSReceiver('KITT', data_cuts={'SrfcPress': [(775, 1000), ], 'date': [(1451606400.0, 1459468800.0), ]},
-                    cache_data=False)
+kitt = _GPSReceiver('KITT', data_cuts={'SrfcPress': [(775, 1000), ], 'date': [(1451606400.0, 1459468800.0), ]}, cache_data=False)
 azam = _GPSReceiver('AZAM', data_cuts={'SrfcPress': [(880, 925), ]}, cache_data=False)
 p014 = _GPSReceiver('P014', data_cuts={'SrfcPress': [(870, 1000), ]}, cache_data=False)
 sa46 = _GPSReceiver('SA46', data_cuts={'SrfcPress': [(900, 1000), ]}, cache_data=False)
@@ -83,7 +82,7 @@ kitt_model = _PWVModel(kitt, secondaries=(azam, p014, sa46, sa48))
 
 
 def _load_v1_transmission():
-    _default_v1_data = pd.read_csv(
+    transmission_data = pd.read_csv(
         _defaults_dir / 'h2ocs.txt',
         usecols=[1, 2],
         delimiter=' ',
@@ -91,15 +90,8 @@ def _load_v1_transmission():
         names=['wave', 'cross_section'])
 
     return _transmission.CrossSectionTransmission(
-        _default_v1_data.wave * 10_000,  # Convert wavelength values to angstroms
-        _default_v1_data.cross_section)
+        transmission_data.wave * 10_000,  # Convert wavelength values to angstroms
+        transmission_data.cross_section)
 
 
-v1_transmission = _load_v1_transmission()
-
-
-def _load_v2_transmission():
-    return None
-
-
-v2_transmission = _load_v2_transmission()
+default_trans = _load_v1_transmission()
