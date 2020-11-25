@@ -6,58 +6,58 @@ For various reasons, you may wish to apply cuts to the SuomiNet measurements
 used by **pwv_kpno**. The most obvious use case would be to ignore a period of
 time when a SuomiNet weather station was experiencing technical difficulties,
 or if there is some unexplained, unphysical spike in the measurements. For
-convenience, we demonstrate how to visually explore various choices in data cuts. 
+convenience, we demonstrate how to visually explore various choices in data cuts.
 
-Following SuomiNet’s naming convention, values that can be cut include the PWV
-(``'PWV'``), PWV error (``'PWVerr'``), surface pressure (``'SrfcPress'``),
-surface temperature (``'SrfcTemp'``), and relative humidity (``'SrfcRH'``).
-The current data cuts can be accessed via the ``settings`` object.
+Applying Data Cuts
+------------------
 
-.. code-block:: python
-    :linenos:
+Following the SuomiNet naming convention, data cuts can be defined for
+the values listed below. Note that most data cuts are inclusive and define what data
+to **keep**. However, cuts on date values are exclusive and define what
+values to **ignore**.
 
-    >>> from pwv_kpno.package_settings import settings
-    >>> 
-    >>> print(settings.data_cuts)
-    
-      {'AZAM': {'SrfcPress': [[880, 925]]}, 
-       'KITT': {'SrfcPress': [[775, 1000]], 'date': [[1451606400.0, 1459468800.0]]}, 
-       'P014': {'SrfcPress': [[870, 1000]]}, 
-       'SA46': {'SrfcPress': [[900, 1000]]}, 
-       'SA48': {'SrfcPress': [[910, 1000]]}
-      }
-      
-These data cuts can be changed by directly modifying the ``data_cuts`` attribute. For
-example, if we wanted to ignore measurements taken between two dates, we can specify
-those dates as UTC timestamps and run
++--------------+------------------+--------------------+
+| Value Name   | Units            | Cut Type           |
++==============+==================+====================+
+| Date         | UTC Timestamp    | Exclusive          |
++--------------+------------------+--------------------+
+| PWV          | Millimeters      | Inclusive          |
++--------------+------------------+--------------------+
+| PWVErr       | Millimeters      | Inclusive          |
++--------------+------------------+--------------------+
+| ZenithDelay  |                  | Inclusive          |
++--------------+------------------+--------------------+
+| SrfcPress    | Millibars        | Inclusive          |
++--------------+------------------+--------------------+
+| SrfcTemp     |                  | Inclusive          |
++--------------+------------------+--------------------+
+| SrfcRH       | Percentage       | Inclusive          |
++--------------+------------------+--------------------+
 
-.. code-block:: python
-    :linenos:
-    
-    >>> data_cuts['AZAM'] =
-    >>>     {'SrfcPress': [
-    >>>         [timestamp_start, timestamp_end]
-    >>>      ]
-    >>>     }
-    >>> } 
-    
-Note that in order for these changes to take full effect, the PWV model for the primary
-site must be updated. This must be performed even if you are modeling a custom site
-without any supplemental receivers:
+Data cuts are associated with ``GPSReceiver`` objects and can be defined
+at instantiation:
 
-.. code-block:: python
-    :linenos:
-    
-    >>> from pwv_kpno import pwv_atm
+.. doctest:: python
+
+    >>> from pwv_kpno.gps_pwv import GPSReceiver
     >>>
-    >>> years_to_download = pwv_atm.downloaded_years()
-    >>> pwv_atm.update_models(years_to_download)
+    >>> azam = GPSReceiver('AZAM', data_cuts={'SrfcPress': [(880, 925), ]})
+
+Data cuts can also be modified for existing instances:
+
+.. doctest:: python
+
+    >>> azam.data_cuts = {'SrfcPress': [(880, 900), ]}
+    >>> print(azam.data_cuts)
+    {'SrfcPress': [(880, 900), ]}
+
+Visualizing Data Cuts
+---------------------
         
 We can visually inspect these cuts by using the ``get_all_receiver_data`` to retrieve the
 the data with and without the cuts applied and then plotting them as follows:
 
-.. code-block:: python
-    :linenos:
+.. doctest:: python
 
     >>> from astropy.table import setdiff
     >>> from matplotlib import pyplot as plt
