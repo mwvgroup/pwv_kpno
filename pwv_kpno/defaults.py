@@ -51,12 +51,8 @@ Default Transmission Models
 +--------------------------+------------------------------+--------------------------------------------------+
 | Instance Name            | Model Type                   | Summary                                          |
 +==========================+==============================+==================================================+
-| ``v2_transmission``      | ``TransmissionModel``        | Default atmospheric transmission model based on  |
-|                          |                              | TAPAS.                                           |
-+--------------------------+------------------------------+--------------------------------------------------+
-| ``v1_transmission``      | ``CrossSectionTransmission`` | Included for backward compatibility. The         |
-|                          |                              | MODTRAN based atmospheric transmission model     |
-|                          |                              | used in Version 1 of **pwv_kpno**.               |
+| ``transmission``         | ``CrossSectionTransmission`` | The same MODTRAN based atmospheric transmission  |
+|                          |                              | model used in Version 1 of **pwv_kpno**.         |
 +--------------------------+------------------------------+--------------------------------------------------+
 
 """
@@ -65,7 +61,7 @@ from pathlib import Path
 
 import pandas as pd
 
-# Private underscore to prevent user from thinking imports are default objects
+# Import as private to prevent name conflicts
 from . import transmission as _transmission
 from .gps_pwv import GPSReceiver as _GPSReceiver, PWVModel as _PWVModel
 
@@ -93,9 +89,4 @@ def _load_v1_transmission():
         _default_v1_data.cross_section)
 
 
-def _load_v2_transmission():
-    return None
-
-
-v1_transmission = _load_v1_transmission()
-v2_transmission = _load_v2_transmission()
+transmission = _load_v1_transmission()
