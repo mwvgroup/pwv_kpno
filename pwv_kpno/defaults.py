@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: UTF-8 -*-
-
 #    This file is part of the pwv_kpno software package.
 #
 #    The pwv_kpno package is free software: you can redistribute it and/or
@@ -29,36 +26,38 @@ science cases.
 Default Data Access Objects
 ---------------------------
 
-+--------------------------+----------------------------------------------------+--------------------------------------+
-| Instance Name            | Summary                                            | Data Cuts                            |
-+==========================+====================================================+======================================+
-| ``azam``                 | Default data access for Amado Arizona.             |   800 < SrfcPress < 925   mbar       |
-+--------------------------+----------------------------------------------------+--------------------------------------+
-| ``ctio``                 | Default data access for Cerro-Tololo International |   0 < PWV < 30   mm                  |
-+--------------------------+----------------------------------------------------+--------------------------------------+
-|                          | Default data access for Kitt Peak National         | 775 < SrfcPress < 1000 mbar          |
-| ``kitt``                 | Observatory. Data cuts include a period where the  | and drops UTC timestamps 1451606400  |
-|                          | pressure sensor was malfunctioning                 | through 1459468800                   |
-+--------------------------+----------------------------------------------------+--------------------------------------+
-| ``P014``                 | Default data access for Sahuarita Arizona.         |   870 < SrfcPress < 1000   mbar      |
-+--------------------------+----------------------------------------------------+--------------------------------------+
-| ``SA46``                 | Default data access for Tucson Arizona.            |   900 < SrfcPress < 1000   mbar      |
-+--------------------------+----------------------------------------------------+--------------------------------------+
-| ``SA48``                 | Default data access for Sells Arizona.             |   910 < SrfcPress < 1000   mbar      |
-+--------------------------+----------------------------------------------------+--------------------------------------+
++--------------------------+-----------------------------------------------+----------------------------------+
+| Instance Name            | Summary                                       | Data Cuts                        |
++==========================+===============================================+==================================+
+| ``azam``                 | Default data access for Amado Arizona.        |   800 < SrfcPress < 925   mbar   |
++--------------------------+-----------------------------------------------+----------------------------------+
+| ``ctio``                 | Default data access for Cerro-Tololo          |   0 < PWV < 30   mm              |
+|                          | International Observatory.                    |                                  |
++--------------------------+-----------------------------------------------+----------------------------------+
+|                          | Default data access for Kitt Peak National    | 775 < SrfcPress < 1000 mbar      |
+| ``kitt``                 | Observatory. Data cuts include a period where | and drops UTC timestamps         |
+|                          | the pressure sensor was malfunctioning        | 1451606400 through 1459468800    |
++--------------------------+-----------------------------------------------+----------------------------------+
+| ``P014``                 | Default data access for Sahuarita Arizona.    |   870 < SrfcPress < 1000   mbar  |
++--------------------------+-----------------------------------------------+----------------------------------+
+| ``SA46``                 | Default data access for Tucson Arizona.       |   900 < SrfcPress < 1000   mbar  |
++--------------------------+-----------------------------------------------+----------------------------------+
+| ``SA48``                 | Default data access for Sells Arizona.        |   910 < SrfcPress < 1000   mbar  |
++--------------------------+-----------------------------------------------+----------------------------------+
 
 Default Transmission Models
 ---------------------------
 
-+--------------------------+------------------------------+------------------------------------------------------------+
-| Instance Name            | Model Type                   | Summary                                                    |
-+==========================+==============================+============================================================+
-| ``v2_transmission``      | ``TransmissionModel``        | Default atmospheric transmission model based on TAPAS.     |
-+--------------------------+------------------------------+------------------------------------------------------------+
-| ``v1_transmission``      | ``CrossSectionTransmission`` | Included for backward compatibility. The MODTRAN based     |
-|                          |                              | atmospheric transmission model used in Version 1 of        |
-|                          |                              | **pwv_kpno**.                                              |
-+--------------------------+------------------------------+------------------------------------------------------------+
++--------------------------+------------------------------+--------------------------------------------------+
+| Instance Name            | Model Type                   | Summary                                          |
++==========================+==============================+==================================================+
+| ``v2_transmission``      | ``TransmissionModel``        | Default atmospheric transmission model based on  |
+|                          |                              | TAPAS.                                           |
++--------------------------+------------------------------+--------------------------------------------------+
+| ``v1_transmission``      | ``CrossSectionTransmission`` | Included for backward compatibility. The         |
+|                          |                              | MODTRAN based atmospheric transmission model     |
+|                          |                              | used in Version 1 of **pwv_kpno**.               |
++--------------------------+------------------------------+--------------------------------------------------+
 
 """
 
@@ -72,8 +71,7 @@ from .gps_pwv import GPSReceiver as _GPSReceiver, PWVModel as _PWVModel
 
 _defaults_dir = Path(__file__).resolve().parent / 'default_atmosphere'
 
-kitt = _GPSReceiver('KITT', data_cuts={'SrfcPress': [(775, 1000), ], 'date': [(1451606400.0, 1459468800.0), ]},
-                    cache_data=False)
+kitt = _GPSReceiver('KITT', data_cuts={'SrfcPress': [(775, 1000), ], 'date': [(1451606400.0, 1459468800.0), ]}, cache_data=False)
 azam = _GPSReceiver('AZAM', data_cuts={'SrfcPress': [(880, 925), ]}, cache_data=False)
 p014 = _GPSReceiver('P014', data_cuts={'SrfcPress': [(870, 1000), ]}, cache_data=False)
 sa46 = _GPSReceiver('SA46', data_cuts={'SrfcPress': [(900, 1000), ]}, cache_data=False)
@@ -95,11 +93,9 @@ def _load_v1_transmission():
         _default_v1_data.cross_section)
 
 
-v1_transmission = _load_v1_transmission()
-
-
 def _load_v2_transmission():
     return None
 
 
+v1_transmission = _load_v1_transmission()
 v2_transmission = _load_v2_transmission()

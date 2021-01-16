@@ -71,7 +71,7 @@ class CalcPWVLos(TestCase):
 
 
 class BinTransmission(TestCase):
-    """Tests for the ``bin_transmission`` function"""
+    """Tests for the ``_bin_transmission`` function"""
 
     def setUp(self) -> None:
         """Create Pandas Series representing dummy transmission values"""
