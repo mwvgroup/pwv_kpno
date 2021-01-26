@@ -24,7 +24,7 @@ from unittest import TestCase
 import numpy as np
 import pandas as pd
 
-from pwv_kpno.transmission import TransmissionModel
+from pwv_kpno.transmission import Interpolation
 
 
 class TransmissionCall(TestCase):
@@ -41,13 +41,13 @@ class TransmissionCall(TestCase):
             np.zeros_like(wave)
         ]
 
-        self.transmission = TransmissionModel(self.pwv, wave, self.sim_trans)
+        self.transmission = Interpolation(self.pwv, wave, self.sim_trans)
 
     def test_interpolation_on_grid_point(self):
         """Test interpolation result matches sampled values at the grid points"""
 
         test_pwv = self.pwv[1]
-        expected_transmission = self.transmission.samp_transmission[1]
+        expected_transmission = self.transmission._samp_transmission[1]
 
         returned_trans = self.transmission(test_pwv)
         np.testing.assert_equal(expected_transmission, returned_trans)
@@ -55,7 +55,7 @@ class TransmissionCall(TestCase):
     def test_default_wavelengths_match_init(self):
         """Test return values are index by init wavelengths by default"""
 
-        np.testing.assert_equal(self.transmission(4).index.to_numpy(), self.transmission.samp_wave)
+        np.testing.assert_equal(self.transmission(4).index.to_numpy(), self.transmission._samp_wave)
 
     def test_interpolates_for_given_wavelengths(self):
         """Test an interpolation is performed for specified wavelengths when given"""
@@ -88,7 +88,7 @@ class IncompatibleInitArguments(TestCase):
         """Instantiate a ``TransmissionModel`` with malformed arguments"""
 
         with self.assertRaises(ValueError) as cm:
-            TransmissionModel(
+            Interpolation(
                 samp_pwv=[1, 2],
                 samp_wave=[100, 200],
                 samp_transmission=[[1, ], [2, ]]  # Expected (2, 2) array
