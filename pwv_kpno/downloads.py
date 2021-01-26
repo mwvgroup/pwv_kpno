@@ -32,7 +32,7 @@ import os
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Collection, List, Union
+from typing import Collection, Dict, List, Union
 from warnings import catch_warnings, simplefilter
 
 import numpy as np
@@ -127,7 +127,7 @@ class URLDownload:
                         pbar.update(ofile.write(data))
 
     def __repr__(self) -> str:
-        return f"URLDownload('{self._data_dir}')"
+        return f'URLDownload("{self._data_dir}")'
 
 
 class ReleaseDownloader(URLDownload):
@@ -196,7 +196,7 @@ class ReleaseDownloader(URLDownload):
         self.download_suomi_url(url, fname, timeout, force, verbose)
 
     def __repr__(self) -> str:
-        return f"ReleaseDownloader('{self.receiver_id}', '{self._data_dir}')"
+        return f'ReleaseDownloader("{self.receiver_id}", "{self._data_dir}")'
 
 
 class DownloadManager(URLDownload):
@@ -300,4 +300,4 @@ class DownloadManager(URLDownload):
                     continue
 
     def __repr__(self) -> str:
-        return f"DownloadManager('{self._data_dir}')"
+        return f'DownloadManager("{self._data_dir}")'

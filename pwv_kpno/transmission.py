@@ -216,7 +216,8 @@ class Scaling(AbstractTransmission):
 
         # Interpolate the output transmission fro the given wavelengths
         output_wave = self._samp_wave if wave is None else wave
-        RegularGridInterpolator([samp_wave], samp_transmission)(output_wave)
+        out_transmission = RegularGridInterpolator([samp_wave], samp_transmission)(output_wave)
+        return pd.DataFrame(out_transmission, index=output_wave, columns=pwv)
 
 
 class CrossSectionTransmission(AbstractTransmission):
@@ -255,12 +256,7 @@ class CrossSectionTransmission(AbstractTransmission):
 
         return (cls.n_a * cls.h2o_density) / (cls.h2o_molar_mass * cls.one_mm_in_cm)
 
-    def _calc_transmission(
-            self,
-            pwv: Union[float, Collection[float]],
-            wave: ArrayLike = None,
-            res: float = None
-    ):
+    def __call__(self, pwv: Union[float, Collection[float]], wave: ArrayLike = None, res: float = None) -> pd.DataFrame:
         """Evaluate the transmission model at the given wavelengths
 
         Args:
@@ -283,4 +279,5 @@ class CrossSectionTransmission(AbstractTransmission):
 
         # Interpolate the output transmission fro the given wavelengths
         output_wave = self._samp_wave if wave is None else wave
-        RegularGridInterpolator([samp_wave], transmission)(output_wave)
+        out_transmission = RegularGridInterpolator([samp_wave], transmission)(output_wave)
+        return pd.DataFrame(out_transmission, index=output_wave, columns=pwv)
