@@ -59,7 +59,7 @@ __email__ = 'djperrefort@pitt.edu'
 __status__ = 'Release'
 
 
-def plot_transmission(wavelengths: types.ArrayLike, transmission: types.ArrayLike):
+def plot_transmission(wavelengths, transmission):
     """Plot atmospheric transmission values as a function of wavelength
 
     Args:
