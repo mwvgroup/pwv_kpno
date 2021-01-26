@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: UTF-8 -*-
-
 #    This file is part of the pwv_kpno software package.
 #
 #    The pwv_kpno package is free software: you can redistribute it and/or
@@ -28,130 +25,71 @@ approaches to calculating the atmospheric transmission function:
 Module API
 ----------
 """
-
 import abc
-from typing import Union, Collection
+from typing import Collection, Union
 
 import numpy as np
 import pandas as pd
-from scipy.interpolate import LinearNDInterpolator as lNDI
+from scipy.interpolate import RegularGridInterpolator
 from scipy.stats import binned_statistic
 
 from .types import ArrayLike, NumpyArgument, NumpyReturn
 
 
-def calc_pwv_eff(pwv_los: NumpyArgument, norm_pwv: float = 2, eff_exp: float = 0.6) -> NumpyReturn:
-    """Convert PWV along line of sight to PWV effective
+class AbstractTransmission(metaclass=abc.ABCMeta):
 
-    pwv_eff = (pwv_los / norm_pwv) ** eff_exp
-
-    See ``calc_pwv_los`` for the inverse of this function.
-
-    Args:
-        pwv_los: PWV concentration along line of sight in mm
-        norm_pwv: Normalize result such that an effective PWV of one is
-            equivalent to this concentration of PWV along line of sight.
-        eff_exp: Power by which to scale PWV effective
-    """
-
-    return np.divide(pwv_los, norm_pwv) ** eff_exp
-
-
-def calc_pwv_los(pwv_eff: NumpyArgument, norm_pwv: float = 2, eff_exp: float = 0.6) -> NumpyReturn:
-    """Convert PWV effective to PWV along line of sight
-
-    pwv_los = norm_pwv * pwv_eff ** (1 / eff_exp)
-
-    See ``calc_pwv_eff`` for the inverse of this function.
-
-    Args:
-        pwv_eff: Effective PWV concentration in mm
-        norm_pwv: Normalize result such that an effective PWV of one is
-            equivalent to this concentration of PWV along line of sight.
-        eff_exp: Power by which to scale PWV effective
-    """
-
-    return norm_pwv * pwv_eff ** np.divide(1, eff_exp)
-
-
-def bin_transmission(transmission: ArrayLike, resolution: float, wave: ArrayLike = None) -> pd.Series:
-    """Bin a transmission table using a normalized integration
-
-    Args:
-        transmission: Array with transmission values for each wavelength
-        resolution: Resolution to bin to
-        wave: Array of wavelengths in angstroms (defaults to ``transmission.index``)
-
-    Returns:
-        A binned version of ``atm_model``
-    """
-
-    if wave is None:
-        wave = transmission.index
-
-    if resolution <= (np.array(wave[1:]) - wave[:-1]).min():
-        raise ValueError('Requested resolution exceeds resolution of underlying model')
-
-    # Create bins that uniformly sample the given wavelength range
-    # at the given resolution
-    half_res = resolution / 2
-    bins = np.arange(
-        wave[0] - half_res,
-        wave[-1] + half_res + resolution,
-        resolution)
-
-    # noinspection PyArgumentEqualDefault
-    statistic_left, bin_edges_left, _ = binned_statistic(
-        wave, transmission, statistic='mean', bins=bins[:-1])
-
-    # noinspection PyArgumentEqualDefault
-    statistic_right, bin_edges_right, _ = binned_statistic(
-        wave, transmission, statistic='mean', bins=bins[1:])
-
-    dx = bin_edges_left[1] - bin_edges_left[0]
-    bin_centers = bin_edges_left[:-1] + dx
-    statistic = (statistic_right + statistic_left) / 2
-    return pd.Series(statistic, index=bin_centers)
-
-
-class VectorizedCall:
-    """Adds array support for callable calculations"""
-
-    samp_wave = None  # Default model wavelengths to be defined by child class
-
-    @abc.abstractmethod
-    def _calc_transmission(self, pwv: float, wave: ArrayLike = None, res: float = None) -> pd.Series:
-        pass
-
-    def __call__(
-            self,
-            pwv: Union[float, Collection[float]],
-            wave: ArrayLike = None,
-            res: float = None) -> Union[pd.Series, pd.DataFrame]:
-        """Evaluate transmission model at given wavelengths
+    @staticmethod
+    def _bin_transmission(wave: ArrayLike, transmission: ArrayLike, resolution: float) -> pd.Series:
+        """Bin a transmission functions to a lower resolution using a normalized integration
 
         Args:
-            pwv: Line of sight PWV to interpolate for
-            wave: Wavelengths to evaluate transmission for in angstroms
-            res: Resolution to bin the atmospheric model to
+            wave: Array of wavelengths for the sampled transmission values in angstroms
+            transmission: Array with transmission values for each wavelength
+            resolution: The new resolution to bin to
 
         Returns:
-            The interpolated transmission at the given wavelengths / resolution
+            A binned version of ``atm_model``
         """
 
-        wave = self.samp_wave if wave is None else wave
-        if np.isscalar(pwv):
-            return self._calc_transmission(pwv, wave, res)
+        if resolution <= (np.array(wave[1:]) - wave[:-1]).min():
+            raise ValueError('Requested resolution exceeds resolution of underlying model')
 
-        else:
-            return pd.concat([self.__call__(p, wave, res) for p in pwv], axis=1)
+        # Create bins that uniformly sample the given wavelength range
+        # at the given resolution
+        half_res = resolution / 2
+        bins = np.arange(
+            wave[0] - half_res,
+            wave[-1] + half_res + resolution,
+            resolution
+        )
+
+        # noinspection PyArgumentEqualDefault
+        statistic_left, bin_edges_left, _ = binned_statistic(
+            wave, transmission, statistic='mean', bins=bins[:-1])
+
+        # noinspection PyArgumentEqualDefault
+        statistic_right, bin_edges_right, _ = binned_statistic(
+            wave, transmission, statistic='mean', bins=bins[1:])
+
+        dx = bin_edges_left[1] - bin_edges_left[0]
+        bin_centers = bin_edges_left[:-1] + dx
+        statistic = (statistic_right + statistic_left) / 2
+        return pd.Series(statistic, index=bin_centers)
+
+    @abc.abstractmethod
+    def __call__(self, pwv: Union[float, Collection[float]], wave: ArrayLike = None, res: float = None) -> pd.DataFrame:
+        ...
 
 
-class TransmissionModel(VectorizedCall):
+class Interpolation(AbstractTransmission):
     """Interpolates the PWV transmission function using pre-tabulated transmission values"""
 
-    def __init__(self, samp_pwv: ArrayLike, samp_wave: ArrayLike, samp_transmission: ArrayLike,
-                 norm_pwv: float = 2, eff_exp: float = 0.6):
+    def __init__(
+            self,
+            samp_pwv: ArrayLike,
+            samp_wave: ArrayLike,
+            samp_transmission: ArrayLike
+    ) -> None:
         """PWV transmission model that interpolates through pre-tabulated transmission values
 
         Args:
@@ -163,67 +101,126 @@ class TransmissionModel(VectorizedCall):
         if not np.all(np.diff(samp_wave) >= 0):
             raise ValueError('Input wavelengths must be sorted.')
 
-        self.samp_pwv = samp_pwv
-        self.samp_wave = np.array(samp_wave)
-        self.samp_transmission = samp_transmission
-        self.norm_pwv = norm_pwv
-        self.eff_exp = eff_exp
+        self._samp_pwv = samp_pwv
+        self._samp_wave = np.array(samp_wave)
+        self._samp_transmission = samp_transmission
 
+        # Always maintain a cached interpolation object for default wavelengths
         # Will raise error for malformed arguments
-        self._build_interpolator(samp_pwv, samp_wave, samp_transmission)
+        self._default_interpolator = self._build_interpolator()
 
     @staticmethod
-    def _build_interpolator(samp_pwv, samp_wave, samp_transmission):
-        """Construct a scipy interpolator for a given set of wavelengths, PWV,  and transmissions
+    def _calc_pwv_eff(pwv_los: NumpyArgument, norm_pwv: float = 2, eff_exp: float = 0.6) -> NumpyReturn:
+        """Convert PWV along line of sight to PWV effective
 
-        Interpolation if performed as a function of PWV effective.
+        ``pwv_effective = (pwv_los / norm_pwv) ** eff_exp``
+
+        See ``calc_pwv_los`` for the inverse of this function.
 
         Args:
-            samp_pwv: 1D array of PWV values for the sampled transmission
-            samp_wave: 1D Array with wavelengths in angstroms for the sampled transmission
-            samp_transmission: 2D array with transmission values for each PWV and wavelength
+            pwv_los: PWV concentration along line of sight in mm
+            norm_pwv: Normalize result such that an effective PWV of one is
+                equivalent to this concentration of PWV along line of sight.
+            eff_exp: Power by which to scale PWV effective
         """
 
-        # Build interpolation function used to calculate transmission values
-        points = np.array(np.meshgrid(samp_pwv, samp_wave)).T.reshape(-1, 2)
-        values = np.array(samp_transmission).flatten()
+        return np.divide(pwv_los, norm_pwv) ** eff_exp
+
+    def _build_interpolator(self, res=None) -> RegularGridInterpolator:
+        """Build an interpolation object for the given resolution
+
+        Args:
+            res: Reduce the resolution of the transmission model before building the interpolator
+
+        Returns:
+             A callable interpolation object
+        """
+
+        if res is None:
+            return self._default_interpolator
+
+        samp_wave, samp_transmission = self._bin_transmission(self._samp_transmission, self._samp_wave, res)
+        samp_pwv_eff = self._calc_pwv_eff(self._samp_pwv)
+        grid_points = (samp_pwv_eff, samp_wave)
+        values = np.array(samp_transmission).T
 
         try:
-            return lNDI(points, values)
+            return RegularGridInterpolator(grid_points, values)
 
         except ValueError:  # Wrap an otherwise cryptic error message
-            raise ValueError('Dimensions of init arguments do not match.')
+            raise ValueError('Dimensions of sampled transmission values cannot be used to construct a regular grid.')
 
-    def _calc_transmission(self, pwv: float, wave: ArrayLike = None, res: float = None) -> pd.Series:
-        """Evaluate the transmission model at the given wavelengths
+    def __call__(self, pwv: Union[float, Collection[float]], wave: ArrayLike = None, res: float = None) -> pd.DataFrame:
+        """Evaluate transmission model at given wavelengths
 
         Args:
             pwv: Line of sight PWV to interpolate for
-            wave: Wavelengths to evaluate transmission for in angstroms
-            res: Resolution to bin the atmospheric model to
+            wave: Wavelengths to evaluate transmission (Defaults to the full underlying resolution)
 
         Returns:
             The interpolated transmission at the given wavelengths / resolution
         """
 
-        # Build interpolation function
-        sampled_pwv = calc_pwv_eff(self.samp_pwv, self.norm_pwv, self.eff_exp)
-        sampled_transmission = self.samp_transmission
-        sampled_wavelengths = self.samp_wave
+        pwv_eff = self._calc_pwv_eff(pwv)  # The interpolation is performed in effective PWV space
+        wave = self._samp_wave if wave is None else wave
+        interpolator = self._build_interpolator(res)
+
+        if np.isscalar(pwv):
+            xi = [[pwv_eff, w] for w in wave]
+            return pd.DataFrame([interpolator(xi)], columns=[pwv])
+
+        else:
+            # Equivalent to [[[pwv_val, w] for pwv_val in pwv_eff] for w in wave]
+            xi = np.empty((len(wave), len(pwv_eff), 2))
+            xi[:, :, 0] = pwv_eff
+            xi[:, :, 1] = np.array(wave)[:, None]
+
+            return pd.DataFrame(interpolator(xi), columns=pwv)
+
+
+class Scaling(AbstractTransmission):
+    """Scales a sampled PWV transmission function to different PWV values"""
+
+    def __init__(self, samp_pwv: float, samp_wave: ArrayLike, samp_transmission: ArrayLike) -> None:
+        """PWV transmission model that rescaled measured transmission values to a new PWV concentration
+
+        Args:
+            samp_pwv: PWV concentration of the sampled transmission
+            samp_wave: 1D Array with wavelengths in angstroms for the sampled transmission
+            samp_transmission: 1D array with transmission values for each wavelength
+        """
+
+        self._samp_pwv = samp_pwv
+        self._samp_wave = samp_wave
+        self._samp_transmission = samp_transmission
+
+    def __call__(self, pwv: Union[float, Collection[float]], wave: ArrayLike = None, res: float = None) -> pd.DataFrame:
+        """Evaluate transmission model at given wavelengths
+
+        Args:
+            pwv: Line of sight PWV to interpolate for
+            wave: Wavelengths to evaluate transmission (Defaults to the full underlying resolution)
+
+        Returns:
+            The interpolated transmission at the given wavelengths / resolution
+        """
+
+        # Determine the wavelengths and scaled transmission for the given PWV concentration(s)
+        pwv = np.atleast_1d(pwv)
+        samp_wave = self._samp_wave
+        samp_transmission = np.power(self._samp_transmission, np.divide(pwv, self._samp_pwv)[:, None])
+
+        # Reduce the transmission resolution if necessary
         if res:
-            sampled_transmission = bin_transmission(sampled_transmission, res, wave)
-            sampled_wavelengths = sampled_wavelengths.index
+            samp_wave, samp_transmission = self._bin_transmission(samp_transmission, samp_wave, res)
 
-        interp_func = self._build_interpolator(sampled_pwv, sampled_wavelengths, sampled_transmission)
-
-        # Build interpolation grid
-        pwv_eff = calc_pwv_eff(pwv, norm_pwv=self.norm_pwv, eff_exp=self.eff_exp)
-        xi = [[pwv_eff, w] for w in wave]
-
-        return pd.Series(interp_func(xi), index=wave, name=f'{float(np.round(pwv, 4))} mm')
+        # Interpolate the output transmission fro the given wavelengths
+        output_wave = self._samp_wave if wave is None else wave
+        out_transmission = RegularGridInterpolator([samp_wave], samp_transmission)(output_wave)
+        return pd.DataFrame(out_transmission, index=output_wave, columns=pwv)
 
 
-class CrossSectionTransmission(VectorizedCall):
+class CrossSection(AbstractTransmission):
     """Calculated PWV transmission using per-wavelength cross-sections"""
 
     # Define physical constants
@@ -232,7 +229,7 @@ class CrossSectionTransmission(VectorizedCall):
     h2o_density = 0.99997  # g / cm ** 3
     one_mm_in_cm = 10  # mm / cm
 
-    def __init__(self, samp_wave: ArrayLike, cross_sections: ArrayLike):
+    def __init__(self, samp_wave: ArrayLike, cross_sections: ArrayLike) -> None:
         """PWV transmission model using H20 cross sections
 
         Transmission values are determined using individual cross sections a
@@ -246,8 +243,8 @@ class CrossSectionTransmission(VectorizedCall):
         if not np.all(np.diff(samp_wave) >= 0):
             raise ValueError('Input wavelengths must be sorted.')
 
-        self.samp_wave = np.array(samp_wave)
-        self.cross_sections = cross_sections
+        self._samp_wave = np.array(samp_wave)
+        self._cross_sections = cross_sections
 
     @classmethod
     def _num_density_conversion(cls) -> float:
@@ -259,11 +256,7 @@ class CrossSectionTransmission(VectorizedCall):
 
         return (cls.n_a * cls.h2o_density) / (cls.h2o_molar_mass * cls.one_mm_in_cm)
 
-    def _calc_transmission(
-            self,
-            pwv: Union[float, Collection[float]],
-            wave: ArrayLike = None,
-            res: float = None) -> pd.Series:
+    def __call__(self, pwv: Union[float, Collection[float]], wave: ArrayLike = None, res: float = None) -> pd.DataFrame:
         """Evaluate the transmission model at the given wavelengths
 
         Args:
@@ -276,15 +269,15 @@ class CrossSectionTransmission(VectorizedCall):
         """
 
         # Evaluate transmission using the Beer-Lambert Law
-        tau = pwv * self.cross_sections * self._num_density_conversion()
+        tau = pwv * self._cross_sections * self._num_density_conversion()
         transmission = np.exp(-tau)
-        transmission_wavelengths = self.samp_wave
+        samp_wave = self._samp_wave
 
         if res:
-            transmission = bin_transmission(transmission, res, transmission_wavelengths)
-            transmission_wavelengths = transmission.index
+            transmission = self._bin_transmission(transmission, samp_wave, res)
+            samp_wave = transmission.index
 
-        return pd.Series(
-            np.interp(wave, transmission_wavelengths, transmission),
-            name=f'{float(np.round(pwv, 4))} mm',
-            index=wave)
+        # Interpolate the output transmission fro the given wavelengths
+        output_wave = self._samp_wave if wave is None else wave
+        out_transmission = RegularGridInterpolator([samp_wave], transmission)(output_wave)
+        return pd.DataFrame(out_transmission, index=output_wave, columns=pwv)

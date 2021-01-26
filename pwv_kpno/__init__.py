@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: UTF-8 -*-
-
 #    This file is part of the pwv_kpno software package.
 #
 #    The pwv_kpno package is free software: you can redistribute it and/or
@@ -44,9 +41,9 @@ Package Modules
 +---------------------+---------------------------------------------------------+
 """
 
-from .gps_pwv import PWVModel
+from . import *
 
-__authors__ = ['MWV Research Group']
+__author__ = 'MWV Research Group'
 __copyright__ = 'Copyright 2017, MWV Research Group'
 __credits__ = [
     'Daniel Perrefort'

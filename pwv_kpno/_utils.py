@@ -1,6 +1,3 @@
-# !/usr/bin/env python3
-# -*- coding: UTF-8 -*-
-
 #    This file is part of the pwv_kpno software package.
 #
 #    The pwv_kpno package is free software: you can redistribute it and/or
@@ -82,8 +79,7 @@ def linear_regression(x: np.array, y: np.array, sx: np.array, sy: np.array) -> O
     return fit_results
 
 
-def search_data_table(
-        data: pd.DataFrame, year: int = None, month: int = None, day=None, hour=None) -> pd.DataFrame:
+def search_data_table(data: pd.DataFrame, year: int = None, month: int = None, day=None, hour=None) -> pd.DataFrame:
     """Return a subset of a table with dates corresponding to a given timespan
 
     Args:

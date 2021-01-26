@@ -1,6 +1,3 @@
-# !/usr/bin/env python3
-# -*- coding: UTF-8 -*-
-
 #    This file is part of the pwv_kpno software package.
 #
 #    The pwv_kpno package is free software: you can redistribute it and/or

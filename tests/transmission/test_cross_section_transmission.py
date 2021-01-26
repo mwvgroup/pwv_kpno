@@ -77,7 +77,7 @@ class TransmissionCall(TestCase):
     def test_default_wavelengths_match_init(self):
         """Test return values are indexed by init wavelengths by default"""
 
-        np.testing.assert_equal(self.transmission(4).index.to_numpy(), self.transmission.samp_wave)
+        np.testing.assert_equal(self.transmission(4).index.to_numpy(), self.transmission._samp_wave)
 
     def test_interpolates_for_given_wavelengths(self):
         """Test return values are indexed for values passed as the ``wave`` argument"""

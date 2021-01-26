@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: UTF-8 -*-
-
 #    This file is part of the pwv_kpno software package.
 #
 #    The pwv_kpno package is free software: you can redistribute it and/or
@@ -17,8 +14,8 @@
 #    along with pwv_kpno.  If not, see <http://www.gnu.org/licenses/>.
 
 """The ``file_parsing`` module is responsible for parsing plain text files
-written in the SuomiNet file format. For more information on how to access
-locally available SuomiNet data, see the :ref:`gps_pwv` module.
+written in the SuomiNet file format. For more information on the recommended
+way to access locally available SuomiNet data, see the :ref:`gps_pwv` module.
 
 Module API
 ----------
@@ -38,9 +35,8 @@ from .types import PathLike
 class SuomiFileParser:
     """File parser for data written in the SuomiNet file format"""
 
-    # Override init and just parse file path instead
     def __new__(cls, path: PathLike) -> pd.DataFrame:
-        # noinspection PyArgumentList
+        # noinspection PyArgumentList,PyTypeChecker
         return cls.__call__(cls, path)
 
     @staticmethod
