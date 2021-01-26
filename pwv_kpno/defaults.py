@@ -51,7 +51,7 @@ Default Transmission Models
 +--------------------------+------------------------------+--------------------------------------------------+
 | Instance Name            | Model Type                   | Summary                                          |
 +==========================+==============================+==================================================+
-| ``transmission``         | ``CrossSectionTransmission`` | The same MODTRAN based atmospheric transmission  |
+| ``v1_transmission``      | ``CrossSectionTransmission`` | The same MODTRAN based atmospheric transmission  |
 |                          |                              | model used in Version 1 of **pwv_kpno**.         |
 +--------------------------+------------------------------+--------------------------------------------------+
 
@@ -76,7 +76,7 @@ ctio = _GPSReceiver('CTIO', data_cuts={'PWV': [(0, 30), ]})
 kitt_model = _PWVModel(kitt, secondaries=(azam, p014, sa46, sa48))
 
 
-def _load_v1_transmission():
+def _load_v1_transmission() -> _transmission.CrossSection:
     _default_v1_data = pd.read_csv(
         _defaults_dir / 'h2ocs.txt',
         usecols=[1, 2],
@@ -84,9 +84,9 @@ def _load_v1_transmission():
         header=None,
         names=['wave', 'cross_section'])
 
-    return _transmission.CrossSectionTransmission(
+    return _transmission.CrossSection(
         _default_v1_data.wave * 10_000,  # Convert wavelength values to angstroms
         _default_v1_data.cross_section)
 
 
-transmission = _load_v1_transmission()
+v1_transmission = _load_v1_transmission()

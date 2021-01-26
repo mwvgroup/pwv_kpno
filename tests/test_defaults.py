@@ -70,7 +70,7 @@ class TestTransmissionModelAvailability(TestCase):
         """Test v1 transmission is a ``CrossSectionTransmission`` instance"""
 
         from pwv_kpno.defaults import v1_transmission
-        self.assertIsInstance(v1_transmission, transmission.CrossSectionTransmission)
+        self.assertIsInstance(v1_transmission, transmission.CrossSection)
 
     @skip('V2 transmission not implemented yet')
     def test_v2_transmission(self):
