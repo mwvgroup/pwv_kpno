@@ -85,8 +85,10 @@ class URLDownload:
         directory.mkdir(exist_ok=True, parents=True)
         return directory
 
-    def download_suomi_url(self, url: str, fname: str, timeout: float = None,
-                           force: bool = False, verbose: bool = True) -> None:
+    def download_suomi_url(
+            self, url: str, fname: str, timeout: float = None,
+            force: bool = False, verbose: bool = True
+    ) -> None:
         """Download data from a URL
 
         Args:
@@ -124,7 +126,7 @@ class URLDownload:
                         total=int(response.headers.get('content-length', 0)),
                 ) as pbar:
                     for data in response.iter_content(chunk_size=chunk_size):
-                        pbar.update(ofile.write(data))
+                        pbar.update(ofile.write(data))  # pragma: no cover
 
     def __repr__(self) -> str:
         return f'URLDownload("{self._data_dir}")'

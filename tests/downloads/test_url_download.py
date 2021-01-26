@@ -104,6 +104,28 @@ class DownloadSuomiUrl(TestCase):
         URLDownload().download_suomi_url(url, fname, verbose=False)
         self.assertTrue(expected_path.exists())
 
+    def test_no_overwrite_without_force(self, mocker: requests_mock.Mocker):
+        """Test the destination file is only overwritten if ``force=True``"""
+
+        url = 'http://test.com'
+        mocker.register_uri('GET', url)
+
+        downloader = URLDownload()
+        outpath = downloader.data_dir / 'test_file.plt'
+        known_str = 'This is a known value'
+        with outpath.open('w') as tempfile:
+            tempfile.write(known_str)
+
+        # Test force=False does not overwrite the file
+        URLDownload().download_suomi_url(url, outpath.name, force=False, verbose=False)
+        with outpath.open('r') as tempfile:
+            self.assertEqual(known_str, tempfile.readline(), 'File overwritten with ``force=False``')
+
+        # Test force=True overwrites the file
+        URLDownload().download_suomi_url(url, outpath.name, force=True, verbose=False)
+        with outpath.open('r') as tempfile:
+            self.assertEqual('', tempfile.readline(), 'File NOT overwritten with ``force=True``')
+
 
 class Repr(TestCase):
     """Tests for the string representation of ``URLDownloader``"""
