@@ -220,7 +220,7 @@ class Scaling(AbstractTransmission):
         return pd.DataFrame(out_transmission, index=output_wave, columns=pwv)
 
 
-class CrossSectionTransmission(AbstractTransmission):
+class CrossSection(AbstractTransmission):
     """Calculated PWV transmission using per-wavelength cross-sections"""
 
     # Define physical constants
