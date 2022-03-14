@@ -56,7 +56,7 @@ from . import pwv_atm
 __authors__ = ['MWV Research Group']
 __copyright__ = 'Copyright 2017, MWV Research Group'
 __credits__ = [
-    'Daniel Perrefort'
+    'Daniel Perrefort',
     'W. M. Wood-Vasey',
     'K. Azalee Bostroem',
     'Jessica Kroboth',
