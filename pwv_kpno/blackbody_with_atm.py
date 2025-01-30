@@ -51,7 +51,7 @@ from typing import Union
 
 import numpy as np
 from astropy import units as u
-from astropy.constants import c
+import astropy.constants as c
 from astropy.modeling.models import BlackBody
 
 from pwv_kpno.pwv_atm import trans_for_pwv
@@ -124,13 +124,10 @@ def magnitude(
         flux_pwv *= band[1]
 
     # We introduce units here to make dimensional analysis easier
-    lambda_over_c = (np.median(wavelengths) * u.AA) / c
-    flux_pwv *= u.erg / (u.AA * u.cm * u.cm * u.s * u.sr)
     flux_pwv *= 2 * np.pi * u.sr  # integrate over angular coordinates
-    flux_pwv *= lambda_over_c.cgs
 
     zero_point = (3631 * u.jansky).to(u.erg / u.cm ** 2)
-    int_flux = np.trapz(x=wavelengths, y=flux_pwv) * u.AA
+    int_flux = np.trapz(x=wavelengths, y=flux_pwv)
     mag = -2.5 * np.log10(int_flux / zero_point)
 
     return mag.value
