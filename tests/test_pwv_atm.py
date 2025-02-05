@@ -176,14 +176,14 @@ class PwvDate(TestCase):
         self.assertRaises(ValueError,
                           pwv_atm._pwv_date,
                           one_day_start,
-                          1,
-                          mock_model)
+                          format="unix",
+                          test_model=mock_model)
 
         self.assertRaises(ValueError,
                           pwv_atm._pwv_date,
                           three_day_start,
-                          1,
-                          mock_model)
+                          format="unix",
+                          test_model=mock_model)
 
 
 class TransmissionErrors(TestCase):

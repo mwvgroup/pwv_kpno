@@ -21,11 +21,10 @@
 from unittest import TestCase
 
 import numpy as np
-from astropy.modeling.blackbody import blackbody_lambda
+from astropy.modeling.models import BlackBody
+import astropy.units as u
 
-from pwv_kpno.blackbody_with_atm import magnitude
-from pwv_kpno.blackbody_with_atm import sed
-from pwv_kpno.blackbody_with_atm import zp_bias
+from pwv_kpno.blackbody_with_atm import magnitude, sed, zp_bias
 
 
 class BlackbodySED(TestCase):
@@ -40,7 +39,8 @@ class BlackbodySED(TestCase):
 
         returned_sed = sed(self.temp, self.wavelengths, 0)
 
-        expected_sed = blackbody_lambda(self.wavelengths, self.temp).value
+        bb = BlackBody(self.temp * u.K)
+        expected_sed = bb(self.wavelengths * u.AA)
 
         sed_is_same = np.all(np.equal(returned_sed, expected_sed))
         self.assertTrue(sed_is_same,
